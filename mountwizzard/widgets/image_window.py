@@ -82,6 +82,7 @@ class ImagesWindow(widget.MwWidget):
 
         # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
+        self.ui.btn_exposeCont.clicked.connect(self.exposeCont)
         self.ui.btn_solve.clicked.connect(self.solveOnce)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
@@ -239,7 +240,6 @@ class ImagesWindow(widget.MwWidget):
         # Display the image
         self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
         self.imageMatplotlib.fig.canvas.draw()
-        #self.imageMatplotlib.draw()
 
     def strechMid(self):
         # Create interval object
@@ -250,7 +250,6 @@ class ImagesWindow(widget.MwWidget):
         # Display the image
         self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
         self.imageMatplotlib.fig.canvas.draw()
-        #self.imageMatplotlib.draw()
 
     def strechHigh(self):
         # Create interval object
@@ -261,7 +260,6 @@ class ImagesWindow(widget.MwWidget):
         # Display the image
         self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
         self.imageMatplotlib.fig.canvas.draw()
-        #self.imageMatplotlib.draw()
 
     def setZoom(self):
         if self.ui.btn_size25.isChecked():
@@ -280,7 +278,6 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageMatplotlib.fig.canvas.draw()
-            # self.imageMatplotlib.draw()
 
     def zoom50(self):
         if self.sizeX:
@@ -291,7 +288,6 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageMatplotlib.fig.canvas.draw()
-            # self.imageMatplotlib.draw()
 
     def zoom100(self):
         if self.sizeX:
@@ -302,7 +298,6 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageMatplotlib.fig.canvas.draw()
-            # self.imageMatplotlib.draw()
 
     def disableExposures(self):
         self.ui.btn_expose.setEnabled(False)
@@ -321,66 +316,101 @@ class ImagesWindow(widget.MwWidget):
     def exposeOnce(self):
         self.cancel = False
         # link to cam and check if available
-        if 'CONNECTION' in self.app.workerImaging.data:
-            if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
-                return
-        else:
-            return
-        # start prep imaging
-        imageParams = dict()
-        imageParams['Imagepath'] = ''
-        imageParams['Exposure'] = self.app.ui.cameraExposure.value()
-        imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
-        imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
-        self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
-        self.app.workerImaging.imagingCommandQueue.put(imageParams)
-        while imageParams['Imagepath'] == '' and not self.cancel:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        if not os.path.isfile(imageParams['Imagepath']):
-            self.app.messageQueue.put('#BWImaging failed\n')
-            return
-        self.signalShowFitsImage.emit(imageParams['Imagepath'])
+        while not self.cancel:
+            self.app.signalChangeStylesheet.emit(self.ui.btn_expose, 'running', True)
+            if 'CONNECTION' in self.app.workerImaging.data:
+                if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
+                    break
+            else:
+                break
+            # start prep imaging
+            imageParams = dict()
+            imageParams['Imagepath'] = ''
+            imageParams['Exposure'] = self.app.ui.cameraExposure.value()
+            imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
+            imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
+            self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
+            self.app.workerImaging.imagingCommandQueue.put(imageParams)
+            while imageParams['Imagepath'] == '' and not self.cancel:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            if not os.path.isfile(imageParams['Imagepath']):
+                self.app.messageQueue.put('#BWImaging failed\n')
+                break
+            self.signalShowFitsImage.emit(imageParams['Imagepath'])
+            break
+        self.app.signalChangeStylesheet.emit(self.ui.btn_expose, 'running', False)
 
     def solveOnce(self):
         self.cancel = False
-        if self.imagePath == '':
-            return
-        if not os.path.isfile(self.imagePath):
-            return
-        self.signalSetRaSolved.emit('')
-        self.signalSetDecSolved.emit('')
-        self.signalSetAngleSolved.emit('')
+        while not self.cancel:
+            if self.imagePath == '':
+                break
+            if not os.path.isfile(self.imagePath):
+                break
+            self.app.signalChangeStylesheet.emit(self.ui.btn_solve, 'running', True)
+            self.signalSetRaSolved.emit('')
+            self.signalSetDecSolved.emit('')
+            self.signalSetAngleSolved.emit('')
 
-        imageParams = dict()
-        imageParams['Imagepath'] = self.imagePath
-        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
-        fitsHeader = fitsFileHandle[0].header
-        if 'OBJCTRA' not in fitsHeader:
-            fitsFileHandle.close()
-            self.app.messageQueue.put('#BRNo coordinate in FITS file\n')
-            return
-        imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
-        imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-        if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-            imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
-        elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
-            imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
-        else:
-            imageParams['ScaleHint'] = self.app.ui.pixelSize.value() * 206.6 / self.app.ui.focalLength.value()
-        fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
-        fitsFileHandle.flush()
-        fitsFileHandle.close()
-        self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
-        self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
-        while 'Solved' not in imageParams and not self.cancel:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        if 'Solved' in imageParams:
-            if imageParams['Solved']:
-                self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
-                                                                                          self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
+            imageParams = dict()
+            imageParams['Imagepath'] = self.imagePath
+            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+            fitsHeader = fitsFileHandle[0].header
+            if 'OBJCTRA' not in fitsHeader:
+                fitsFileHandle.close()
+                self.app.messageQueue.put('#BRNo coordinate in FITS file\n')
+                break
+            imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+            imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
+            elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
             else:
-                self.app.messageQueue.put('#BWImage could not be solved: {0}\n'.format(imageParams['Message']))
-        else:
-            self.app.messageQueue.put('#BWSolve error\n')
+                imageParams['ScaleHint'] = self.app.ui.pixelSize.value() * 206.6 / self.app.ui.focalLength.value()
+            fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
+            fitsFileHandle.flush()
+            fitsFileHandle.close()
+            self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
+            self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
+            while 'Solved' not in imageParams and not self.cancel:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            if 'Solved' in imageParams:
+                if imageParams['Solved']:
+                    self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
+                                                                                              self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
+                else:
+                    self.app.messageQueue.put('#BWImage could not be solved: {0}\n'.format(imageParams['Message']))
+            else:
+                self.app.messageQueue.put('#BWSolve error\n')
+            break
+        self.app.signalChangeStylesheet.emit(self.ui.btn_solve, 'running', False)
+
+    def exposeCont(self):
+        self.cancel = False
+        # link to cam and check if available
+        while not self.cancel:
+            self.app.signalChangeStylesheet.emit(self.ui.btn_exposeCont, 'running', True)
+            if 'CONNECTION' in self.app.workerImaging.data:
+                if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
+                    break
+            else:
+                break
+            # start prep imaging
+            imageParams = dict()
+            imageParams['Imagepath'] = ''
+            imageParams['Exposure'] = self.app.ui.cameraExposure.value()
+            imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
+            imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
+            self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
+            self.app.workerImaging.imagingCommandQueue.put(imageParams)
+            while imageParams['Imagepath'] == '' and not self.cancel:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            if not os.path.isfile(imageParams['Imagepath']):
+                self.app.messageQueue.put('#BWImaging failed\n')
+                break
+            self.signalShowFitsImage.emit(imageParams['Imagepath'])
+        self.app.signalChangeStylesheet.emit(self.ui.btn_exposeCont, 'running', False)
