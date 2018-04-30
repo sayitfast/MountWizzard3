@@ -251,7 +251,12 @@ class AstrometryClient:
                 break
             finally:
                 pass
-            jobs = result['jobs']
+            if 'jobs' in result:
+                jobs = result['jobs']
+            else:
+                self.logger.error('Problem submissions, job not found, result: {0}, response: {1}'.format(result, response))
+                errorState = True
+                break
             if len(jobs) > 0:
                 if jobs[0] is not None:
                     jobID = jobs[0]
@@ -283,7 +288,12 @@ class AstrometryClient:
                 imageParams['Message'] = 'Error jobs'
             finally:
                 pass
-            stat = result['status']
+            if 'stat' in result:
+                stat = result['status']
+            else:
+                self.logger.error('Problem jobs, status not found, result: {0}, response: {1}'.format(result, response))
+                errorState = True
+                break
             if stat == 'success':
                 break
             if stat == 'failure':
