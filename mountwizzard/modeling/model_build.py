@@ -21,7 +21,6 @@ import logging
 import copy
 import shutil
 import time
-import datetime
 import math
 import PyQt5
 import indi.indi_xml as indiXML
@@ -533,9 +532,9 @@ class ModelingBuild:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
-            self.app.messageQueue.put('#BGModel finished with errors\n')
+            self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} MM:SS\n'.format(time.strftime("%M:%S", time.gmtime(timeStart - time.time()))))
         else:
-            self.app.messageQueue.put('#BRInitial Model finished with success, runtime: {0}\n'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))
+            self.app.messageQueue.put('#BRModel finished with errors\n')
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -602,9 +601,9 @@ class ModelingBuild:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
-            self.app.messageQueue.put('#BGModel finished with errors\n')
+            self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} MM:SS\n'.format(time.strftime("%M:%S", time.gmtime(timeStart - time.time()))))
         else:
-            self.app.messageQueue.put('#BRFull Model finished with success, runtime: {0}\n'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))
+            self.app.messageQueue.put('#BRModel finished with errors\n')
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():
