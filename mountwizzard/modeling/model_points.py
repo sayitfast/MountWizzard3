@@ -112,7 +112,7 @@ class ModelPoints:
         try:
             fileHandle = open(modelPointsFileName + '.txt', 'w')
             for i in range(0, len(self.modelPoints)):
-                fileHandle.write('MW-3:{0:03d}:{1:03d}\n'.format(int(self.modelPoints[i][0]), int(int(self.modelPoints[i][1]))))
+                fileHandle.write('MW-3:{0:03.2f}:{1:03.2f}\n'.format(self.modelPoints[i][0], self.modelPoints[i][1]))
             fileHandle.close()
         except Exception as e:
             msg = 'Error saving modeling points to file [{0}] error: {1}!'.format(modelPointsFileName, e)
