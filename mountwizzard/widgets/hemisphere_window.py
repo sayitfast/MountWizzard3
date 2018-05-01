@@ -46,6 +46,7 @@ class HemisphereWindow(widget.MwWidget):
         self.pointerTrack = None
         self.pointsPlotBig = None
         self.pointsPlotSmall = None
+        self.pointsPlotCross = None
         self.starsAlignment = None
         self.starsAnnotate = list()
         self.maskPlotFill = None
@@ -458,6 +459,8 @@ class HemisphereWindow(widget.MwWidget):
         # add text to points
         for i in range(0, len(points)):
             self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] + self.offx, points[i][1] + self.offy), color='#E0E0E0'))
+        # add crosses, if modeling was done to recap when opening the window
+        self.pointsPlotCross, = self.hemisphereMatplotlib.axes.plot([], [], 'X', color='#FF00FF', zorder=5, markersize=9)
         # draw celestial equator
         if self.ui.checkShowCelestial.isChecked():
             celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator

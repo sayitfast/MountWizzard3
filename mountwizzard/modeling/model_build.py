@@ -492,7 +492,9 @@ class ModelingBuild:
             return
         if not self.app.workerMountDispatcher.mountStatus['Fast']:
             return
-        if not self.app.workerMountDispatcher.mountStatus['Align']:
+        if not self.app.workerMountDispatcher.mountStatus['GetAlign']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['SetAlign']:
             return
         # there have to be some modeling points
         if len(self.modelPoints.modelPoints) == 0:
@@ -559,7 +561,9 @@ class ModelingBuild:
             return
         if not self.app.workerMountDispatcher.mountStatus['Fast']:
             return
-        if not self.app.workerMountDispatcher.mountStatus['Align']:
+        if not self.app.workerMountDispatcher.mountStatus['GetAlign']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['SetAlign']:
             return
         # there have to be some modeling points
         if len(self.modelPoints.modelPoints) == 0:
