@@ -53,6 +53,7 @@ class HemisphereWindow(widget.MwWidget):
         self.maskPlotMarker = None
         self.deltaGuide = None
         self.deltaSlew = None
+        self.celestial = None
         self.annotate = list()
         self.offx = 1
         self.offy = 1
@@ -90,20 +91,24 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
 
         # signal connections
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.updateModelPoints)
+
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
-        self.app.workerMountDispatcher.signalMountLimits.connect(self.setLimits)
+        self.app.workerMountDispatcher.signalMountLimits.connect(self.updateMeridianLimits)
+        self.ui.checkShowMeridian.clicked.connect(self.updateMeridianLimits)
         self.app.workerMountDispatcher.signalAlignmentStars.connect(self.updateAlignmentStars)
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
-        self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
+        self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
+        self.app.signalMountSiteData.connect(self.updateCelestial)
+        self.ui.checkShowCelestial.clicked.connect(self.updateCelestial)
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
         self.ui.checkEditNone.clicked.connect(self.setEditModus)
         self.ui.checkEditModelPoints.clicked.connect(self.setEditModus)
         self.ui.checkEditHorizonMask.clicked.connect(self.setEditModus)
         self.ui.checkPolarAlignment.clicked.connect(self.setEditModus)
-        self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
-        self.ui.checkShowCelestial.clicked.connect(self.drawHemisphere)
-        self.ui.checkShowMeridian.clicked.connect(self.drawHemisphere)
+
+        self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
+
         # from start on invisible
         self.showStatus = False
         self.setVisible(False)
@@ -185,7 +190,12 @@ class HemisphereWindow(widget.MwWidget):
         self.mutexDrawCanvasMoving.unlock()
         PyQt5.QtWidgets.QApplication.processEvents()
 
-    def setLimits(self, guide, slew):
+    def updateModelPoints(self):
+        self.drawHemisphere()
+        self.updateCelestial()
+        self.updateAlignmentStars()
+
+    def updateMeridianLimits(self, guide, slew):
         if self.showStatus:
             self.deltaGuide.set_visible(self.ui.checkShowMeridian.isChecked())
             self.deltaSlew.set_visible(self.ui.checkShowMeridian.isChecked())
@@ -223,6 +233,12 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.checkPolarAlignment.setChecked(False)
                 self.ui.checkEditNone.setChecked(True)
         self.setEditModus()
+
+    def updateCelestial(self):
+        self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
+        celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
+        self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
+        self.drawCanvas()
 
     def updateAlignmentStars(self):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
@@ -463,9 +479,8 @@ class HemisphereWindow(widget.MwWidget):
         # add crosses, if modeling was done to recap when opening the window
         self.pointsPlotCross, = self.hemisphereMatplotlib.axes.plot([], [], 'X', color='#FF00FF', zorder=5, markersize=9)
         # draw celestial equator
-        if self.ui.checkShowCelestial.isChecked():
-            celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in celestial], [i[1] for i in celestial], '.', markersize=1, fillstyle='none', color='#808080')
+        celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
+        self.celestial,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in celestial], [i[1] for i in celestial], '.', markersize=1, fillstyle='none', color='#808080', visible=False)
         # draw meridian limits
         self.deltaGuide = matplotlib.patches.Rectangle((180, 0), 1, 90, zorder=-10, color='#FFFF0040', lw=1, fill=True, visible=False)
         self.deltaSlew = matplotlib.patches.Rectangle((180, 0), 1, 90, zorder=-10, color='#FF000040', lw=1, fill=True, visible=False)
