@@ -530,7 +530,7 @@ class ModelingBuild:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
-            self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} MM:SS\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
+            self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
 
