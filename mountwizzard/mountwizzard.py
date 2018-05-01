@@ -51,6 +51,7 @@ from indi import indi_client
 from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
+from analyse import analysedata
 if platform.system() == 'Windows':
     from automation import automation
 from wakeonlan import send_magic_packet
@@ -117,6 +118,9 @@ class MountWizzardApp(widget.MwWidget):
 
         # get ascom state
         self.checkASCOM()
+
+        # access methods for saving model
+        self.analyse = analysedata.Analyse(self)
 
         # instantiating all subclasses and connecting thread signals
         # mount class
@@ -967,13 +971,14 @@ class MountWizzardApp(widget.MwWidget):
         self.threadDome.start()
 
     def runBatchModel(self):
-        value = self.selectFile(self, 'Open analyse file for model programming', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
+        value, ext = self.selectFile(self, 'Open analyse file for model programming', '/analysedata', 'Analyse files (*.dat)', True)
         if value == '':
             self.logger.warning('No file selected')
             return
         nameDataFile = os.path.basename(value)
         self.logger.info('Modeling from {0}'.format(nameDataFile))
-        self.workerMountDispatcher.programBatchData(nameDataFile)
+        data = self.analyse.loadData(nameDataFile)
+        self.workerMountDispatcher.programBatchData(data)
 
     def cancelFullModel(self):
         # cancel only works if modeling gis running. otherwise recoloring button after stop won't happen

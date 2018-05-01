@@ -128,6 +128,7 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.checkEditHorizonMask.setChecked(self.app.config['CheckEditHorizonMask'])
             if 'CheckShowAlignmentStars' in self.app.config:
                 self.ui.checkShowAlignmentStars.setChecked(self.app.config['CheckShowAlignmentStars'])
+                self.ui.checkPolarAlignment.setDisabled(not self.app.config['CheckShowAlignmentStars'])
             if 'CheckShowCelestial' in self.app.config:
                 self.ui.checkShowCelestial.setChecked(self.app.config['CheckShowCelestial'])
             if 'CheckShowMeridian' in self.app.config:

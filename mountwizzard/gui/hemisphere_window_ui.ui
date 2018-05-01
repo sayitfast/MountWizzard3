@@ -25,9 +25,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>115</y>
+     <y>130</y>
      <width>771</width>
-     <height>516</height>
+     <height>501</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -162,44 +162,6 @@
     </property>
     <property name="text">
      <string>Select PolarAlign</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QWidget" name="hemisphereMoving" native="true">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>115</y>
-     <width>771</width>
-     <height>516</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <widget class="QWidget" name="hemisphereStar" native="true">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>771</width>
-      <height>516</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
     </property>
    </widget>
   </widget>
@@ -600,15 +562,54 @@
     <string>Show meridian limits</string>
    </property>
   </widget>
+  <widget class="QWidget" name="hemisphereStar" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>771</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QWidget" name="hemisphereMoving" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>771</width>
+     <height>501</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>btn_deletePoints</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>hemisphere</zorder>
-  <zorder>hemisphereMoving</zorder>
   <zorder>checkShowAlignmentStars</zorder>
   <zorder>groupBox</zorder>
   <zorder>checkShowCelestial</zorder>
   <zorder>checkShowMeridian</zorder>
+  <zorder>hemisphereStar</zorder>
+  <zorder>hemisphereMoving</zorder>
  </widget>
  <resources/>
  <connections/>

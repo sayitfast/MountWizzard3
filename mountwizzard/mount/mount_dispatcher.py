@@ -528,8 +528,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('error in sync mount modeling')
             return False
 
-    def programBatchData(self, nameDataFile):
-        data = self.analyse.loadData(nameDataFile)
+    def programBatchData(self, data):
         if not('RaJNow' in data and 'DecJNow' in data):
             self.logger.warning('RaJNow or DecJNow not in data file')
             self.messageQueue.put('Mount coordinates missing\n')

@@ -46,6 +46,7 @@ class ModelPoints:
         self.app.ui.btn_loadHorizonMask.clicked.connect(self.selectHorizonPointsFileName)
         self.app.ui.btn_saveHorizonMask.clicked.connect(self.saveHorizonMask)
         self.app.ui.btn_saveHorizonMaskAs.clicked.connect(self.saveHorizonMaskAs)
+        self.app.signalMountSiteData.connect(self.generateCelestialEquator)
 
     def initConfig(self):
         try:
