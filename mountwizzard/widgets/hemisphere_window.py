@@ -40,6 +40,7 @@ class HemisphereWindow(widget.MwWidget):
 
         self.pointerAzAlt1 = None
         self.pointerAzAlt2 = None
+        self.pointerAzAlt3 = None
         self.pointerDome1 = None
         self.pointerDome2 = None
         self.pointerTrack = None
@@ -97,6 +98,7 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.checkPolarAlignment.clicked.connect(self.setEditModus)
         self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
         self.ui.checkShowCelestial.clicked.connect(self.drawHemisphere)
+        self.ui.checkShowMeridian.clicked.connect(self.drawHemisphere)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False
@@ -124,6 +126,8 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.checkShowAlignmentStars.setChecked(self.app.config['CheckShowAlignmentStars'])
             if 'CheckShowCelestial' in self.app.config:
                 self.ui.checkShowCelestial.setChecked(self.app.config['CheckShowCelestial'])
+            if 'CheckShowMeridian' in self.app.config:
+                self.ui.checkShowMeridian.setChecked(self.app.config['CheckShowMeridian'])
             if 'CheckPolarAlignment' in self.app.config:
                 self.ui.checkPolarAlignment.setChecked(self.app.config['CheckPolarAlignment'])
         except Exception as e:
@@ -140,6 +144,7 @@ class HemisphereWindow(widget.MwWidget):
         self.app.config['CheckEditHorizonMask'] = self.ui.checkEditHorizonMask.isChecked()
         self.app.config['CheckShowAlignmentStars'] = self.ui.checkShowAlignmentStars.isChecked()
         self.app.config['CheckShowCelestial'] = self.ui.checkShowCelestial.isChecked()
+        self.app.config['CheckShowMeridian'] = self.ui.checkShowMeridian.isChecked()
         self.app.config['CheckPolarAlignment'] = self.ui.checkPolarAlignment.isChecked()
 
     def showWindow(self):
@@ -179,8 +184,10 @@ class HemisphereWindow(widget.MwWidget):
         if self.showStatus:
             self.pointerAzAlt1.set_data((az, alt))
             self.pointerAzAlt2.set_data((az, alt))
+            self.pointerAzAlt3.set_data((az, alt))
             self.pointerAzAlt1.set_visible(True)
             self.pointerAzAlt2.set_visible(True)
+            self.pointerAzAlt3.set_visible(True)
             self.drawCanvasMoving()
 
     def setDomePointer(self, az, stat):
@@ -442,11 +449,22 @@ class HemisphereWindow(widget.MwWidget):
         if self.ui.checkShowCelestial.isChecked():
             celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
             self.hemisphereMatplotlib.axes.plot([i[0] for i in celestial], [i[1] for i in celestial], '.', markersize=1, fillstyle='none', color='#808080')
+        # draw meridian limits
+        if self.ui.checkShowMeridian.isChecked():
+            self.app.sharedMountDataLock.lockForRead()
+            deltaTrack = 5
+            deltaSlew = 3
+            #deltaTrack = self.app.workerMountDispatcher.data['MeridianLimitTrack']
+            #deltaSlew = self.app.workerMountDispatcher.data['MeridianLimitSlew']
+            self.app.sharedMountDataLock.unlock()
+            self.hemisphereMatplotlib.axes.add_patch(matplotlib.patches.Rectangle((180-deltaTrack, 0), 2 * deltaTrack, 90, zorder=-10, color='#FFFF0040', lw=1, fill=True))
+            self.hemisphereMatplotlib.axes.add_patch(matplotlib.patches.Rectangle((180-deltaSlew, 0), 2 * deltaSlew, 90, zorder=-10, color='#FF000040', lw=1, fill=True))
 
         # now to the second widget on top of the first one
         # adding the pointer of mount to hemisphereMoving plot
         self.pointerAzAlt1,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False)
         self.pointerAzAlt2,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False)
+        self.pointerAzAlt3,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='.', markersize=2, markeredgewidth=1, fillstyle='none', visible=False)
         # adding pointer of dome if dome is present
         self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#40404080', lw=3, fill=True, visible=False)
         self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#80808080', lw=3, fill=False, visible=False)

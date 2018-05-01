@@ -207,7 +207,7 @@
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>55</y>
+     <y>50</y>
      <width>131</width>
      <height>21</height>
     </rect>
@@ -568,7 +568,7 @@
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>80</y>
+     <y>70</y>
      <width>156</width>
      <height>21</height>
     </rect>
@@ -582,6 +582,24 @@
     <string>Show celestial paths</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="checkShowMeridian">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>90</y>
+     <width>156</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Show meridian limits</string>
+   </property>
+  </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>btn_deletePoints</zorder>
   <zorder>groupBox_2</zorder>
@@ -590,6 +608,7 @@
   <zorder>checkShowAlignmentStars</zorder>
   <zorder>groupBox</zorder>
   <zorder>checkShowCelestial</zorder>
+  <zorder>checkShowMeridian</zorder>
  </widget>
  <resources/>
  <connections/>
