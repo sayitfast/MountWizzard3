@@ -450,7 +450,7 @@
       <string>Slew Rate</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_meridianLimitTrack">
+    <widget class="QLineEdit" name="le_meridianLimitGuide">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -1303,7 +1303,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Meridian Lim Track</string>
+      <string>Meridian Lim Guide</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_65">
@@ -1825,7 +1825,7 @@
     <zorder>label_8</zorder>
     <zorder>label_11</zorder>
     <zorder>label_17</zorder>
-    <zorder>le_meridianLimitTrack</zorder>
+    <zorder>le_meridianLimitGuide</zorder>
     <zorder>le_telescopePierSide</zorder>
     <zorder>label_18</zorder>
     <zorder>label_21</zorder>
@@ -15285,7 +15285,7 @@ manually</string>
   <tabstop>btn_setDualTracking</tabstop>
   <tabstop>le_telescopeUnattendedFlip</tabstop>
   <tabstop>btn_setUnattendedFlip</tabstop>
-  <tabstop>le_meridianLimitTrack</tabstop>
+  <tabstop>le_meridianLimitGuide</tabstop>
   <tabstop>le_meridianLimitSlew</tabstop>
   <tabstop>le_horizonLimitLow</tabstop>
   <tabstop>btn_flipMount</tabstop>

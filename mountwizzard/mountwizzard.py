@@ -1133,8 +1133,8 @@ class MountWizzardApp(widget.MwWidget):
             if valueName == 'SlewRate':
                 if not self.ui.le_horizonLimitLow.hasFocus():
                     self.ui.le_slewRate.setText(str(self.workerMountDispatcher.data[valueName]))
-            if valueName == 'MeridianLimitTrack':
-                self.ui.le_meridianLimitTrack.setText(str(self.workerMountDispatcher.data[valueName]))
+            if valueName == 'MeridianLimitGuide':
+                self.ui.le_meridianLimitGuide.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'MeridianLimitSlew':
                 self.ui.le_meridianLimitSlew.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'UnattendedFlip':

@@ -50,6 +50,8 @@ class HemisphereWindow(widget.MwWidget):
         self.starsAnnotate = list()
         self.maskPlotFill = None
         self.maskPlotMarker = None
+        self.deltaGuide = None
+        self.deltaSlew = None
         self.annotate = list()
         self.offx = 1
         self.offy = 1
@@ -88,6 +90,7 @@ class HemisphereWindow(widget.MwWidget):
 
         # signal connections
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
+        self.app.workerMountDispatcher.signalMountLimits.connect(self.setLimits)
         self.app.workerMountDispatcher.signalAlignmentStars.connect(self.updateAlignmentStars)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
@@ -179,6 +182,16 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibMoving.fig.canvas.draw()
         self.mutexDrawCanvasMoving.unlock()
         PyQt5.QtWidgets.QApplication.processEvents()
+
+    def setLimits(self, guide, slew):
+        if self.showStatus:
+            self.deltaGuide.set_visible(self.ui.checkShowMeridian.isChecked())
+            self.deltaSlew.set_visible(self.ui.checkShowMeridian.isChecked())
+            self.deltaGuide.set_xy((180 - guide, 0))
+            self.deltaSlew.set_xy((180 - slew, 0))
+            self.deltaGuide.set_width(2 * guide)
+            self.deltaSlew.set_width(2 * slew)
+            self.drawCanvas()
 
     def setAzAltPointer(self, az, alt):
         if self.showStatus:
@@ -450,17 +463,12 @@ class HemisphereWindow(widget.MwWidget):
             celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
             self.hemisphereMatplotlib.axes.plot([i[0] for i in celestial], [i[1] for i in celestial], '.', markersize=1, fillstyle='none', color='#808080')
         # draw meridian limits
-        if self.ui.checkShowMeridian.isChecked():
-            self.app.sharedMountDataLock.lockForRead()
-            deltaTrack = 5
-            deltaSlew = 3
-            #deltaTrack = self.app.workerMountDispatcher.data['MeridianLimitTrack']
-            #deltaSlew = self.app.workerMountDispatcher.data['MeridianLimitSlew']
-            self.app.sharedMountDataLock.unlock()
-            self.hemisphereMatplotlib.axes.add_patch(matplotlib.patches.Rectangle((180-deltaTrack, 0), 2 * deltaTrack, 90, zorder=-10, color='#FFFF0040', lw=1, fill=True))
-            self.hemisphereMatplotlib.axes.add_patch(matplotlib.patches.Rectangle((180-deltaSlew, 0), 2 * deltaSlew, 90, zorder=-10, color='#FF000040', lw=1, fill=True))
+        self.deltaGuide = matplotlib.patches.Rectangle((180, 0), 1, 90, zorder=-10, color='#FFFF0040', lw=1, fill=True, visible=False)
+        self.deltaSlew = matplotlib.patches.Rectangle((180, 0), 1, 90, zorder=-10, color='#FF000040', lw=1, fill=True, visible=False)
+        self.hemisphereMatplotlib.axes.add_patch(self.deltaGuide)
+        self.hemisphereMatplotlib.axes.add_patch(self.deltaSlew)
 
-        # now to the second widget on top of the first one
+        # now to the third widget on top of the other ones
         # adding the pointer of mount to hemisphereMoving plot
         self.pointerAzAlt1,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False)
         self.pointerAzAlt2,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False)
@@ -470,4 +478,6 @@ class HemisphereWindow(widget.MwWidget):
         self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#80808080', lw=3, fill=False, visible=False)
         self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome2)
+
+        # drawing the whole stuff
         self.setEditModus()
