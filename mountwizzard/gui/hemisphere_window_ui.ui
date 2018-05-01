@@ -218,7 +218,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Show Align Stars</string>
+    <string>Show align stars</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
@@ -564,6 +564,24 @@
     </property>
    </widget>
   </widget>
+  <widget class="QCheckBox" name="checkShowCelestial">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>80</y>
+     <width>156</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Show celestial paths</string>
+   </property>
+  </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>btn_deletePoints</zorder>
   <zorder>groupBox_2</zorder>
@@ -571,6 +589,7 @@
   <zorder>hemisphereMoving</zorder>
   <zorder>checkShowAlignmentStars</zorder>
   <zorder>groupBox</zorder>
+  <zorder>checkShowCelestial</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -34,7 +34,6 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        # noinspection PyArgumentList
         super().__init__()
         self.palette = PyQt5.QtGui.QPalette()
         self.bundle_dir = ''

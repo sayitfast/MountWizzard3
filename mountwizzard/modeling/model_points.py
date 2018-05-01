@@ -35,8 +35,7 @@ class ModelPoints:
         self.transform = transform.Transform(self.app)
         self.horizonPoints = list()
         self.modelPoints = list()
-        self.BasePoints = list()
-        self.RefinementPoints = list()
+        self.celestialEquator = list()
         # signal slot
         self.app.ui.btn_loadInitialModelPoints.clicked.connect(self.selectInitialModelPointsFileName)
         self.app.ui.btn_saveInitialModelPoints.clicked.connect(self.saveInitialModelPoints)
@@ -67,6 +66,9 @@ class ModelPoints:
                                    self.app.config['CheckUseFileHorizonLine'],
                                    self.app.config['CheckUseMinimumHorizonLine'],
                                    self.app.config['AltitudeMinimumHorizon'])
+
+            self.generateCelestialEquator()
+
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -473,3 +475,12 @@ class ModelPoints:
             self.modelPoints.append(point)
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
+
+    def generateCelestialEquator(self):
+        self.celestialEquator = list()
+        off = -5
+        for dec in range(-15, 90, 15):
+            for ha in range(120 + off, -120 + off, -2):
+                az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
+                if alt > 0:
+                    self.celestialEquator.append((az, alt))
