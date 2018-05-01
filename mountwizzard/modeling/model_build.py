@@ -393,8 +393,6 @@ class ModelingBuild:
                     time.sleep(0.2)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
-        # start clearing hemisphere window
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
         # start clearing the data
         results = []
         # preparing the gui outputs
@@ -514,7 +512,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
-        timeStart = time.time()
+        timeStartModeling = time.time()
         self.app.messageQueue.put('#BWStart Initial Model\n')
         self.app.workerMountDispatcher.mountModelHandling.saveModel('BACKUP')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
@@ -532,7 +530,7 @@ class ModelingBuild:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
-            self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} MM:SS\n'.format(time.strftime("%M:%S", time.gmtime(timeStart - time.time()))))
+            self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} MM:SS\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
 
@@ -583,7 +581,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
-        timeStart = time.time()
+        timeStartModeling = time.time()
         self.app.messageQueue.put('#BWStart Full Model\n')
         self.app.workerMountDispatcher.mountModelHandling.saveModel('BACKUP')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
@@ -601,7 +599,7 @@ class ModelingBuild:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
-            self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} MM:SS\n'.format(time.strftime("%M:%S", time.gmtime(timeStart - time.time()))))
+            self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
 
