@@ -213,7 +213,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     self.data['RefractionTemperature'] = valueList[4]
                 if len(valueList[5]) > 0:
                     self.data['RefractionPressure'] = valueList[5]
-                self.app.workerMountDispatcher.signalMountLimits.emit(self.data['MeridianLimitGuide'], self.data['MeridianLimitSlew'])
+                if 'MeridianLimitGuide' in self.data and 'MeridianLimitSlew' in self.data:
+                    self.app.workerMountDispatcher.signalMountLimits.emit(self.data['MeridianLimitGuide'], self.data['MeridianLimitSlew'])
             else:
                 self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
