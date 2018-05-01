@@ -402,7 +402,6 @@ class ModelingBuild:
         messageQueue.put('Imaged>{0:02d}'.format(0))
         messageQueue.put('Solved>{0:02d}'.format(0))
         messageQueue.put('Slewed>{0:02d}'.format(0))
-        messageQueue.put('Processed>{0:02d}'.format(0))
         messageQueue.put('percent0')
         messageQueue.put('timeleft--:--')
         self.logger.info('modelingData: {0}'.format(modelingData))
