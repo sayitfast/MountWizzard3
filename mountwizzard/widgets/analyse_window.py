@@ -158,7 +158,7 @@ class AnalyseWindow(widget.MwWidget):
             if 'WinsorizedLimit' in self.app.config:
                 self.ui.winsorizeLimit.setValue(self.app.config['WinsorizedLimit'])
             if 'AnalyseWindowHeight' in self.app.config and 'AnalyseWindowWidth' in self.app.config:
-                self.resize(self.app.config['AnalyseWindowHeight'], self.app.config['AnalyseWindowWidth'])
+                self.resize(self.app.config['AnalyseWindowWidth'], self.app.config['AnalyseWindowHeight'])
 
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for analyse window, error:{0}'.format(e))
