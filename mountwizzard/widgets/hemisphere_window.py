@@ -72,7 +72,6 @@ class HemisphereWindow(widget.MwWidget):
         background = self.hemisphereMatplotlib.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
-        self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
         # for the fast moving parts
         self.hemisphereMatplotlibMoving = widget.IntegrateMatplotlib(self.ui.hemisphereMoving)
@@ -90,11 +89,6 @@ class HemisphereWindow(widget.MwWidget):
         background = self.hemisphereMatplotlibStar.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlibStar.axes = self.hemisphereMatplotlibStar.fig.add_subplot(111)
-
-        axesPos = self.hemisphereMatplotlib.axes.get_position()
-        # and using it fo the other plot widgets to be identically same size and position
-        self.hemisphereMatplotlibStar.axes.set_position(axesPos)
-        self.hemisphereMatplotlibMoving.axes.set_position(axesPos)
 
         # signal connections
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.updateModelPoints)
@@ -128,7 +122,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
         # getting position of axis
         axesPos = self.hemisphereMatplotlib.axes.get_position()
-        # and using it fo the other plotwidgets to be identically same size and position
+        # and using it fo the other plot widgets to be identically same size and position
         self.hemisphereMatplotlibStar.axes.set_position(axesPos)
         self.hemisphereMatplotlibMoving.axes.set_position(axesPos)
         # size the header window as well
@@ -231,6 +225,21 @@ class HemisphereWindow(widget.MwWidget):
             self.deltaSlew.set_width(2 * slew)
             self.drawCanvas()
 
+    def updateCelestial(self):
+        self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
+        celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
+        self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
+        self.drawCanvas()
+
+    def updateAlignmentStars(self):
+        self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
+        starsTopo = self.app.workerMountDispatcher.data['starsTopo']
+        starsNames = self.app.workerMountDispatcher.data['starsNames']
+        self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
+        for i in range(0, len(starsNames)):
+            self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
+        self.hemisphereMatplotlibStar.fig.canvas.draw()
+
     def setAzAltPointer(self, az, alt):
         if self.showStatus:
             self.pointerAzAlt1.set_data((az, alt))
@@ -259,21 +268,6 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.checkPolarAlignment.setChecked(False)
                 self.ui.checkEditNone.setChecked(True)
         self.setEditModus()
-
-    def updateCelestial(self):
-        self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
-        celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
-        self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
-        self.drawCanvas()
-
-    def updateAlignmentStars(self):
-        self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
-        starsTopo = self.app.workerMountDispatcher.data['starsTopo']
-        starsNames = self.app.workerMountDispatcher.data['starsNames']
-        self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
-        for i in range(0, len(starsNames)):
-            self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
-        self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def plotImagedPoint(self, az, alt):
         self.pointsPlotCross.set_data(numpy.append(az, self.pointsPlotCross.get_xdata()), numpy.append(alt, self.pointsPlotCross.get_ydata()))
@@ -526,3 +520,4 @@ class HemisphereWindow(widget.MwWidget):
 
         # drawing the whole stuff
         self.setEditModus()
+        self.resizeEvent(0)
