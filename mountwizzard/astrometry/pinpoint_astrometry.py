@@ -70,8 +70,13 @@ class PinPoint:
                 else:
                     self.logger.info('Pinpoint catalogue could not be configured')
                     self.application['Status'] = 'ERROR'
-                    self.app.messageQueue.put('Pinpoint catalogue could not be configured')
+                    self.app.messageQueue.put('#BRPinpoint catalogue could not be configured\n')
                     return
+            else:
+                self.logger.info('Pinpoint catalogue not defined')
+                self.application['Status'] = 'ERROR'
+                self.app.messageQueue.put('#BRPinpoint catalogue not defined !\n')
+                return
             self.pinpoint = Dispatch('PinPoint.Plate')
             self.pinpoint.Catalog = cat
             self.pinpoint.CatalogPath = self.app.ui.le_pinpointCatalogue.text()
