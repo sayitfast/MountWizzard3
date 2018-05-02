@@ -52,6 +52,10 @@ class ImagesWindow(widget.MwWidget):
         self.ui = image_window_ui.Ui_ImageDialog()
         self.ui.setupUi(self)
         self.initUI()
+        # allow sizing of the window
+        self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
+        # set the minimum size
+        self.setMinimumSize(791, 400)
         self.sizeX = 10
         self.sizeY = 10
         self.imageVmin = 1
@@ -78,7 +82,7 @@ class ImagesWindow(widget.MwWidget):
         background = self.imageMatplotlibMarker.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.imageMatplotlibMarker.axes = self.imageMatplotlibMarker.fig.add_subplot(111)
-        self.imageMatplotlibMarker.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        self.imageMatplotlibMarker.fig.set_tight_layout((0, 0, 1, 1))
 
         # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
@@ -105,6 +109,19 @@ class ImagesWindow(widget.MwWidget):
         self.app.workerImaging.imageSaved.connect(self.setImageReady)
         self.app.workerAstrometry.imageDataDownloaded.connect(self.setSolveReady)
 
+    def resizeEvent(self, QResizeEvent):
+        # allow message window to be resized in height
+        self.ui.image.setGeometry(5, 125, self.width() - 10, self.height() - 130)
+        self.ui.imageMarker.setGeometry(5, 125, self.width() - 10, self.height() - 130)
+        # using tight layout because of the axis titles and labels
+        self.imageMatplotlib.fig.set_tight_layout((0, 0, 1, 1))
+        # getting position of axis
+        axesPos = self.imageMatplotlib.axes.get_position()
+        # and using it fo the other plot widgets to be identically same size and position
+        self.imageMatplotlibMarker.axes.set_position(axesPos)
+        # size the header window as well
+        self.ui.imageBackground.setGeometry(0, 0, self.width(), 121)
+
     def initConfig(self):
         try:
             if 'ImagePopupWindowPositionX' in self.app.config:
@@ -124,6 +141,8 @@ class ImagesWindow(widget.MwWidget):
                     self.showFitsImage(self.imagePath)
             if 'CheckShowCrosshairs' in self.app.config:
                 self.ui.checkShowCrosshairs.setChecked(self.app.config['CheckShowCrosshairs'])
+            if 'ImageWindowHeight' in self.app.config and 'ImageWindowWidth' in self.app.config:
+                self.resize(self.app.config['ImageWindowWidth'], self.app.config['ImageWindowHeight'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for image window, error:{0}'.format(e))
         finally:
@@ -136,6 +155,8 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
         self.app.config['ImagePath'] = self.imagePath
         self.app.config['CheckShowCrosshairs'] = self.ui.checkShowCrosshairs.isChecked()
+        self.app.config['ImageWindowHeight'] = self.height()
+        self.app.config['ImageWindowWidth'] = self.width()
 
     def showWindow(self):
         self.showStatus = True
@@ -183,6 +204,8 @@ class ImagesWindow(widget.MwWidget):
         self.imageMatplotlibMarker.axes.set_facecolor((0, 0, 0, 0))
         self.imageMatplotlibMarker.axes.set_xticks(numpy.arange(20, 381, 40))
         self.imageMatplotlibMarker.axes.set_yticks(numpy.arange(20, 381, 40))
+        self.imageMatplotlibMarker.axes.set_xticklabels([])
+        self.imageMatplotlibMarker.axes.set_yticklabels([])
         self.imageMatplotlibMarker.axes.plot(200, 200, zorder=10, color='#606060', marker='o', markersize=25, markeredgewidth=2, fillstyle='none')
         self.imageMatplotlibMarker.axes.plot(200, 200, zorder=10, color='#606060', marker='o', markersize=10, markeredgewidth=1, fillstyle='none')
         self.imageMatplotlibMarker.fig.canvas.draw()

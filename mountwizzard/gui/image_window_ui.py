@@ -120,7 +120,7 @@ class Ui_ImageDialog(object):
         self.checkShowCrosshairs.setChecked(False)
         self.checkShowCrosshairs.setObjectName("checkShowCrosshairs")
         self.imageMarker = QtWidgets.QWidget(ImageDialog)
-        self.imageMarker.setGeometry(QtCore.QRect(190, 175, 401, 401))
+        self.imageMarker.setGeometry(QtCore.QRect(5, 125, 781, 511))
         self.imageMarker.setAutoFillBackground(True)
         self.imageMarker.setObjectName("imageMarker")
         self.groupBox = QtWidgets.QGroupBox(ImageDialog)

@@ -92,7 +92,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes = self.hemisphereMatplotlibStar.fig.add_subplot(111)
 
         axesPos = self.hemisphereMatplotlib.axes.get_position()
-        # and using it fo the other plotwidgets to be identically same size and position
+        # and using it fo the other plot widgets to be identically same size and position
         self.hemisphereMatplotlibStar.axes.set_position(axesPos)
         self.hemisphereMatplotlibMoving.axes.set_position(axesPos)
 

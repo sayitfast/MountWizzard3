@@ -401,10 +401,10 @@
   <widget class="QWidget" name="imageMarker" native="true">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>175</y>
-     <width>401</width>
-     <height>401</height>
+     <x>5</x>
+     <y>125</y>
+     <width>781</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="autoFillBackground">
