@@ -62,8 +62,6 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
 
-        self.initConfig()
-
         # adding the matplotlib integration
         self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
         # making background looking transparent
