@@ -118,8 +118,14 @@ class HemisphereWindow(widget.MwWidget):
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
         self.ui.hemisphere.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.hemisphereMatplotlib.fig.tight_layout()
+        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+
         self.ui.hemisphereStar.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.hemisphereMatplotlibStar.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+
         self.ui.hemisphereMoving.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.hemisphereMatplotlibMoving.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
         self.ui.hemisphereBackground.setGeometry(0, 0, self.width(), 126)
 
     def initConfig(self):
