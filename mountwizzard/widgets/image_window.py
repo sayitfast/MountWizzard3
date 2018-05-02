@@ -114,11 +114,11 @@ class ImagesWindow(widget.MwWidget):
         self.ui.image.setGeometry(5, 125, self.width() - 10, self.height() - 130)
         self.ui.imageMarker.setGeometry(5, 125, self.width() - 10, self.height() - 130)
         # using tight layout because of the axis titles and labels
-        self.imageMatplotlib.fig.set_tight_layout((0, 0, 1, 1))
+        self.imageMatplotlibMarker.fig.set_tight_layout((0, 0, 1, 1))
         # getting position of axis
-        axesPos = self.imageMatplotlib.axes.get_position()
+        axesPos = self.imageMatplotlibMarker.axes.get_position()
         # and using it fo the other plot widgets to be identically same size and position
-        self.imageMatplotlibMarker.axes.set_position(axesPos)
+        self.imageMatplotlib.axes.set_position(axesPos)
         # size the header window as well
         self.ui.imageBackground.setGeometry(0, 0, self.width(), 121)
 
