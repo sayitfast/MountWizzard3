@@ -60,6 +60,8 @@ class HemisphereWindow(widget.MwWidget):
         self.ui = hemisphere_window_ui.Ui_HemisphereDialog()
         self.ui.setupUi(self)
         self.initUI()
+        self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
+        self.setMinimumSize(790, 500)
         self.initConfig()
 
         # setup the plot styles
@@ -112,6 +114,13 @@ class HemisphereWindow(widget.MwWidget):
         # from start on invisible
         self.showStatus = False
         self.setVisible(False)
+
+    def resizeEvent(self, QResizeEvent):
+        # allow message window to be resized in height
+        self.ui.hemisphere.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.ui.hemisphereStar.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.ui.hemisphereMoving.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.ui.hemisphereBackground.setGeometry(0, 0, self.width(), 126)
 
     def initConfig(self):
         try:
