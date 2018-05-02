@@ -60,8 +60,10 @@ class HemisphereWindow(widget.MwWidget):
         self.ui = hemisphere_window_ui.Ui_HemisphereDialog()
         self.ui.setupUi(self)
         self.initUI()
+        # allow sizing of the window
         self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
-        self.setMinimumSize(790, 500)
+        # set the minimum size
+        self.setMinimumSize(791, 400)
         self.initConfig()
 
         # setup the plot styles
@@ -118,14 +120,16 @@ class HemisphereWindow(widget.MwWidget):
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
         self.ui.hemisphere.setGeometry(10, 130, self.width() - 20, self.height() - 140)
-        self.hemisphereMatplotlib.fig.tight_layout()
-        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
-
         self.ui.hemisphereStar.setGeometry(10, 130, self.width() - 20, self.height() - 140)
-        self.hemisphereMatplotlibStar.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
-
         self.ui.hemisphereMoving.setGeometry(10, 130, self.width() - 20, self.height() - 140)
-        self.hemisphereMatplotlibMoving.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+        # using tight layout because of the axis titles and labels
+        self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
+        # getting position of axis
+        axesPos = self.hemisphereMatplotlib.axes.get_position()
+        # and using it fo the other plotwidgets to be identically same size and position
+        self.hemisphereMatplotlibStar.axes.set_position(axesPos)
+        self.hemisphereMatplotlibMoving.axes.set_position(axesPos)
+        # size the header window as well
         self.ui.hemisphereBackground.setGeometry(0, 0, self.width(), 126)
 
     def initConfig(self):
