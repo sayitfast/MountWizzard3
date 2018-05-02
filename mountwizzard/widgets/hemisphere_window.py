@@ -73,7 +73,7 @@ class HemisphereWindow(widget.MwWidget):
         background = self.hemisphereMatplotlib.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
-        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+        self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
         # for the fast moving parts
         self.hemisphereMatplotlibMoving = widget.IntegrateMatplotlib(self.ui.hemisphereMoving)
@@ -82,7 +82,6 @@ class HemisphereWindow(widget.MwWidget):
         background = self.hemisphereMatplotlibMoving.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlibMoving.axes = self.hemisphereMatplotlibMoving.fig.add_subplot(111)
-        self.hemisphereMatplotlibMoving.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
 
         # for the stars in background
         self.hemisphereMatplotlibStar = widget.IntegrateMatplotlib(self.ui.hemisphereStar)
@@ -92,7 +91,11 @@ class HemisphereWindow(widget.MwWidget):
         background = self.hemisphereMatplotlibStar.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlibStar.axes = self.hemisphereMatplotlibStar.fig.add_subplot(111)
-        self.hemisphereMatplotlibStar.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+
+        axesPos = self.hemisphereMatplotlib.axes.get_position()
+        # and using it fo the other plotwidgets to be identically same size and position
+        self.hemisphereMatplotlibStar.axes.set_position(axesPos)
+        self.hemisphereMatplotlibMoving.axes.set_position(axesPos)
 
         # signal connections
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.updateModelPoints)

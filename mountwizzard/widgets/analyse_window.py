@@ -20,6 +20,7 @@
 import logging
 import math
 import numpy
+import PyQt5
 from analyse import analysedata
 from baseclasses import widget
 from gui import analyse_window_ui
@@ -40,10 +41,15 @@ class AnalyseWindow(widget.MwWidget):
         self.ui = analyse_window_ui.Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
+        # allow sizing of the window
+        self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
+        # set the minimum size
+        self.setMinimumSize(791, 400)
+
         self.initConfig()
 
         self.analyseMatplotlib = widget.IntegrateMatplotlib(self.ui.analyse)
-        self.analyseMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+        self.analyseMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
         self.ui.btn_errorOverview.clicked.connect(self.showErrorOverview)
         self.ui.btn_errorTime.clicked.connect(self.showErrorTime)
@@ -54,6 +60,14 @@ class AnalyseWindow(widget.MwWidget):
 
         self.setVisible(False)
         self.showStatus = False
+
+    def resizeEvent(self, QResizeEvent):
+        # allow message window to be resized in height
+        self.ui.analyse.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        # using tight layout because of the axis titles and labels
+        self.analyseMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
+        # size the header window as well
+        self.ui.analyseBackground.setGeometry(0, 0, self.width(), 106)
 
     @staticmethod
     def winsorize(value, limits=None, inclusive=(True, True), inplace=False, axis=None):
@@ -145,6 +159,9 @@ class AnalyseWindow(widget.MwWidget):
                 self.ui.checkOptimized.setChecked(self.app.config['CheckOptimized'])
             if 'WinsorizedLimit' in self.app.config:
                 self.ui.winsorizeLimit.setValue(self.app.config['WinsorizedLimit'])
+            if 'AnalyseWindowHeight' in self.app.config and 'AnalyseWindowWidth' in self.app.config:
+                self.resize(self.app.config['AnalyseWindowHeight'], self.app.config['AnalyseWindowWidth'])
+
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for analyse window, error:{0}'.format(e))
         finally:
@@ -158,6 +175,8 @@ class AnalyseWindow(widget.MwWidget):
         self.app.config['CheckWinsorized'] = self.ui.checkWinsorize.isChecked()
         self.app.config['CheckOptimized'] = self.ui.checkOptimized.isChecked()
         self.app.config['WinsorizedLimit'] = self.ui.winsorizeLimit.value()
+        self.app.config['AnalyseWindowHeight'] = self.height()
+        self.app.config['AnalyseWindowWidth'] = self.width()
 
     def showWindow(self):
         self.getData()
