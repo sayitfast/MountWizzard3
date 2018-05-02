@@ -43,28 +43,28 @@ class MessageWindow(widget.MwWidget):
 
     def initConfig(self):
         try:
-            if 'MessagePopupWindowPositionX' in self.app.config:
-                x = self.app.config['MessagePopupWindowPositionX']
-                y = self.app.config['MessagePopupWindowPositionY']
+            if 'MessageWindowPositionX' in self.app.config:
+                x = self.app.config['MessageWindowPositionX']
+                y = self.app.config['MessageWindowPositionY']
                 if x > self.screenSizeX:
                     x = 0
                 if y > self.screenSizeY:
                     y = 0
                 self.move(x, y)
-            if 'MessagePopupWindowShowStatus' in self.app.config:
-                self.showStatus = self.app.config['MessagePopupWindowShowStatus']
-            if 'MessagePopupWindowHeight' in self.app.config:
-                self.resize(791, self.app.config['MessagePopupWindowHeight'])
+            if 'MessageWindowShowStatus' in self.app.config:
+                self.showStatus = self.app.config['MessageWindowShowStatus']
+            if 'MessageWindowHeight' in self.app.config:
+                self.resize(791, self.app.config['MessageWindowHeight'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for messages window, error:{0}'.format(e))
         finally:
             pass
 
     def storeConfig(self):
-        self.app.config['MessagePopupWindowPositionX'] = self.pos().x()
-        self.app.config['MessagePopupWindowPositionY'] = self.pos().y()
-        self.app.config['MessagePopupWindowShowStatus'] = self.showStatus
-        self.app.config['MessagePopupWindowHeight'] = self.height()
+        self.app.config['MessageWindowPositionX'] = self.pos().x()
+        self.app.config['MessageWindowPositionY'] = self.pos().y()
+        self.app.config['MessageWindowShowStatus'] = self.showStatus
+        self.app.config['MessageWindowHeight'] = self.height()
 
     def showWindow(self):
         self.showStatus = True

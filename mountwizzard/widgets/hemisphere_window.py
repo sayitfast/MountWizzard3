@@ -149,6 +149,9 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.checkShowMeridian.setChecked(self.app.config['CheckShowMeridian'])
             if 'CheckPolarAlignment' in self.app.config:
                 self.ui.checkPolarAlignment.setChecked(self.app.config['CheckPolarAlignment'])
+            if 'HemisphereWindowHeight' in self.app.config and 'HemisphereWindowWidth' in self.app.config:
+                self.resize(self.app.config['HemisphereWindowWidth'], self.app.config['HemisphereWindowHeight'])
+
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -165,6 +168,8 @@ class HemisphereWindow(widget.MwWidget):
         self.app.config['CheckShowCelestial'] = self.ui.checkShowCelestial.isChecked()
         self.app.config['CheckShowMeridian'] = self.ui.checkShowMeridian.isChecked()
         self.app.config['CheckPolarAlignment'] = self.ui.checkPolarAlignment.isChecked()
+        self.app.config['HemisphereWindowHeight'] = self.height()
+        self.app.config['HemisphereWindowWidth'] = self.width()
 
     def showWindow(self):
         self.showStatus = True
