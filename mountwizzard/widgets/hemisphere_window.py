@@ -64,7 +64,6 @@ class HemisphereWindow(widget.MwWidget):
         self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
         # set the minimum size
         self.setMinimumSize(791, 400)
-        self.initConfig()
 
         # setup the plot styles
         self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)

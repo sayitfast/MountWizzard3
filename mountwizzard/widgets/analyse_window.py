@@ -46,8 +46,6 @@ class AnalyseWindow(widget.MwWidget):
         # set the minimum size
         self.setMinimumSize(791, 400)
 
-        self.initConfig()
-
         self.analyseMatplotlib = widget.IntegrateMatplotlib(self.ui.analyse)
         self.analyseMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
@@ -63,7 +61,7 @@ class AnalyseWindow(widget.MwWidget):
 
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
-        self.ui.analyse.setGeometry(10, 130, self.width() - 20, self.height() - 140)
+        self.ui.analyse.setGeometry(10, 115, self.width() - 20, self.height() - 125)
         # using tight layout because of the axis titles and labels
         self.analyseMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
         # size the header window as well
@@ -141,16 +139,16 @@ class AnalyseWindow(widget.MwWidget):
 
     def initConfig(self):
         try:
-            if 'AnalysePopupWindowPositionX' in self.app.config:
-                x = self.app.config['AnalysePopupWindowPositionX']
-                y = self.app.config['AnalysePopupWindowPositionY']
+            if 'AnalyseWindowPositionX' in self.app.config:
+                x = self.app.config['AnalyseWindowPositionX']
+                y = self.app.config['AnalyseWindowPositionY']
                 if x > self.screenSizeX:
                     x = 0
                 if y > self.screenSizeY:
                     y = 0
                 self.move(x, y)
-            if 'AnalysePopupWindowShowStatus' in self.app.config:
-                self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
+            if 'AnalyseWindowShowStatus' in self.app.config:
+                self.showStatus = self.app.config['AnalyseWindowShowStatus']
             if 'AnalyseView' in self.app.config:
                 self.analyseView = self.app.config['AnalyseView']
             if 'CheckWinsorized' in self.app.config:
@@ -168,10 +166,10 @@ class AnalyseWindow(widget.MwWidget):
             pass
 
     def storeConfig(self):
-        self.app.config['AnalysePopupWindowPositionX'] = self.pos().x()
-        self.app.config['AnalysePopupWindowPositionY'] = self.pos().y()
+        self.app.config['AnalyseWindowPositionX'] = self.pos().x()
+        self.app.config['AnalyseWindowPositionY'] = self.pos().y()
         self.app.config['AnalyseView'] = self.analyseView
-        self.app.config['AnalysePopupWindowShowStatus'] = self.showStatus
+        self.app.config['AnalyseWindowShowStatus'] = self.showStatus
         self.app.config['CheckWinsorized'] = self.ui.checkWinsorize.isChecked()
         self.app.config['CheckOptimized'] = self.ui.checkOptimized.isChecked()
         self.app.config['WinsorizedLimit'] = self.ui.winsorizeLimit.value()
