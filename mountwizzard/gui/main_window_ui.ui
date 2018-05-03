@@ -7879,7 +7879,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Optimise Actual Model</string>
+      <string>Optimise actual model</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_125">
@@ -7899,7 +7899,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Load / Save Model in Mount Computer</string>
+      <string>Models stored in mount computer:</string>
      </property>
     </widget>
     <widget class="Line" name="line_46">
@@ -8187,7 +8187,7 @@ manually</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under selected name or edited name.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Save</string>
@@ -8213,7 +8213,7 @@ manually</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads the actual selected alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Load</string>
@@ -8229,7 +8229,7 @@ manually</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes the actual selected alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Delete</string>
