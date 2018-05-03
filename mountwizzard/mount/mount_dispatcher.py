@@ -76,6 +76,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     }
 
     data = {
+        # positions of greenwich at start
         'SiteLatitude': '51:28:37',
         'SiteLongitude': '00:00:00',
         'SiteHeight': '46',
@@ -83,7 +84,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         'MountMAC': '',
         'MountPort': 3490,
         'LocalSiderealTime': '',
-        'JulianDate': '2451545.5',
+        # date of 01.05.2018
+        'JulianDate': '2458240',
         'FW': 21501
     }
 

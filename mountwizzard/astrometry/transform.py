@@ -36,7 +36,8 @@ class Transform:
         self.siteLat = 51.476852
         self.siteLon = 0
         self.siteHeight = 46
-        self.julianDate = 2451545.5
+        # date of 01.05.2018
+        self.julianDate = 2458240
         # connect data transfer
         self.app.signalMountSiteData.connect(self.setSiteData)
         self.app.signalJulianDate.connect(self.setJulianDate)
