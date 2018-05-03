@@ -382,8 +382,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if 'CheckAutoRefractionNone' in self.app.config:
                 self.app.ui.checkAutoRefractionNone.setChecked(self.app.config['CheckAutoRefractionNone'])
             # if we have already stored the site data, we use it until we get new information from mount
-            if 'SiteLogitude' in self.app.config:
-                self.data['SiteLongitude'] = copy.copy(self.app.config['SiteLogitude'])
+            if 'SiteLongitude' in self.app.config:
+                self.data['SiteLongitude'] = copy.copy(self.app.config['SiteLongitude'])
             if 'SiteLatitude' in self.app.config:
                 self.data['SiteLatitude'] = copy.copy(self.app.config['SiteLatitude'])
             if 'SiteHeight' in self.app.config:
@@ -407,7 +407,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
         # if we had a connection to the mount, the site data should be there.
         if self.mountStatus['Once']:
-            self.app.config['SiteLogitude'] = copy.copy(self.data['SiteLogitude'])
+            self.app.config['SiteLongitude'] = copy.copy(self.data['SiteLongitude'])
             self.app.config['SiteLatitude'] = copy.copy(self.data['SiteLatitude'])
             self.app.config['SiteHeight'] = copy.copy(self.data['SiteHeight'])
 
