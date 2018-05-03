@@ -137,8 +137,6 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         command = ''
         for i in range(1, 51):
             command += (':modelnam{0:d}#'.format(i))
-        print(command)
-        return
         self.sendCommandQueue.put(command)
 
     @PyQt5.QtCore.pyqtSlot()
@@ -165,3 +163,4 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.data['ModelNames'] = copy.copy(valueList)
         self.app.sharedMountDataLock.unlock()
         self.app.workerMountDispatcher.signalMountShowModelNames.emit()
+        self.sendLock = False

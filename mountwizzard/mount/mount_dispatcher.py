@@ -415,6 +415,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         for name in self.data['ModelNames']:
             self.app.ui.listModelName.addItem(name)
         self.app.ui.listModelName.sortItems()
+        self.app.ui.listModelName.update()
 
     def getListAction(self):
         name = self.app.ui.listModelName.currentItem().text()
@@ -454,11 +455,17 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             }
             self.commandDispatcherQueue.put(action)
         else:
-           pass
+            pass
 
     def saveSelectedModel(self):
         if self.app.ui.listModelName.currentItem() is not None:
             name = self.app.ui.listModelName.currentItem().text()
+        else:
+            name = ''
+        name, ok = self.app.dialogInputText(self.app, 'Please enter the model name', 'Model name:', name)
+        if ok:
+            # limit length of name to 15 characters
+            name = name[:15]
             action = {
                 'Worker': [
                     {

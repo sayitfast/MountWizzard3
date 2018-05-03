@@ -29,8 +29,6 @@ class MountModelHandling:
         self.data = data
 
     def saveModel(self, target):
-        print('Save: ', target)
-        return
         self.app.mountCommandQueue.put(':modeldel0{0}#'.format(target))
         commandSet = {'command': ':modelsv0{0}#'.format(target), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
@@ -38,14 +36,14 @@ class MountModelHandling:
             time.sleep(0.1)
         if commandSet['reply'].endswith('1'):
             self.app.messageQueue.put('Mount Model {0} saved\n'.format(target))
-            return True
+            self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
+            returnValue = True
         else:
             self.logger.warning('Mount Model {0} could not be saved. Error code: {1}'.format(target, commandSet['reply']))
-            return False
+            returnValue = False
+        return returnValue
 
     def loadModel(self, target):
-        print('Load: ', target)
-        return
         commandSet = {'command': ':modelld0{0}#'.format(target), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
@@ -55,15 +53,15 @@ class MountModelHandling:
             while self.data['ModelLoading']:
                 time.sleep(0.2)
             self.app.messageQueue.put('Mount Model {0} loaded\n'.format(target))
-            return True
+            self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
+            returnValue = True
         else:
             self.app.messageQueue.put('#BRMount Model {0} could not be loaded\n'.format(target))
             self.logger.warning('Mount Model {0} could not be loaded. Error code: {1}'.format(target, commandSet['reply']))
-            return False
+            returnValue = False
+        return returnValue
 
     def deleteModel(self, target):
-        print('Delete: ', target)
-        return
         commandSet = {'command': ':modeldel0{0}#'.format(target), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
@@ -73,11 +71,13 @@ class MountModelHandling:
             while self.data['ModelLoading']:
                 time.sleep(0.2)
             self.app.messageQueue.put('Mount Model {0} deleted\n'.format(target))
-            return True
+            self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
+            returnValue = True
         else:
             self.app.messageQueue.put('#BRMount Model {0} could not be deleted\n'.format(target))
             self.logger.warning('Mount Model {0} could not be deleted. Error code: {1}'.format(target, commandSet['reply']))
-            return False
+            returnValue = False
+        return returnValue
 
     def clearAlign(self):
         self.app.mountCommandQueue.put(':delalig#')
