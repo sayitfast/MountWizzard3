@@ -235,6 +235,22 @@ class MWStyles:
         border-radius: 2px;
         min - width: 10em;
     }
+
+    QInputDialog QPushButton {
+        background-color: #202020;
+        color: #C0C0C0;
+        border-color: #404040;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 2px;
+        min-width: 90px;
+        min-height: 25px;
+    }
+    QInputDialog QPushButton:default {
+        border-width: 2px;
+        border-color: rgb(32, 144, 192);
+    }
+
     QMessageBox QPushButton {
         background-color: #202020;
         color: #C0C0C0;
@@ -248,6 +264,10 @@ class MWStyles:
     QMessageBox QPushButton:default {
         border-width: 2px;
         border-color: rgb(32, 144, 192);
+    }
+
+    QListWidget {
+        color: #C0C0C0;
     }
 
     QPushButton:pressed {

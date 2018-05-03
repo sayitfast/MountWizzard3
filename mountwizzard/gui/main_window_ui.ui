@@ -7811,38 +7811,6 @@ manually</string>
       <double>0.100000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_saveBackupModel">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>240</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;BACKUP&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_loadBackupModel">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>240</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;BACKUP&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
     <widget class="Line" name="line_18">
      <property name="geometry">
       <rect>
@@ -7932,142 +7900,6 @@ manually</string>
      </property>
      <property name="text">
       <string>Load / Save Model in Mount Computer</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_loadInitialModel">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>275</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;BASE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_saveInitialModel">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>275</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;BASE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_126">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>240</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>BACKUP</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_127">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>275</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>INITIAL</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_saveFullModel">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>310</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;REFINE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_133">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>310</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>FULL</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_loadFullModel">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>310</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;REFINE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Load</string>
      </property>
     </widget>
     <widget class="Line" name="line_46">
@@ -8348,8 +8180,8 @@ manually</string>
     <widget class="QPushButton" name="btn_saveModel">
      <property name="geometry">
       <rect>
-       <x>460</x>
-       <y>420</y>
+       <x>670</x>
+       <y>235</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -8365,17 +8197,17 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>346</y>
-       <width>291</width>
-       <height>71</height>
+       <y>236</y>
+       <width>201</width>
+       <height>201</height>
       </rect>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadModel">
      <property name="geometry">
       <rect>
-       <x>565</x>
-       <y>420</y>
+       <x>670</x>
+       <y>265</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -8391,7 +8223,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>420</y>
+       <y>295</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -8408,18 +8240,9 @@ manually</string>
     <zorder>label_37</zorder>
     <zorder>btn_runTargetRMSAlignment</zorder>
     <zorder>targetRMS</zorder>
-    <zorder>btn_saveBackupModel</zorder>
-    <zorder>btn_loadBackupModel</zorder>
     <zorder>btn_deleteWorstPoint</zorder>
     <zorder>label_124</zorder>
     <zorder>label_125</zorder>
-    <zorder>btn_loadInitialModel</zorder>
-    <zorder>btn_saveInitialModel</zorder>
-    <zorder>label_126</zorder>
-    <zorder>label_127</zorder>
-    <zorder>btn_saveFullModel</zorder>
-    <zorder>label_133</zorder>
-    <zorder>btn_loadFullModel</zorder>
     <zorder>line_46</zorder>
     <zorder>model</zorder>
     <zorder>btn_cancelRunTargetRMSAlignment</zorder>
@@ -13546,8 +13369,8 @@ manually</string>
       <widget class="QPushButton" name="btn_loadDSO2Model">
        <property name="geometry">
         <rect>
-         <x>245</x>
-         <y>320</y>
+         <x>230</x>
+         <y>265</y>
          <width>81</width>
          <height>26</height>
         </rect>
@@ -13562,8 +13385,8 @@ manually</string>
       <widget class="QPushButton" name="btn_loadDSOModel">
        <property name="geometry">
         <rect>
-         <x>245</x>
-         <y>250</y>
+         <x>230</x>
+         <y>195</y>
          <width>81</width>
          <height>26</height>
         </rect>
@@ -13578,8 +13401,8 @@ manually</string>
       <widget class="QPushButton" name="btn_saveDSOModel">
        <property name="geometry">
         <rect>
-         <x>35</x>
-         <y>250</y>
+         <x>20</x>
+         <y>195</y>
          <width>81</width>
          <height>26</height>
         </rect>
@@ -13594,8 +13417,8 @@ manually</string>
       <widget class="QLabel" name="label_130">
        <property name="geometry">
         <rect>
-         <x>125</x>
-         <y>320</y>
+         <x>110</x>
+         <y>265</y>
          <width>111</width>
          <height>26</height>
         </rect>
@@ -13618,8 +13441,8 @@ manually</string>
       <widget class="QPushButton" name="btn_saveDSO1Model">
        <property name="geometry">
         <rect>
-         <x>35</x>
-         <y>285</y>
+         <x>20</x>
+         <y>230</y>
          <width>81</width>
          <height>26</height>
         </rect>
@@ -13634,8 +13457,8 @@ manually</string>
       <widget class="QPushButton" name="btn_saveDSO2Model">
        <property name="geometry">
         <rect>
-         <x>35</x>
-         <y>320</y>
+         <x>20</x>
+         <y>265</y>
          <width>81</width>
          <height>26</height>
         </rect>
@@ -13650,8 +13473,8 @@ manually</string>
       <widget class="QLabel" name="label_129">
        <property name="geometry">
         <rect>
-         <x>125</x>
-         <y>285</y>
+         <x>110</x>
+         <y>230</y>
          <width>111</width>
          <height>26</height>
         </rect>
@@ -13674,8 +13497,8 @@ manually</string>
       <widget class="QLabel" name="label_128">
        <property name="geometry">
         <rect>
-         <x>125</x>
-         <y>250</y>
+         <x>110</x>
+         <y>195</y>
          <width>111</width>
          <height>26</height>
         </rect>
@@ -13698,14 +13521,182 @@ manually</string>
       <widget class="QPushButton" name="btn_loadDSO1Model">
        <property name="geometry">
         <rect>
-         <x>245</x>
-         <y>285</y>
+         <x>230</x>
+         <y>230</y>
          <width>81</width>
          <height>26</height>
         </rect>
        </property>
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;DSO1&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_loadFullModel">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>365</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;REFINE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_saveFullModel">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>365</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;REFINE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_loadInitialModel">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>330</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;BASE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_saveInitialModel">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>330</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;BASE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_133">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>365</y>
+         <width>111</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>FULL</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_saveBackupModel">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>295</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;BACKUP&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_127">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>330</y>
+         <width>111</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>INITIAL</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_126">
+       <property name="geometry">
+        <rect>
+         <x>110</x>
+         <y>295</y>
+         <width>111</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>BACKUP</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_loadBackupModel">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>295</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;BACKUP&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Load</string>
@@ -15426,12 +15417,6 @@ manually</string>
   <tabstop>targetRMS</tabstop>
   <tabstop>btn_cancelRunTargetRMSAlignment</tabstop>
   <tabstop>btn_clearModel</tabstop>
-  <tabstop>btn_saveBackupModel</tabstop>
-  <tabstop>btn_loadBackupModel</tabstop>
-  <tabstop>btn_saveInitialModel</tabstop>
-  <tabstop>btn_loadInitialModel</tabstop>
-  <tabstop>btn_saveFullModel</tabstop>
-  <tabstop>btn_loadFullModel</tabstop>
   <tabstop>altitudeTimeChange</tabstop>
   <tabstop>azimuthTimeChange</tabstop>
   <tabstop>numberRunsTimeChange</tabstop>

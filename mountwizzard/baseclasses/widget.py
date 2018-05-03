@@ -121,7 +121,7 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
         return dlg.question(window, title, question, PyQt5.QtWidgets.QMessageBox.Ok | PyQt5.QtWidgets.QMessageBox.Cancel, PyQt5.QtWidgets.QMessageBox.Cancel)
 
     @staticmethod
-    def dialogInputText(window, title, text):
+    def dialogInputText(window, title, text, preset):
         dlg = PyQt5.QtWidgets.QInputDialog()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
         dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
@@ -131,7 +131,8 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
         dw = window.width()
         dh = window.height()
         dlg.setGeometry(px, py + ph - dh, dw, dh)
-        return dlg.getText(window, title, text)
+        return dlg.getText(window, title, text, PyQt5.QtWidgets.QLineEdit.Normal, preset)
+
 
 # class for embed the matplotlib in pyqt5 framework
 class IntegrateMatplotlib(FigureCanvasQTAgg):

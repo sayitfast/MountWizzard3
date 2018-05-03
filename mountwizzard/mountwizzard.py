@@ -225,7 +225,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.listModelName.addItem('INITIAL')
         self.ui.listModelName.addItem('FULL')
         self.ui.listModelName.addItem('DSO')
-        self.ui.listModelName.show()
+        self.ui.listModelName.sortItems()
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -290,11 +290,20 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_saveModel.clicked.connect(self.dialogSaveModel)
         self.ui.btn_loadModel.clicked.connect(self.loadModel)
         self.ui.btn_deleteModel.clicked.connect(self.deleteModel)
+        self.ui.listModelName.itemDoubleClicked.connect(self.getItem)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
 
+    def getItem(self):
+        print(self.ui.listModelName.currentItem().text())
+
     def dialogSaveModel(self):
-        name, ok = self.dialogInputText(self, 'Please enter the model name', 'Model name:')
+        if self.ui.listModelName.currentItem() is not None:
+            text = self.ui.listModelName.currentItem().text()
+        else:
+            text = ''
+        print(text)
+        name, ok = self.dialogInputText(self, 'Please enter the model name', 'Model name:', text)
         print(name, ok)
 
     def loadModel(self):
