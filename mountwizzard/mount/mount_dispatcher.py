@@ -30,6 +30,7 @@ from mount import mount_statusslow
 from mount import mount_statusonce
 from mount import mount_getalignmodel
 from mount import mount_setalignmodel
+from mount import mount_getmodelnames
 from mount import mount_modelhandling
 from analyse import analysedata
 from baseclasses import checkIP
@@ -40,14 +41,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)
 
     # needed signals for mount connections
-    signalMountConnectedOnce = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedSlow = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedMedium = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedFast = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedGetAlign = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedSetAlign = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedProgAlign = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
+    signalMountConnected = PyQt5.QtCore.pyqtSignal(dict)
     signalCancelRunTargetRMS = PyQt5.QtCore.pyqtSignal()
 
     # signals for data transfer to other threads
@@ -55,6 +49,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountLimits = PyQt5.QtCore.pyqtSignal(int, int)
     signalAlignmentStars = PyQt5.QtCore.pyqtSignal()
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
+    signalMountShowModelNames = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_COMMAND = 0.2
@@ -107,46 +102,52 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # getting all threads setup
         # commands sending thread
         self.threadMountCommandRunner = PyQt5.QtCore.QThread()
-        self.workerMountCommandRunner = mount_command.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnectedCommand)
+        self.workerMountCommandRunner = mount_command.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnected)
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
         # fast status thread
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnectedFast)
+        self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnected)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
         # medium status thread
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnectedMedium)
+        self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnected)
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
         self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
         # slow status thread
         self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnectedSlow)
+        self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnected)
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
         # once status thread
         self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnectedOnce)
+        self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnected)
         self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
         self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedGetAlign)
+        self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnected)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
         # set alignment model
         self.threadMountSetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountSetAlignmentModel = mount_setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnectedSetAlign)
+        self.workerMountSetAlignmentModel = mount_setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnected)
         self.threadMountSetAlignmentModel.setObjectName("MountSetAlignmentModel")
         self.workerMountSetAlignmentModel.moveToThread(self.threadMountSetAlignmentModel)
         self.threadMountSetAlignmentModel.started.connect(self.workerMountSetAlignmentModel.run)
+        # get model names
+        self.threadMountGetModelNames = PyQt5.QtCore.QThread()
+        self.workerMountGetModelNames = mount_getmodelnames.MountGetModelNames(self.app, self.threadMountGetModelNames, self.data, self.signalMountConnected)
+        self.threadMountGetModelNames.setObjectName("MountGetModelNames")
+        self.workerMountGetModelNames.moveToThread(self.threadMountGetModelNames)
+        self.threadMountGetModelNames.started.connect(self.workerMountGetModelNames.run)
 
         self.mountStatus = {'Fast': False,
                             'Medium': False,
@@ -154,6 +155,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Once': False,
                             'GetAlign': False,
                             'SetAlign': False,
+                            'Names': False,
                             'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
@@ -196,126 +198,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'SaveBackupModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_saveBackupModel,
-                            'Parameter': ['BACKUP'],
-                            'Method': self.mountModelHandling.saveModel,
-                        }
-                    ]
-                },
-            'LoadBackupModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_loadBackupModel,
-                            'Parameter': ['BACKUP'],
-                            'Method': self.mountModelHandling.loadModel,
-                        }
-                    ]
-                },
-            'LoadInitialModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_loadInitialModel,
-                            'Parameter': ['INITIAL'],
-                            'Method': self.mountModelHandling.loadModel,
-                        }
-                    ]
-                },
-            'SaveInitialModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_saveInitialModel,
-                            'Parameter': ['INITIAL'],
-                            'Method': self.mountModelHandling.saveModel,
-                        }
-                    ]
-                },
-            'LoadFullModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_loadFullModel,
-                            'Parameter': ['FULL'],
-                            'Method': self.mountModelHandling.loadModel,
-                        }
-                    ]
-                },
-            'SaveFullModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_saveFullModel,
-                            'Parameter': ['FULL'],
-                            'Method': self.mountModelHandling.saveModel,
-                        }
-                    ]
-                },
-            'LoadDSOModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_loadDSOModel,
-                            'Parameter': ['DSO'],
-                            'Method': self.mountModelHandling.loadModel,
-                        }
-                    ]
-                },
-            'SaveDSOModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_saveDSOModel,
-                            'Parameter': ['DSO'],
-                            'Method': self.mountModelHandling.saveModel,
-                        }
-                    ]
-                },
-            'LoadDSO1Model':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_loadDSO1Model,
-                            'Parameter': ['DSO1'],
-                            'Method': self.mountModelHandling.loadModel,
-                        }
-                    ]
-                },
-            'SaveDSO1Model':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_saveDSO1Model,
-                            'Parameter': ['DSO1'],
-                            'Method': self.mountModelHandling.saveModel,
-                        }
-                    ]
-                },
-            'LoadDSO2Model':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_loadDSO2Model,
-                            'Parameter': ['DSO2'],
-                            'Method': self.mountModelHandling.loadModel,
-                        }
-                    ]
-                },
-            'SaveDSO2Model':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_saveDSO2Model,
-                            'Parameter': ['DSO2'],
-                            'Method': self.mountModelHandling.saveModel,
-                        }
-                    ]
-                },
             'SetRefractionParameter':
                 {
                     'Worker': [
@@ -352,18 +234,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
         self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcherQueue.put('FLIP'))
         self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ReloadAlignmentModel'))
-        self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveBackupModel'))
-        self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBackupModel'))
-        self.app.ui.btn_saveFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveFullModel'))
-        self.app.ui.btn_loadFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFullModel'))
-        self.app.ui.btn_saveDSOModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSOModel'))
-        self.app.ui.btn_loadDSOModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSOModel'))
-        self.app.ui.btn_saveInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveInitialModel'))
-        self.app.ui.btn_loadInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadInitialModel'))
-        self.app.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO1Model'))
-        self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO1Model'))
-        self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO2Model'))
-        self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
         self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
 
@@ -372,88 +242,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_loadModel.clicked.connect(self.loadSelectedModel)
         self.app.ui.btn_deleteModel.clicked.connect(self.deleteSelectedModel)
         self.app.ui.listModelName.itemDoubleClicked.connect(self.getListAction)
-
-    def getListAction(self):
-        name = self.app.ui.listModelName.currentItem().text()
-        question = 'Action with mount model:\n\n\t{0}\n\n'.format(name)
-        value = self.app.dialogMessageLoadSaveDelete(self.app, 'Mount model management', question)
-        if value == 0:
-            action = {
-                'Worker': [
-                    {
-                        'Button': self.app.ui.btn_loadModel,
-                        'Parameter': [name],
-                        'Method': self.mountModelHandling.loadModel,
-                    }
-                ]
-            }
-            self.commandDispatcherQueue.put(action)
-        elif value == 1:
-            action = {
-                'Worker': [
-                    {
-                        'Button': self.app.ui.btn_saveModel,
-                        'Parameter': [name],
-                        'Method': self.mountModelHandling.saveModel,
-                    }
-                ]
-            }
-            self.commandDispatcherQueue.put(action)
-        elif value == 2:
-            action = {
-                'Worker': [
-                    {
-                        'Button': self.app.ui.btn_deleteModel,
-                        'Parameter': [name],
-                        'Method': self.mountModelHandling.deleteModel,
-                    }
-                ]
-            }
-            self.commandDispatcherQueue.put(action)
-        else:
-            print(self.app.ui.listModelName.currentItem().text())
-
-    def saveSelectedModel(self):
-        if self.app.ui.listModelName.currentItem() is not None:
-            name = self.app.ui.listModelName.currentItem().text()
-            action = {
-                'Worker': [
-                    {
-                        'Button': self.app.ui.btn_saveModel,
-                        'Parameter': [name],
-                        'Method': self.mountModelHandling.saveModel,
-                    }
-                ]
-            }
-            self.commandDispatcherQueue.put(action)
-
-    def loadSelectedModel(self):
-        if self.app.ui.listModelName.currentItem() is not None:
-            name = self.app.ui.listModelName.currentItem().text()
-            action = {
-                'Worker': [
-                    {
-                        'Button': self.app.ui.btn_loadModel,
-                        'Parameter': [name],
-                        'Method': self.mountModelHandling.loadModel,
-                    }
-                ]
-            }
-            self.commandDispatcherQueue.put(action)
-
-    def deleteSelectedModel(self):
-        if self.app.ui.listModelName.currentItem() is not None:
-            name = self.app.ui.listModelName.currentItem().text()
-            action = {
-                'Worker': [
-                    {
-                        'Button': self.app.ui.btn_deleteModel,
-                        'Parameter': [name],
-                        'Method': self.mountModelHandling.deleteModel,
-                    }
-                ]
-            }
-            self.commandDispatcherQueue.put(action)
+        self.signalMountShowModelNames.connect(self.setModelNamesList)
 
     def initConfig(self):
         try:
@@ -512,12 +301,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.workerMountGetAlignmentModel.stop()
             self.workerMountSetAlignmentModel.stop()
             self.workerMountCommandRunner.stop()
+            self.workerMountGetModelNames.stop()
             self.app.sharedMountDataLock.lockForWrite()
             self.data['MountIP'] = self.app.ui.le_mountIP.text()
             self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
             self.app.sharedMountDataLock.unlock()
             # and restarting for using new parameters
             self.threadMountCommandRunner.start()
+            self.threadMountGetModelNames.start()
             self.threadMountSetAlignmentModel.start()
             self.threadMountGetAlignmentModel.start()
             self.threadMountStatusRunnerOnce.start()
@@ -540,6 +331,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.mutexIsRunning.unlock()
         self.threadMountCommandRunner.start()
         self.threadMountSetAlignmentModel.start()
+        self.threadMountGetModelNames.start()
         self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
@@ -560,6 +352,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.workerMountStatusRunnerOnce.stop()
             self.workerMountGetAlignmentModel.stop()
             self.workerMountSetAlignmentModel.stop()
+            self.workerMountGetModelNames.stop()
             self.workerMountCommandRunner.stop()
             self.thread.quit()
             self.thread.wait()
@@ -616,6 +409,94 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:
                     self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
+
+    def setModelNamesList(self):
+        self.app.ui.listModelName.clear()
+        for name in self.data['ModelNames']:
+            self.app.ui.listModelName.addItem(name)
+        self.app.ui.listModelName.sortItems()
+
+    def getListAction(self):
+        name = self.app.ui.listModelName.currentItem().text()
+        question = 'Action with mount model:\n\n\t{0}\n\n'.format(name)
+        value = self.app.dialogMessageLoadSaveDelete(self.app, 'Mount model management', question)
+        if value == 0:
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_loadModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.loadModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+        elif value == 1:
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_saveModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.saveModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+        elif value == 2:
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_deleteModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.deleteModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+        else:
+           pass
+
+    def saveSelectedModel(self):
+        if self.app.ui.listModelName.currentItem() is not None:
+            name = self.app.ui.listModelName.currentItem().text()
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_saveModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.saveModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+
+    def loadSelectedModel(self):
+        if self.app.ui.listModelName.currentItem() is not None:
+            name = self.app.ui.listModelName.currentItem().text()
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_loadModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.loadModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+
+    def deleteSelectedModel(self):
+        if self.app.ui.listModelName.currentItem() is not None:
+            name = self.app.ui.listModelName.currentItem().text()
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_deleteModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.deleteModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
 
     def mountShutdown(self):
         commandSet = {'command': ':shutdown#', 'reply': ''}

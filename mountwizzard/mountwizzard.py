@@ -129,13 +129,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
-        self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedSetAlign.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedFast.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnected.connect(self.setMountStatus)
         # prepare setup for mount status
         self.setMountStatus({})
         # INDI client framework
@@ -219,13 +213,6 @@ class MountWizzardApp(widget.MwWidget):
         self.mainLoopTimer.setSingleShot(False)
         self.mainLoopTimer.timeout.connect(self.mainLoop)
         self.mainLoopTimer.start(self.CYCLE_MAIN_LOOP)
-
-        # test for listview
-        self.ui.listModelName.addItem('BACKUP')
-        self.ui.listModelName.addItem('INITIAL')
-        self.ui.listModelName.addItem('FULL')
-        self.ui.listModelName.addItem('DSO')
-        self.ui.listModelName.sortItems()
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
