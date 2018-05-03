@@ -396,7 +396,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # setting changes in gui on false, because the set of the config changed them already
+        # setting new ip, port, mac after loading the parameters
         self.changedMountConnectionSettings()
 
     def storeConfig(self):
