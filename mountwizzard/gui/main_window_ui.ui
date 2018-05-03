@@ -7815,7 +7815,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>230</y>
+       <y>225</y>
        <width>291</width>
        <height>1</height>
       </rect>
@@ -7886,7 +7886,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>210</y>
+       <y>205</y>
        <width>251</width>
        <height>21</height>
       </rect>
@@ -8181,7 +8181,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>235</y>
+       <y>265</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -8207,7 +8207,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>265</y>
+       <y>235</y>
        <width>81</width>
        <height>26</height>
       </rect>

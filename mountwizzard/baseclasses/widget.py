@@ -107,18 +107,29 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
         value = dlg.getExistingDirectory(dlg, title, folder, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         return value
 
-    @staticmethod
-    def dialogMessageLoadSave(window, title, question):
+    def dialogMessageLoadSaveDelete(self, window, title, question):
         dlg = PyQt5.QtWidgets.QMessageBox()
+        if platform.system() == 'Darwin':
+            dlg.setStyleSheet(self.MAC_STYLE + self.BASIC_STYLE)
+        else:
+            dlg.setStyleSheet(self.NON_MAC_STYLE + self.BASIC_STYLE)
+        dlg.addButton('Load', PyQt5.QtWidgets.QMessageBox.YesRole)
+        dlg.addButton('Save', PyQt5.QtWidgets.QMessageBox.YesRole)
+        dlg.addButton('Delete', PyQt5.QtWidgets.QMessageBox.YesRole)
+        cancel = dlg.addButton('Cancel', PyQt5.QtWidgets.QMessageBox.YesRole)
+        dlg.setDefaultButton(cancel)
+        dlg.setWindowTitle(title)
+        dlg.setText(question)
+        dlg.setIcon(PyQt5.QtWidgets.QMessageBox.Warning)
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
-        dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-        ph = window.geometry().height()
         px = window.geometry().x()
         py = window.geometry().y()
         dw = window.width()
         dh = window.height()
-        dlg.setGeometry(px, py + ph - dh, dw, dh)
-        return dlg.question(window, title, question, PyQt5.QtWidgets.QMessageBox.Save | PyQt5.QtWidgets.QMessageBox.Open | PyQt5.QtWidgets.QMessageBox.Cancel, PyQt5.QtWidgets.QMessageBox.Cancel)
+        dx = dlg.width()
+        dy = dlg.height()
+        dlg.setGeometry(px + (dw - dx), py + (dh - dy), dw, dh)
+        return dlg.exec()
 
     @staticmethod
     def dialogMessage(window, title, question):

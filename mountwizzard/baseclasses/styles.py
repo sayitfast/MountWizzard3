@@ -267,7 +267,13 @@ class MWStyles:
     }
 
     QListWidget {
+        border-color: #404040;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 2px;
         color: #C0C0C0;
+        padding-left: 5px;
+        padding-top: 5px;
     }
 
     QPushButton:pressed {

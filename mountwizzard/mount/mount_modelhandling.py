@@ -29,6 +29,8 @@ class MountModelHandling:
         self.data = data
 
     def saveModel(self, target):
+        print('Save: ', target)
+        return
         self.app.mountCommandQueue.put(':modeldel0{0}#'.format(target))
         commandSet = {'command': ':modelsv0{0}#'.format(target), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
@@ -42,6 +44,8 @@ class MountModelHandling:
             return False
 
     def loadModel(self, target):
+        print('Load: ', target)
+        return
         commandSet = {'command': ':modelld0{0}#'.format(target), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
@@ -58,6 +62,8 @@ class MountModelHandling:
             return False
 
     def deleteModel(self, target):
+        print('Delete: ', target)
+        return
         commandSet = {'command': ':modeldel0{0}#'.format(target), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:

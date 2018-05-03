@@ -375,9 +375,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def getListAction(self):
         name = self.app.ui.listModelName.currentItem().text()
-        question = 'Action with mount model:\n\n\t{0}\n\n should be:'.format(name)
-        value = self.app.dialogMessageLoadSave(self.app, 'Mount model management', question)
-        if value == PyQt5.QtWidgets.QMessageBox.Open:
+        question = 'Action with mount model:\n\n\t{0}\n\n'.format(name)
+        value = self.app.dialogMessageLoadSaveDelete(self.app, 'Mount model management', question)
+        if value == 0:
             action = {
                 'Worker': [
                     {
@@ -388,7 +388,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 ]
             }
             self.commandDispatcherQueue.put(action)
-        elif value == PyQt5.QtWidgets.QMessageBox.Save:
+        elif value == 1:
             action = {
                 'Worker': [
                     {
@@ -399,11 +399,22 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 ]
             }
             self.commandDispatcherQueue.put(action)
+        elif value == 2:
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_deleteModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.deleteModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
         else:
             print(self.app.ui.listModelName.currentItem().text())
 
     def saveSelectedModel(self):
-        if self.ui.listModelName.currentItem() is not None:
+        if self.app.ui.listModelName.currentItem() is not None:
             name = self.app.ui.listModelName.currentItem().text()
             action = {
                 'Worker': [
@@ -417,7 +428,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.commandDispatcherQueue.put(action)
 
     def loadSelectedModel(self):
-        if self.ui.listModelName.currentItem() is not None:
+        if self.app.ui.listModelName.currentItem() is not None:
             name = self.app.ui.listModelName.currentItem().text()
             action = {
                 'Worker': [
@@ -431,7 +442,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.commandDispatcherQueue.put(action)
 
     def deleteSelectedModel(self):
-        if self.ui.listModelName.currentItem() is not None:
+        if self.app.ui.listModelName.currentItem() is not None:
             name = self.app.ui.listModelName.currentItem().text()
             action = {
                 'Worker': [
