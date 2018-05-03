@@ -155,7 +155,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Once': False,
                             'GetAlign': False,
                             'SetAlign': False,
-                            'Names': False,
+                            'GetName': False,
                             'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
