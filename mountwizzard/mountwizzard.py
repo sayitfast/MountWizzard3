@@ -220,6 +220,13 @@ class MountWizzardApp(widget.MwWidget):
         self.mainLoopTimer.timeout.connect(self.mainLoop)
         self.mainLoopTimer.start(self.CYCLE_MAIN_LOOP)
 
+        # test for listview
+        self.ui.listModelName.addItem('BACKUP')
+        self.ui.listModelName.addItem('INITIAL')
+        self.ui.listModelName.addItem('FULL')
+        self.ui.listModelName.addItem('DSO')
+        self.ui.listModelName.show()
+
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
@@ -281,12 +288,20 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
 
         self.ui.btn_saveModel.clicked.connect(self.dialogSaveModel)
+        self.ui.btn_loadModel.clicked.connect(self.loadModel)
+        self.ui.btn_deleteModel.clicked.connect(self.deleteModel)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
 
     def dialogSaveModel(self):
         name, ok = self.dialogInputText(self, 'Please enter the model name', 'Model name:')
         print(name, ok)
+
+    def loadModel(self):
+        print('load')
+
+    def deleteModel(self):
+        print('delete')
 
     @staticmethod
     def timeStamp():

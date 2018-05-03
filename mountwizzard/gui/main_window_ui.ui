@@ -7859,38 +7859,6 @@ manually</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadDSOModel">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>345</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;SIMPLE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_saveDSOModel">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>345</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;SIMPLE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
@@ -8041,142 +8009,6 @@ manually</string>
      </property>
      <property name="text">
       <string>INITIAL</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_128">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>345</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>DSO 0</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_saveDSO1Model">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>380</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO1&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_loadDSO1Model">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>380</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;DSO1&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_saveDSO2Model">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>415</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Save</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_loadDSO2Model">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>415</y>
-       <width>81</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_129">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>380</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>DSO 1</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_130">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>415</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>16</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>DSO 2</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -8516,8 +8348,8 @@ manually</string>
     <widget class="QPushButton" name="btn_saveModel">
      <property name="geometry">
       <rect>
-       <x>545</x>
-       <y>395</y>
+       <x>460</x>
+       <y>420</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -8529,6 +8361,48 @@ manually</string>
       <string>Save</string>
      </property>
     </widget>
+    <widget class="QListWidget" name="listModelName">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>346</y>
+       <width>291</width>
+       <height>71</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_loadModel">
+     <property name="geometry">
+      <rect>
+       <x>565</x>
+       <y>420</y>
+       <width>81</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_deleteModel">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>420</y>
+       <width>81</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </widget>
     <zorder>line_18</zorder>
     <zorder>line_44</zorder>
     <zorder>label_37</zorder>
@@ -8536,8 +8410,6 @@ manually</string>
     <zorder>targetRMS</zorder>
     <zorder>btn_saveBackupModel</zorder>
     <zorder>btn_loadBackupModel</zorder>
-    <zorder>btn_loadDSOModel</zorder>
-    <zorder>btn_saveDSOModel</zorder>
     <zorder>btn_deleteWorstPoint</zorder>
     <zorder>label_124</zorder>
     <zorder>label_125</zorder>
@@ -8545,13 +8417,6 @@ manually</string>
     <zorder>btn_saveInitialModel</zorder>
     <zorder>label_126</zorder>
     <zorder>label_127</zorder>
-    <zorder>label_128</zorder>
-    <zorder>btn_saveDSO1Model</zorder>
-    <zorder>btn_loadDSO1Model</zorder>
-    <zorder>btn_saveDSO2Model</zorder>
-    <zorder>btn_loadDSO2Model</zorder>
-    <zorder>label_129</zorder>
-    <zorder>label_130</zorder>
     <zorder>btn_saveFullModel</zorder>
     <zorder>label_133</zorder>
     <zorder>btn_loadFullModel</zorder>
@@ -8567,6 +8432,9 @@ manually</string>
     <zorder>label_209</zorder>
     <zorder>btn_reloadAlignmentModel</zorder>
     <zorder>btn_saveModel</zorder>
+    <zorder>listModelName</zorder>
+    <zorder>btn_loadModel</zorder>
+    <zorder>btn_deleteModel</zorder>
    </widget>
    <widget class="QWidget" name="Relay">
     <attribute name="title">
@@ -8802,7 +8670,7 @@ manually</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -13675,6 +13543,174 @@ manually</string>
         <string>Misc Settings</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="btn_loadDSO2Model">
+       <property name="geometry">
+        <rect>
+         <x>245</x>
+         <y>320</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_loadDSOModel">
+       <property name="geometry">
+        <rect>
+         <x>245</x>
+         <y>250</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;SIMPLE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_saveDSOModel">
+       <property name="geometry">
+        <rect>
+         <x>35</x>
+         <y>250</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;SIMPLE&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_130">
+       <property name="geometry">
+        <rect>
+         <x>125</x>
+         <y>320</y>
+         <width>111</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>DSO 2</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_saveDSO1Model">
+       <property name="geometry">
+        <rect>
+         <x>35</x>
+         <y>285</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO1&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_saveDSO2Model">
+       <property name="geometry">
+        <rect>
+         <x>35</x>
+         <y>320</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_129">
+       <property name="geometry">
+        <rect>
+         <x>125</x>
+         <y>285</y>
+         <width>111</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>DSO 1</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_128">
+       <property name="geometry">
+        <rect>
+         <x>125</x>
+         <y>250</y>
+         <width>111</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier New</family>
+         <pointsize>16</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>DSO 0</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_loadDSO1Model">
+       <property name="geometry">
+        <rect>
+         <x>245</x>
+         <y>285</y>
+         <width>81</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads actual alignment model from &amp;quot;DSO1&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -15396,12 +15432,6 @@ manually</string>
   <tabstop>btn_loadInitialModel</tabstop>
   <tabstop>btn_saveFullModel</tabstop>
   <tabstop>btn_loadFullModel</tabstop>
-  <tabstop>btn_saveDSOModel</tabstop>
-  <tabstop>btn_loadDSOModel</tabstop>
-  <tabstop>btn_saveDSO1Model</tabstop>
-  <tabstop>btn_loadDSO1Model</tabstop>
-  <tabstop>btn_saveDSO2Model</tabstop>
-  <tabstop>btn_loadDSO2Model</tabstop>
   <tabstop>altitudeTimeChange</tabstop>
   <tabstop>azimuthTimeChange</tabstop>
   <tabstop>numberRunsTimeChange</tabstop>
