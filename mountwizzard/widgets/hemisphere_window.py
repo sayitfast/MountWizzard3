@@ -22,6 +22,7 @@ import PyQt5
 from baseclasses import widget
 from astrometry import transform
 import astropy
+import copy
 import numpy
 import matplotlib
 import bisect
@@ -234,12 +235,13 @@ class HemisphereWindow(widget.MwWidget):
 
     def updateAlignmentStars(self):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
-        starsTopo = self.app.workerMountDispatcher.data['starsTopo']
-        starsNames = self.app.workerMountDispatcher.data['starsNames']
-        self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
-        for i in range(0, len(starsNames)):
-            self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
-        self.hemisphereMatplotlibStar.fig.canvas.draw()
+        starsTopo = copy.copy(self.app.workerMountDispatcher.data['starsTopo'])
+        starsNames = copy.copy(self.app.workerMountDispatcher.data['starsNames'])
+        if len(starsNames) > 0:
+            self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
+            for i in range(0, len(starsNames)):
+                self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
+            self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def setAzAltPointer(self, az, alt):
         if self.showStatus:
