@@ -279,8 +279,14 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
+
+        self.ui.btn_saveModel.clicked.connect(self.dialogSaveModel)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
+
+    def dialogSaveModel(self):
+        name, ok = self.dialogInputText(self, 'Please enter the model name', 'Model name:')
+        print(name, ok)
 
     @staticmethod
     def timeStamp():

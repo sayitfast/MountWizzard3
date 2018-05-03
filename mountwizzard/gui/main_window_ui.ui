@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>5</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -8513,6 +8513,22 @@ manually</string>
       <string>Reload Mount Model</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_saveModel">
+     <property name="geometry">
+      <rect>
+       <x>545</x>
+       <y>395</y>
+       <width>81</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves actual alignment model under name &amp;quot;DSO2&amp;quot; in mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
     <zorder>line_18</zorder>
     <zorder>line_44</zorder>
     <zorder>label_37</zorder>
@@ -8550,6 +8566,7 @@ manually</string>
     <zorder>le_alignNumberTerms2</zorder>
     <zorder>label_209</zorder>
     <zorder>btn_reloadAlignmentModel</zorder>
+    <zorder>btn_saveModel</zorder>
    </widget>
    <widget class="QWidget" name="Relay">
     <attribute name="title">

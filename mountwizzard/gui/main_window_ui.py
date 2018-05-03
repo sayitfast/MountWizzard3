@@ -3062,6 +3062,9 @@ class Ui_MainWindow(object):
         self.btn_reloadAlignmentModel = QtWidgets.QPushButton(self.tab_8)
         self.btn_reloadAlignmentModel.setGeometry(QtCore.QRect(595, 50, 156, 26))
         self.btn_reloadAlignmentModel.setObjectName("btn_reloadAlignmentModel")
+        self.btn_saveModel = QtWidgets.QPushButton(self.tab_8)
+        self.btn_saveModel.setGeometry(QtCore.QRect(545, 395, 81, 26))
+        self.btn_saveModel.setObjectName("btn_saveModel")
         self.line_18.raise_()
         self.line_44.raise_()
         self.label_37.raise_()
@@ -3099,6 +3102,7 @@ class Ui_MainWindow(object):
         self.le_alignNumberTerms2.raise_()
         self.label_209.raise_()
         self.btn_reloadAlignmentModel.raise_()
+        self.btn_saveModel.raise_()
         self.mainTabWidget.addTab(self.tab_8, "")
         self.Relay = QtWidgets.QWidget()
         self.Relay.setObjectName("Relay")
@@ -5522,7 +5526,7 @@ class Ui_MainWindow(object):
         self.btn_openAnalyseWindow.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(2)
+        self.mainTabWidget.setCurrentIndex(5)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -6144,6 +6148,8 @@ class Ui_MainWindow(object):
         self.label_209.setText(_translate("MainWindow", "Terms"))
         self.btn_reloadAlignmentModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Reloads the refinement model from mount. Needed if you change things manually with handcontroller or other software</p></body></html>"))
         self.btn_reloadAlignmentModel.setText(_translate("MainWindow", "Reload Mount Model"))
+        self.btn_saveModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Saves actual alignment model under name &quot;DSO2&quot; in mount.</p></body></html>"))
+        self.btn_saveModel.setText(_translate("MainWindow", "Save"))
         self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.tab_8), _translate("MainWindow", "Manage Model"))
         self.btn_relay1.setToolTip(_translate("MainWindow", "<html><head/><body><p>Starts for Relay the defined function (Switch or Pulse)</p></body></html>"))
         self.btn_relay1.setText(_translate("MainWindow", "Relay1"))
@@ -6471,4 +6477,14 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.setText(_translate("MainWindow", "Image"))
         self.btn_openAnalyseWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the analyse window for checking measurements and modlelling data.</p></body></html>"))
         self.btn_openAnalyseWindow.setText(_translate("MainWindow", "Analyse"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
