@@ -108,7 +108,20 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
         return value
 
     @staticmethod
-    def messageQuestion(window, title, question):
+    def dialogMessageLoadSave(window, title, question):
+        dlg = PyQt5.QtWidgets.QMessageBox()
+        dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
+        dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        ph = window.geometry().height()
+        px = window.geometry().x()
+        py = window.geometry().y()
+        dw = window.width()
+        dh = window.height()
+        dlg.setGeometry(px, py + ph - dh, dw, dh)
+        return dlg.question(window, title, question, PyQt5.QtWidgets.QMessageBox.Save | PyQt5.QtWidgets.QMessageBox.Open | PyQt5.QtWidgets.QMessageBox.Cancel, PyQt5.QtWidgets.QMessageBox.Cancel)
+
+    @staticmethod
+    def dialogMessage(window, title, question):
         dlg = PyQt5.QtWidgets.QMessageBox()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
         dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')

@@ -368,6 +368,81 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
 
         self.signalCancelRunTargetRMS.connect(self.setCancelRunTargetRMS)
+        self.app.ui.btn_saveModel.clicked.connect(self.saveSelectedModel)
+        self.app.ui.btn_loadModel.clicked.connect(self.loadSelectedModel)
+        self.app.ui.btn_deleteModel.clicked.connect(self.deleteSelectedModel)
+        self.app.ui.listModelName.itemDoubleClicked.connect(self.getListAction)
+
+    def getListAction(self):
+        name = self.app.ui.listModelName.currentItem().text()
+        question = 'Action with mount model:\n\n\t{0}\n\n should be:'.format(name)
+        value = self.app.dialogMessageLoadSave(self.app, 'Mount model management', question)
+        if value == PyQt5.QtWidgets.QMessageBox.Open:
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_loadModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.loadModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+        elif value == PyQt5.QtWidgets.QMessageBox.Save:
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_saveModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.saveModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+        else:
+            print(self.app.ui.listModelName.currentItem().text())
+
+    def saveSelectedModel(self):
+        if self.ui.listModelName.currentItem() is not None:
+            name = self.app.ui.listModelName.currentItem().text()
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_saveModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.saveModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+
+    def loadSelectedModel(self):
+        if self.ui.listModelName.currentItem() is not None:
+            name = self.app.ui.listModelName.currentItem().text()
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_loadModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.loadModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
+
+    def deleteSelectedModel(self):
+        if self.ui.listModelName.currentItem() is not None:
+            name = self.app.ui.listModelName.currentItem().text()
+            action = {
+                'Worker': [
+                    {
+                        'Button': self.app.ui.btn_deleteModel,
+                        'Parameter': [name],
+                        'Method': self.mountModelHandling.deleteModel,
+                    }
+                ]
+            }
+            self.commandDispatcherQueue.put(action)
 
     def initConfig(self):
         try:
@@ -484,7 +559,31 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def doCommand(self):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
-            self.commandDispatcher(command)
+            if isinstance(command, dict):
+                # transferring complete working set
+                self.manualCommandDispatcher(command)
+            else:
+                # doing standard work based on init
+                self.commandDispatcher(command)
+
+    def manualCommandDispatcher(self, command):
+        # running through all necessary commands
+        for work in command['Worker']:
+            # if we want to color a button, which one
+            if 'Button' in work:
+                self.app.signalChangeStylesheet.emit(work['Button'], 'running', True)
+            if 'Parameter' in work:
+                parameter = []
+                for p in work['Parameter']:
+                    parameter.append(p)
+                work['Method'](*parameter)
+            else:
+                work['Method']()
+            time.sleep(0.2)
+            if 'Button' in work:
+                self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
+            if 'Cancel' in work:
+                self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

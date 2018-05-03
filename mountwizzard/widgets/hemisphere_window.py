@@ -321,7 +321,7 @@ class HemisphereWindow(widget.MwWidget):
                 azimuth = int(event.xdata)
                 altitude = int(event.ydata)
                 question = 'Do you want to slew the mount to:\n\nAzimuth:\t{0}°\nAltitude:\t{1}°'.format(azimuth, altitude)
-                value = self.messageQuestion(self, 'Hemisphere direct slew', question)
+                value = self.dialogMessage(self, 'Hemisphere direct slew', question)
                 if value == PyQt5.QtWidgets.QMessageBox.Ok:
                     self.app.mountCommandQueue.put(':PO#')
                     self.app.mountCommandQueue.put(':Sz{0:03d}*00#'.format(azimuth))
@@ -344,7 +344,7 @@ class HemisphereWindow(widget.MwWidget):
                     RaJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][2] / 3600000
                     DecJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][3] / 3600000
                     question = 'Do you want to slew to\npolar align star:\n\n{0}'.format(name)
-                    value = self.messageQuestion(self, 'Polar Align Routine', question)
+                    value = self.dialogMessage(self, 'Polar Align Routine', question)
                     if value == PyQt5.QtWidgets.QMessageBox.Ok:
                         # transform to JNOW, RAJ2000 comes in degrees, need to be hours
                         RaJNow, DecJNow = self.transform.transformERFA(RaJ2000, DecJ2000, 3)
