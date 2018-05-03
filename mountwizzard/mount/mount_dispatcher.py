@@ -404,6 +404,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionContinous'] = self.app.ui.checkAutoRefractionContinous.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
+        if self.mountStatus['Once']:
+            self.app.config['SiteLogitude'] = copy.copy(self.data['SiteLogitude'])
+            self.app.config['SiteLatitude'] = copy.copy(self.data['SiteLatitude'])
+            self.app.config['SiteHeight'] = copy.copy(self.data['SiteHeight'])
 
     def setCancelRunTargetRMS(self):
         self.cancelRunTargetRMS = True
