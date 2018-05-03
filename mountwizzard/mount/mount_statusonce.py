@@ -20,6 +20,7 @@
 import logging
 import PyQt5
 import time
+import copy
 from queue import Queue
 from astrometry import transform
 
@@ -194,6 +195,9 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
                 self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
                 self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
+                self.app.config['SiteLogitude'] = copy.copy(self.data['SiteLogitude'])
+                self.app.config['SiteLatitude'] = copy.copy(self.data['SiteLatitude'])
+                self.app.config['SiteHeight'] = copy.copy(self.data['SiteHeight'])
                 self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
             else:
                 self.logger.warning('Parsing Status Once combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))

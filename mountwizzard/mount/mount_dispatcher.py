@@ -22,6 +22,7 @@ import time
 import PyQt5
 import queue
 import math
+import copy
 from mount import mount_command
 from mount import mount_statusfast
 from mount import mount_statusmedium
@@ -380,6 +381,16 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.app.ui.checkAutoRefractionNotTracking.setChecked(self.app.config['CheckAutoRefractionNotTracking'])
             if 'CheckAutoRefractionNone' in self.app.config:
                 self.app.ui.checkAutoRefractionNone.setChecked(self.app.config['CheckAutoRefractionNone'])
+            if 'SiteLogitude' in self.app.config:
+                self.data['SiteLongitude'] = copy.copy(self.app.config['SiteLogitude'])
+            if 'SiteLatitude' in self.app.config:
+                self.data['SiteLatitude'] = copy.copy(self.app.config['SiteLatitude'])
+            if 'SiteHeight' in self.app.config:
+                self.data['SiteHeight'] = copy.copy(self.app.config['SiteHeight'])
+                self.app.signalMountSiteData.emit(self.data['SiteLatitude'],
+                                                  self.data['SiteLongitude'],
+                                                  self.data['SiteHeight'])
+
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
