@@ -226,10 +226,11 @@ class HemisphereWindow(widget.MwWidget):
             self.drawCanvas()
 
     def updateCelestial(self):
-        self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
-        celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
-        self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
-        self.drawCanvas()
+        if self.celestial is not None:
+            self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
+            celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
+            self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
+            self.drawCanvas()
 
     def updateAlignmentStars(self):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
