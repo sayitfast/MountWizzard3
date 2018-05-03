@@ -780,7 +780,7 @@ class MountWizzardApp(widget.MwWidget):
             self.messageQueue.put('Found: {0}\n'.format(appName))
             self.logger.info('Name: {0}, Path: {1}'.format(appName, appInstallPath))
         else:
-            self.logger.warning('Application ASCOM not found on computer')
+            self.logger.info('Application ASCOM not found on computer')
 
     def checkRegistrationKeys(self, appSearchName):
         if platform.machine().endswith('64'):
