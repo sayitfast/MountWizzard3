@@ -32,6 +32,7 @@ class Transform:
         self.ERFA = _erfa
         self.mutexERFA = PyQt5.QtCore.QMutex()
         self.mutexTopocentric = PyQt5.QtCore.QMutex()
+        # if nothing is present, use the coordinates of greenwich
         self.siteLat = 51.476852
         self.siteLon = 0
         self.siteHeight = 46

@@ -55,10 +55,10 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.app.sharedMountDataLock.unlock()
         for name in self.alignmentStars.stars:
             self.app.sharedMountDataLock.lockForWrite()
-            self.data['starsTopo'].append((0, 0))
             self.data['starsNames'].append(name)
             self.data['starsICRS'].append(self.alignmentStars.stars[name])
             self.app.sharedMountDataLock.unlock()
+        self.updateAlignmentStarPositions()
 
     def run(self):
         self.logger.info('mount slow started')
@@ -166,7 +166,10 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
             self.app.sharedMountDataLock.unlock()
+        self.updateAlignmentStarPositions()
+        self.app.workerMountDispatcher.signalAlignmentStars.emit()
 
+    def updateAlignmentStarPositions(self):
         # update topo data for alignment stars
         self.app.sharedMountDataLock.lockForWrite()
         self.data['starsTopo'] = list()
@@ -177,7 +180,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             dec = self.transform.degStringToDecimal(self.alignmentStars.stars[name][1], ' ')
             self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
             self.app.sharedMountDataLock.unlock()
-        self.app.workerMountDispatcher.signalAlignmentStars.emit()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
