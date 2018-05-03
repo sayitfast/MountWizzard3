@@ -375,12 +375,13 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
             if 'MountMAC' in self.app.config:
                 self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
-            if 'CheckAutoRefractionContinous' in self.app.config:
-                self.app.ui.checkAutoRefractionContinous.setChecked(self.app.config['CheckAutoRefractionContinous'])
+            if 'CheckAutoRefractionContinuous' in self.app.config:
+                self.app.ui.checkAutoRefractionContinous.setChecked(self.app.config['CheckAutoRefractionContinuous'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
                 self.app.ui.checkAutoRefractionNotTracking.setChecked(self.app.config['CheckAutoRefractionNotTracking'])
             if 'CheckAutoRefractionNone' in self.app.config:
                 self.app.ui.checkAutoRefractionNone.setChecked(self.app.config['CheckAutoRefractionNone'])
+            # if we have already stored the site data, we use it until we get new information from mount
             if 'SiteLogitude' in self.app.config:
                 self.data['SiteLongitude'] = copy.copy(self.app.config['SiteLogitude'])
             if 'SiteLatitude' in self.app.config:
@@ -401,9 +402,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
         self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
-        self.app.config['CheckAutoRefractionContinous'] = self.app.ui.checkAutoRefractionContinous.isChecked()
+        self.app.config['CheckAutoRefractionContinuous'] = self.app.ui.checkAutoRefractionContinous.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
+        # if we had a connection to the mount, the site data should be there.
         if self.mountStatus['Once']:
             self.app.config['SiteLogitude'] = copy.copy(self.data['SiteLogitude'])
             self.app.config['SiteLatitude'] = copy.copy(self.data['SiteLatitude'])
