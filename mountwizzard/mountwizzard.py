@@ -314,6 +314,11 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_runHystereseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogCancelButton))
         self.widgetIcon(self.ui.btn_stop, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_MessageBoxWarning))
+        self.widgetIcon(self.ui.btn_startTracking, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogYesButton))
+        self.widgetIcon(self.ui.btn_stopTracking, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogNoButton))
+        self.widgetIcon(self.ui.btn_loadModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DirOpenIcon))
+        self.widgetIcon(self.ui.btn_saveModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
+        self.widgetIcon(self.ui.btn_deleteModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_TrashIcon))
 
         # PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward)
         # the icon picture in gui
