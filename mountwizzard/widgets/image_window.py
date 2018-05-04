@@ -60,7 +60,7 @@ class ImagesWindow(widget.MwWidget):
         self.sizeY = 10
         self.imageVmin = 1
         self.imageVmax = 65535
-        self.image = numpy.random.randint(low=5, high=100, size=(20, 20))
+        self.image = numpy.random.randint(low=5, high=6, size=(20, 20))
         self.cmapColor = 'gray'
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
@@ -111,8 +111,8 @@ class ImagesWindow(widget.MwWidget):
 
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
-        self.ui.image.setGeometry(5, 125, self.width() - 10, self.height() - 130)
-        self.ui.imageMarker.setGeometry(5, 125, self.width() - 10, self.height() - 130)
+        self.ui.image.setGeometry(5, 125, self.width() - 10, self.height() - 125)
+        self.ui.imageMarker.setGeometry(5, 125, self.width() - 10, self.height() - 125)
         # using tight layout because of the axis titles and labels
         self.imageMatplotlibMarker.fig.set_tight_layout((0, 0, 1, 1))
         # getting position of axis
@@ -120,7 +120,7 @@ class ImagesWindow(widget.MwWidget):
         # and using it fo the other plot widgets to be identically same size and position
         self.imageMatplotlib.axes.set_position(axesPos)
         # size the header window as well
-        self.ui.imageBackground.setGeometry(0, 0, self.width(), 121)
+        self.ui.imageBackground.setGeometry(0, 0, self.width(), 126)
 
     def initConfig(self):
         try:

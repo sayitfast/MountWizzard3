@@ -22,9 +22,9 @@
    <property name="geometry">
     <rect>
      <x>5</x>
-     <y>125</y>
+     <y>130</y>
      <width>781</width>
-     <height>511</height>
+     <height>506</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -70,7 +70,7 @@
      <x>710</x>
      <y>10</y>
      <width>71</width>
-     <height>91</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="title">
@@ -122,7 +122,7 @@
      <x>630</x>
      <y>10</y>
      <width>76</width>
-     <height>91</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="title">
@@ -192,10 +192,10 @@
   <widget class="QGroupBox" name="groupBox_4">
    <property name="geometry">
     <rect>
-     <x>535</x>
+     <x>530</x>
      <y>10</y>
-     <width>91</width>
-     <height>91</height>
+     <width>96</width>
+     <height>101</height>
     </rect>
    </property>
    <property name="title">
@@ -238,7 +238,7 @@
      <rect>
       <x>10</x>
       <y>60</y>
-      <width>71</width>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
@@ -256,7 +256,7 @@
      <x>0</x>
      <y>0</y>
      <width>790</width>
-     <height>121</height>
+     <height>126</height>
     </rect>
    </property>
    <property name="text">
@@ -294,7 +294,7 @@
    <property name="geometry">
     <rect>
      <x>15</x>
-     <y>75</y>
+     <y>85</y>
      <width>76</width>
      <height>26</height>
     </rect>
@@ -318,7 +318,7 @@
    <property name="geometry">
     <rect>
      <x>95</x>
-     <y>45</y>
+     <y>50</y>
      <width>156</width>
      <height>26</height>
     </rect>
@@ -357,7 +357,7 @@
    <property name="geometry">
     <rect>
      <x>15</x>
-     <y>45</y>
+     <y>50</y>
      <width>76</width>
      <height>26</height>
     </rect>
@@ -378,7 +378,7 @@
    <property name="geometry">
     <rect>
      <x>105</x>
-     <y>80</y>
+     <y>90</y>
      <width>131</width>
      <height>16</height>
     </rect>
@@ -402,9 +402,9 @@
    <property name="geometry">
     <rect>
      <x>5</x>
-     <y>125</y>
+     <y>130</y>
      <width>781</width>
-     <height>511</height>
+     <height>506</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -414,10 +414,10 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>265</x>
+     <x>260</x>
      <y>10</y>
      <width>141</width>
-     <height>91</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="title">
@@ -637,10 +637,10 @@
   <widget class="QGroupBox" name="groupBox_5">
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>405</x>
      <y>10</y>
      <width>120</width>
-     <height>91</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="title">

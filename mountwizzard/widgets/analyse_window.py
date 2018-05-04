@@ -61,11 +61,11 @@ class AnalyseWindow(widget.MwWidget):
 
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
-        self.ui.analyse.setGeometry(10, 115, self.width() - 20, self.height() - 125)
+        self.ui.analyse.setGeometry(5, 125, self.width() - 10, self.height() - 125)
         # using tight layout because of the axis titles and labels
         self.analyseMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
         # size the header window as well
-        self.ui.analyseBackground.setGeometry(0, 0, self.width(), 106)
+        self.ui.analyseBackground.setGeometry(0, 0, self.width(), 126)
 
     @staticmethod
     def winsorize(value, limits=None, inclusive=(True, True), inplace=False, axis=None):
