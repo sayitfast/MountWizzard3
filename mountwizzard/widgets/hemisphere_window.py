@@ -283,6 +283,8 @@ class HemisphereWindow(widget.MwWidget):
             self.pointsPlotBig.set_color('#00A000')
             self.starsAlignment.set_color('#C0C000')
             self.starsAlignment.set_markersize(6)
+            for i in range(0, len(self.starsAnnotate)):
+                self.starsAnnotate[i].set_color('#808080')
             self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
         elif self.ui.checkEditModelPoints.isChecked():
             self.maskPlotMarker.set_marker('None')
@@ -290,12 +292,16 @@ class HemisphereWindow(widget.MwWidget):
             self.pointsPlotBig.set_color('#FF00FF')
             self.starsAlignment.set_color('#C0C000')
             self.starsAlignment.set_markersize(6)
+            for i in range(0, len(self.starsAnnotate)):
+                self.starsAnnotate[i].set_color('#808080')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
         elif self.ui.checkEditHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
             self.pointsPlotBig.set_color('#00A000')
             self.starsAlignment.set_color('#C0C000')
             self.starsAlignment.set_markersize(6)
+            for i in range(0, len(self.starsAnnotate)):
+                self.starsAnnotate[i].set_color('#808080')
             self.maskPlotMarker.set_color('#FF00FF')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
         elif self.ui.checkPolarAlignment.isChecked():
@@ -303,7 +309,9 @@ class HemisphereWindow(widget.MwWidget):
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#00A000')
             self.starsAlignment.set_color('#FFFF00')
-            self.starsAlignment.set_markersize(10)
+            self.starsAlignment.set_markersize(12)
+            for i in range(0, len(self.starsAnnotate)):
+                self.starsAnnotate[i].set_color('#F0F0F0')
             self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
         else:
             pass
@@ -325,6 +333,7 @@ class HemisphereWindow(widget.MwWidget):
                 question = 'Do you want to slew the mount to:\n\nAzimuth:\t{0}°\nAltitude:\t{1}°'.format(azimuth, altitude)
                 value = self.dialogMessage(self, 'Hemisphere direct slew', question)
                 if value == PyQt5.QtWidgets.QMessageBox.Ok:
+                    # sending the commands for slewing
                     self.app.mountCommandQueue.put(':PO#')
                     self.app.mountCommandQueue.put(':Sz{0:03d}*00#'.format(azimuth))
                     self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(altitude))
@@ -356,6 +365,7 @@ class HemisphereWindow(widget.MwWidget):
                         self.app.mountCommandQueue.put(RA)
                         self.app.mountCommandQueue.put(DEC)
                         self.app.mountCommandQueue.put(':MS#')
+                    # todo: open automatically the image window and start continuously taking pictures
 
         # first do the model points
         if self.ui.checkEditModelPoints.isChecked():
