@@ -313,6 +313,8 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_runTimeChangeModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_runHystereseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogCancelButton))
+        self.widgetIcon(self.ui.btn_stop, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_MessageBoxWarning))
+
         # PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward)
         # the icon picture in gui
         pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')

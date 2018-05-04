@@ -501,9 +501,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>375</x>
        <y>250</y>
-       <width>81</width>
+       <width>66</width>
        <height>21</height>
       </rect>
      </property>
@@ -534,7 +534,7 @@
       <string>----</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -615,7 +615,7 @@
       <string>--</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -669,7 +669,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>375</x>
        <y>340</y>
        <width>41</width>
        <height>21</height>
@@ -768,7 +768,7 @@
       <string>--</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -795,9 +795,9 @@
     <widget class="QLabel" name="label_61">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>415</x>
        <y>340</y>
-       <width>41</width>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -1483,7 +1483,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>375</x>
        <y>370</y>
        <width>41</width>
        <height>21</height>
@@ -1525,9 +1525,9 @@
     <widget class="QLabel" name="label_91">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>415</x>
        <y>370</y>
-       <width>41</width>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -1609,7 +1609,7 @@
     <widget class="QLineEdit" name="le_horizonLimitHigh">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>375</x>
        <y>400</y>
        <width>41</width>
        <height>21</height>
@@ -1789,9 +1789,9 @@
     <widget class="QLabel" name="label_109">
      <property name="geometry">
       <rect>
-       <x>400</x>
+       <x>415</x>
        <y>400</y>
-       <width>21</width>
+       <width>26</width>
        <height>20</height>
       </rect>
      </property>

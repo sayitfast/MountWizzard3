@@ -323,8 +323,9 @@ class MWStyles:
         color: #C0C0C0;
     }
     QPushButton[iconset='true'] {
-        text-align: left;
-        padding-left: 5px;
+        text-align: center;
+        padding-left: 3px;
+        padding-right: 3px;
     }
     QPushButton:focus {
         outline: none;

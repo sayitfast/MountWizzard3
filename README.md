@@ -27,6 +27,7 @@ Supports SGPro, INDI FRamework, MaximDL (limited to imaging), Stickstation, MBox
 - Remote shutdown of App for remote site automation
 - Boots mount via ethernet
 - Update UTC data / asteroid ... elements (Windows only)
+- no need for configuring the driver and or changing setting refine modes of mount (MW3 does it directly)
 
 Please check for these features, if you have the right (mostly newest) firmware installed on your mount.
 
