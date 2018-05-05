@@ -20,7 +20,6 @@
 import logging
 import PyQt5
 import time
-import copy
 from queue import Queue
 from astrometry import transform
 

@@ -216,8 +216,16 @@ class HemisphereWindow(widget.MwWidget):
         self.updateCelestial()
         self.updateAlignmentStars()
 
-    def updateMeridianLimits(self, guide, slew):
+    def updateMeridianLimits(self):
         if self.showStatus:
+            self.app.sharedMountDataLock.lockForRead()
+            if 'MeridianLimitSlew' in self.app.workerMountDispatcher.data:
+                slew = copy.copy(self.app.workerMountDispatcher.data['MeridianLimitSlew'])
+                guide = copy.copy(self.app.workerMountDispatcher.data['MeridianLimitGuide'])
+            else:
+                slew = 0
+                guide = 0
+            self.app.sharedMountDataLock.unlock()
             self.deltaGuide.set_visible(self.ui.checkShowMeridian.isChecked())
             self.deltaSlew.set_visible(self.ui.checkShowMeridian.isChecked())
             self.deltaGuide.set_xy((180 - guide, 0))

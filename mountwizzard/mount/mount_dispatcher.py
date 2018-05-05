@@ -46,7 +46,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     # signals for data transfer to other threads
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal(float, float)
-    signalMountLimits = PyQt5.QtCore.pyqtSignal(int, int)
+    signalMountLimits = PyQt5.QtCore.pyqtSignal()
     signalAlignmentStars = PyQt5.QtCore.pyqtSignal()
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
     signalMountShowModelNames = PyQt5.QtCore.pyqtSignal()
