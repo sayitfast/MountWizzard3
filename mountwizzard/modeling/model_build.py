@@ -352,13 +352,11 @@ class ModelingBuild:
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
-                PyQt5.QtWidgets.QApplication.processEvents()
             dec = self.transform.degStringToDecimal(commandSet['reply'], ':')
             commandSet = {'command': ':Gr#', 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
-                PyQt5.QtWidgets.QApplication.processEvents()
             ra = self.transform.degStringToDecimal(commandSet['reply'], ':')
             if self.app.workerINDI.telescopeDevice != '':
                 self.app.INDICommandQueue.put(
@@ -373,21 +371,18 @@ class ModelingBuild:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
                 time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
                 if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
                     # wait for dome
                     while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
                         if self.cancel:
                             self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                             break
-                        PyQt5.QtWidgets.QApplication.processEvents()
                         time.sleep(0.2)
         else:
             while not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
-                PyQt5.QtWidgets.QApplication.processEvents()
                 time.sleep(0.2)
             if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
                 # wait for dome
@@ -395,7 +390,6 @@ class ModelingBuild:
                     if self.cancel:
                         self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                         break
-                    PyQt5.QtWidgets.QApplication.processEvents()
                     time.sleep(0.2)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
