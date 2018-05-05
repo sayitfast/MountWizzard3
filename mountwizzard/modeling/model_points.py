@@ -68,8 +68,6 @@ class ModelPoints:
                                    self.app.config['CheckUseMinimumHorizonLine'],
                                    self.app.config['AltitudeMinimumHorizon'])
 
-            self.generateCelestialEquator()
-
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:

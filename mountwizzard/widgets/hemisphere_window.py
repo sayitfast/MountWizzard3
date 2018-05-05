@@ -99,13 +99,13 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.checkShowMeridian.clicked.connect(self.updateMeridianLimits)
         self.app.workerMountDispatcher.signalAlignmentStars.connect(self.updateAlignmentStars)
         self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
-        self.app.signalMountSiteData.connect(self.updateCelestial)
+        self.app.workerMountDispatcher.signalAlignmentStars.connect(self.updateCelestial)
         self.ui.checkShowCelestial.clicked.connect(self.updateCelestial)
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
-        self.ui.checkEditNone.clicked.connect(self.setEditModus)
-        self.ui.checkEditModelPoints.clicked.connect(self.setEditModus)
-        self.ui.checkEditHorizonMask.clicked.connect(self.setEditModus)
-        self.ui.checkPolarAlignment.clicked.connect(self.setEditModus)
+        self.ui.checkEditNone.clicked.connect(self.setOperationModus)
+        self.ui.checkEditModelPoints.clicked.connect(self.setOperationModus)
+        self.ui.checkEditHorizonMask.clicked.connect(self.setOperationModus)
+        self.ui.checkPolarAlignment.clicked.connect(self.setOperationModus)
 
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
@@ -270,44 +270,32 @@ class HemisphereWindow(widget.MwWidget):
             if self.ui.checkPolarAlignment.isChecked():
                 self.ui.checkPolarAlignment.setChecked(False)
                 self.ui.checkEditNone.setChecked(True)
-        self.setEditModus()
+        self.setOperationModus()
 
     def plotImagedPoint(self, az, alt):
         self.pointsPlotCross.set_data(numpy.append(az, self.pointsPlotCross.get_xdata()), numpy.append(alt, self.pointsPlotCross.get_ydata()))
         self.drawCanvas()
 
-    def setEditModus(self):
+    def setOperationModus(self):
+        # reset the settings
+        self.maskPlotMarker.set_marker('None')
+        self.maskPlotMarker.set_color('#006000')
+        self.pointsPlotBig.set_color('#00A000')
+        self.starsAlignment.set_color('#C0C000')
+        self.starsAlignment.set_markersize(6)
+        for i in range(0, len(self.starsAnnotate)):
+            self.starsAnnotate[i].set_color('#808080')
+        self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
         if self.ui.checkEditNone.isChecked():
-            self.maskPlotMarker.set_marker('None')
-            self.maskPlotMarker.set_color('#006000')
-            self.pointsPlotBig.set_color('#00A000')
-            self.starsAlignment.set_color('#C0C000')
-            self.starsAlignment.set_markersize(6)
-            for i in range(0, len(self.starsAnnotate)):
-                self.starsAnnotate[i].set_color('#808080')
-            self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
+            pass
         elif self.ui.checkEditModelPoints.isChecked():
-            self.maskPlotMarker.set_marker('None')
-            self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#FF00FF')
-            self.starsAlignment.set_color('#C0C000')
-            self.starsAlignment.set_markersize(6)
-            for i in range(0, len(self.starsAnnotate)):
-                self.starsAnnotate[i].set_color('#808080')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
         elif self.ui.checkEditHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
-            self.pointsPlotBig.set_color('#00A000')
-            self.starsAlignment.set_color('#C0C000')
-            self.starsAlignment.set_markersize(6)
-            for i in range(0, len(self.starsAnnotate)):
-                self.starsAnnotate[i].set_color('#808080')
             self.maskPlotMarker.set_color('#FF00FF')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
         elif self.ui.checkPolarAlignment.isChecked():
-            self.maskPlotMarker.set_marker('None')
-            self.maskPlotMarker.set_color('#006000')
-            self.pointsPlotBig.set_color('#00A000')
             self.starsAlignment.set_color('#FFFF00')
             self.starsAlignment.set_markersize(12)
             for i in range(0, len(self.starsAnnotate)):
@@ -532,5 +520,5 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome2)
 
         # drawing the whole stuff
-        self.setEditModus()
+        self.setOperationModus()
         self.resizeEvent(0)
