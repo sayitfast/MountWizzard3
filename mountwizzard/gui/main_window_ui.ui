@@ -116,8 +116,8 @@
     <rect>
      <x>5</x>
      <y>150</y>
-     <width>776</width>
-     <height>491</height>
+     <width>781</width>
+     <height>486</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -8459,8 +8459,8 @@ manually</string>
       <rect>
        <x>5</x>
        <y>10</y>
-       <width>761</width>
-       <height>441</height>
+       <width>766</width>
+       <height>436</height>
       </rect>
      </property>
      <property name="sizePolicy">

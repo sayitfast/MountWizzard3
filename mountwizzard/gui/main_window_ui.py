@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         self.le_mountStatus.setObjectName("le_mountStatus")
         self.mainTabWidget = QtWidgets.QTabWidget(MainWindow)
         self.mainTabWidget.setEnabled(True)
-        self.mainTabWidget.setGeometry(QtCore.QRect(5, 150, 776, 491))
+        self.mainTabWidget.setGeometry(QtCore.QRect(5, 150, 781, 486))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -3052,7 +3052,7 @@ class Ui_MainWindow(object):
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
         self.settingsTabWidget = QtWidgets.QTabWidget(self.tab_3)
-        self.settingsTabWidget.setGeometry(QtCore.QRect(5, 10, 761, 441))
+        self.settingsTabWidget.setGeometry(QtCore.QRect(5, 10, 766, 436))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -6337,14 +6337,4 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.setText(_translate("MainWindow", "Image"))
         self.btn_openAnalyseWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the analyse window for checking measurements and modlelling data.</p></body></html>"))
         self.btn_openAnalyseWindow.setText(_translate("MainWindow", "Analyse"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QWidget()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
 
