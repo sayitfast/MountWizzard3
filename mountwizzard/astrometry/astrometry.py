@@ -207,10 +207,15 @@ class Astrometry(PyQt5.QtCore.QObject):
         else:
             fitsFileHandle.close()
         if self.app.imageWindow.showStatus:
-            if imageParams['Solved']:
-                self.app.imageWindow.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
-                self.app.imageWindow.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
-                self.app.imageWindow.signalSetAngleSolved.emit('{0:3.1f}'.format(imageParams['Angle']))
+            if 'Solved' in imageParams:
+                if imageParams['Solved']:
+                    self.app.imageWindow.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
+                    self.app.imageWindow.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+                    self.app.imageWindow.signalSetAngleSolved.emit('{0:3.1f}'.format(imageParams['Angle']))
+                else:
+                    self.app.imageWindow.signalSetRaSolved.emit('not solved')
+                    self.app.imageWindow.signalSetDecSolved.emit('not solved')
+                    self.app.imageWindow.signalSetAngleSolved.emit('-')
             else:
                 self.app.imageWindow.signalSetRaSolved.emit('not solved')
                 self.app.imageWindow.signalSetDecSolved.emit('not solved')
