@@ -68,6 +68,7 @@ class ImagesWindow(widget.MwWidget):
     signalSetRaSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetDecSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetAngleSolved = PyQt5.QtCore.pyqtSignal(str)
+    signalSetManualEnable = PyQt5.QtCore.pyqtSignal(bool)
 
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
@@ -138,6 +139,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_loadFits.clicked.connect(self.loadFitsFileFrom)
         self.app.workerImaging.imageSaved.connect(self.setImageReady)
         self.app.workerAstrometry.imageDataDownloaded.connect(self.setSolveReady)
+        self.signalSetManualEnable.connect(self.setManualEnable)
 
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
@@ -268,53 +270,30 @@ class ImagesWindow(widget.MwWidget):
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
-            self.setColorCool()
+            self.cmapColor = 'plasma'
         elif self.ui.btn_colorRainbow.isChecked():
-            self.setColorRainbow()
+            self.cmapColor = 'rainbow'
         else:
-            self.setColorGrey()
+            self.cmapColor = 'gray'
         self.setStrech()
-
-    def setColorGrey(self):
-        self.cmapColor = 'gray'
-
-    def setColorCool(self):
-        self.cmapColor = 'plasma'
-
-    def setColorRainbow(self):
-        self.cmapColor = 'rainbow'
 
     def setStrech(self):
         if self.ui.btn_strechLow.isChecked():
-            self.strechLow()
+            self.strech('Low')
         elif self.ui.btn_strechMid.isChecked():
-            self.strechMid()
+            self.strech('Mid')
         else:
-            self.strechHigh()
+            self.strech('High')
 
-    def strechLow(self):
+    def strech(self, mode):
         # Create interval object
-        interval = AsymmetricPercentileInterval(98, 99.995)
-        vmin, vmax = interval.get_limits(self.image)
-        # Create an ImageNormalize object using a LogStrech object
-        norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
-        # Display the image
-        self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
-        self.imageMatplotlib.fig.canvas.draw()
+        if mode == 'Low':
+            interval = AsymmetricPercentileInterval(98, 99.995)
+        elif mode == 'Mid':
+            interval = AsymmetricPercentileInterval(25, 99.95)
+        else:
+            interval = AsymmetricPercentileInterval(1, 99.9)
 
-    def strechMid(self):
-        # Create interval object
-        interval = AsymmetricPercentileInterval(25, 99.95)
-        vmin, vmax = interval.get_limits(self.image)
-        # Create an ImageNormalize object using a LogStrech object
-        norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
-        # Display the image
-        self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
-        self.imageMatplotlib.fig.canvas.draw()
-
-    def strechHigh(self):
-        # Create interval object
-        interval = AsymmetricPercentileInterval(1, 99.9)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -324,55 +303,43 @@ class ImagesWindow(widget.MwWidget):
 
     def setZoom(self):
         if self.ui.btn_size25.isChecked():
-            self.zoom25()
+            self.zoom(25)
         elif self.ui.btn_size50.isChecked():
-            self.zoom50()
+            self.zoom(50)
         else:
-            self.zoom100()
+            self.zoom(100)
 
-    def zoom25(self):
+    def zoom(self, mode):
         if self.sizeX:
-            minx = int(self.sizeX * 3 / 8)
-            maxx = minx + int(self.sizeX / 4)
-            miny = int(self.sizeY * 3 / 8)
-            maxy = miny + int(self.sizeY / 4)
+            if mode == 25:
+                minx = int(self.sizeX * 3 / 8)
+                maxx = minx + int(self.sizeX / 4)
+                miny = int(self.sizeY * 3 / 8)
+                maxy = miny + int(self.sizeY / 4)
+            elif mode == 50:
+                minx = int(self.sizeX / 4)
+                maxx = minx + int(self.sizeX / 2)
+                miny = int(self.sizeY / 4)
+                maxy = miny + int(self.sizeY / 2)
+            else:
+                minx = 0
+                maxx = self.sizeX
+                miny = 0
+                maxy = self.sizeY
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageMatplotlib.fig.canvas.draw()
 
-    def zoom50(self):
-        if self.sizeX:
-            minx = int(self.sizeX / 4)
-            maxx = minx + int(self.sizeX / 2)
-            miny = int(self.sizeY / 4)
-            maxy = miny + int(self.sizeY / 2)
-            self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
-            self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageMatplotlib.fig.canvas.draw()
-
-    def zoom100(self):
-        if self.sizeX:
-            minx = 0
-            maxx = self.sizeX
-            miny = 0
-            maxy = self.sizeY
-            self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
-            self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageMatplotlib.fig.canvas.draw()
-
-    def disableManual(self):
-        self.ui.btn_expose.setEnabled(False)
-        self.ui.btn_solve.setEnabled(False)
-        self.ui.btn_cancel.setEnabled(False)
-        self.ui.btn_exposeCont.setEnabled(False)
-        self.setWindowTitle('Image Window - Modeling running - No manual exposures possible')
-
-    def enableManual(self):
-        self.ui.btn_expose.setEnabled(True)
-        self.ui.btn_solve.setEnabled(True)
-        self.ui.btn_cancel.setEnabled(True)
-        self.ui.btn_exposeCont.setEnabled(True)
-        self.setWindowTitle('Image Window')
+    def setManualEnable(self, stat):
+        self.ui.btn_expose.setEnabled(stat)
+        self.ui.btn_solve.setEnabled(stat)
+        self.ui.btn_cancel.setEnabled(stat)
+        self.ui.btn_exposeCont.setEnabled(stat)
+        self.ui.btn_loadFits.setEnabled(stat)
+        if stat:
+            self.setWindowTitle('Image Window')
+        else:
+            self.setWindowTitle('Image Window - Modeling running - No manual exposures possible')
 
     def setCrosshairOnOff(self):
         if self.ui.checkShowCrosshairs.isChecked():
