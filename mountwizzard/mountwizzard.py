@@ -52,6 +52,7 @@ from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
 from analyse import analysedata
+from audio import audio
 if platform.system() == 'Windows':
     from automation import automation
 from wakeonlan import send_magic_packet
@@ -111,11 +112,6 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
 
-        # define audio signals
-        self.audioSignalsSet = dict()
-        self.guiAudioList = dict()
-        self.setupAudioSignals()
-
         # get ascom state
         self.checkASCOM()
 
@@ -160,10 +156,16 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
+        # threading for audio playing
+        self.threadAudio = PyQt5.QtCore.QThread()
+        self.workerAudio = audio.Audio(self, self.threadAudio)
+        self.threadAudio.setObjectName("Audio")
+        self.workerAudio.moveToThread(self.threadAudio)
+        self.threadAudio.started.connect(self.workerAudio.run)
         # threading for relay handling shutdown
         self.threadRelay = PyQt5.QtCore.QThread()
         self.workerRelay = relays.Relays(self, self.threadRelay)
-        self.threadRelay.setObjectName("Remote")
+        self.threadRelay.setObjectName("Relay")
         self.workerRelay.moveToThread(self.threadRelay)
         self.threadRelay.started.connect(self.workerRelay.run)
         # threading for imaging apps
@@ -266,7 +268,6 @@ class MountWizzardApp(widget.MwWidget):
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
         self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
         self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
-        self.signalAudio.connect(self.playAudioSignal)
         self.ui.loglevelDebug.clicked.connect(self.setLoggingLevel)
         self.ui.loglevelInfo.clicked.connect(self.setLoggingLevel)
         self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
@@ -385,32 +386,6 @@ class MountWizzardApp(widget.MwWidget):
         elif self.ui.loglevelError.isChecked():
             logging.getLogger().setLevel(logging.ERROR)
 
-    def setupAudioSignals(self):
-        # load the sounds available
-        self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
-        self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
-        self.audioSignalsSet['Horn'] = PyQt5.QtMultimedia.QSound(':/horn.wav')
-        self.audioSignalsSet['Beep1'] = PyQt5.QtMultimedia.QSound(':/beep1.wav')
-        self.audioSignalsSet['Alarm'] = PyQt5.QtMultimedia.QSound(':/alarm.wav')
-        # adding the possible sounds to drop down menu
-        self.guiAudioList['MountSlew'] = self.ui.soundMountSlewFinished
-        self.guiAudioList['DomeSlew'] = self.ui.soundDomeSlewFinished
-        self.guiAudioList['MountAlert'] = self.ui.soundMountAlert
-        self.guiAudioList['ModelingFinished'] = self.ui.soundModelingFinished
-        for itemKey, itemValue in self.guiAudioList.items():
-            self.guiAudioList[itemKey].addItem('None')
-            self.guiAudioList[itemKey].addItem('Beep')
-            self.guiAudioList[itemKey].addItem('Horn')
-            self.guiAudioList[itemKey].addItem('Beep1')
-            self.guiAudioList[itemKey].addItem('Alarm')
-            self.guiAudioList[itemKey].addItem('Alert')
-
-    def playAudioSignal(self, value):
-        if value in self.guiAudioList:
-            sound = self.guiAudioList[value].currentText()
-            if sound in self.audioSignalsSet:
-                self.audioSignalsSet[sound].play()
-
     def initConfigMain(self):
         # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
         if platform.system() == 'Windows':
@@ -434,7 +409,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerINDI.stop()
         if self.workerRelay.isRunning:
             self.workerRelay.stop()
-
+        if self.workerAudio.isRunning:
+            self.workerAudio.stop()
         # update the configuration
         if 'ConfigName' in self.config:
             self.logger.info('Setting up new configuration with name: [{0}]'.format(self.config['ConfigName']))
@@ -456,7 +432,10 @@ class MountWizzardApp(widget.MwWidget):
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
         self.workerRelay.initConfig()
+        self.workerAudio.initConfig()
 
+        if not self.workerAudio.isRunning:
+            self.threadAudio.start()
         if self.ui.checkEnableRelay.isChecked():
             self.threadRelay.start()
         if self.ui.checkEnableINDI.isChecked():
@@ -600,14 +579,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.mainTabWidget.setCurrentIndex(self.config['MainTabPosition'])
             if 'SettingTabPosition' in self.config:
                 self.ui.settingsTabWidget.setCurrentIndex(self.config['SettingTabPosition'])
-            if 'PlayMountSlew' in self.config:
-                self.ui.soundMountSlewFinished.setCurrentIndex(self.config['PlayMountSlew'])
-            if 'PlayDomeSlew' in self.config:
-                self.ui.soundDomeSlewFinished.setCurrentIndex(self.config['PlayDomeSlew'])
-            if 'PlayMountAlert' in self.config:
-                self.ui.soundMountAlert.setCurrentIndex(self.config['PlayMountAlert'])
-            if 'PlayModelingFinished' in self.config:
-                self.ui.soundModelingFinished.setCurrentIndex(self.config['PlayModelingFinished'])
             if 'CheckLoglevelDebug' in self.config:
                 self.ui.loglevelDebug.setChecked(self.config['CheckLoglevelDebug'])
             if 'CheckLoglevelInfo' in self.config:
@@ -668,10 +639,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ConfigName'] = self.ui.le_configName.text()
         self.config['MainTabPosition'] = self.ui.mainTabWidget.currentIndex()
         self.config['SettingTabPosition'] = self.ui.settingsTabWidget.currentIndex()
-        self.config['PlayMountSlew'] = self.ui.soundMountSlewFinished.currentIndex()
-        self.config['PlayDomeSlew'] = self.ui.soundDomeSlewFinished.currentIndex()
-        self.config['PlayMountAlert'] = self.ui.soundMountAlert.currentIndex()
-        self.config['PlayModelingFinished'] = self.ui.soundModelingFinished.currentIndex()
         self.config['CheckLoglevelDebug'] = self.ui.loglevelDebug.isChecked()
         self.config['CheckLoglevelInfo'] = self.ui.loglevelInfo.isChecked()
         self.config['CheckLoglevelWarning'] = self.ui.loglevelWarning.isChecked()
@@ -692,6 +659,7 @@ class MountWizzardApp(widget.MwWidget):
         self.messageWindow.storeConfig()
         self.workerRelay.storeConfig()
         self.workerINDI.storeConfig()
+        self.workerAudio.storeConfig()
 
     def loadConfigData(self):
         try:

@@ -10,6 +10,7 @@ setup(
         'mountwizzard.analyse',
         'mountwizzard.ascom',
         'mountwizzard.astrometry',
+        'mountwizzard.audio',
         'mountwizzard.automation',
         'mountwizzard.baseclasses',
         'mountwizzard.imaging',

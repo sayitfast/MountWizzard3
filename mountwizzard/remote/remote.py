@@ -133,12 +133,13 @@ class Remote(PyQt5.QtCore.QObject):
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('MountWizzard Remote Server is shut down'.format(self.data['RemotePort']))
         # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.thread.quit()
-        self.thread.wait()
         self.logger.info('remote stopped')
 
     @PyQt5.QtCore.pyqtSlot()
