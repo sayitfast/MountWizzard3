@@ -35,7 +35,7 @@ use('Qt5Agg')
 class WorkerSignals(PyQt5.QtCore.QObject):
 
     finished = PyQt5.QtCore.pyqtSignal()
-    error = PyQt5.QtCore.pyqtSignal(tuple)
+    error = PyQt5.QtCore.pyqtSignal(object)
     result = PyQt5.QtCore.pyqtSignal(object)
 
 
@@ -55,6 +55,7 @@ class Worker(PyQt5.QtCore.QRunnable):
             result = self.fn(*self.args, **self.kwargs)
         except Exception as e:
             self.signals.error.emit(e)
+            print(e)
         else:
             self.signals.result.emit(result)
         finally:
@@ -64,11 +65,12 @@ class Worker(PyQt5.QtCore.QRunnable):
 class ImagesWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
     BASENAME = 'exposure-'
-    signalShowFitsImage = PyQt5.QtCore.pyqtSignal(object)
+    signalShowFitsImage = PyQt5.QtCore.pyqtSignal(str)
     signalSetRaSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetDecSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetAngleSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetManualEnable = PyQt5.QtCore.pyqtSignal(bool)
+    signalDisplayImage = PyQt5.QtCore.pyqtSignal(object)
 
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
@@ -86,12 +88,7 @@ class ImagesWindow(widget.MwWidget):
         self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
         # set the minimum size
         self.setMinimumSize(791, 400)
-        self.sizeX = 10
-        self.sizeY = 10
-        self.imageVmin = 1
-        self.imageVmax = 65535
         self.image = numpy.random.randint(low=5, high=6, size=(20, 20))
-        self.cmapColor = 'gray'
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
@@ -140,6 +137,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.workerImaging.imageSaved.connect(self.setImageReady)
         self.app.workerAstrometry.imageDataDownloaded.connect(self.setSolveReady)
         self.signalSetManualEnable.connect(self.setManualEnable)
+        self.signalDisplayImage.connect(self.displayImage)
 
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
@@ -242,6 +240,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageMatplotlibMarker.axes.plot(200, 200, zorder=10, color='#606060', marker='o', markersize=10, markeredgewidth=1, fillstyle='none')
         self.imageMatplotlibMarker.fig.canvas.draw()
 
+    @PyQt5.QtCore.pyqtSlot(str)
     def showFitsImage(self, filename):
         # fits file ahs to be there
         if not os.path.isfile(filename):
@@ -263,72 +262,107 @@ class ImagesWindow(widget.MwWidget):
             pass
         self.image = copy.copy(fitsFileHandle[0].data)
         fitsFileHandle.close()
-        self.sizeY, self.sizeX = self.image.shape
-        self.setStrech()
-        self.setZoom()
-        self.drawMarkers()
+        strechMode = self.getStrechMode()
+        colorMode = self.getColorMode()
+        zoomMode = self.getZoomMode()
+        worker = Worker(self.calculateImage, self.image, strechMode, colorMode, zoomMode)
+        worker.signals.result.connect(self.signalDisplayImage)
+        self.threadpool.start(worker)
 
-    def setColor(self):
-        if self.ui.btn_colorCool.isChecked():
-            self.cmapColor = 'plasma'
-        elif self.ui.btn_colorRainbow.isChecked():
-            self.cmapColor = 'rainbow'
+    @staticmethod
+    def calculateImage(image, strechMode, colorMode, zoomMode):
+        sizeX, sizeY = image.shape
+        if zoomMode == 25:
+            minx = int(sizeX * 3 / 8)
+            maxx = minx + int(sizeX / 4)
+            miny = int(sizeY * 3 / 8)
+            maxy = miny + int(sizeY / 4)
+        elif zoomMode == 50:
+            minx = int(sizeX / 4)
+            maxx = minx + int(sizeX / 2)
+            miny = int(sizeY / 4)
+            maxy = miny + int(sizeY / 2)
         else:
-            self.cmapColor = 'gray'
-        self.setStrech()
-
-    def setStrech(self):
-        if self.ui.btn_strechLow.isChecked():
-            self.strech('Low')
-        elif self.ui.btn_strechMid.isChecked():
-            self.strech('Mid')
-        else:
-            self.strech('High')
-
-    def strech(self, mode):
-        # Create interval object
-        if mode == 'Low':
+            minx = 0
+            maxx = sizeX
+            miny = 0
+            maxy = sizeY
+        if strechMode == 'Low':
             interval = AsymmetricPercentileInterval(98, 99.995)
-        elif mode == 'Mid':
+        elif strechMode == 'Mid':
             interval = AsymmetricPercentileInterval(25, 99.95)
         else:
             interval = AsymmetricPercentileInterval(1, 99.9)
-
-        vmin, vmax = interval.get_limits(self.image)
+        vmin, vmax = interval.get_limits(image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
-        # Display the image
-        self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
+        result = (minx, miny, maxx, maxy, colorMode, norm)
+        return result
+
+    @PyQt5.QtCore.pyqtSlot(object)
+    def displayImage(self, result):
+        minx = result[0]
+        miny = result[1]
+        maxx = result[2]
+        maxy = result[3]
+        color = result[4]
+        norm = result[5]
+        self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
+        self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
+        self.imageMatplotlib.axes.imshow(self.image, cmap=color, norm=norm)
         self.imageMatplotlib.fig.canvas.draw()
+        self.drawMarkers()
+
+    def setStrech(self):
+        strechMode = self.getStrechMode()
+        colorMode = self.getColorMode()
+        zoomMode = self.getZoomMode()
+        worker = Worker(self.calculateImage, self.image, strechMode, colorMode, zoomMode)
+        worker.signals.result.connect(self.signalDisplayImage)
+        self.threadpool.start(worker)
+
+    def setColor(self):
+        strechMode = self.getStrechMode()
+        colorMode = self.getColorMode()
+        zoomMode = self.getZoomMode()
+        worker = Worker(self.calculateImage, self.image, strechMode, colorMode, zoomMode)
+        worker.signals.result.connect(self.signalDisplayImage)
+        self.threadpool.start(worker)
 
     def setZoom(self):
-        if self.ui.btn_size25.isChecked():
-            self.zoom(25)
-        elif self.ui.btn_size50.isChecked():
-            self.zoom(50)
-        else:
-            self.zoom(100)
+        strechMode = self.getStrechMode()
+        colorMode = self.getColorMode()
+        zoomMode = self.getZoomMode()
+        worker = Worker(self.calculateImage, self.image, strechMode, colorMode, zoomMode)
+        worker.signals.result.connect(self.signalDisplayImage)
+        self.threadpool.start(worker)
 
-    def zoom(self, mode):
-        if self.sizeX:
-            if mode == 25:
-                minx = int(self.sizeX * 3 / 8)
-                maxx = minx + int(self.sizeX / 4)
-                miny = int(self.sizeY * 3 / 8)
-                maxy = miny + int(self.sizeY / 4)
-            elif mode == 50:
-                minx = int(self.sizeX / 4)
-                maxx = minx + int(self.sizeX / 2)
-                miny = int(self.sizeY / 4)
-                maxy = miny + int(self.sizeY / 2)
-            else:
-                minx = 0
-                maxx = self.sizeX
-                miny = 0
-                maxy = self.sizeY
-            self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
-            self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageMatplotlib.fig.canvas.draw()
+    def getColorMode(self):
+        if self.ui.btn_colorCool.isChecked():
+            color = 'plasma'
+        elif self.ui.btn_colorRainbow.isChecked():
+            color = 'rainbow'
+        else:
+            color = 'gray'
+        return color
+
+    def getStrechMode(self):
+        if self.ui.btn_strechLow.isChecked():
+            strech = 'Low'
+        elif self.ui.btn_strechMid.isChecked():
+            strech = 'Mid'
+        else:
+            strech = 'High'
+        return strech
+
+    def getZoomMode(self):
+        if self.ui.btn_size25.isChecked():
+            zoom = 25
+        elif self.ui.btn_size50.isChecked():
+            zoom = 50
+        else:
+            zoom = 100
+        return zoom
 
     def setManualEnable(self, stat):
         self.ui.btn_expose.setEnabled(stat)
