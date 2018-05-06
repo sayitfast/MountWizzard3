@@ -270,8 +270,8 @@ class ImagesWindow(widget.MwWidget):
         self.threadpool.start(worker)
 
     @staticmethod
-    def calculateImage(image, strechMode, colorMode, zoomMode):
-        sizeX, sizeY = image.shape
+    def calculateImage(imageOrig, strechMode, colorMode, zoomMode):
+        sizeX, sizeY = imageOrig.shape
         if zoomMode == 25:
             minx = int(sizeX * 3 / 8)
             maxx = minx + int(sizeX / 4)
@@ -287,6 +287,7 @@ class ImagesWindow(widget.MwWidget):
             maxx = sizeX
             miny = 0
             maxy = sizeY
+        image = imageOrig[minx:maxx, miny:maxy]
         if strechMode == 'Low':
             interval = AsymmetricPercentileInterval(98, 99.995)
         elif strechMode == 'Mid':
@@ -296,20 +297,15 @@ class ImagesWindow(widget.MwWidget):
         vmin, vmax = interval.get_limits(image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
-        result = (minx, miny, maxx, maxy, colorMode, norm)
+        result = (image, colorMode, norm)
         return result
 
     @PyQt5.QtCore.pyqtSlot(object)
     def displayImage(self, result):
-        minx = result[0]
-        miny = result[1]
-        maxx = result[2]
-        maxy = result[3]
-        color = result[4]
-        norm = result[5]
-        self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
-        self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-        self.imageMatplotlib.axes.imshow(self.image, cmap=color, norm=norm)
+        image = result[0]
+        color = result[1]
+        norm = result[2]
+        self.imageMatplotlib.axes.imshow(image, cmap=color, norm=norm)
         self.imageMatplotlib.fig.canvas.draw()
         self.drawMarkers()
 
