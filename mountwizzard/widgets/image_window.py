@@ -272,6 +272,7 @@ class ImagesWindow(widget.MwWidget):
     @staticmethod
     def calculateImage(imageOrig, strechMode, colorMode, zoomMode):
         sizeX, sizeY = imageOrig.shape
+        # calculate the cropping parameters
         if zoomMode == 25:
             minx = int(sizeX * 3 / 8)
             maxx = minx + int(sizeX / 4)
@@ -287,7 +288,9 @@ class ImagesWindow(widget.MwWidget):
             maxx = sizeX
             miny = 0
             maxy = sizeY
+        # crop image
         image = imageOrig[minx:maxx, miny:maxy]
+        # calculation the strech
         if strechMode == 'Low':
             interval = AsymmetricPercentileInterval(98, 99.995)
         elif strechMode == 'Mid':
