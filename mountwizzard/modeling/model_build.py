@@ -393,6 +393,7 @@ class ModelingBuild:
                     time.sleep(0.2)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
+        self.app.imageWindow.disableManual()
         # start clearing the data
         results = []
         # preparing the gui outputs
@@ -463,6 +464,7 @@ class ModelingBuild:
             changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
         else:
             changedResults = {}
+        self.app.imageWindow.enableManual()
         return changedResults
 
     def runInitialModel(self):

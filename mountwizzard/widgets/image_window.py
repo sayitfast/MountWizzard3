@@ -32,6 +32,35 @@ from gui import image_window_ui
 use('Qt5Agg')
 
 
+class WorkerSignals(PyQt5.QtCore.QObject):
+
+    finished = PyQt5.QtCore.pyqtSignal()
+    error = PyQt5.QtCore.pyqtSignal(tuple)
+    result = PyQt5.QtCore.pyqtSignal(object)
+
+
+class Worker(PyQt5.QtCore.QRunnable):
+
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+    @PyQt5.QtCore.pyqtSlot()
+    def run(self):
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except Exception as e:
+            self.signals.error.emit(e)
+        else:
+            self.signals.result.emit(result)
+        finally:
+            self.signals.finished.emit()
+
+
 class ImagesWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
     BASENAME = 'exposure-'
@@ -65,6 +94,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
+        self.threadpool = PyQt5.QtCore.QThreadPool()
 
         # adding the matplotlib integration
         self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
@@ -330,12 +360,18 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageMatplotlib.fig.canvas.draw()
 
-    def disableExposures(self):
+    def disableManual(self):
         self.ui.btn_expose.setEnabled(False)
+        self.ui.btn_solve.setEnabled(False)
+        self.ui.btn_cancel.setEnabled(False)
+        self.ui.btn_exposeCont.setEnabled(False)
         self.setWindowTitle('Image Window - Modeling running - No manual exposures possible')
 
-    def enableExposures(self):
+    def enableManual(self):
         self.ui.btn_expose.setEnabled(True)
+        self.ui.btn_solve.setEnabled(True)
+        self.ui.btn_cancel.setEnabled(True)
+        self.ui.btn_exposeCont.setEnabled(True)
         self.setWindowTitle('Image Window')
 
     def setCrosshairOnOff(self):
