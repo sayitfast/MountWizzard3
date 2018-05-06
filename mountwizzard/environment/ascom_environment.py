@@ -32,6 +32,7 @@ class AscomEnvironment:
         self.main = main
         self.app = app
         self.data = data
+        self.access = dict()
         self.ascom = None
         self.chooser = None
         self.driverName = ''
@@ -46,6 +47,8 @@ class AscomEnvironment:
             try:
                 self.ascom = Dispatch(self.driverName)
                 self.ascom.connected = True
+                # reset access list
+                self.access = dict()
                 self.logger.info('Driver chosen:{0}'.format(self.driverName))
                 self.application['Status'] = 'OK'
                 self.logger.info('ASCOM Environment started')
@@ -104,57 +107,110 @@ class AscomEnvironment:
     def getData(self):
         self.app.sharedEnvironmentDataLock.lockForWrite()
         try:
-            self.data['DewPoint'] = self.ascom.DewPoint
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'DewPoint' not in self.access:
+                self.data['DewPoint'] = self.ascom.DewPoint
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['DewPoint'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['Temperature'] = self.ascom.Temperature
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'Temperature' not in self.access:
+                self.data['Temperature'] = self.ascom.Temperature
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['Temperature'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['Humidity'] = self.ascom.Humidity
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'Humidity' not in self.access:
+                self.data['Humidity'] = self.ascom.Humidity
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['Humidity'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['Pressure'] = self.ascom.Pressure
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'Pressure' not in self.access:
+                self.data['Pressure'] = self.ascom.Pressure
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['Pressure'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['SQR'] = self.ascom.SkyQuality
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'SQR' not in self.access:
+                self.data['SQR'] = self.ascom.SkyQuality
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['SQR'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['CloudCover'] = self.ascom.CloudCover
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'CloudCover' not in self.access:
+                self.data['CloudCover'] = self.ascom.CloudCover
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['CloudCover'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['RainRate'] = self.ascom.RainRate
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'RainRate' not in self.access:
+                self.data['RainRate'] = self.ascom.RainRate
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['RainRate'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['WindSpeed'] = self.ascom.WindSpeed
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'WindSpeed' not in self.access:
+                self.data['WindSpeed'] = self.ascom.WindSpeed
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['WindSpeed'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
+
         try:
-            self.data['WindDirection'] = self.ascom.WindDirection
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
+            if 'WindDirection' not in self.access:
+                self.data['WindDirection'] = self.ascom.WindDirection
+        except pythoncom.com_error as e:
+            if 'not implemented' in e.excepinfo[2]:
+                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.access['WindDirection'] = False
+            else:
+                self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
         self.app.sharedEnvironmentDataLock.unlock()
