@@ -106,4 +106,3 @@ class Audio(PyQt5.QtCore.QObject):
             sound = self.guiAudioList[value].currentText()
             if sound in self.audioSignalsSet:
                 self.audioSignalsSet[sound].play()
-
