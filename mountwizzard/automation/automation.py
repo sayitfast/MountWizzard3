@@ -48,7 +48,7 @@ class Automation(PyQt5.QtCore.QObject):
     ASTEROIDS_UNUSAL = 'http://www.minorplanetcenter.net/iau/MPCORB/Unusual.txt'
     SPACESTATIONS = 'http://www.celestrak.com/NORAD/elements/stations.txt'
     SATBRIGHTEST = 'http://www.celestrak.com/NORAD/elements/visual.txt'
-    TARGET_DIR = os.getcwd() + '\\'
+    TARGET_DIR = os.getcwd() + '/config/'
     COMETS_FILE = 'comets.mpc'
     ASTEROIDS_FILE = 'asteroids.mpc'
     SPACESTATIONS_FILE = 'spacestations.tle'

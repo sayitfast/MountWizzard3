@@ -280,7 +280,7 @@ class MountWizzardApp(widget.MwWidget):
 
     @staticmethod
     def timeStamp():
-        return time.strftime('%H:%M:%S -> ', time.localtime())
+        return time.strftime('%H:%M:%S - ', time.localtime())
 
     @staticmethod
     def changeStylesheet(ui, item, value):
