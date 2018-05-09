@@ -420,7 +420,8 @@ class ModelingBuild:
             time.sleep(0.2)
         if len(runPoints) > 0:
             messageQueue.put('#BYMore than 100 points defined, using only first 100 points for model build\n')
-        # loading the points to the queue, but only the first 100, because moutn computer does only allow 100 points
+            messageQueue.put('ToModel>{0:02d}'.format(100))
+        # loading the points to the queue, but only the first 100, because mount computer does only allow 100 points
         for i, (p_az, p_alt) in enumerate(runPoints[:100]):
             modelingData['Index'] = i
             modelingData['Azimuth'] = p_az
