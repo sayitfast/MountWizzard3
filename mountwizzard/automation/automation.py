@@ -231,6 +231,8 @@ class Automation(PyQt5.QtCore.QObject):
 
         self.checkApplication()
         self.TARGET_DIR = self.appInstallPath
+        if self.TARGET_DIR == '':
+            self.TARGET_DIR = os.getcwd()+'/config/'
         # signal slot
         self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcherQueue.put('EARTHROTATION'))
         self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcherQueue.put('SPACESTATIONS'))
