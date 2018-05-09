@@ -418,8 +418,10 @@ class ModelingBuild:
         # wait until threads started
         while not self.workerImage.isRunning and not self.workerPlatesolve.isRunning and not self.workerSlewpoint.isRunning:
             time.sleep(0.2)
-        # loading the point to the queue
-        for i, (p_az, p_alt) in enumerate(runPoints):
+        if len(runPoints) > 0:
+            messageQueue.put('#BYMore than 100 points defined, using only first 100 points for model build\n')
+        # loading the points to the queue, but only the first 100, because moutn computer does only allow 100 points
+        for i, (p_az, p_alt) in enumerate(runPoints[:100]):
             modelingData['Index'] = i
             modelingData['Azimuth'] = p_az
             modelingData['Altitude'] = p_alt
