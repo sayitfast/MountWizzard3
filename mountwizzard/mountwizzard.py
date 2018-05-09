@@ -1229,7 +1229,7 @@ class MountWizzardApp(widget.MwWidget):
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             elif text.startswith('#BR'):
-                self.messageWindow.ui.messages.setTextColor(self.COLOR_ORANGE)
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_RED)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             elif text.startswith('#BO'):
