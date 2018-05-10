@@ -250,6 +250,7 @@ class ImagesWindow(widget.MwWidget):
             return
         self.signalSetRaSolved.emit('')
         self.signalSetDecSolved.emit('')
+        self.signalSetAngleSolved.emit('')
         self.imagePath = filename
         self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
         try:
