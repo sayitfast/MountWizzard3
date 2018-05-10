@@ -28,8 +28,9 @@ from baseclasses import checkIP
 class Relays(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
     CYCLE_STATUS = 500
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread):
         super().__init__()
@@ -37,6 +38,7 @@ class Relays(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.statusTimer = None
+        self.cycleTimer = None
         self.relayCommandQueue = queue.Queue()
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexIPChange = PyQt5.QtCore.QMutex()
@@ -221,11 +223,11 @@ class Relays(PyQt5.QtCore.QObject):
         self.statusTimer.setSingleShot(False)
         self.statusTimer.timeout.connect(self.getStatus)
         self.statusTimer.start(self.CYCLE_STATUS)
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.statusTimer.stop()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -236,6 +238,12 @@ class Relays(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.logger.info('relay stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.statusTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.relayCommandQueue.empty():
