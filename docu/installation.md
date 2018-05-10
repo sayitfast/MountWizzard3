@@ -68,6 +68,14 @@ http://nova.astrometry.net. In the latter case, please register and get your per
 remind that you need for the online solver an internet connection and it's definitly slower than any local
 plate solving program.
 
+#### Local Astrometry.net installation
+There is a great project done by Jussi who enables the use of astrometry on your local harddisk without
+internet connection. We both tested MountWizzard3 to work with astrometry-api-lit together and I would
+recommend this solution. You will find all necessary information on
+<pre>
+https://github.com/Jusas/astrometry-api-lite
+</pre>
+Astrometry-api-lite is available for linux and Windows10.
 
 #### Preparing local working directory
 If you would like to use MountWizzard on you astro imaging computer, it makes a lot of sense to create a working directory of your choice and
