@@ -37,7 +37,8 @@ class Slewpoint(PyQt5.QtCore.QObject):
     signalStartSlewing = PyQt5.QtCore.pyqtSignal()
     signalPointImaged = PyQt5.QtCore.pyqtSignal(float, float)
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
         super().__init__()
@@ -47,6 +48,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.mutexTakeNextPoint = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.takeNextPoint = False
+        self.cycleTimer = None
         self.signalStartSlewing.connect(self.startSlewing)
 
     def startSlewing(self):
@@ -60,19 +62,26 @@ class Slewpoint(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.queuePoint.queue.clear()
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if self.takeNextPoint and not self.queuePoint.empty():
@@ -95,7 +104,8 @@ class Image(PyQt5.QtCore.QObject):
     queueImage = Queue()
     signalImaging = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
         super().__init__()
@@ -104,6 +114,7 @@ class Image(PyQt5.QtCore.QObject):
         self.isRunning = True
         self.imageIntegrated = False
         self.imageSaved = False
+        self.cycleTimer = None
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexImageIntegrated = PyQt5.QtCore.QMutex()
         self.mutexImageSaved = PyQt5.QtCore.QMutex()
@@ -126,20 +137,27 @@ class Image(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
         # self.main.app.workerImaging.cameraHandler.cancel = True
         self.queueImage.queue.clear()
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.queueImage.empty():
@@ -182,7 +200,8 @@ class Platesolve(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     queuePlatesolve = Queue()
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
         super().__init__()
@@ -191,6 +210,7 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexImageDataDownloaded = PyQt5.QtCore.QMutex()
         self.isRunning = True
+        self.cycleTimer = None
         self.imageDataDownloaded = False
         self.main.app.workerAstrometry.imageDataDownloaded.connect(self.setImageDataDownloaded)
 
@@ -205,19 +225,26 @@ class Platesolve(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.queuePlatesolve.queue.clear()
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.queuePlatesolve.empty():
