@@ -213,6 +213,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             fitsFileHandle.flush()
             fitsFileHandle.close()
             self.astrometryHandler.solveImage(imageParams)
+            self.logger.info('Image params: {0}'.format(imageParams))
         else:
             fitsFileHandle.close()
         if self.app.imageWindow.showStatus:

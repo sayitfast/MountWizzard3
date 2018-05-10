@@ -223,6 +223,7 @@ class Imaging(PyQt5.QtCore.QObject):
         else:
             imageParams['Speed'] = 'Normal'
         self.cameraHandler.getImage(imageParams)
+        self.logger.info('Image params: {0}'.format(imageParams))
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
             # add the coordinates to the image of the telescope if not present
