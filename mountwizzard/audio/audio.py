@@ -27,7 +27,7 @@ class Audio(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     signalDestruct = PyQt5.QtCore.pyqtSignal()
-    CYCLE = 200
+    CYCLE = 500
 
     def __init__(self, app, thread):
         super().__init__()
