@@ -88,6 +88,6 @@ class INDIDome:
                 else:
                     if self.data['Slewing']:
                         self.main.signalSlewFinished.emit()
-                        self.app.signalAudio.emit('DomeSlew')
+                        self.app.audioCommandQueue.put('DomeSlew')
                     self.data['Slewing'] = False
                 self.app.sharedDomeDataLock.unlock()

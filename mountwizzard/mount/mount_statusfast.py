@@ -193,7 +193,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             if value[6] in ['1', '98', '99']:
                                 # only emit one time !
                                 if not self.audioDone:
-                                    self.app.signalAudio.emit('MountAlert')
+                                    self.app.audioCommandQueue.put('MountAlert')
                                     self.app.messageQueue.put('#BRMount STOPPED - WARNING !!!\n')
                                     # stop any modeling
                                     self.app.workerModelingDispatcher.signalCancel.emit()
@@ -204,7 +204,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             if 'Slewing' in self.data:
                                 if self.data['Slewing'] and value[7] != '1':
                                     self.app.workerMountDispatcher.signalSlewFinished.emit()
-                                    self.app.signalAudio.emit('MountSlew')
+                                    self.app.audioCommandQueue.put('MountSlew')
                             self.data['Slewing'] = (value[7] == '1')
                             self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
                             self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))

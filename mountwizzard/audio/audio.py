@@ -26,6 +26,9 @@ from baseclasses import checkIP
 class Audio(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
+    CYCLE = 200
+
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
@@ -34,14 +37,12 @@ class Audio(PyQt5.QtCore.QObject):
 
         self.app = app
         self.thread = thread
+        self.cycleTimer = None
 
         # define audio signals
         self.audioSignalsSet = dict()
         self.guiAudioList = dict()
         self.setupAudioSignals()
-
-        # signal slot
-        self.app.signalAudio.connect(self.playAudioSignal)
 
     def initConfig(self):
         try:
@@ -71,15 +72,31 @@ class Audio(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('audio stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.signalDestruct.connect(self.destruct)
+        self.cycleTimer.stop()
+
+    def doCommand(self):
+        if not self.app.audioCommandQueue.empty():
+            command = self.app.audioCommandQueue.get()
+            self.playAudioSignal(command)
 
     def setupAudioSignals(self):
         # load the sounds available

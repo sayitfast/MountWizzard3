@@ -418,7 +418,7 @@ class ModelingBuild:
         # wait until threads started
         while not self.workerImage.isRunning and not self.workerPlatesolve.isRunning and not self.workerSlewpoint.isRunning:
             time.sleep(0.2)
-        if len(runPoints) > 0:
+        if len(runPoints) > 100:
             messageQueue.put('#BYMore than 100 points defined, using only first 100 points for model build\n')
             messageQueue.put('ToModel>{0:02d}'.format(100))
         # loading the points to the queue, but only the first 100, because mount computer does only allow 100 points
@@ -533,7 +533,7 @@ class ModelingBuild:
             self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.signalAudio.emit('ModelingFinished')
+            self.app.audioCommandQueue.put('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
             self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
         else:
@@ -602,7 +602,7 @@ class ModelingBuild:
             self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.signalAudio.emit('ModelingFinished')
+            self.app.audioCommandQueue.put('ModelingFinished')
             self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
             self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
         else:

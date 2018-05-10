@@ -125,7 +125,7 @@ class AscomDome:
         try:
             if self.data['Slewing'] and not self.ascom.Slewing:
                 self.main.signalSlewFinished.emit()
-                self.app.signalAudio.emit('DomeSlew')
+                self.app.audioCommandQueue.put('DomeSlew')
             self.data['Slewing'] = self.ascom.Slewing
         except Exception as e:
             self.logger.error('Problem getting data, error: {0}'.format(e))

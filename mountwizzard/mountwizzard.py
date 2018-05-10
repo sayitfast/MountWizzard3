@@ -61,7 +61,6 @@ from icons import resources
 
 class MountWizzardApp(widget.MwWidget):
     logger = logging.getLogger(__name__)
-    signalAudio = PyQt5.QtCore.pyqtSignal(str)
 
     # general signals
     signalMountSiteData = PyQt5.QtCore.pyqtSignal([str, str, str])
@@ -90,6 +89,7 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue = Queue()
         self.domeCommandQueue = Queue()
         self.modelCommandQueue = Queue()
+        self.audioCommandQueue = Queue()
         self.messageQueue = Queue()
         self.imageQueue = Queue()
         self.INDICommandQueue = Queue()
