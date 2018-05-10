@@ -9,7 +9,7 @@
 #
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.6.4
+# Python  v3.6.5
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
@@ -33,8 +33,9 @@ class Environment(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
     CYCLE_STATUS = 500
     CYCLE_DATA = 1000
 
@@ -45,6 +46,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.dataTimer = None
         self.statusTimer = None
+        self.cycleTimer = None
 
         self.app = app
         self.thread = thread
@@ -120,6 +122,7 @@ class Environment(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.environmentHandler.start()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         # timers
         self.statusTimer = PyQt5.QtCore.QTimer(self)
         self.statusTimer.setSingleShot(False)
@@ -129,12 +132,10 @@ class Environment(PyQt5.QtCore.QObject):
         self.dataTimer.timeout.connect(self.getDataFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
         self.dataTimer.start(self.CYCLE_STATUS)
-        while self.isRunning:
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.dataTimer.stop()
-        self.statusTimer.stop()
-        self.environmentHandler.stop()
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -144,6 +145,17 @@ class Environment(PyQt5.QtCore.QObject):
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('environment stopped')
+
+    def doCommand(self):
+        pass
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.signalDestruct.connect(self.destruct)
+        self.cycleTimer.stop()
+        self.dataTimer.stop()
+        self.statusTimer.stop()
+        self.environmentHandler.stop()
 
     @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):

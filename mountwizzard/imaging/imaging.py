@@ -9,7 +9,7 @@
 #
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.6.4
+# Python  v3.6.5
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
@@ -42,6 +42,7 @@ class Imaging(PyQt5.QtCore.QObject):
     cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
     imagingCancel = PyQt5.QtCore.pyqtSignal()
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     # putting status to processing
     imageIntegrated = PyQt5.QtCore.pyqtSignal()
@@ -50,7 +51,7 @@ class Imaging(PyQt5.QtCore.QObject):
 
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
     CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
@@ -64,6 +65,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.mutexData = PyQt5.QtCore.QMutex()
         self.statusTimer = None
+        self.cycleTimer = None
 
         # class data
         self.data = dict()
@@ -154,12 +156,11 @@ class Imaging(PyQt5.QtCore.QObject):
         self.statusTimer.setSingleShot(False)
         self.statusTimer.timeout.connect(self.getStatusFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.statusTimer.stop()
-        self.cameraHandler.stop()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -169,6 +170,13 @@ class Imaging(PyQt5.QtCore.QObject):
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('imaging stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.statusTimer.stop()
+        self.cameraHandler.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.imagingCommandQueue.empty():

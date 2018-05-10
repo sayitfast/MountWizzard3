@@ -34,8 +34,9 @@ class Dome(PyQt5.QtCore.QObject):
     signalDomePointer = PyQt5.QtCore.pyqtSignal(float, bool)
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
     CYCLE_STATUS = 500
 
     def __init__(self, app, thread):
@@ -45,6 +46,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.dataTimer = None
         self.statusTimer = None
+        self.cycleTimer = None
 
         self.app = app
         self.thread = thread
@@ -119,6 +121,7 @@ class Dome(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.domeHandler.start()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         # timers
         self.statusTimer = PyQt5.QtCore.QTimer(self)
         self.statusTimer.setSingleShot(False)
@@ -128,13 +131,10 @@ class Dome(PyQt5.QtCore.QObject):
         self.dataTimer.timeout.connect(self.getDataFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
         self.dataTimer.start(self.CYCLE_STATUS)
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.dataTimer.stop()
-        self.statusTimer.stop()
-        self.domeHandler.stop()
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -144,6 +144,14 @@ class Dome(PyQt5.QtCore.QObject):
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('dome stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.signalDestruct.connect(self.destruct)
+        self.cycleTimer.stop()
+        self.dataTimer.stop()
+        self.statusTimer.stop()
+        self.domeHandler.stop()
 
     def doCommand(self):
         if not self.app.domeCommandQueue.empty():

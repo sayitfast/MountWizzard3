@@ -23,7 +23,6 @@ import zlib
 import queue
 from xml.etree import ElementTree
 import PyQt5
-from PyQt5 import QtCore, QtNetwork, QtWidgets
 import indi.indi_xml as indiXML
 import astropy.io.fits as pyfits
 from baseclasses import checkIP
@@ -31,12 +30,14 @@ from baseclasses import checkIP
 
 class INDIClient(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    status = QtCore.pyqtSignal(int)
-    statusCCD = QtCore.pyqtSignal(bool)
-    statusEnvironment = QtCore.pyqtSignal(bool)
-    statusDome = QtCore.pyqtSignal(bool)
-    receivedImage = QtCore.pyqtSignal(bool)
-    processMessage = QtCore.pyqtSignal(object)
+    status = PyQt5.QtCore.pyqtSignal(int)
+    statusCCD = PyQt5.QtCore.pyqtSignal(bool)
+    statusEnvironment = PyQt5.QtCore.pyqtSignal(bool)
+    statusDome = PyQt5.QtCore.pyqtSignal(bool)
+    receivedImage = PyQt5.QtCore.pyqtSignal(bool)
+    processMessage = PyQt5.QtCore.pyqtSignal(object)
+
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     # INDI device types
     GENERAL_INTERFACE = 0
@@ -54,7 +55,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     DETECTOR_INTERFACE = (1 << 11)
     AUX_INTERFACE = (1 << 15)
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
 
     data = {
         'ServerIP': '',
@@ -79,6 +80,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.environmentDevice = ''
         self.domeDevice = ''
         self.telescopeDevice = ''
+        self.cycleTimer = None
         # signal slot
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
@@ -135,7 +137,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        self.socket = QtNetwork.QTcpSocket()
+        self.socket = PyQt5.QtNetwork.QTcpSocket()
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
@@ -143,16 +145,31 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
-        while self.isRunning:
-            self.doReconnect()
-            self.handleNewDevice()
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
+
+    def stop(self):
+        # if I leave the loop, I close the connection to remote host
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.signalDestruct.emit()
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('indi client stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
             self.socket.disconnectFromHost()
+        self.signalDestruct.disconnect(self.destruct)
         self.socket.hostFound.disconnect(self.handleHostFound)
         self.socket.connected.disconnect(self.handleConnected)
         self.socket.stateChanged.disconnect(self.handleStateChanged)
@@ -161,17 +178,9 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.error.disconnect(self.handleError)
         self.socket.close()
 
-    def stop(self):
-        # if I leave the loop, I close the connection to remote host
-        self.mutexIsRunning.lock()
-        if self.isRunning:
-            self.isRunning = False
-            self.thread.quit()
-            self.thread.wait()
-        self.mutexIsRunning.unlock()
-        self.logger.info('indi client stopped')
-
     def doCommand(self):
+        self.doReconnect()
+        self.handleNewDevice()
         self.app.sharedINDIDataLock.lockForRead()
         if not self.app.INDICommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             indiCommand = self.app.INDICommandQueue.get()
@@ -380,6 +389,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.messageString = "<data>"
         # Get message from socket.
         while self.socket.bytesAvailable():
+            # print(self.socket.bytesAvailable(), len(self.messageString))
             self.messageString += self.socket.read(100000).decode()
         # Add closing tag.
         self.messageString += "</data>"
@@ -395,7 +405,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.messageString = self.messageString[:-7]
 
     def sendMessage(self, indiCommand):
-        if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
+        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.write(indiCommand.toXML() + b'\n')
             self.socket.flush()
         else:

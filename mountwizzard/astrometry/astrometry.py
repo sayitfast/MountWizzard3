@@ -9,7 +9,7 @@
 #
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.6.4
+# Python  v3.6.5
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
@@ -41,13 +41,14 @@ class Astrometry(PyQt5.QtCore.QObject):
     astrometryStatusText = PyQt5.QtCore.pyqtSignal(str)
     astrometrySolvingTime = PyQt5.QtCore.pyqtSignal(str)
     astrometryCancel = PyQt5.QtCore.pyqtSignal()
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     # putting status to processing
     imageUploaded = PyQt5.QtCore.pyqtSignal()
     imageSolved = PyQt5.QtCore.pyqtSignal()
     imageDataDownloaded = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
     CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
@@ -61,6 +62,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.transform = transform.Transform(self.app)
         self.statusTimer = None
+        self.cycleTimer = None
 
         # class data
         self.data = dict()
@@ -159,12 +161,11 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.statusTimer.setSingleShot(False)
         self.statusTimer.timeout.connect(self.getStatusFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.statusTimer.stop()
-        self.astrometryHandler.stop()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -174,6 +175,13 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('astrometry stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.signalDestruct.disconnect(self.destruct)
+        self.cycleTimer.stop()
+        self.statusTimer.stop()
+        self.astrometryHandler.stop()
 
     def doCommand(self):
         if not self.astrometryCommandQueue.empty():

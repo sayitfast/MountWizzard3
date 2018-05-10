@@ -31,7 +31,8 @@ from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 class Automation(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_COMMAND = 0.5
+    CYCLE = 500
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
@@ -64,6 +65,7 @@ class Automation(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.commandDispatcherQueue = queue.Queue()
+        self.cycleTimer = None
 
         self.appAvailable = False
         self.appName = ''
@@ -275,10 +277,11 @@ class Automation(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -288,6 +291,11 @@ class Automation(PyQt5.QtCore.QObject):
             self.thread.wait()
         self.mutexIsRunning.unlock()
         self.logger.info('automation stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.commandDispatcherQueue.empty():
