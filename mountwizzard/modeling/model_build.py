@@ -558,14 +558,16 @@ class ModelingBuild:
             self.app.messageQueue.put('Reloading actual alignment model from mount\n')
             self.app.workerMountDispatcher.reloadAlignmentModel()
             self.app.messageQueue.put('Syncing actual alignment model and modeling data\n')
-            self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData)
-            self.analyseData.saveData(self.modelAlignmentData, name)
-            self.app.signalSetAnalyseFilename.emit(name)
-            if self.app.analyseWindow.showStatus:
-                self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.audioCommandQueue.put('ModelingFinished')
-            self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
-            self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
+            if self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData):
+                self.analyseData.saveData(self.modelAlignmentData, name)
+                self.app.signalSetAnalyseFilename.emit(name)
+                if self.app.analyseWindow.showStatus:
+                    self.app.ui.btn_openAnalyseWindow.clicked.emit()
+                self.app.audioCommandQueue.put('ModelingFinished')
+                self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
+                self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
+            else:
+                self.app.messageQueue.put('#BRModel finished with errors\n')
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
 
@@ -627,14 +629,16 @@ class ModelingBuild:
             self.app.messageQueue.put('Reloading actual alignment model from mount\n')
             self.app.workerMountDispatcher.reloadAlignmentModel()
             self.app.messageQueue.put('Syncing actual alignment model and modeling data\n')
-            self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData)
-            self.analyseData.saveData(self.modelAlignmentData, name)
-            self.app.signalSetAnalyseFilename.emit(name)
-            if self.app.analyseWindow.showStatus:
-                self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.audioCommandQueue.put('ModelingFinished')
-            self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
-            self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+            if self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData):
+                self.analyseData.saveData(self.modelAlignmentData, name)
+                self.app.signalSetAnalyseFilename.emit(name)
+                if self.app.analyseWindow.showStatus:
+                    self.app.ui.btn_openAnalyseWindow.clicked.emit()
+                self.app.audioCommandQueue.put('ModelingFinished')
+                self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
+                self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+            else:
+                self.app.messageQueue.put('#BRModel finished with errors\n')
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
 

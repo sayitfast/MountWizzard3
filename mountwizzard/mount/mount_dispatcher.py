@@ -548,10 +548,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
         if commandSet['reply'][:5] == 'Coord':
-            self.logger.info('mount modeling synced')
+            self.logger.info('Mount modeling synced')
             return True
         else:
-            self.logger.warning('error in sync mount modeling')
+            self.logger.warning('Error in sync mount modeling')
             return False
 
     def programBatchData(self, data):
@@ -671,9 +671,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 modelingData['RaErrorOptimized'].append(self.data['ModelError'][i] * math.sin(math.radians(self.data['ModelErrorAngle'][i])))
                 modelingData['DecErrorOptimized'].append(self.data['ModelError'][i] * math.cos(math.radians(self.data['ModelErrorAngle'][i])))
             self.app.messageQueue.put('Data synced\n')
+            returnValue = True
         else:
             self.logger.warning('Size mount modeling {0} and modeling data {1} do not fit !'.format(len(modelingData), len(self.data['ModelError'])))
             self.app.messageQueue.put('Mount Model and Model Data could not be synced\n')
             self.app.messageQueue.put('Error data sync mismatch!\n')
+            returnValue = False
         self.app.sharedMountDataLock.unlock()
         self.app.sharedModelingDataLock.unlock()
+        return returnValue
