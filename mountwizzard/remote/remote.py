@@ -31,7 +31,8 @@ class Remote(PyQt5.QtCore.QObject):
     TCP_IP = '127.0.0.1'
     SIZEOF_UINT16 = 2
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread):
         super().__init__()
@@ -43,6 +44,7 @@ class Remote(PyQt5.QtCore.QObject):
         self.thread = thread
         self.checkIP = checkIP.CheckIP()
         self.settingsChanged = False
+        self.cycleTimer = None
         self.data = dict()
         self.data['RemotePort'] = 0
         self.data['RemoteIP'] = '127.0.0.1'
@@ -121,15 +123,12 @@ class Remote(PyQt5.QtCore.QObject):
         else:
             self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
             self.tcpServer.newConnection.connect(self.addConnection)
-        while self.isRunning:
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.tcpServer.newConnection.disconnect(self.addConnection)
-        self.tcpServer.close()
-        if self.clientConnection:
-            self.clientConnection.close()
-        self.tcpServer = None
-        self.clientConnection = None
+
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -141,6 +140,20 @@ class Remote(PyQt5.QtCore.QObject):
         self.logger.info('MountWizzard Remote Server is shut down'.format(self.data['RemotePort']))
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.logger.info('remote stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
+        self.tcpServer.newConnection.disconnect(self.addConnection)
+        self.tcpServer.close()
+        if self.clientConnection:
+            self.clientConnection.close()
+        self.tcpServer = None
+        self.clientConnection = None
+
+    def doCommand(self):
+        pass
 
     @PyQt5.QtCore.pyqtSlot()
     def addConnection(self):
