@@ -1,4 +1,4 @@
-# MountWizzard <img src="docu/pics/mw.png" width='64' height='64'/>
+# MountWizzard3 <img src="docu/pics/mw.png" width='64' height='64'/>
 
 #### Application for use in 10micron Mount environment
 Supports SGPro, INDI Framework, MaximDL (limited to imaging), Stickstation, MBox, UniHedron SQR, OpenWeather
@@ -7,7 +7,7 @@ and some more ASCOM parts
 
 #### Version release: new, test version actual 3.0 beta 1
 
-[Link to the extended documentation and handbook of MountWizzard](./docu/home.md)
+[Link to the extended documentation and handbook of MountWizzard3](./docu/home.md)
 
 ## Features:
 - Runs multi platform (Windows7,10, Linux, Mac OSX)

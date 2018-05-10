@@ -1,4 +1,4 @@
-## <img src="pics/mw.png" width='64' height='64'/>Handbook for Mountwizzard 3.0
+## <img src="pics/mw.png" width='64' height='64'/>Handbook for Mountwizzard3
 
 MountWizzard is a open source software for adding features and functions for astronomers,
 who are using a 10micron mount. MountWizzard is written in python and uses some other astronomy
