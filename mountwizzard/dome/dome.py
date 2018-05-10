@@ -140,6 +140,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()

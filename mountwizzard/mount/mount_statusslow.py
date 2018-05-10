@@ -29,7 +29,8 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_STATUS_SLOW = 10000
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -40,6 +41,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.signalConnected = signalConnected
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.dataTimer = None
+        self.cycleTimer = None
         self.isRunning = False
         self.socket = None
         self.sendLock = False
@@ -79,12 +81,27 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.dataTimer.timeout.connect(self.getStatusSlow)
         time.sleep(1)
         self.dataTimer.start(self.CYCLE_STATUS_SLOW)
-        while self.isRunning:
-            self.doCommand()
-            self.doReconnect()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
+
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.signalDestruct.emit()
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('mount slow stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
         self.dataTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -93,20 +110,12 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.socket.connected.disconnect(self.handleConnected)
         self.socket.stateChanged.disconnect(self.handleStateChanged)
         self.socket.disconnected.disconnect(self.handleDisconnect)
-        self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.error.disconnect(self.handleError)
+        self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.close()
 
-    def stop(self):
-        self.mutexIsRunning.lock()
-        if self.isRunning:
-            self.isRunning = False
-            self.thread.quit()
-            self.thread.wait()
-        self.mutexIsRunning.unlock()
-        self.logger.info('mount slow stopped')
-
     def doCommand(self):
+        self.doReconnect()
         if not self.sendCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             command = self.sendCommandQueue.get()
             if not self.sendLock:

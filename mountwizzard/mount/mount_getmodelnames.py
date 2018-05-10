@@ -28,7 +28,8 @@ from astrometry import transform
 class MountGetModelNames(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -41,6 +42,7 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.isRunning = False
         self.socket = None
         self.sendLock = False
+        self.cycleTimer = None
         self.messageString = ''
         self.sendCommandQueue = Queue()
 
@@ -57,11 +59,27 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        while self.isRunning:
-            self.doCommand()
-            self.doReconnect()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
+
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.signalDestruct.emit()
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('mount get model names stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -70,20 +88,12 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.socket.connected.disconnect(self.handleConnected)
         self.socket.stateChanged.disconnect(self.handleStateChanged)
         self.socket.disconnected.disconnect(self.handleDisconnect)
-        self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.error.disconnect(self.handleError)
+        self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.close()
 
-    def stop(self):
-        self.mutexIsRunning.lock()
-        if self.isRunning:
-            self.isRunning = False
-            self.thread.quit()
-            self.thread.wait()
-        self.mutexIsRunning.unlock()
-        self.logger.info('mount get model names stopped')
-
     def doCommand(self):
+        self.doReconnect()
         if not self.sendCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             command = self.sendCommandQueue.get()
             if not self.sendLock:

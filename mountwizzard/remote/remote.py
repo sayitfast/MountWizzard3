@@ -31,7 +31,7 @@ class Remote(PyQt5.QtCore.QObject):
     TCP_IP = '127.0.0.1'
     SIZEOF_UINT16 = 2
 
-    CYCLE = 200
+    CYCLE = 500
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread):
@@ -134,6 +134,7 @@ class Remote(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()

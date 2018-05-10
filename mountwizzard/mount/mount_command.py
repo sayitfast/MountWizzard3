@@ -25,7 +25,8 @@ import time
 class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
     # define the number of bytes for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like number of
     # bytes to be expected. it's just plain data and i have to find out myself how much it is.
@@ -80,6 +81,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.isRunning = False
         self.socket = None
         self.sendLock = False
+        self.cycleTimer = None
         self.messageString = ''
         self.numberBytesToReceive = -1
         self.commandSet = dict()
@@ -97,11 +99,27 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
-        while self.isRunning:
-            self.doReconnect()
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
+
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.signalDestruct.emit()
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('mount command stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -114,16 +132,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.close()
 
-    def stop(self):
-        self.mutexIsRunning.lock()
-        if self.isRunning:
-            self.isRunning = False
-            self.thread.quit()
-            self.thread.wait()
-        self.mutexIsRunning.unlock()
-        self.logger.info('mount command stopped')
-
     def doCommand(self):
+        self.doReconnect()
         if not self.app.mountCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState) and not self.sendLock:
             rawCommand = self.app.mountCommandQueue.get()
             if isinstance(rawCommand, str):

@@ -52,7 +52,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountShowModelNames = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 0.2
+    CYCLE = 200
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     statusReference = {
         '0': 'Tracking',
@@ -93,6 +94,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexIPChange = PyQt5.QtCore.QMutex()
         self.commandDispatcherQueue = queue.Queue()
+        self.cycleTimer = None
         # getting all supporting classes assigned
         self.mountModelHandling = mount_modelhandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
@@ -337,15 +339,17 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
-        while self.isRunning:
-            self.doCommand()
-            time.sleep(self.CYCLE_COMMAND)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.cycleTimer = PyQt5.QtCore.QTimer(self)
+        self.cycleTimer.setSingleShot(False)
+        self.cycleTimer.timeout.connect(self.doCommand)
+        self.cycleTimer.start(self.CYCLE)
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.signalDestruct.emit()
             self.workerMountStatusRunnerFast.stop()
             self.workerMountStatusRunnerMedium.stop()
             self.workerMountStatusRunnerSlow.stop()
@@ -359,6 +363,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.mutexIsRunning.unlock()
         # stopping all interaction
         self.logger.info('mount dispatcher stopped')
+
+    @PyQt5.QtCore.pyqtSlot()
+    def destruct(self):
+        self.cycleTimer.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.commandDispatcherQueue.empty():
