@@ -33,6 +33,7 @@ import astropy.io.fits as pyfits
 
 class Slewpoint(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+
     queuePoint = Queue()
     signalStartSlewing = PyQt5.QtCore.pyqtSignal()
     signalPointImaged = PyQt5.QtCore.pyqtSignal(float, float)
@@ -101,6 +102,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
 
 class Image(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+
     queueImage = Queue()
     signalImaging = PyQt5.QtCore.pyqtSignal()
 
@@ -198,6 +200,7 @@ class Image(PyQt5.QtCore.QObject):
 
 class Platesolve(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+
     queuePlatesolve = Queue()
 
     CYCLE = 200
