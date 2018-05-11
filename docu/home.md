@@ -38,7 +38,7 @@ Please look to [installation procedures](installation.md) for detailed informati
 ### Setting up MountWizzard
 All necessary steps for the [configuration of MountWizzard](configuration.md) are explained.
 ### Setting up my gear
-Based on my equimpment, i tried to explain what to do for an astronomy imaging setup. There are a lot of
+Based on my equipment, i tried to explain what to do for an astronomy imaging setup. There are a lot of
  possibilities to do this and I'm happy about any hint you give me.
  [Stepping through my personal setup](./setup_gear/setup_gear.md)
 
