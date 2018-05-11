@@ -8,7 +8,7 @@ sys.modules['FixTk'] = None
 DISTPATH = '../dist'
 WORKPATH = '../build'
 
-a = Analysis(['mountwizzard\\mountwizzard.py'],
+a = Analysis(['mountwizzard\\mountwizzard3.py'],
              pathex=['C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
              binaries=[],
              datas=[
