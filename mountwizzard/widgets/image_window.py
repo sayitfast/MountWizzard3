@@ -110,7 +110,6 @@ class ImagesWindow(widget.MwWidget):
         background = self.imageMatplotlibMarker.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.imageMatplotlibMarker.axes = self.imageMatplotlibMarker.fig.add_subplot(111)
-        self.imageMatplotlibMarker.fig.set_tight_layout((0, 0, 1, 1))
 
         # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
@@ -167,25 +166,62 @@ class ImagesWindow(widget.MwWidget):
                 self.move(x, y)
             if 'ImagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['ImagePopupWindowShowStatus']
+            if 'ImageWindowHeight' in self.app.config and 'ImageWindowWidth' in self.app.config:
+                self.resize(self.app.config['ImageWindowWidth'], self.app.config['ImageWindowHeight'])
             if 'ImagePath' in self.app.config:
                 self.imagePath = self.app.config['ImagePath']
                 self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
-                if os.path.isfile(self.imagePath):
-                    self.signalShowFitsImage.emit(self.imagePath)
             if 'CheckShowCrosshairs' in self.app.config:
                 self.ui.checkShowCrosshairs.setChecked(self.app.config['CheckShowCrosshairs'])
-            if 'ImageWindowHeight' in self.app.config and 'ImageWindowWidth' in self.app.config:
-                self.resize(self.app.config['ImageWindowWidth'], self.app.config['ImageWindowHeight'])
+            if 'ColorCool' in self.app.config:
+                self.ui.btn_colorCool.setChecked(self.app.config['ColorCool'])
+            if 'ColorRainbow' in self.app.config:
+                self.ui.btn_colorRainbow.setChecked(self.app.config['ColorRainbow'])
+            if 'ColorSpectral' in self.app.config:
+                self.ui.btn_colorSpectral.setChecked(self.app.config['ColorSpectral'])
+            if 'ColorGrey' in self.app.config:
+                self.ui.btn_colorGrey.setChecked(self.app.config['ColorGrey'])
+            if 'Size12' in self.app.config:
+                self.ui.btn_size12.setChecked(self.app.config['Size12'])
+            if 'Size25' in self.app.config:
+                self.ui.btn_size25.setChecked(self.app.config['Size25'])
+            if 'Size50' in self.app.config:
+                self.ui.btn_size50.setChecked(self.app.config['Size50'])
+            if 'Size100' in self.app.config:
+                self.ui.btn_size100.setChecked(self.app.config['Size100'])
+            if 'StrechLow' in self.app.config:
+                self.ui.btn_strechLow.setChecked(self.app.config['StrechLow'])
+            if 'StrechMid' in self.app.config:
+                self.ui.btn_strechMid.setChecked(self.app.config['StrechMid'])
+            if 'StrechHigh' in self.app.config:
+                self.ui.btn_strechHigh.setChecked(self.app.config['StrechHigh'])
+            if 'StrechSuper' in self.app.config:
+                self.ui.btn_strechSuper.setChecked(self.app.config['StrechSuper'])
+
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for image window, error:{0}'.format(e))
         finally:
             pass
         self.setCrosshairOnOff()
+        if os.path.isfile(self.imagePath):
+            self.signalShowFitsImage.emit(self.imagePath)
 
     def storeConfig(self):
         self.app.config['ImagePopupWindowPositionX'] = self.pos().x()
         self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
+        self.app.config['ColorCool'] = self.ui.btn_colorCool.isChecked()
+        self.app.config['ColorRainbow'] = self.ui.btn_colorRainbow.isChecked()
+        self.app.config['ColorSpectral'] = self.ui.btn_colorSpectral.isChecked()
+        self.app.config['ColorGrey'] = self.ui.btn_colorGrey.isChecked()
+        self.app.config['Size12'] = self.ui.btn_size12.isChecked()
+        self.app.config['Size25'] = self.ui.btn_size25.isChecked()
+        self.app.config['Size50'] = self.ui.btn_size50.isChecked()
+        self.app.config['Size100'] = self.ui.btn_size100.isChecked()
+        self.app.config['StrechLow'] = self.ui.btn_strechLow.isChecked()
+        self.app.config['StrechMid'] = self.ui.btn_strechMid.isChecked()
+        self.app.config['StrechHigh'] = self.ui.btn_strechHigh.isChecked()
+        self.app.config['StrechSuper'] = self.ui.btn_strechSuper.isChecked()
         self.app.config['ImagePath'] = self.imagePath
         self.app.config['CheckShowCrosshairs'] = self.ui.checkShowCrosshairs.isChecked()
         self.app.config['ImageWindowHeight'] = self.height()
@@ -322,6 +358,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageMatplotlib.axes.imshow(image, cmap=color, norm=norm)
         self.imageMatplotlib.fig.canvas.draw()
         self.drawMarkers()
+        self.resizeEvent(0)
 
     def setStrech(self):
         strechMode = self.getStrechMode()
@@ -372,8 +409,8 @@ class ImagesWindow(widget.MwWidget):
     def getZoomMode(self):
         if self.ui.btn_size12.isChecked():
             zoom = 12
-        elif self.ui.btn_size50.isChecked():
-            zoom = 50
+        elif self.ui.btn_size25.isChecked():
+            zoom = 25
         elif self.ui.btn_size50.isChecked():
             zoom = 50
         else:
