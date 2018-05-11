@@ -195,10 +195,10 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
 
         # gui for additional windows
-        self.analyseWindow = analyse_window.AnalyseWindow(self)
-        self.hemisphereWindow = hemisphere_window.HemisphereWindow(self)
         self.imageWindow = image_window.ImagesWindow(self)
         self.messageWindow = message_window.MessageWindow(self)
+        self.analyseWindow = analyse_window.AnalyseWindow(self)
+        self.hemisphereWindow = hemisphere_window.HemisphereWindow(self)
 
         # map all the button to functions for gui
         self.mappingFunctions()
@@ -458,23 +458,22 @@ class MountWizzardApp(widget.MwWidget):
             self.threadModelingDispatcher.start()
 
         # make windows visible, if they were on the desktop depending on their show status
-        if self.hemisphereWindow.showStatus:
-            self.hemisphereWindow.showWindow()
-            self.hemisphereWindow.drawHemisphere()
-        else:
-            self.hemisphereWindow.setVisible(False)
         if self.imageWindow.showStatus:
             self.imageWindow.showWindow()
         else:
             self.imageWindow.setVisible(False)
-        if self.analyseWindow.showStatus:
-            self.analyseWindow.showWindow()
-        else:
-            self.analyseWindow.setVisible(False)
         if self.messageWindow.showStatus:
             self.messageWindow.showWindow()
         else:
             self.messageWindow.setVisible(False)
+        if self.hemisphereWindow.showStatus:
+            self.hemisphereWindow.showWindow()
+        else:
+            self.hemisphereWindow.setVisible(False)
+        if self.analyseWindow.showStatus:
+            self.analyseWindow.showWindow()
+        else:
+            self.analyseWindow.setVisible(False)
 
     def initConfig(self):
         # now try to set the right values in class
