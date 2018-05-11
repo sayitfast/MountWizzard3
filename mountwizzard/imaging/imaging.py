@@ -227,7 +227,6 @@ class Imaging(PyQt5.QtCore.QObject):
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
             # add the coordinates to the image of the telescope if not present
-            '''
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
             if 'OBJCTRA' not in fitsHeader:
@@ -237,7 +236,6 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.sharedMountDataLock.unlock()
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            '''
             # show it
             self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
         else:
