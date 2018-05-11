@@ -2,8 +2,10 @@
 
 #### Application for use in 10micron Mount environment
 Supports SGPro, INDI Framework, MaximDL (limited to imaging), Stickstation, MBox, UniHedron SQR, OpenWeather
-and some more ASCOM parts
-(C) Michael Würtenberger 2016, 2017, 2018
+and some more ASCOM parts. For plate solving I recommend using the new local astrometry.net installation from Jussi
+(https://github.com/Jusas/astrometry-api-lite). It works great and you have a blind solver as well on board.
+
+(C) Michael Würtenberger 2018
 
 #### Version release: new, test version actual 3.0 beta 1
 
