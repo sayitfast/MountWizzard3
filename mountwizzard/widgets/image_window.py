@@ -119,12 +119,15 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_colorGrey.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
         self.ui.btn_colorRainbow.clicked.connect(self.setColor)
+        self.ui.btn_colorSpectral.clicked.connect(self.setColor)
+        self.ui.btn_size12.clicked.connect(self.setZoom)
         self.ui.btn_size25.clicked.connect(self.setZoom)
         self.ui.btn_size50.clicked.connect(self.setZoom)
         self.ui.btn_size100.clicked.connect(self.setZoom)
         self.ui.btn_strechLow.clicked.connect(self.setStrech)
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
+        self.ui.btn_strechSuper.clicked.connect(self.setStrech)
         self.ui.btn_cancel.clicked.connect(self.cancelAction)
         self.ui.checkShowCrosshairs.stateChanged.connect(self.setCrosshairOnOff)
 
@@ -168,7 +171,7 @@ class ImagesWindow(widget.MwWidget):
                 self.imagePath = self.app.config['ImagePath']
                 self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
                 if os.path.isfile(self.imagePath):
-                    self.showFitsImage(self.imagePath)
+                    self.signalShowFitsImage.emit(self.imagePath)
             if 'CheckShowCrosshairs' in self.app.config:
                 self.ui.checkShowCrosshairs.setChecked(self.app.config['CheckShowCrosshairs'])
             if 'ImageWindowHeight' in self.app.config and 'ImageWindowWidth' in self.app.config:
@@ -274,7 +277,12 @@ class ImagesWindow(widget.MwWidget):
     def calculateImage(imageOrig, strechMode, colorMode, zoomMode):
         sizeX, sizeY = imageOrig.shape
         # calculate the cropping parameters
-        if zoomMode == 25:
+        if zoomMode == 12:
+            minx = int(sizeX * 7 / 16)
+            maxx = minx + int(sizeX / 8)
+            miny = int(sizeY * 7 / 16)
+            maxy = miny + int(sizeY / 8)
+        elif zoomMode == 25:
             minx = int(sizeX * 3 / 8)
             maxx = minx + int(sizeX / 4)
             miny = int(sizeY * 3 / 8)
@@ -293,11 +301,13 @@ class ImagesWindow(widget.MwWidget):
         image = imageOrig[minx:maxx, miny:maxy]
         # calculation the strech
         if strechMode == 'Low':
-            interval = AsymmetricPercentileInterval(98, 99.995)
+            interval = AsymmetricPercentileInterval(98, 99.998)
         elif strechMode == 'Mid':
             interval = AsymmetricPercentileInterval(25, 99.95)
+        elif strechMode == 'High':
+            interval = AsymmetricPercentileInterval(12, 99.9)
         else:
-            interval = AsymmetricPercentileInterval(1, 99.9)
+            interval = AsymmetricPercentileInterval(1, 99.8)
         vmin, vmax = interval.get_limits(image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -342,6 +352,8 @@ class ImagesWindow(widget.MwWidget):
             color = 'plasma'
         elif self.ui.btn_colorRainbow.isChecked():
             color = 'rainbow'
+        elif self.ui.btn_colorSpectral.isChecked():
+            color = 'nipy_spectral'
         else:
             color = 'gray'
         return color
@@ -351,13 +363,17 @@ class ImagesWindow(widget.MwWidget):
             strech = 'Low'
         elif self.ui.btn_strechMid.isChecked():
             strech = 'Mid'
-        else:
+        elif self.ui.btn_strechHigh.isChecked():
             strech = 'High'
+        else:
+            strech = 'Super'
         return strech
 
     def getZoomMode(self):
-        if self.ui.btn_size25.isChecked():
-            zoom = 25
+        if self.ui.btn_size12.isChecked():
+            zoom = 12
+        elif self.ui.btn_size50.isChecked():
+            zoom = 50
         elif self.ui.btn_size50.isChecked():
             zoom = 50
         else:
