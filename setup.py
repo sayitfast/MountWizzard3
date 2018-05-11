@@ -3,7 +3,7 @@ from setuptools import setup
 import platform
 
 setup(
-    name='mountwizzard',
+    name='mountwizzard3',
     version='3.0a28',
     packages=[
         'mountwizzard',
@@ -39,7 +39,7 @@ setup(
     + (['pywinauto==0.6.4'] if "Windows" == platform.system() else [])
     + (['comtypes==1.1.1'] if "Windows" == platform.system() else [])
     ,
-    url='https://pypi.python.org/pypi/mountwizzard',
+    url='https://pypi.python.org/pypi/mountwizzard3',
     license='APL 2.0',
     author='mw',
     author_email='michael@wuertenberger.org',
@@ -49,8 +49,6 @@ setup(
 if platform.system() == 'Linux':
     print('#############################################')
     print('### Important hint:                       ###')
-    print('### you have to install PYQT5 manually    ###')
-    print('### sudo apt-get install pyqt5            ###')
     print('### There might be the need to install    ###')
     print('### libfreetype6-dev manually as well     ###')
     print('### sudo apt-get install libfreetype6-dev ###')

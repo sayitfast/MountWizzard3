@@ -69,13 +69,20 @@ remind that you need for the online solver an internet connection and it's defin
 plate solving program.
 
 #### Local Astrometry.net installation
+I really recommend using this software. It works great (and it is free of charge, too)
+
 There is a great project done by Jussi who enables the use of astrometry on your local harddisk without
 internet connection. We both tested MountWizzard3 to work with astrometry-api-lit together and I would
 recommend this solution. You will find all necessary information on
-<pre>
-https://github.com/Jusas/astrometry-api-lite
-</pre>
+<pre>https://github.com/Jusas/astrometry-api-lite</pre>
 Astrometry-api-lite is available for linux and Windows10.
+Some hints if you are using astrometry-api-lite: If you don't need extended features, you could set the
+options
+<pre>
+storeObjsImages: false
+storeNgcImages: false</pre>
+They are located under the <installation directory>/dist/worker in the file configuration.json. This will
+at least double the solving speed.
 
 #### Preparing local working directory
 If you would like to use MountWizzard on you astro imaging computer, it makes a lot of sense to create a working directory of your choice and
