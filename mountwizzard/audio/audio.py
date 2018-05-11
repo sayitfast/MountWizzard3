@@ -42,7 +42,7 @@ class Audio(PyQt5.QtCore.QObject):
         # define audio signals
         self.audioSignalsSet = dict()
         self.guiAudioList = dict()
-        self.setupAudioSignals()
+        self.prepareGui()
 
     def initConfig(self):
         try:
@@ -72,6 +72,7 @@ class Audio(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.setupAudioSignals()
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
@@ -90,7 +91,7 @@ class Audio(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
-        self.signalDestruct.connect(self.destruct)
+        self.signalDestruct.disconnect(self.destruct)
         self.cycleTimer.stop()
 
     def doCommand(self):
@@ -98,13 +99,8 @@ class Audio(PyQt5.QtCore.QObject):
             command = self.app.audioCommandQueue.get()
             self.playAudioSignal(command)
 
-    def setupAudioSignals(self):
-        # load the sounds available
-        self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
-        self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
-        self.audioSignalsSet['Horn'] = PyQt5.QtMultimedia.QSound(':/horn.wav')
-        self.audioSignalsSet['Beep1'] = PyQt5.QtMultimedia.QSound(':/beep1.wav')
-        self.audioSignalsSet['Alarm'] = PyQt5.QtMultimedia.QSound(':/alarm.wav')
+    def prepareGui(self):
+        self.guiAudioList = dict()
         # adding the possible sounds to drop down menu
         self.guiAudioList['MountSlew'] = self.app.ui.soundMountSlewFinished
         self.guiAudioList['DomeSlew'] = self.app.ui.soundDomeSlewFinished
@@ -117,6 +113,16 @@ class Audio(PyQt5.QtCore.QObject):
             self.guiAudioList[itemKey].addItem('Beep1')
             self.guiAudioList[itemKey].addItem('Alarm')
             self.guiAudioList[itemKey].addItem('Alert')
+
+    def setupAudioSignals(self):
+        # define audio signals
+        self.audioSignalsSet = dict()
+        # load the sounds available
+        self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
+        self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
+        self.audioSignalsSet['Horn'] = PyQt5.QtMultimedia.QSound(':/horn.wav')
+        self.audioSignalsSet['Beep1'] = PyQt5.QtMultimedia.QSound(':/beep1.wav')
+        self.audioSignalsSet['Alarm'] = PyQt5.QtMultimedia.QSound(':/alarm.wav')
 
     def playAudioSignal(self, value):
         if value in self.guiAudioList:
