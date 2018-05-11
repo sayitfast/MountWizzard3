@@ -25,7 +25,7 @@ setup(
         'mountwizzard3.remote',
         'mountwizzard3.widgets'
     ],
-    python_requires='~=3.6.5',
+    python_requires='~=3.6.3',
     install_requires=[
         'PyQt5==5.10.1',
         'matplotlib==2.1.2',
