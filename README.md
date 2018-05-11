@@ -11,6 +11,8 @@ and some more ASCOM parts. For plate solving I recommend using the new local ast
 
 [Link to the extended documentation and handbook of MountWizzard3](./docu/home.md)
 
+[Link to FAQ](./docu/FAQ.md)
+
 ## Features:
 - Runs multi platform (Windows7,10, Linux, Mac OSX)
 - Imaging Software: Sequence Generator Pro, INDI are supported. Please refer to their homepages for use.
