@@ -262,7 +262,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot(object)
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
-        # data to mountwizzard
+        # data to mountwizzard3
         if 'device' not in message.attr:
             return
         device = message.attr['device']

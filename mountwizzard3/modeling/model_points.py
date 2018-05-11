@@ -183,7 +183,7 @@ class ModelPoints:
                         elif modeltype == 'Base' and number <= 3:
                             p.append(point)
                     elif line.startswith('MW-3'):
-                        # if mountwizzard, it's native version 3
+                        # if mountwizzard3, it's native version 3
                         convertedLine = line.rstrip('\n').split(':')
                         p.append((float(convertedLine[1]), float(convertedLine[2])))
                     else:
