@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='mountwizzard3',
-    version='3.0a28',
+    version='3.0b0',
     packages=[
         'mountwizzard',
         'mountwizzard.analyse',
@@ -25,7 +25,7 @@ setup(
         'mountwizzard.remote',
         'mountwizzard.widgets'
     ],
-    python_requires='~=3.6',
+    python_requires='~=3.6.5',
     install_requires=[
         'PyQt5==5.10.1',
         'matplotlib==2.1.2',
