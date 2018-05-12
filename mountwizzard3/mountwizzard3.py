@@ -1189,6 +1189,7 @@ class MountWizzardApp(widget.MwWidget):
     def mainLoop(self):
         self.fillMountData()
         self.fillEnvironmentData()
+        self.ui.le_modelingTimeActual.setText(datetime.datetime.now().strftime('%H:%M:%S'))
         while not self.INDIStatusQueue.empty():
             data = self.INDIStatusQueue.get()
             self.fillINDIData(data)

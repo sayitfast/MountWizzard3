@@ -290,8 +290,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                 timeEstimation = 0
             self.main.app.messageQueue.put('percent{0:4.3f}'.format(modelingDone))
             self.main.app.messageQueue.put('timeEst{0}'.format(time.strftime('%M:%S', time.gmtime(timeEstimation))))
-            self.main.app.messageQueue.put('timeEla{0}'.format(time.strftime('%M:%S', time.gmtime(timeElapsed))))
-            finished = datetime.timedelta(seconds=timeEstimation) + datetime.dateime.now()
+            finished = datetime.timedelta(seconds=timeEstimation) + datetime.datetime.now()
             self.main.app.messageQueue.put('timeFin{0}'.format(finished.strftime('%H:%M:%S')))
             # we come to an end
             if modelingData['NumberPoints'] == modelingData['Index'] + 1:
@@ -435,7 +434,9 @@ class ModelingBuild:
         messageQueue.put('Solved>{0:02d}'.format(0))
         messageQueue.put('Slewed>{0:02d}'.format(0))
         messageQueue.put('percent0')
-        messageQueue.put('timeleft--:--')
+        messageQueue.put('timeEla--:--')
+        messageQueue.put('timeEst--:--')
+        messageQueue.put('timeFin--:--:--')
         self.logger.info('modelingData: {0}'.format(modelingData))
         # start tracking
         self.app.mountCommandQueue.put(':PO#')
@@ -476,7 +477,9 @@ class ModelingBuild:
             # stop loop if finished
             if self.modelingHasFinished:
                 break
-            time.sleep(0.1)
+            timeElapsed = time.time() - self.timeStart
+            messageQueue.put('timeEla{0}'.format(time.strftime('%M:%S', time.gmtime(timeElapsed))))
+            time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.cancel:
             # clearing the gui
@@ -491,7 +494,7 @@ class ModelingBuild:
             modelingData = self.solvedPointsQueue.get()
             # clean up intermediate data
             results.append(copy.copy(modelingData))
-            time.sleep(0.1)
+            time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
