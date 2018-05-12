@@ -426,7 +426,7 @@ class ImagesWindow(widget.MwWidget):
         if stat:
             self.setWindowTitle('Image Window')
         else:
-            self.setWindowTitle('Image Window - Modeling running - No manual exposures possible')
+            self.setWindowTitle('Image Window - Model Build Running - No manual exposures possible')
 
     def setCrosshairOnOff(self):
         if self.ui.checkShowCrosshairs.isChecked():

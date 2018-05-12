@@ -28,7 +28,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_STATUS_MEDIUM = 3000
-    CYCLE = 200
+    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected):

@@ -463,7 +463,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Stats</string>
+    <string>Device Stats</string>
    </property>
    <widget class="QLineEdit" name="le_astrometrySolvingTime">
     <property name="enabled">
@@ -686,7 +686,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Results</string>
+    <string>Solve Result</string>
    </property>
    <widget class="QLabel" name="label_86">
     <property name="geometry">

@@ -102,7 +102,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Operation mode</string>
+    <string>Operation Mode</string>
    </property>
    <widget class="QRadioButton" name="checkEditNone">
     <property name="geometry">
@@ -211,7 +211,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Modeling progress</string>
+    <string>Mode Build Progress</string>
    </property>
    <widget class="QLabel" name="label_100">
     <property name="geometry">

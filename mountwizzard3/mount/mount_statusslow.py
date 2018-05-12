@@ -29,7 +29,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_STATUS_SLOW = 10000
-    CYCLE = 200
+    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected):

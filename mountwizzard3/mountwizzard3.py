@@ -100,7 +100,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.checkPlatformDependableMenus()
-        self.setWindowTitle('MountWizzard ' + BUILD_NO)
+        self.setWindowTitle('MountWizzard3 - ' + BUILD_NO)
         # enable a matplotlib figure polar plot in main gui
         self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
         # finalize gui with icons
@@ -1290,7 +1290,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # defining build no
-    BUILD_NO = '3.0 beta 0'
+    BUILD_NO = 'v3.0 beta 0'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
