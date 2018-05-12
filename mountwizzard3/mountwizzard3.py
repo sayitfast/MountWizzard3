@@ -1213,8 +1213,12 @@ class MountWizzardApp(widget.MwWidget):
                     self.hemisphereWindow.ui.bar_numberPointsSolved.setValue(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToProcess.text()))
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
-            elif text.startswith('timeleft'):
-                self.ui.le_modelingStatusTime.setText(text[8:])
+            elif text.startswith('timeEst'):
+                self.ui.le_modelingTimeEstimated.setText(text[7:])
+            elif text.startswith('timeEla'):
+                self.ui.le_modelingTimeElapsed.setText(text[7:])
+            elif text.startswith('timeFin'):
+                self.ui.le_modelingTimeFinished.setText(text[7:])
             elif text.startswith('#BW'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_WHITE)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)

@@ -20,6 +20,7 @@
 import logging
 import copy
 import shutil
+import datetime
 import time
 import math
 import PyQt5
@@ -282,13 +283,16 @@ class Platesolve(PyQt5.QtCore.QObject):
             self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
             # write progress estimation to main gui
             modelingDone = (modelingData['Index'] + 1) / modelingData['NumberPoints']
-            timeDone = time.time() - self.main.timeStart
+            timeElapsed = time.time() - self.main.timeStart
             if modelingDone != 0:
-                timeEstimation = (1 / modelingDone * timeDone) * (1 - modelingDone)
+                timeEstimation = (1 / modelingDone * timeElapsed) * (1 - modelingDone)
             else:
                 timeEstimation = 0
             self.main.app.messageQueue.put('percent{0:4.3f}'.format(modelingDone))
-            self.main.app.messageQueue.put('timeleft{0}'.format(time.strftime('%M:%S', time.gmtime(timeEstimation))))
+            self.main.app.messageQueue.put('timeEst{0}'.format(time.strftime('%M:%S', time.gmtime(timeEstimation))))
+            self.main.app.messageQueue.put('timeEla{0}'.format(time.strftime('%M:%S', time.gmtime(timeElapsed))))
+            finished = datetime.timedelta(seconds=timeEstimation) + datetime.dateime.now()
+            self.main.app.messageQueue.put('timeFin{0}'.format(finished.strftime('%H:%M:%S')))
             # we come to an end
             if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                 self.main.modelingHasFinished = True
