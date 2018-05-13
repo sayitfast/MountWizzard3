@@ -29,7 +29,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
-    CYCLE_STATUS_ONCE = 300000
+    CYCLE_STATUS_ONCE = 500
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -151,6 +151,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     def getStatusOnce(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.sendCommandQueue.put(':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#')
+            self.dataTimer.stop()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
