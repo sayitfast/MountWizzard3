@@ -77,7 +77,7 @@ class MountWizzardApp(widget.MwWidget):
     sharedDomeDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedINDIDataLock = PyQt5.QtCore.QReadWriteLock()
 
-    CYCLE_MAIN_LOOP = 200
+    CYCLE_MAIN_LOOP = 250
 
     def __init__(self):
         super().__init__()
@@ -274,7 +274,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
-
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
 
