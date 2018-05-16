@@ -165,10 +165,6 @@ class INDIClient(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
         self.cycleTimer.stop()
-        if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.abort()
-        else:
-            self.socket.disconnectFromHost()
         self.signalDestruct.disconnect(self.destruct)
         self.socket.hostFound.disconnect(self.handleHostFound)
         self.socket.connected.disconnect(self.handleConnected)
@@ -176,7 +172,11 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.disconnected.disconnect(self.handleDisconnect)
         self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.error.disconnect(self.handleError)
-        self.socket.close()
+        if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.close()
 
     def doCommand(self):
         self.doReconnect()

@@ -80,17 +80,17 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     def destruct(self):
         self.cycleTimer.stop()
         self.signalDestruct.disconnect(self.destruct)
-        if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.abort()
-        else:
-            self.socket.disconnectFromHost()
         self.socket.hostFound.disconnect(self.handleHostFound)
         self.socket.connected.disconnect(self.handleConnected)
         self.socket.stateChanged.disconnect(self.handleStateChanged)
         self.socket.disconnected.disconnect(self.handleDisconnect)
         self.socket.error.disconnect(self.handleError)
         self.socket.readyRead.disconnect(self.handleReadyRead)
-        self.socket.close()
+        if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.close()
 
     def doCommand(self):
         self.doReconnect()
