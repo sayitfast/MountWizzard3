@@ -252,7 +252,7 @@ class HemisphereWindow(widget.MwWidget):
                 self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
                 for i in range(0, len(starsNames)):
                     self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
-                    self.starsAnnotate[i].set_text(starsNames[i])
+                    # self.starsAnnotate[i].set_text(starsNames[i])
                 self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def setAzAltPointer(self, az, alt):
@@ -456,7 +456,11 @@ class HemisphereWindow(widget.MwWidget):
         starsNames = self.app.workerMountDispatcher.data['starsNames']
         self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=6, color='#C0C000')
         for i in range(0, len(starsTopo)):
-            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starsNames[i], xy=(starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy), color='#808080', fontsize=12, clip_on=True))
+            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starsNames[i],
+                                                                                  xy=(starsTopo[i][0] + self.offx,
+                                                                                      starsTopo[i][1] + self.offy),
+                                                                                  xycoords=('data', 'data'),
+                                                                                  color='#808080', fontsize=12, clip_on=True))
 
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
