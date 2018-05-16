@@ -74,6 +74,7 @@ class HemisphereWindow(widget.MwWidget):
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
         # using tight layout because of the axis titles and labels
+        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
         #self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
         # for the fast moving parts
