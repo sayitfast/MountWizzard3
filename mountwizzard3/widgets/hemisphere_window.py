@@ -212,9 +212,10 @@ class HemisphereWindow(widget.MwWidget):
         PyQt5.QtWidgets.QApplication.processEvents()
 
     def updateModelPoints(self):
-        self.drawHemisphere()
-        self.updateCelestial()
-        self.updateAlignmentStars()
+        if self.showStatus:
+            self.drawHemisphere()
+            self.updateCelestial()
+            self.updateAlignmentStars()
 
     def updateMeridianLimits(self):
         if self.showStatus:
@@ -235,21 +236,23 @@ class HemisphereWindow(widget.MwWidget):
             self.drawCanvas()
 
     def updateCelestial(self):
-        if self.celestial is not None:
-            self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
-            celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
-            self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
-            self.drawCanvas()
+        if self.showStatus:
+            if self.celestial is not None:
+                self.celestial.set_visible(self.ui.checkShowCelestial.isChecked())
+                celestial = self.app.workerModelingDispatcher.modelingRunner.modelPoints.celestialEquator
+                self.celestial.set_data([i[0] for i in celestial], [i[1] for i in celestial])
+                self.drawCanvas()
 
     def updateAlignmentStars(self):
-        self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
-        starsTopo = copy.copy(self.app.workerMountDispatcher.data['starsTopo'])
-        starsNames = copy.copy(self.app.workerMountDispatcher.data['starsNames'])
-        if len(starsNames) > 0:
-            self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
-            for i in range(0, len(starsNames)):
-                self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
-            self.hemisphereMatplotlibStar.fig.canvas.draw()
+        if self.showStatus:
+            self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
+            starsTopo = copy.copy(self.app.workerMountDispatcher.data['starsTopo'])
+            starsNames = copy.copy(self.app.workerMountDispatcher.data['starsNames'])
+            if len(starsNames) > 0:
+                self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
+                for i in range(0, len(starsNames)):
+                    self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
+                self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def setAzAltPointer(self, az, alt):
         if self.showStatus:
@@ -449,7 +452,6 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibStar.axes.set_axis_off()
         starsTopo = self.app.workerMountDispatcher.data['starsTopo']
-        print(starsTopo)
         starsNames = self.app.workerMountDispatcher.data['starsNames']
         self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=6, color='#C0C000')
         for i in range(0, len(starsTopo)):
