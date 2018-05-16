@@ -276,6 +276,10 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
+        self.ui.checkTest.clicked.connect(self.test)
+
+    def test(self):
+        self.imageWindow.signalSetManualEnable.emit(self.ui.checkTest.isChecked())
 
     @staticmethod
     def timeStamp():

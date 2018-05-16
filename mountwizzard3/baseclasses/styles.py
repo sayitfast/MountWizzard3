@@ -282,14 +282,10 @@ class MWStyles:
         border-style: inset;
         border-radius: 2px;
     }
-    QPushButton:disabled {
-        background-color: #101010;
-        color: #202020;
-        border-color: #202020;
-        border-width: 1px;
-        border-style: outset;
-        border-radius: 2px;
-    }
+    QPushButton[running='false'] {
+        background-color: #202020;
+        color: #C0C0C0;
+    }     
     QPushButton[color='gray'] {
         background-color: gray;
         color: #000000;
@@ -310,10 +306,6 @@ class MWStyles:
         background-color: rgb(32, 144, 192);
         color: #000000;
     } 
-    QPushButton[running='false'] {
-        background-color: #202020;
-        color: #C0C0C0;
-    }     
     QPushButton[cancel='true'] {
         background-color: rgb(192,0, 0);
         color: #C0C0C0;
@@ -330,7 +322,14 @@ class MWStyles:
     QPushButton:focus {
         outline: none;
     }
-    
+    QPushButton:disabled {
+        background-color: #101010;
+        color: #202020;
+        border-color: #202020;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 2px;
+    }
     /* Combo Boxes */
     QComboBox {
         combobox-popup: 0;

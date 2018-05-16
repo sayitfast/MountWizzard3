@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>7</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -8630,8 +8630,8 @@ manually</string>
     <widget class="QTabWidget" name="settingsTabWidget">
      <property name="geometry">
       <rect>
-       <x>5</x>
-       <y>10</y>
+       <x>60</x>
+       <y>15</y>
        <width>766</width>
        <height>436</height>
       </rect>
@@ -8666,7 +8666,7 @@ manually</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -13537,6 +13537,27 @@ manually</string>
        </property>
        <property name="text">
         <string>Misc Settings</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkTest">
+       <property name="geometry">
+        <rect>
+         <x>415</x>
+         <y>285</y>
+         <width>231</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>If checked, a blind solve would be made (needs internet connection)</string>
+       </property>
+       <property name="text">
+        <string>Test</string>
        </property>
       </widget>
      </widget>
