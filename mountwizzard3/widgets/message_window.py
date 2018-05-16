@@ -33,8 +33,11 @@ class MessageWindow(widget.MwWidget):
         self.ui = message_window_ui.Ui_MessageDialog()
         self.ui.setupUi(self)
         self.initUI()
+        # allow sizing of the window
+        self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
         # self.setSizePolicy(PyQt5.QtWidgets.QSizePolicy.Pref, PyQt5.QtWidgets.QSizePolicy.Ignored)
         self.setMinimumSize(790, 200)
+        self.setMaximumSize(790, 16777215)
         self.initConfig()
 
     def resizeEvent(self, QResizeEvent):
