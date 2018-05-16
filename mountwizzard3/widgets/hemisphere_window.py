@@ -449,6 +449,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibStar.axes.set_axis_off()
         starsTopo = self.app.workerMountDispatcher.data['starsTopo']
+        print(starsTopo)
         starsNames = self.app.workerMountDispatcher.data['starsNames']
         self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=6, color='#C0C000')
         for i in range(0, len(starsTopo)):

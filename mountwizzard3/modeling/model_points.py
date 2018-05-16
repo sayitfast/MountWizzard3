@@ -62,14 +62,14 @@ class ModelPoints:
                 self.app.ui.le_modelInitialPointsFileName.setText(self.app.config['ModelInitialPointsFileName'])
             if 'ModelFullPointsFileName' in self.app.config:
                 self.app.ui.le_modelFullPointsFileName.setText(self.app.config['ModelFullPointsFileName'])
-
-            self.loadHorizonPoints(self.app.config['HorizonPointsFileName'],
-                                   self.app.config['CheckUseFileHorizonLine'],
-                                   self.app.config['CheckUseMinimumHorizonLine'],
-                                   self.app.config['AltitudeMinimumHorizon'])
+            if 'HorizonPointsFileName' in self.app.config and 'CheckUseMinimumHorizonLine' in self.app.config and 'CheckUseFileHorizonLine' in self.app.config and 'AltitudeMinimumHorizon' in self.app.config:
+                self.loadHorizonPoints(self.app.config['HorizonPointsFileName'],
+                                       self.app.config['CheckUseFileHorizonLine'],
+                                       self.app.config['CheckUseMinimumHorizonLine'],
+                                       self.app.config['AltitudeMinimumHorizon'])
 
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg could not be initialize, error:{0}'.format(e))
         finally:
             pass
 

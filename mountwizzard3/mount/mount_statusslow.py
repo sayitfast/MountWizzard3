@@ -59,6 +59,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             self.app.sharedMountDataLock.lockForWrite()
             self.data['starsNames'].append(name)
             self.data['starsICRS'].append(self.alignmentStars.stars[name])
+            #self.data['starsTopo'].append((0, 0))
             self.app.sharedMountDataLock.unlock()
         self.updateAlignmentStarPositions()
 
