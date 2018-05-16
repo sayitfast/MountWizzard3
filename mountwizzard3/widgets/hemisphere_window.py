@@ -73,6 +73,8 @@ class HemisphereWindow(widget.MwWidget):
         background = self.hemisphereMatplotlib.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
+        # using tight layout because of the axis titles and labels
+        #self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
         # for the fast moving parts
         self.hemisphereMatplotlibMoving = widget.IntegrateMatplotlib(self.ui.hemisphereMoving)
@@ -119,8 +121,6 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.hemisphere.setGeometry(10, 130, self.width() - 20, self.height() - 140)
         self.ui.hemisphereStar.setGeometry(10, 130, self.width() - 20, self.height() - 140)
         self.ui.hemisphereMoving.setGeometry(10, 130, self.width() - 20, self.height() - 140)
-        # using tight layout because of the axis titles and labels
-        self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
         # getting position of axis
         axesPos = self.hemisphereMatplotlib.axes.get_position()
         # and using it fo the other plot widgets to be identically same size and position
@@ -252,6 +252,7 @@ class HemisphereWindow(widget.MwWidget):
                 self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
                 for i in range(0, len(starsNames)):
                     self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
+                    self.starsAnnotate[i].set_text(starsNames[i])
                 self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def setAzAltPointer(self, az, alt):
