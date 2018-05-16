@@ -252,7 +252,6 @@ class HemisphereWindow(widget.MwWidget):
                 self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
                 for i in range(0, len(starsNames)):
                     self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
-                    # self.starsAnnotate[i].set_text(starsNames[i])
                 self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def setAzAltPointer(self, az, alt):
