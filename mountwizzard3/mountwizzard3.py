@@ -697,12 +697,10 @@ class MountWizzardApp(widget.MwWidget):
                             # all ok
                         else:
                             shutil.copyfile(filepath, filepath + '.old')
-                            self.config = dict()
                             self.messageQueue.put('Old version of config file found, old version copied to {0}.old\n'.format(filepath))
                             self.logger.error('Old version of config file found, old version copied to {0}.old'.format(filepath))
                     else:
                         shutil.copyfile(filepath, filepath + '.old')
-                        self.config = dict()
                         self.messageQueue.put('Old version of config file found, old version copied to {0}.old\n'.format(filepath))
                         self.logger.error('Old version of config file found, old version copied to {0}.old'.format(filepath))
             except Exception as e:
