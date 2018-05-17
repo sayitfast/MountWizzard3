@@ -108,7 +108,7 @@ class MountWizzardApp(widget.MwWidget):
         self.setupIcons()
 
         # putting header to message window
-        self.messageQueue.put('#BWMountWizzard v {0} started \n'.format(BUILD_NO))
+        self.messageQueue.put('#BWMountWizzard3 {0} started \n'.format(BUILD_NO))
         self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
