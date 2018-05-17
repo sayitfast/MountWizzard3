@@ -616,6 +616,7 @@ class MountWizzardApp(widget.MwWidget):
         PyQt5.QtCore.QCoreApplication.quit()
 
     def storeConfig(self):
+        # counting versions : 30 equals v3.0
         self.config['version'] = 30
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
         self.config['ParkPosAlt1'] = self.ui.le_altParkPos1.text()
