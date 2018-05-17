@@ -44,8 +44,6 @@ asteroids: If you check Filter MPC Files, MountWizzard takes the downloaded file
 filter expression is found. You can have multiple expressions, but you have to comma seperate them. It looks just for the string in the
 file, not the comet or asteroid name !
 
-[Back to settings](configuration.md)
-
-[Back to first steps](firststeps.md)
+[Back to configuration](configuration.md)
 
 [Back to Home](home.md)

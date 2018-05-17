@@ -37,8 +37,6 @@ type and you have to connect it via ASCOM. There is a driver written by animaal
 (SGPro Forum under http://forum.mainsequencesoftware.com/t/environment-device-values/5051/16)
 you find the driver on http://www.dizzy.eu/downloads.html. It does a great job!
 
-[Back to settings](settings.md)
-
-[Back to first steps](firststeps.md)
+[Back to configuration](configuration.md)
 
 [Back to Home](home.md)
