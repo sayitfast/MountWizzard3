@@ -7,9 +7,9 @@ doing the software as a hobby and you can't expect the support you will have on 
 
 ### Where to find the Application ?
 
-The application as well as this documentation and the software code itself is hosted on github:
+The application as well as this documentation and the distribution itself is hosted on github:
 
-https://github.com/mworion/mountwizzard3.
+https://github.com/mworion/mountwizzard3-dist.
 
 You will find the readme in the main page, which also directs to the extended documentation. The
 interesting part for downloading the application is the subdirectory /dist in github. The page is
@@ -38,9 +38,11 @@ So the best way is to download both versions (pure and console) to you computer.
 Before I put the application to github they are OK, but you never know.
 
 ### Compatibility
-Actually the application package ist tested and verified to be able to run in win7 and win10 operating
-systems. Both 32bit and 64bit are supported. The bundle itself contains only 32bit runtime libraries.
-Older versions like vista have not been tested successful.
+Actually the application package (.EXE) is tested and verified to be able to run in win7 and win10
+operating systems. Both 32bit and 64bit are supported. The bundle itself contains only 32bit runtime
+libraries. Older versions like vista have not been tested successful.
+The package file (.tar.gz) is tested in ubuntu 16.04 LTS and Mac OSx high sierra. On these systems
+python 3.6.5 has to be installed manually.
 
 ### Preparation on your computer
 #### ASCOM framework
@@ -68,23 +70,43 @@ http://nova.astrometry.net. In the latter case, please register and get your per
 remind that you need for the online solver an internet connection and it's definitly slower than any local
 plate solving program.
 
+#### Local Astrometry.net installation
+I really recommend using this software. It works great (and it is free of charge, too)
+
+There is a great project done by Jussi who enables the use of astrometry on your local harddisk without
+internet connection. We both tested MountWizzard3 to work with astrometry-api-lit together and I would
+recommend this solution. You will find all necessary information on
+<pre>https://github.com/Jusas/astrometry-api-lite</pre>
+Astrometry-api-lite is available for linux and Windows10.
+Some hints if you are using astrometry-api-lite: If you don't need extended features, you could set the
+options
+<pre>
+storeObjsImages: false
+storeNgcImages: false</pre>
+They are located under the <installation directory>/dist/worker in the file configuration.json. This will
+at least double the solving speed.
 
 #### Preparing local working directory
-If you would like to use MountWizzard on you astro imaging computer, it makes a lot of sense to create a working directory of your choice and
-location on your computer. Please keep in mind, that you need write permissions in that directory, otherwise MounWizzard won't run and work.
+If you would like to use MountWizzard on you astro imaging computer, it makes a lot of sense to create a
+working directory of your choice and location on your computer. Please keep in mind, that you need write
+permissions in that directory, otherwise MounWizzard won't run and work.
 So for simple demo, I put it on the desktop:
 
 <img src="pics/workdir.png"/>
 
-Please put the downloaded application and start it. MountWizzard will create in that directory some subdirs:
+Please put the downloaded application and start it. MountWizzard will create in that directory some
+subdirs:
 
 <pre> /config </pre>
 
-where all the configuration like the config from MountWizzard, but also your horizon file and your model points file (if you have one from
-ModelMaker for example) and some downloaded mount computer updating data (comets, asteroids, UTC files etc.)
+where all the configuration like the config from MountWizzard, also your horizon file and your model
+points file (if you have one from ModelMaker for example) and some downloaded mount computer updating
+data (comets, asteroids, UTC files etc.). In addition you will find your stored profiles as well in this
+directory.
 
 <pre> /analysedata </pre>
-where all files are stored, which were created with every model building run. And finally
+where all files are stored, which were created with every model building run. This includes the data
+for model making out of data. And finally
 
 <pre> /images </pre>
 

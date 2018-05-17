@@ -8,8 +8,8 @@ sys.modules['FixTk'] = None
 DISTPATH = '../dist'
 WORKPATH = '../build'
 
-a = Analysis(['mountwizzard\\mountwizzard.py'],
-             pathex=['C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
+a = Analysis(['mountwizzard3\\mountwizzard3.py'],
+             pathex=['C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard3'],
              binaries=[],
              datas=[
              ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\io\\fits', '.\\astropy\\io\\fits'),
@@ -46,16 +46,16 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='mountwizzard-console',
+          name='mountwizzard3-console',
           debug=True,
           strip=False,
           upx=False,
           console=True,
-          icon='mountwizzard\\icons\\mw.ico')
+          icon='mountwizzard3\\icons\\mw.ico')
 
 #######################################
 # Code-sign the generated executable
 import subprocess
 import os
-subprocess.call('c:\signtool\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /f c:\signtool\mountwizzard.pfx /p saturn ' + os.getcwd() + '\dist\mountwizzard-console.exe')
+subprocess.call('c:\signtool\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /f c:\signtool\mountwizzard.pfx /p saturn ' + os.getcwd() + '\dist\mountwizzard3-console.exe')
 #######################################

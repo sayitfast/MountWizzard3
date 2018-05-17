@@ -3,29 +3,29 @@ from setuptools import setup
 import platform
 
 setup(
-    name='mountwizzard',
+    name='mountwizzard3',
     version='3.0b1',
     packages=[
-        'mountwizzard',
-        'mountwizzard.analyse',
-        'mountwizzard.ascom',
-        'mountwizzard.astrometry',
-        'mountwizzard.audio',
-        'mountwizzard.automation',
-        'mountwizzard.baseclasses',
-        'mountwizzard.imaging',
-        'mountwizzard.dome',
-        'mountwizzard.environment',
-        'mountwizzard.gui',
-        'mountwizzard.icons',
-        'mountwizzard.indi',
-        'mountwizzard.modeling',
-        'mountwizzard.mount',
-        'mountwizzard.relays',
-        'mountwizzard.remote',
-        'mountwizzard.widgets'
+        'mountwizzard3',
+        'mountwizzard3.analyse',
+        'mountwizzard3.ascom',
+        'mountwizzard3.astrometry',
+        'mountwizzard3.audio',
+        'mountwizzard3.automation',
+        'mountwizzard3.baseclasses',
+        'mountwizzard3.imaging',
+        'mountwizzard3.dome',
+        'mountwizzard3.environment',
+        'mountwizzard3.gui',
+        'mountwizzard3.icons',
+        'mountwizzard3.indi',
+        'mountwizzard3.modeling',
+        'mountwizzard3.mount',
+        'mountwizzard3.relays',
+        'mountwizzard3.remote',
+        'mountwizzard3.widgets'
     ],
-    python_requires='~=3.6',
+    python_requires='~=3.6.3',
     install_requires=[
         'PyQt5==5.10.1',
         'matplotlib==2.1.2',
@@ -39,7 +39,7 @@ setup(
     + (['pywinauto==0.6.4'] if "Windows" == platform.system() else [])
     + (['comtypes==1.1.1'] if "Windows" == platform.system() else [])
     ,
-    url='https://pypi.python.org/pypi/mountwizzard',
+    url='https://pypi.python.org/pypi/mountwizzard3',
     license='APL 2.0',
     author='mw',
     author_email='michael@wuertenberger.org',
@@ -49,8 +49,6 @@ setup(
 if platform.system() == 'Linux':
     print('#############################################')
     print('### Important hint:                       ###')
-    print('### you have to install PYQT5 manually    ###')
-    print('### sudo apt-get install pyqt5            ###')
     print('### There might be the need to install    ###')
     print('### libfreetype6-dev manually as well     ###')
     print('### sudo apt-get install libfreetype6-dev ###')

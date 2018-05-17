@@ -17,17 +17,17 @@ This is the center of defining and watching your setup of model making. You see 
 mask is shown , the model points are plottet, where you could see model making progress and you can edit model
 points and the horizon mask as well.
 
-<img src="pics/hemisphere_window.png"/>
+<img src="pics/hemisphere_gui.png"/>
 
 ### Analyse Window
 After modeling you can do some analytics of your model runs. This is mainly located in the "Analyse" window:
 
-<img src="pics/analyse_window.png"/>
+<img src="pics/analyse_gui.png"/>
 
 ### Image Window
 If you opened the image windows, all images taken through MountWizzard will be shown. You can take as well a
 single shot of your own or plate solve an image if present. Single shots are disabled during model building.
 
-<img src="pics/image_window.png"/>
+<img src="pics/image_gui.png"/>
 
 [Back to Home](home.md)
