@@ -18,6 +18,7 @@
 #
 ###########################################################
 import os
+import shutil
 import platform
 import sys
 import datetime
@@ -615,7 +616,7 @@ class MountWizzardApp(widget.MwWidget):
         PyQt5.QtCore.QCoreApplication.quit()
 
     def storeConfig(self):
-        self.config['version'] = '3.0'
+        self.config['version'] = 30
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
         self.config['ParkPosAlt1'] = self.ui.le_altParkPos1.text()
         self.config['ParkPosAz1'] = self.ui.le_azParkPos1.text()
@@ -688,9 +689,21 @@ class MountWizzardApp(widget.MwWidget):
             try:
                 with open(filepath, 'r') as data_file:
                     self.config = json.load(data_file)
-                    self.initConfigMain()
                     # test version
-
+                    if 'version' in self.config:
+                        if self.config['version'] >= 30:
+                            pass
+                            # all ok
+                        else:
+                            shutil.copyfile(filepath, filepath + '.old')
+                            self.config = dict()
+                            self.messageQueue.put('Old version of config file found, old version copied to {0}.old\n'.format(filepath))
+                            self.logger.error('Old version of config file found, old version copied to {0}.old'.format(filepath))
+                    else:
+                        shutil.copyfile(filepath, filepath + '.old')
+                        self.config = dict()
+                        self.messageQueue.put('Old version of config file found, old version copied to {0}.old\n'.format(filepath))
+                        self.logger.error('Old version of config file found, old version copied to {0}.old'.format(filepath))
             except Exception as e:
                 self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
                 self.logger.error('config.cfg could not be loaded, error:{0}'.format(e))
@@ -699,6 +712,8 @@ class MountWizzardApp(widget.MwWidget):
             self.messageQueue.put('Generating a new config file!\n')
             self.logger.info('Configuration config.cfg not preset, starting new.')
             self.config = dict()
+        # finally start initialisation
+        self.initConfigMain()
 
     def loadConfigDataFrom(self):
         value, ext = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)', True)
