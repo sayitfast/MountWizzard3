@@ -205,8 +205,6 @@ class MountWizzardApp(widget.MwWidget):
 
         # loading config data - will be config.cfg
         self.loadConfigData()
-        # init config starts necessary threads
-        self.initConfigMain()
 
         # setting loglevel
         self.setLoggingLevel()
@@ -591,7 +589,33 @@ class MountWizzardApp(widget.MwWidget):
         finally:
             pass
 
+    def quit(self):
+        self.mainLoopTimer.stop()
+        self.workerAstrometry.astrometryCancel.emit()
+        self.workerImaging.imagingCancel.emit()
+        if platform.system() == 'Windows':
+            if self.workerAutomation.isRunning:
+                self.workerAutomation.stop()
+        if self.workerRemote.isRunning:
+            self.workerRemote.stop()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
+        if self.workerAstrometry.isRunning:
+            self.workerAstrometry.stop()
+        if self.workerImaging.isRunning:
+            self.workerImaging.stop()
+        if self.workerMountDispatcher.isRunning:
+            self.workerMountDispatcher.stop()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
+        if self.workerINDI.isRunning:
+            self.workerINDI.stop()
+        PyQt5.QtCore.QCoreApplication.quit()
+
     def storeConfig(self):
+        self.config['version'] = '3.0'
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
         self.config['ParkPosAlt1'] = self.ui.le_altParkPos1.text()
         self.config['ParkPosAz1'] = self.ui.le_azParkPos1.text()
@@ -659,48 +683,30 @@ class MountWizzardApp(widget.MwWidget):
         self.workerINDI.storeConfig()
         self.workerAudio.storeConfig()
 
-    def loadConfigData(self):
-        try:
-            with open('config/config.cfg', 'r') as data_file:
-                self.config = json.load(data_file)
-        except Exception as e:
-            self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
-            self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
-            self.config = {}
+    def loadConfigData(self, filepath='config/config.cfg'):
+        if os.path.isfile(filepath):
+            try:
+                with open(filepath, 'r') as data_file:
+                    self.config = json.load(data_file)
+                    self.initConfigMain()
+                    # test version
 
-    def saveConfig(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
-        self.saveConfigData(filepath)
+            except Exception as e:
+                self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
+                self.logger.error('config.cfg could not be loaded, error:{0}'.format(e))
+                self.config = dict()
+        else:
+            self.messageQueue.put('Generating a new config file!\n')
+            self.logger.info('Configuration config.cfg not preset, starting new.')
+            self.config = dict()
 
-    def saveConfigQuit(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
-        self.saveConfigData(filepath)
-        self.quit()
-
-    def quit(self):
-        self.mainLoopTimer.stop()
-        self.workerAstrometry.astrometryCancel.emit()
-        self.workerImaging.imagingCancel.emit()
-        if platform.system() == 'Windows':
-            if self.workerAutomation.isRunning:
-                self.workerAutomation.stop()
-        if self.workerRemote.isRunning:
-            self.workerRemote.stop()
-        if self.workerEnvironment.isRunning:
-            self.workerEnvironment.stop()
-        if self.workerDome.isRunning:
-            self.workerDome.stop()
-        if self.workerAstrometry.isRunning:
-            self.workerAstrometry.stop()
-        if self.workerImaging.isRunning:
-            self.workerImaging.stop()
-        if self.workerMountDispatcher.isRunning:
-            self.workerMountDispatcher.stop()
-        if self.workerModelingDispatcher.isRunning:
-            self.workerModelingDispatcher.stop()
-        if self.workerINDI.isRunning:
-            self.workerINDI.stop()
-        PyQt5.QtCore.QCoreApplication.quit()
+    def loadConfigDataFrom(self):
+        value, ext = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)', True)
+        if value != '':
+            self.ui.le_configName.setText(os.path.basename(value))
+            self.loadConfigData(value + '.cfg')
+        else:
+            self.logger.warning('No config file selected')
 
     def saveConfigData(self, filepath=''):
         self.storeConfig()
@@ -717,20 +723,14 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.error('Item in config.cfg not saved error {0}'.format(e))
             return
 
-    def loadConfigDataFrom(self):
-        value, ext = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)', True)
-        if value != '':
-            self.ui.le_configName.setText(os.path.basename(value))
-            try:
-                with open(value + '.cfg', 'r') as data_file:
-                    self.config = json.load(data_file)
-                    self.initConfigMain()
-            except Exception as e:
-                self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
-                self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
-                self.config = {}
-        else:
-            self.logger.warning('no config file selected')
+    def saveConfigQuit(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
+        self.saveConfigData(filepath)
+        self.quit()
+
+    def saveConfig(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
+        self.saveConfigData(filepath)
 
     def saveConfigAs(self):
         value, ext = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)', False)
