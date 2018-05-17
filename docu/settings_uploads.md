@@ -1,11 +1,8 @@
 ## Setting / config of UTC Data / MPC / TLE
 
-<img src="pics/tab_settings_utcdata.png"/>
+<img src="pics/settings_uploads.png"/>
 
-### Area 1
-Shows the status of the UTC timing parameters especially of the UTC-1 values and their expiration date.
-
-### Area 2: Webservice for space data
+### Area 1: Webservice for space data
 
 Most of the data will be downloaded from the minor planet center:
 <pre>
@@ -30,7 +27,7 @@ are stored in your
 <pre>/config</pre>
 directory inside your working directory.
 
-### Area 3: Mount upload.
+### Area 2: Mount upload.
 
 Actually there is no interface or API offered from 10micron to upload data by an external program. Therefore MountWizzard tries to
 automate the original 10mircon updater software and does the job for you. I hope this hold for longer times as changes in workflow or
@@ -47,7 +44,7 @@ asteroids: If you check Filter MPC Files, MountWizzard takes the downloaded file
 filter expression is found. You can have multiple expressions, but you have to comma seperate them. It looks just for the string in the
 file, not the comet or asteroid name !
 
-[Back to settings](settings.md)
+[Back to settings](configuration.md)
 
 [Back to first steps](firststeps.md)
 
