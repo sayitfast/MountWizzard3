@@ -809,7 +809,6 @@ class MountWizzardApp(widget.MwWidget):
 
     def mountBoot(self):
         hostSummary = socket.gethostbyname_ex(socket.gethostname())
-        # hostSummary = ('Test', [], ['192.169.2.1', '179.168.2.1', '192.168.2.15'])
         canWOL = False
         self.logger.info('Got following hosts: {0}'.format(hostSummary[2]))
         host = [ip for ip in hostSummary[2] if not ip.startswith('127.')]
