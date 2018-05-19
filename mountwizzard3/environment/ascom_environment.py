@@ -111,7 +111,7 @@ class AscomEnvironment:
                 self.data['DewPoint'] = self.ascom.DewPoint
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['DewPoint'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -123,7 +123,7 @@ class AscomEnvironment:
                 self.data['Temperature'] = self.ascom.Temperature
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['Temperature'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -135,7 +135,7 @@ class AscomEnvironment:
                 self.data['Humidity'] = self.ascom.Humidity
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['Humidity'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -147,7 +147,7 @@ class AscomEnvironment:
                 self.data['Pressure'] = self.ascom.Pressure
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['Pressure'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -159,7 +159,7 @@ class AscomEnvironment:
                 self.data['SQR'] = self.ascom.SkyQuality
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['SQR'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -171,7 +171,7 @@ class AscomEnvironment:
                 self.data['CloudCover'] = self.ascom.CloudCover
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['CloudCover'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -183,7 +183,7 @@ class AscomEnvironment:
                 self.data['RainRate'] = self.ascom.RainRate
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['RainRate'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -195,7 +195,7 @@ class AscomEnvironment:
                 self.data['WindSpeed'] = self.ascom.WindSpeed
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['WindSpeed'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))
@@ -207,7 +207,7 @@ class AscomEnvironment:
                 self.data['WindDirection'] = self.ascom.WindDirection
         except pythoncom.com_error as e:
             if 'not implemented' in e.excepinfo[2]:
-                self.logger.error('Problem getting data, error: {0}, shutting off'.format(e))
+                self.logger.warning('Problem getting data, error: {0}, shutting off'.format(e))
                 self.access['WindDirection'] = False
             else:
                 self.logger.error('Problem getting data, error: {0}'.format(e))

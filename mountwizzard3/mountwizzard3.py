@@ -28,6 +28,7 @@ import logging.handlers
 import time
 import math
 import numpy
+import socket
 if platform.system() == 'Windows':
     from winreg import *
 from queue import Queue
@@ -807,8 +808,9 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no file selected')
 
     def mountBoot(self):
-        import socket
-        host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
+        summary = socket.gethostbyname_ex(socket.gethostname())
+        self.logger.info('Got data from host: {0}'.format(summary[2]))
+        host = [ip for ip in summary[2] if not ip.startswith('127.')][: 1]
         if len(host) > 1:
             self.messageQueue.put('Cannot send WOL because there are multiple computer IP addresses configured\n')
             self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
@@ -1326,6 +1328,7 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/config')
 
     # start logging with basic system data for information
+    summary = socket.gethostbyname_ex(socket.gethostname())
     logging.info('')
     logging.info('')
     logging.info('')
@@ -1344,6 +1347,7 @@ if __name__ == "__main__":
     for i in range(0, len(host)):
         logging.info('IP addr. : ' + host[i])
     logging.info('Node     : ' + platform.node())
+    logging.info('Hosts....: {0}'.format(summary))
     logging.info('Workdir. : ' + os.getcwd())
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
