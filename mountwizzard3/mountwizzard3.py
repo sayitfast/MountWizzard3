@@ -808,29 +808,30 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no file selected')
 
     def mountBoot(self):
-        summary = socket.gethostbyname_ex(socket.gethostname())
-        self.logger.info('Got data from host: {0}'.format(summary[2]))
-        host = [ip for ip in summary[2] if not ip.startswith('127.')][: 1]
-        if len(host) > 1:
-            self.messageQueue.put('Cannot send WOL because there are multiple computer IP addresses configured\n')
-            self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
-            return
+        hostSummary = socket.gethostbyname_ex(socket.gethostname())
+        # hostSummary = ('Test', [], ['192.169.2.1', '179.168.2.1', '192.168.2.15'])
+        canWOL = False
+        self.logger.info('Got following hosts: {0}'.format(hostSummary[2]))
+        host = [ip for ip in hostSummary[2] if not ip.startswith('127.')]
         if len(host) == 0:
             self.messageQueue.put('Cannot cannot check subnet configuration WOL might not work\n')
         else:
-            addressComputer = host[0].split('.')
             addressMount = socket.gethostbyname(self.ui.le_mountIP.text()).split('.')
-            if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
-                self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
-                self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
-                return
-        self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
-        PyQt5.QtWidgets.QApplication.processEvents()
-        send_magic_packet(self.ui.le_mountMAC.text().strip())
-        time.sleep(1)
-        self.messageQueue.put('Send WOL and boot mount\n')
-        self.logger.debug('Send WOL packet and boot Mount')
-        self.changeStylesheet(self.ui.btn_mountBoot, 'running', False)
+            for hostAddress in host:
+                addressComputer = hostAddress.split('.')
+                if addressComputer[0] == addressMount[0] and addressComputer[1] == addressMount[1] and addressComputer[2] == addressMount[2]:
+                    canWOL = True
+        if not canWOL:
+            self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
+            self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
+        else:
+            self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
+            PyQt5.QtWidgets.QApplication.processEvents()
+            send_magic_packet(self.ui.le_mountMAC.text().strip())
+            self.messageQueue.put('Send WOL and boot mount\n')
+            self.logger.debug('Send WOL packet and boot Mount')
+            time.sleep(1)
+            self.changeStylesheet(self.ui.btn_mountBoot, 'running', False)
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()
@@ -1328,7 +1329,7 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/config')
 
     # start logging with basic system data for information
-    summary = socket.gethostbyname_ex(socket.gethostname())
+    hostSummary = socket.gethostbyname_ex(socket.gethostname())
     logging.info('')
     logging.info('')
     logging.info('')
@@ -1347,7 +1348,7 @@ if __name__ == "__main__":
     for i in range(0, len(host)):
         logging.info('IP addr. : ' + host[i])
     logging.info('Node     : ' + platform.node())
-    logging.info('Hosts....: {0}'.format(summary))
+    logging.info('Hosts....: {0}'.format(hostSummary))
     logging.info('Workdir. : ' + os.getcwd())
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
