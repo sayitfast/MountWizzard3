@@ -120,4 +120,31 @@ In addition you find log files after the first and any following run of MountWiz
 stores all the debug and logging information, which might be used for trouble shooting. Please keep these files at least some days and post them
 if you would like to raise some questions. the log files could become large, so take care about the sizes.
 
+### Hints for Mac OSx:
+
+You need to install python 3.6.5 on your Mac.
+
+Once you have it, you can install MountWizzard3 with the command:
+<pre> pip3 install mountwizzard3 --upgrade --no-cache-dir </pre>
+
+For starting MountWizzard3 I made a short script file (I called it start_mw.sh with this content:
+<pre>
+#!/bin/bash
+cd /Users/mw/mountwizzard
+python3 /Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/mountwizzard/mountwizzard3.py
+</pre>
+
+If you would like to close the terminal application automatically after finishing MountWizzard3, you can
+configure on Mac the terminal app like:
+
+<pre>
+Terminal.app > Preferences > Profiles > Shell
+    - "When the shell exists:"
+        > Close if the shell exited cleanly
+    - "Ask before closing:"
+        (•) Never
+        -- OR --
+        (•) Only if there are....
+</pre>
+
 [Back to Home](home.md)

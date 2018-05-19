@@ -39,7 +39,7 @@ setup(
     + (['pywinauto==0.6.4'] if "Windows" == platform.system() else [])
     + (['comtypes==1.1.1'] if "Windows" == platform.system() else [])
     ,
-    url='https://pypi.python.org/pypi/mountwizzard3',
+    url='https://github.com/mworion/MountWizzard3-DIST',
     license='APL 2.0',
     author='mw',
     author_email='michael@wuertenberger.org',
