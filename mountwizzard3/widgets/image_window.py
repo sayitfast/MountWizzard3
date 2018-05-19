@@ -88,7 +88,7 @@ class ImagesWindow(widget.MwWidget):
         self.setFixedSize(PyQt5.QtCore.QSize(16777215, 16777215))
         # set the minimum size
         self.setMinimumSize(791, 400)
-        self.image = numpy.random.randint(low=5, high=6, size=(20, 20))
+        self.image = numpy.zeros([20, 20])
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
