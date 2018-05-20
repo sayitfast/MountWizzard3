@@ -438,7 +438,6 @@ class ImagesWindow(widget.MwWidget):
 
     @PyQt5.QtCore.pyqtSlot(str)
     def solveFitsImage(self, filename):
-        print('got signal')
         self.imagePath = filename
         self.solveOnce()
 
@@ -472,7 +471,6 @@ class ImagesWindow(widget.MwWidget):
         self.app.signalChangeStylesheet.emit(self.ui.btn_expose, 'running', False)
 
     def solveOnce(self):
-        print('started solving')
         self.cancel = False
         while not self.cancel:
             if self.imagePath == '':
