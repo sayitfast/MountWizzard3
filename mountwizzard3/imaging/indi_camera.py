@@ -66,6 +66,8 @@ class INDICamera:
                 break
             if self.app.workerINDI.cameraDevice:
                 if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
+                    # Enable BLOB mode it also enables listen to send images
+                    self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
                     break
             time.sleep(0.1)
         self.connect()
@@ -221,6 +223,7 @@ class INDICamera:
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = self.app.workerINDI.imagePath
+        self.app.workerINDI.imagePath = ''
         self.data['Imaging'] = False
 
     def connect(self):

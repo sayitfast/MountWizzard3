@@ -1033,6 +1033,8 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDIEnvironment.setText(data['value'])
         elif data['Name'] == 'Dome':
             self.ui.le_INDIDome.setText(data['value'])
+        elif data['Name'] == 'Telescope':
+            self.ui.le_INDITelescope.setText(data['value'])
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 

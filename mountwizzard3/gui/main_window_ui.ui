@@ -9636,7 +9636,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>190</y>
+         <y>220</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -9678,8 +9678,8 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
-         <width>71</width>
+         <y>220</y>
+         <width>81</width>
          <height>21</height>
         </rect>
        </property>
@@ -9696,8 +9696,8 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>215</y>
-         <width>71</width>
+         <y>245</y>
+         <width>81</width>
          <height>21</height>
         </rect>
        </property>
@@ -9717,7 +9717,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>240</y>
+         <y>295</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -9773,7 +9773,7 @@ manually</string>
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Enable INDI Client running</string>
+        <string>Enable INDI client running</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -9783,7 +9783,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>305</x>
-         <y>165</y>
+         <y>195</y>
          <width>46</width>
          <height>21</height>
         </rect>
@@ -9831,7 +9831,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>165</y>
+         <y>195</y>
          <width>191</width>
          <height>21</height>
         </rect>
@@ -9873,7 +9873,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>240</y>
+         <y>295</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -9914,7 +9914,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>215</y>
+         <y>245</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -9977,7 +9977,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>165</y>
+         <y>195</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -9995,8 +9995,8 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>265</y>
-         <width>71</width>
+         <y>320</y>
+         <width>81</width>
          <height>21</height>
         </rect>
        </property>
@@ -10016,7 +10016,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>265</y>
+         <y>320</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -10057,8 +10057,8 @@ manually</string>
       <widget class="QLabel" name="label_260">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>305</y>
+         <x>400</x>
+         <y>260</y>
          <width>281</width>
          <height>21</height>
         </rect>
@@ -10077,8 +10077,8 @@ manually</string>
       <widget class="Line" name="line_79">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>325</y>
+         <x>400</x>
+         <y>280</y>
          <width>331</width>
          <height>1</height>
         </rect>
@@ -10099,7 +10099,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>295</x>
-         <y>165</y>
+         <y>195</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -10361,8 +10361,8 @@ manually</string>
       <widget class="QLineEdit" name="le_AstrometryAPIKey">
        <property name="geometry">
         <rect>
-         <x>100</x>
-         <y>360</y>
+         <x>480</x>
+         <y>315</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -10403,8 +10403,8 @@ manually</string>
       <widget class="QLabel" name="label_mountIP_8">
        <property name="geometry">
         <rect>
-         <x>270</x>
-         <y>360</y>
+         <x>650</x>
+         <y>315</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -10421,8 +10421,8 @@ manually</string>
       <widget class="QLabel" name="label_mountIP_4">
        <property name="geometry">
         <rect>
-         <x>25</x>
-         <y>335</y>
+         <x>405</x>
+         <y>290</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -10439,8 +10439,8 @@ manually</string>
       <widget class="QLabel" name="label_mountIP_9">
        <property name="geometry">
         <rect>
-         <x>295</x>
-         <y>335</y>
+         <x>675</x>
+         <y>290</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -10457,8 +10457,8 @@ manually</string>
       <widget class="QLineEdit" name="le_astrometryTimeout">
        <property name="geometry">
         <rect>
-         <x>320</x>
-         <y>360</y>
+         <x>700</x>
+         <y>315</y>
          <width>31</width>
          <height>21</height>
         </rect>
@@ -10499,8 +10499,8 @@ manually</string>
       <widget class="QLineEdit" name="le_AstrometryPort">
        <property name="geometry">
         <rect>
-         <x>305</x>
-         <y>335</y>
+         <x>685</x>
+         <y>290</y>
          <width>46</width>
          <height>21</height>
         </rect>
@@ -10544,8 +10544,8 @@ manually</string>
       <widget class="QLabel" name="label_mountIP_13">
        <property name="geometry">
         <rect>
-         <x>25</x>
-         <y>360</y>
+         <x>405</x>
+         <y>315</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -10562,8 +10562,8 @@ manually</string>
       <widget class="QLineEdit" name="le_AstrometryHost">
        <property name="geometry">
         <rect>
-         <x>100</x>
-         <y>335</y>
+         <x>480</x>
+         <y>290</y>
          <width>191</width>
          <height>21</height>
         </rect>
@@ -10598,6 +10598,93 @@ manually</string>
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_220">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>270</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Telescope</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_INDITelescope">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>270</y>
+         <width>251</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows the name of the Dome device&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkEnableINDIListening">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>160</y>
+         <width>201</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Enable INDI image listening</string>
+       </property>
+       <property name="checked">
         <bool>false</bool>
        </property>
       </widget>

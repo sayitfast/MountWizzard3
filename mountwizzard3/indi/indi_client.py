@@ -21,6 +21,7 @@ import logging
 import time
 import zlib
 import queue
+import os
 from xml.etree import ElementTree
 import PyQt5
 import indi.indi_xml as indiXML
@@ -94,6 +95,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.app.ui.le_INDIServerIP.setText(self.app.config['INDIServerIP'])
             if 'CheckEnableINDI' in self.app.config:
                 self.app.ui.checkEnableINDI.setChecked(self.app.config['CheckEnableINDI'])
+            if 'CheckEnableINDIListening' in self.app.config:
+                self.app.ui.checkEnableINDIListening.setChecked(self.app.config['CheckEnableINDIListening'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -106,6 +109,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.config['INDIServerPort'] = self.app.ui.le_INDIServerPort.text()
         self.app.config['INDIServerIP'] = self.app.ui.le_INDIServerIP.text()
         self.app.config['CheckEnableINDI'] = self.app.ui.checkEnableINDI.isChecked()
+        self.app.config['CheckEnableINDIListening'] = self.app.ui.checkEnableINDIListening.isChecked()
 
     def changedINDIClientConnectionSettings(self):
         if self.isRunning:
@@ -258,6 +262,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
 
     @PyQt5.QtCore.pyqtSlot(object)
     def handleReceived(self, message):
@@ -290,17 +295,36 @@ class INDIClient(PyQt5.QtCore.QObject):
                         # format tells me raw or compressed format
                         if 'format' in message.getElt(0).attr:
                             try:
-                                # todo: image should be stored in indicamera, only data should be transferred via signal
-                                # todo: therefore imageHDU has to be a class variable to not be garbage collected
-                                if message.getElt(0).attr['format'] == '.fits':
-                                    imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
-                                    imageHDU.writeto(self.imagePath, overwrite=True)
-                                    self.logger.debug('Image BLOB is in raw fits format')
+                                print('received image: ')
+                                if self.imagePath != '':
+                                    # todo: image should be stored in indicamera, only data should be transferred via signal
+                                    # todo: therefore imageHDU has to be a class variable to not be garbage collected
+                                    if message.getElt(0).attr['format'] == '.fits':
+                                        imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                                        imageHDU.writeto(self.imagePath, overwrite=True)
+                                        self.logger.debug('Image BLOB is in raw fits format')
+                                    else:
+                                        imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
+                                        imageHDU.writeto(self.imagePath, overwrite=True)
+                                        self.logger.debug('Image BLOB is compressed fits format')
+                                    self.receivedImage.emit(True)
                                 else:
-                                    imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
-                                    imageHDU.writeto(self.imagePath, overwrite=True)
-                                    self.logger.debug('Image BLOB is compressed fits format')
-                                self.receivedImage.emit(True)
+                                    if self.app.ui.checkEnableINDIListening.isChecked():
+                                        # received an image without asking for it. just listening
+                                        path = os.getcwd() + '/images/listen.fit'
+                                        print(path)
+                                        if message.getElt(0).attr['format'] == '.fits':
+                                            imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                                            imageHDU.writeto(path, overwrite=True)
+                                            self.logger.debug('Image while listening is received in raw fits format')
+                                        else:
+                                            imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
+                                            imageHDU.writeto(path, overwrite=True)
+                                            self.logger.debug('Image while listening is received in compressed fits format')
+                                        self.app.imageWindow.signalShowFitsImage.emit(path)
+                                    else:
+                                        # do nothing
+                                        pass
                             except Exception as e:
                                 self.receivedImage.emit(False)
                                 self.logger.debug('Could not receive Image, error:{0}'.format(e))
@@ -380,6 +404,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': device})
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': device})
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
         self.app.sharedINDIDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
