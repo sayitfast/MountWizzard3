@@ -7,7 +7,7 @@ and some more ASCOM parts. For plate solving I recommend using the new local ast
 
 (C) Michael Würtenberger 2018
 
-#### Version release: new, test version actual 3.0 beta 0
+#### Version release: new, test version actual 3.0 beta 2
 
 [Link to the extended documentation and handbook of MountWizzard3](./docu/home.md)
 
@@ -52,6 +52,8 @@ Building an initial model: https://www.youtube.com/watch?v=o7ngZ41EOoM
 
 Building a full model with 43 points: https://www.youtube.com/watch?v=e3NhdaUoqzU
 
+Normal work: building initial and full model (60 points):
+
 Building a full model with 100 points: https://www.youtube.com/watch?v=9_uuu0EPdo8
 
 Working with profiles: https://www.youtube.com/watch?v=xOzVaHvTlpU
@@ -60,6 +62,15 @@ How to work on Mac OSX: https://www.youtube.com/watch?v=S0dD-xz1EuY
 
 How to work on Linux Ubuntu 16.04: https://www.youtube.com/watch?v=y_rMOMVq75c&t=6s
 
+Working with the hemisphere window:
+
+Working with windows sizing: https://www.youtube.com/watch?v=y77wqqbiG7Q
+
+Installation on linux:
+
+Installation on Mac OSx:
+
+Using the INDI framework:
 
 ### Finally
 The use this software is at your own risk! No responsibility for damages to your mount or other equipment or your
