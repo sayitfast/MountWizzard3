@@ -97,6 +97,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.app.ui.checkEnableINDI.setChecked(self.app.config['CheckEnableINDI'])
             if 'CheckEnableINDIListening' in self.app.config:
                 self.app.ui.checkEnableINDIListening.setChecked(self.app.config['CheckEnableINDIListening'])
+            if 'CheckEnableINDISolving' in self.app.config:
+                self.app.ui.checkEnableINDISolving.setChecked(self.app.config['CheckEnableINDISolving'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -110,6 +112,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.config['INDIServerIP'] = self.app.ui.le_INDIServerIP.text()
         self.app.config['CheckEnableINDI'] = self.app.ui.checkEnableINDI.isChecked()
         self.app.config['CheckEnableINDIListening'] = self.app.ui.checkEnableINDIListening.isChecked()
+        self.app.config['CheckEnableINDISolving'] = self.app.ui.checkEnableINDISolving.isChecked()
 
     def changedINDIClientConnectionSettings(self):
         if self.isRunning:
@@ -295,7 +298,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                         # format tells me raw or compressed format
                         if 'format' in message.getElt(0).attr:
                             try:
-                                print('received image: ')
                                 if self.imagePath != '':
                                     # todo: image should be stored in indicamera, only data should be transferred via signal
                                     # todo: therefore imageHDU has to be a class variable to not be garbage collected
@@ -312,7 +314,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                                     if self.app.ui.checkEnableINDIListening.isChecked():
                                         # received an image without asking for it. just listening
                                         path = os.getcwd() + '/images/listen.fit'
-                                        print(path)
                                         if message.getElt(0).attr['format'] == '.fits':
                                             imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
                                             imageHDU.writeto(path, overwrite=True)
@@ -322,6 +323,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                                             imageHDU.writeto(path, overwrite=True)
                                             self.logger.debug('Image while listening is received in compressed fits format')
                                         self.app.imageWindow.signalShowFitsImage.emit(path)
+                                        if self.app.ui.checkEnableINDISolving.isChecked():
+                                            self.app.imageWindow.signalSolveFitsImage.emit(path)
                                     else:
                                         # do nothing
                                         pass

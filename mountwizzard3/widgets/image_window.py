@@ -66,6 +66,7 @@ class ImagesWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
     BASENAME = 'exposure-'
     signalShowFitsImage = PyQt5.QtCore.pyqtSignal(str)
+    signalSolveFitsImage = PyQt5.QtCore.pyqtSignal(str)
     signalSetRaSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetDecSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetAngleSolved = PyQt5.QtCore.pyqtSignal(str)
@@ -132,6 +133,7 @@ class ImagesWindow(widget.MwWidget):
 
         # define the slots for signals
         self.signalShowFitsImage.connect(self.showFitsImage)
+        self.signalSolveFitsImage.connect(self.solveFitsImage)
         self.signalSetRaSolved.connect(self.setRaSolved)
         self.signalSetDecSolved.connect(self.setDecSolved)
         self.signalSetAngleSolved.connect(self.setAngleSolved)
@@ -434,6 +436,12 @@ class ImagesWindow(widget.MwWidget):
         else:
             self.ui.imageMarker.setVisible(False)
 
+    @PyQt5.QtCore.pyqtSlot(str)
+    def solveFitsImage(self, filename):
+        print('got signal')
+        self.imagePath = filename
+        self.solveOnce()
+
     def exposeOnce(self):
         self.cancel = False
         # link to cam and check if available
@@ -464,6 +472,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.signalChangeStylesheet.emit(self.ui.btn_expose, 'running', False)
 
     def solveOnce(self):
+        print('started solving')
         self.cancel = False
         while not self.cancel:
             if self.imagePath == '':

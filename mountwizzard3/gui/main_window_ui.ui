@@ -9636,7 +9636,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>220</y>
+         <y>240</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -9678,7 +9678,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>220</y>
+         <y>240</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -9696,7 +9696,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>245</y>
+         <y>265</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -9717,7 +9717,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>295</y>
+         <y>315</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -9783,7 +9783,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>305</x>
-         <y>195</y>
+         <y>215</y>
          <width>46</width>
          <height>21</height>
         </rect>
@@ -9831,7 +9831,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>195</y>
+         <y>215</y>
          <width>191</width>
          <height>21</height>
         </rect>
@@ -9873,7 +9873,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>295</y>
+         <y>315</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -9914,7 +9914,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>245</y>
+         <y>265</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -9977,7 +9977,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>195</y>
+         <y>215</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -9995,7 +9995,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>320</y>
+         <y>340</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -10016,7 +10016,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>320</y>
+         <y>340</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -10099,7 +10099,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>295</x>
-         <y>195</y>
+         <y>215</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -10605,7 +10605,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>270</y>
+         <y>290</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -10626,7 +10626,7 @@ manually</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>270</y>
+         <y>290</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -10683,6 +10683,30 @@ manually</string>
        </property>
        <property name="text">
         <string>Enable INDI image listening</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkEnableINDISolving">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>185</y>
+         <width>256</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Enable INDI solving after image listening</string>
        </property>
        <property name="checked">
         <bool>false</bool>
