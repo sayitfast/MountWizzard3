@@ -52,7 +52,7 @@ Building an initial model: https://www.youtube.com/watch?v=o7ngZ41EOoM
 
 Building a full model with 43 points: https://www.youtube.com/watch?v=e3NhdaUoqzU
 
-Normal work: building initial and full model (60 points):
+Normal work: building initial and full model (60 points): https://www.youtube.com/watch?v=3lEEv7ltzAg
 
 Building a full model with 100 points: https://www.youtube.com/watch?v=9_uuu0EPdo8
 
@@ -62,7 +62,7 @@ How to work on Mac OSX: https://www.youtube.com/watch?v=S0dD-xz1EuY
 
 How to work on Linux Ubuntu 16.04: https://www.youtube.com/watch?v=y_rMOMVq75c&t=6s
 
-Working with the hemisphere window:
+Working with the hemisphere window: https://www.youtube.com/watch?v=p4RyNgBaO3Y
 
 Working with windows sizing: https://www.youtube.com/watch?v=y77wqqbiG7Q
 
