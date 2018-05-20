@@ -813,7 +813,7 @@ class MountWizzardApp(widget.MwWidget):
         self.logger.info('Got following hosts: {0}'.format(hostSummary[2]))
         host = [ip for ip in hostSummary[2] if not ip.startswith('127.')]
         if len(host) == 0:
-            self.messageQueue.put('Cannot cannot check subnet configuration WOL might not work\n')
+            self.messageQueue.put('Probably cannot send WOL because check subnet configuration\n')
         else:
             addressMount = socket.gethostbyname(self.ui.le_mountIP.text()).split('.')
             for hostAddress in host:
@@ -821,16 +821,16 @@ class MountWizzardApp(widget.MwWidget):
                 if addressComputer[0] == addressMount[0] and addressComputer[1] == addressMount[1] and addressComputer[2] == addressMount[2]:
                     canWOL = True
         if not canWOL:
-            self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
+            self.messageQueue.put('Probably cannot send WOL because computer and mount are not in the same subnet\n')
             self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
-        else:
-            self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
-            PyQt5.QtWidgets.QApplication.processEvents()
-            send_magic_packet(self.ui.le_mountMAC.text().strip())
-            self.messageQueue.put('Send WOL and boot mount\n')
-            self.logger.debug('Send WOL packet and boot Mount')
-            time.sleep(1)
-            self.changeStylesheet(self.ui.btn_mountBoot, 'running', False)
+
+        self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
+        PyQt5.QtWidgets.QApplication.processEvents()
+        send_magic_packet(self.ui.le_mountMAC.text().strip())
+        self.messageQueue.put('Send WOL and boot mount\n')
+        self.logger.debug('Send WOL packet and boot Mount')
+        time.sleep(1)
+        self.changeStylesheet(self.ui.btn_mountBoot, 'running', False)
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()
