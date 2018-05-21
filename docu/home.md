@@ -33,8 +33,17 @@ just put you mouse above a field or button and you will see the tooltip!
 ### Overview
 To get a first impression after start, please have a look to the [main screens and the gui](overview.md)
 MountWizzard is using and which windows you will experience from the beginning on.
+
 ### Installation
-Please look to [installation procedures](installation.md) for detailed information, what and when to do.
+Please look to
+
+- [installation on windows 7/10 with EXE package ](installation_windows.md)
+- [installation on ubuntu 16.04 linux](installation_linux.md)
+- [installation on Mac HighSierra](installation_mac.md)
+- [installation of other frameworks](installation_other.md)
+
+for detailed information, what and when to do.
+
 ### Setting up MountWizzard
 All necessary steps for the [configuration of MountWizzard](configuration.md) are explained.
 ### Setting up my gear
