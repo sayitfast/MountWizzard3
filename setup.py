@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='mountwizzard3',
-    version='3.0b2',
+    version='3.0b3',
     packages=[
         'mountwizzard3',
         'mountwizzard3.analyse',
