@@ -103,7 +103,7 @@ class ImagesWindow(widget.MwWidget):
         background.setStyleSheet('background-color: transparent;')
         self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_subplot(111)
         self.imageMatplotlib.axes.set_axis_off()
-        self.imageMatplotlib.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        self.imageMatplotlib.fig.subplots_adjust(left=0.01, right=0.99, bottom=0.01, top=0.99)
 
         self.imageMatplotlibMarker = widget.IntegrateMatplotlib(self.ui.imageMarker)
         # making background looking transparent
@@ -111,6 +111,8 @@ class ImagesWindow(widget.MwWidget):
         background = self.imageMatplotlibMarker.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.imageMatplotlibMarker.axes = self.imageMatplotlibMarker.fig.add_subplot(111)
+        self.imageMatplotlibMarker.axes.set_axis_off()
+        self.imageMatplotlibMarker.fig.subplots_adjust(left=0.01, right=0.99, bottom=0.01, top=0.99)
 
         # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
@@ -147,8 +149,6 @@ class ImagesWindow(widget.MwWidget):
         # allow message window to be resized in height
         self.ui.image.setGeometry(5, 125, self.width() - 10, self.height() - 125)
         self.ui.imageMarker.setGeometry(5, 125, self.width() - 10, self.height() - 125)
-        # using tight layout because of the axis titles and labels
-        self.imageMatplotlibMarker.fig.set_tight_layout((0, 0, 1, 1))
         # getting position of axis
         axesPos = self.imageMatplotlibMarker.axes.get_position()
         # and using it fo the other plot widgets to be identically same size and position
@@ -205,8 +205,6 @@ class ImagesWindow(widget.MwWidget):
         finally:
             pass
         self.setCrosshairOnOff()
-        if os.path.isfile(self.imagePath):
-            self.signalShowFitsImage.emit(self.imagePath)
 
     def storeConfig(self):
         self.app.config['ImagePopupWindowPositionX'] = self.pos().x()
@@ -231,8 +229,8 @@ class ImagesWindow(widget.MwWidget):
 
     def showWindow(self):
         self.showStatus = True
+        self.signalShowFitsImage.emit(self.imagePath)
         self.setVisible(True)
-        self.show()
 
     def cancelAction(self):
         self.cancel = True
@@ -311,6 +309,16 @@ class ImagesWindow(widget.MwWidget):
         worker.signals.result.connect(self.signalDisplayImage)
         self.threadpool.start(worker)
 
+    @PyQt5.QtCore.pyqtSlot(object)
+    def displayImage(self, result):
+        image = result[0]
+        color = result[1]
+        norm = result[2]
+        self.imageMatplotlib.axes.imshow(image, cmap=color, norm=norm)
+        self.imageMatplotlib.fig.canvas.draw()
+        self.drawMarkers()
+        self.resizeEvent(0)
+
     @staticmethod
     def calculateImage(imageOrig, strechMode, colorMode, zoomMode):
         sizeX, sizeY = imageOrig.shape
@@ -351,16 +359,6 @@ class ImagesWindow(widget.MwWidget):
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
         result = (image, colorMode, norm)
         return result
-
-    @PyQt5.QtCore.pyqtSlot(object)
-    def displayImage(self, result):
-        image = result[0]
-        color = result[1]
-        norm = result[2]
-        self.imageMatplotlib.axes.imshow(image, cmap=color, norm=norm)
-        self.imageMatplotlib.fig.canvas.draw()
-        self.drawMarkers()
-        self.resizeEvent(0)
 
     def setStrech(self):
         strechMode = self.getStrechMode()

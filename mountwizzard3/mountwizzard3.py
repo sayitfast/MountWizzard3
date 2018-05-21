@@ -460,19 +460,19 @@ class MountWizzardApp(widget.MwWidget):
         if self.imageWindow.showStatus:
             self.imageWindow.showWindow()
         else:
-            self.imageWindow.setVisible(False)
+            self.imageWindow.close()
         if self.messageWindow.showStatus:
             self.messageWindow.showWindow()
         else:
-            self.messageWindow.setVisible(False)
+            self.messageWindow.close()
         if self.hemisphereWindow.showStatus:
             self.hemisphereWindow.showWindow()
         else:
-            self.hemisphereWindow.setVisible(False)
+            self.hemisphereWindow.close()
         if self.analyseWindow.showStatus:
             self.analyseWindow.showWindow()
         else:
-            self.analyseWindow.setVisible(False)
+            self.analyseWindow.close()
 
     def initConfig(self):
         # now try to set the right values in class
