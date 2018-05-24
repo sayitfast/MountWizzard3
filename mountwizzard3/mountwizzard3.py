@@ -1331,11 +1331,10 @@ if __name__ == "__main__":
 
     # start logging with basic system data for information
     hostSummary = socket.gethostbyname_ex(socket.gethostname())
-    logging.info('')
-    logging.info('')
-    logging.info('')
     logging.info('----------------------------------------------------------------------------------')
+    logging.info('')
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')
+    logging.info('')
     logging.info('----------------------------------------------------------------------------------')
     logging.info('Platform : ' + platform.system())
     logging.info('Release  : ' + platform.release())
