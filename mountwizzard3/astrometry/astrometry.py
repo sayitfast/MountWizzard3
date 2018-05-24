@@ -211,11 +211,9 @@ class Astrometry(PyQt5.QtCore.QObject):
             imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
             imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
             fitsFileHandle.flush()
-            fitsFileHandle.close()
             self.astrometryHandler.solveImage(imageParams)
             self.logger.info('Image params: {0}'.format(imageParams))
-        else:
-            fitsFileHandle.close()
+        fitsFileHandle.close()
         if self.app.imageWindow.showStatus:
             if 'Solved' in imageParams:
                 if imageParams['Solved']:
