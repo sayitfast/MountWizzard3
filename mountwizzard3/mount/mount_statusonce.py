@@ -207,7 +207,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('Parsing Status Once combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
-            pass
+            self.logger.error('Problem parsing response, error: {0}, message:{1}'.format(e, messageToProcess))
         finally:
             self.app.sharedMountDataLock.unlock()
         self.sendLock = False
