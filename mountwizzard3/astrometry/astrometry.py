@@ -213,6 +213,8 @@ class Astrometry(PyQt5.QtCore.QObject):
             fitsFileHandle.flush()
             self.astrometryHandler.solveImage(imageParams)
             self.logger.info('Image params: {0}'.format(imageParams))
+        else:
+            self.logger.error('FITS data for start solving is missing, present headers: {0}'.format(fitsHeader))
         fitsFileHandle.close()
         if self.app.imageWindow.showStatus:
             if 'Solved' in imageParams:
