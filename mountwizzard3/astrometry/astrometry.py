@@ -206,7 +206,8 @@ class Astrometry(PyQt5.QtCore.QObject):
         else:
             imageParams['ScaleHint'] = imageParams['ScaleHint'] = self.app.ui.pixelSize.value() * 206.6 / self.app.ui.focalLength.value()
         fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
-        # if no telescope connected, we get no object data
+        # if no telescope connected, we get no object data, therefore no startpoint for solving is there
+        # we won't start solving without startpoint given. we define no default startpoint here
         if 'OBJCTRA' in fitsHeader:
             imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
             imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
