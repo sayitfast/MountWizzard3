@@ -92,6 +92,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
             self.mutexTakeNextPoint.unlock()
             modelingData = self.queuePoint.get()
             self.main.app.messageQueue.put('#BGSlewing to point {0:2d}  @ Az: {1:3.0f}\xb0 Alt: {2:2.0f}\xb0\n'.format(modelingData['Index'] + 1, modelingData['Azimuth'], modelingData['Altitude']))
+            self.logger.info('Slewing to point {0:2d}  @ Az: {1:3.0f}\xb0 Alt: {2:2.0f}\xb0'.format(modelingData['Index'] + 1, modelingData['Azimuth'], modelingData['Altitude']))
             self.main.slewMountDome(modelingData)
             self.main.app.messageQueue.put('\tWait mount settling / delay time:  {0:02d} sec\n'.format(modelingData['SettlingTime']))
             self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
@@ -183,6 +184,7 @@ class Image(PyQt5.QtCore.QObject):
             modelingData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
             modelingData['Imagepath'] = ''
             self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
+            self.loger.info('Capturing image for model point {0:2d}'.format(modelingData['Index'] + 1))
             # getting next image
             self.main.app.workerImaging.imagingCommandQueue.put(modelingData)
             # wait for imaging ready
@@ -196,6 +198,7 @@ class Image(PyQt5.QtCore.QObject):
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
             self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
+            self.logger.info('Imaged {0:02d}'.format(modelingData['Index'] + 1))
             self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
 
 
@@ -258,6 +261,7 @@ class Platesolve(PyQt5.QtCore.QObject):
             modelingData = self.queuePlatesolve.get()
             if modelingData['Imagepath'] != '':
                 self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
+                self.logger.info('Solving image for model point {0}'.format(modelingData['Index'] + 1))
                 self.main.app.workerAstrometry.astrometryCommandQueue.put(modelingData)
                 # wait for solving ready
                 while not self.imageDataDownloaded and not self.main.cancel:
@@ -273,12 +277,15 @@ class Platesolve(PyQt5.QtCore.QObject):
                     modelingData['Message'] = 'OK - solved'
                     self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                     self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
+                    self.logger.info('RA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}, image path: {2}'.format(modelingData['RaError'], modelingData['DecError'], modelingData['Imagepath']))
                     self.main.solvedPointsQueue.put(copy.copy(modelingData))
                 else:
                     if 'Message' in modelingData:
                         self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:90]))
+                        self.logger.warning('Solving error for point {0}: {1}'.format(modelingData['Index'] + 1, modelingData['Message'][:90]))
                     else:
                         self.main.app.messageQueue.put('\tSolving canceled\n')
+                        self.logger.warning('Solving canceled')
             # write progress to hemisphere windows
             self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
             # write progress estimation to main gui
@@ -573,10 +580,13 @@ class ModelingBuild:
                 self.app.audioCommandQueue.put('ModelingFinished')
                 self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
                 self.app.messageQueue.put('#BGInitial Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
+                self.logger.info('Initial Model finished with success, runtime: {0} (MM:SS)'.format(time.strftime("%M:%S", time.gmtime(time.time() - timeStartModeling))))
             else:
                 self.app.messageQueue.put('#BRModel finished with errors\n')
+                self.logger.warning('Model finished with errors')
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
+            self.logger.warning('Model finished with errors')
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -644,10 +654,13 @@ class ModelingBuild:
                 self.app.audioCommandQueue.put('ModelingFinished')
                 self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
                 self.app.messageQueue.put('#BGFull Model finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+                self.logger.info('Full Model finished with success, runtime: {0} (MM:SS)'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
             else:
                 self.app.messageQueue.put('#BRModel finished with errors\n')
+                self.logger.warning('Model finished with errors')
         else:
             self.app.messageQueue.put('#BRModel finished with errors\n')
+            self.logger.warning('Model finished with errors')
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():
