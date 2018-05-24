@@ -6105,7 +6105,7 @@ class Ui_MainWindow(object):
         self.btn_cancelRunTargetRMSAlignment.setToolTip(_translate("MainWindow", "<html><head/><body><p>Cancels the optimise run.</p></body></html>"))
         self.btn_cancelRunTargetRMSAlignment.setText(_translate("MainWindow", "Cancel Optimise"))
         self.le_alignErrorRMS2.setToolTip(_translate("MainWindow", "<html><head/><body><p>Actual RMS Error in arc sec</p><p><br/></p></body></html>"))
-        self.le_alignErrorRMS2.setText(_translate("MainWindow", "0,0"))
+        self.le_alignErrorRMS2.setText(_translate("MainWindow", "0.0"))
         self.label_75.setText(_translate("MainWindow", "Actual RMS"))
         self.btn_clearModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Clear the alignment model in mount. Can\'t be revised.</p></body></html>"))
         self.btn_clearModel.setText(_translate("MainWindow", "Clear Model"))

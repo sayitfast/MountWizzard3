@@ -115,8 +115,9 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.signalConnected.emit({'GetAlign': True})
-        self.getAlignmentModel()
         self.logger.info('Mount GetAlignmentModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        time.sleep(1)
+        self.getAlignmentModel()
 
     def handleError(self, socketError):
         self.logger.warning('Mount GetAlignmentModel connection fault: {0}'.format(self.socket.errorString()))
@@ -175,12 +176,15 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.app.sharedMountDataLock.lockForWrite()
             if 'FW' not in self.data:
                 self.data['FW'] = 0
+            self.logger.info('Raw data from Mount: {0}'.format(messageToProcess))
             valueList = messageToProcess.strip('#').split('#')
             # now the first part of the command cluster
             numberStars = int(valueList[0])
+            self.logger.info('Align info number stars: {0}'.format(numberStars))
             self.data['NumberAlignmentStars'] = numberStars
             self.data['Number'] = numberStars
             del valueList[0]
+            self.logger.info('Align info data: {0}'.format(valueList[0]))
             if numberStars < 3:
                 valueList = ['E,E,E,E,E,E,E,E,E']
             # now the second part of the command cluster. it is related to firmware feature
@@ -255,6 +259,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.data['ModelError'] = list()
             self.data['ModelErrorAngle'] = list()
             # we start every time with index 0, because if the first parsing took place, the first list element will be deleted
+            self.logger.info('Align info points data: {0}'.format(valueList))
             for i in range(0, len(valueList)):
                 values = valueList[i].split(',')
                 ha = values[0]
