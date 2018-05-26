@@ -102,14 +102,14 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.checkPlatformDependableMenus()
-        self.setWindowTitle('MountWizzard3 - ' + BUILD_NO)
+        self.setWindowTitle('MountWizzard3 - v' + BUILD_NO)
         # enable a matplotlib figure polar plot in main gui
         self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
         # finalize gui with icons
         self.setupIcons()
 
         # putting header to message window
-        self.messageQueue.put('#BWMountWizzard3 {0} started \n'.format(BUILD_NO))
+        self.messageQueue.put('#BWMountWizzard3 v{0} started \n'.format(BUILD_NO))
         self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
@@ -1290,8 +1290,11 @@ if __name__ == "__main__":
     import warnings
     import socket
     import PyQt5
+    import build.build
     from PyQt5.QtCore import PYQT_VERSION_STR
     from PyQt5.QtCore import QT_VERSION_STR
+
+    BUILD_NO = build.build.BUILD().BUILD_NO_WINDOW
 
     # setting except hook to get stack traces into the log files
     def except_hook(typeException, valueException, tbackException):
@@ -1312,9 +1315,6 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    # defining build no
-    BUILD_NO = 'v3.0 beta 3'
-
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
@@ -1334,7 +1334,7 @@ if __name__ == "__main__":
     hostSummary = socket.gethostbyname_ex(socket.gethostname())
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
-    logging.info('MountWizzard v ' + BUILD_NO + ' started !')
+    logging.info('MountWizzard v' + BUILD_NO + ' started !')
     logging.info('')
     logging.info('----------------------------------------------------------------------------------')
     logging.info('Platform : ' + platform.system())

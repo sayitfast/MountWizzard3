@@ -59,3 +59,9 @@ import subprocess
 import os
 subprocess.call('c:\signtool\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /f c:\signtool\mountwizzard.pfx /p saturn ' + os.getcwd() + '\dist\mountwizzard3-console.exe')
 #######################################
+
+# rename the file to version number
+import build.build
+BUILD_NO = build.build.BUILD().BUILD_NO_FILE
+
+os.rename(os.getcwd() + '\dist\mountwizzard3-console.exe', os.getcwd() + '\dist\mountwizzard3-' + BUILD_NO + '-console.exe')
