@@ -372,7 +372,7 @@ class MountWizzardApp(widget.MwWidget):
             # get index of ASCOM data:
             index = self.ui.settingsTabWidget.indexOf(self.ui.settingsTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'ASCOM'))
             self.ui.settingsTabWidget.removeTab(index)
-            index = self.ui.settingsTabWidget.indexOf(self.ui.settingsTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Upload'))
+            index = self.ui.settingsTabWidget.indexOf(self.ui.settingsTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Uploads'))
             self.ui.settingsTabWidget.removeTab(index)
 
     def setLoggingLevel(self):
