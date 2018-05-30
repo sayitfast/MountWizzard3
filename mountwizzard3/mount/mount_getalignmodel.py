@@ -146,6 +146,9 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.data['FW'] = 0
         if self.data['FW'] < 21500:
             command = ':getalst#'
+        elif self.data['FW'] < 21599:
+            # command newalig and endalig is due to a bug in firmware
+            command = ':newalig#:endalig#:getalst#:getain#'
         else:
             command = ':getalst#:getain#'
         # asking for 100 points data
@@ -164,6 +167,12 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         else:
             messageToProcess = self.messageString
             self.messageString = ''
+        if 'FW' not in self.data:
+            self.data['FW'] = 0
+        # new delete the first two replies as they are for workaround due to bug in firmware
+        if self.data['FW'] < 21599:
+            messageToProcess = messageToProcess[4:]
+        # and proceed further on. should be fixed from fw 2.15.18 of
         while messageToProcess.endswith('E#'):
             messageToProcess = messageToProcess.rstrip('E#')
         while messageToProcess.startswith('E#'):
@@ -173,8 +182,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             if len(messageToProcess) == 0:
                 return
             self.app.sharedMountDataLock.lockForWrite()
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             self.logger.info('Raw data from Mount: {0}'.format(messageToProcess))
             valueList = messageToProcess.strip('#').split('#')
             # now the first part of the command cluster
