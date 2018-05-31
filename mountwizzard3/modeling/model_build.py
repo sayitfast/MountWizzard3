@@ -470,8 +470,6 @@ class ModelingBuild:
             modelingData = self.solvedPointsQueue.get()
             # clean up intermediate data
             results.append(copy.copy(modelingData))
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
