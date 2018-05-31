@@ -419,7 +419,12 @@ class INDIClient(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable():
             # print(self.socket.bytesAvailable(), len(self.messageString))
-            self.messageString += self.socket.read(100000).decode()
+            try:
+                self.messageString += self.socket.read(100000).decode()
+            except Exception as e:
+                self.logger.error('Cannot decode, error:{0}'.format(e))
+            finally:
+                pass
         # Add closing tag.
         self.messageString += "</data>"
         # Try and parse the message.
