@@ -168,7 +168,6 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 messageToProcess = self.messageString
                 self.messageString = ''
         # now transfer the model data
-        print(messageToProcess)
         try:
             if len(messageToProcess) == 0:
                 return
