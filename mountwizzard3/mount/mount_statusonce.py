@@ -151,11 +151,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     def getStatusOnce(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            if self.data['FW'] < 21518:
-                # command newalig and endalig is due to a bug in firmware
-                command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
-            else:
-                command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
+            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
+            # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
             self.sendCommandQueue.put(command)
             self.dataTimer.stop()
 
