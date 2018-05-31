@@ -113,7 +113,8 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue.put('#BWMountWizzard3  Build:{0} started \n'.format(BUILD_NO))
         self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
-        self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
+        self.messageQueue.put('#BWMachine  : {}\n'.format(platform.machine()))
+        self.messageQueue.put('#BWWorkDir  : {}\n\n'.format(os.getcwd()))
 
         # get ascom state
         self.checkASCOM()

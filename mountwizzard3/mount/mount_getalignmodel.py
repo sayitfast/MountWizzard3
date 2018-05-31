@@ -182,9 +182,9 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.data['NumberAlignmentStars'] = numberStars
             self.data['Number'] = numberStars
             del valueList[0]
-            self.logger.info('Align info data: {0}'.format(valueList[0]))
             if numberStars < 3:
                 valueList = ['E,E,E,E,E,E,E,E,E']
+            self.logger.info('Align info data: {0}'.format(valueList[0]))
             # now the second part of the command cluster. it is related to firmware feature
             if self.data['FW'] > 21500:
                 if numberStars < 3:
@@ -274,10 +274,10 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.data['ModelAltitude'].append(alt)
                 self.data['ModelError'].append(ErrorRMS)
                 self.data['ModelErrorAngle'].append(ErrorAngle)
-            self.data['ModelLoading'] = False
         except Exception as e:
             self.logger.error('Parsing GetAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
             self.app.sharedMountDataLock.unlock()
             self.app.workerMountDispatcher.signalMountShowAlignmentModel.emit()
+        self.data['ModelLoading'] = False
         self.sendLock = False
