@@ -65,5 +65,7 @@ subprocess.call('c:\signtool\signtool.exe sign /tr http://timestamp.digicert.com
 # rename the file to version number
 import build.build
 BUILD_NO = build.build.BUILD().BUILD_NO_FILE
-
+# if file present, delete it
+if os.path.isfile(os.getcwd() + '\dist\mountwizzard3-' + BUILD_NO + '.exe'):
+    os.remove(os.getcwd() + '\dist\mountwizzard3-' + BUILD_NO + '.exe')
 os.rename(os.getcwd() + '\dist\mountwizzard3.exe', os.getcwd() + '\dist\mountwizzard3-' + BUILD_NO + '.exe')
