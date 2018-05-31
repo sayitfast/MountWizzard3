@@ -184,7 +184,7 @@ class Image(PyQt5.QtCore.QObject):
             modelingData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
             modelingData['Imagepath'] = ''
             self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
-            self.loger.info('Capturing image for model point {0:2d}'.format(modelingData['Index'] + 1))
+            self.logger.info('Capturing image for model point {0:2d}'.format(modelingData['Index'] + 1))
             # getting next image
             self.main.app.workerImaging.imagingCommandQueue.put(modelingData)
             # wait for imaging ready

@@ -162,12 +162,13 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable():
             self.messageString += self.socket.read(1024).decode()
-            if len(self.messageString.strip('#').split('#')) < 8:
+            if len(self.messageString.strip('#').split('#')) < 10:
                 return
             else:
                 messageToProcess = self.messageString
                 self.messageString = ''
         # now transfer the model data
+        print(messageToProcess)
         try:
             if len(messageToProcess) == 0:
                 return
