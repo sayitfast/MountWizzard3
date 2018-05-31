@@ -532,6 +532,7 @@ class ModelingBuild:
         self.app.messageQueue.put('#BWModel processed\n')
         name = modelingData['Directory'] + '_initial'
         if len(self.modelAlignmentData) > 0:
+            self.app.messageQueue.put('Programming model to mount\n')
             self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
             self.app.messageQueue.put('Reloading actual alignment model from mount\n')
             self.app.workerMountDispatcher.reloadAlignmentModel()
@@ -601,6 +602,7 @@ class ModelingBuild:
         self.app.messageQueue.put('#BWModel processed\n')
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
+            self.app.messageQueue.put('Programming model to mount\n')
             self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
             self.app.messageQueue.put('Reloading actual alignment model from mount\n')
             self.app.workerMountDispatcher.reloadAlignmentModel()
