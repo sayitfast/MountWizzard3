@@ -460,7 +460,7 @@ class ModelingBuild:
         if self.cancel:
             # clearing the gui
             messageQueue.put('percent0')
-            messageQueue.put('timeleft--:--')
+            messageQueue.put('timeEst--:--')
             self.logger.info('Modeling cancelled in main loop')
         self.workerSlewpoint.stop()
         self.workerImage.stop()
