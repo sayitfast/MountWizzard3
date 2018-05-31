@@ -247,8 +247,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                 self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
             if 'CheckDeletePointsHorizonMask' in self.app.config:
                 self.app.ui.checkDeletePointsHorizonMask.setChecked(self.app.config['CheckDeletePointsHorizonMask'])
-            if 'CheckSimulation' in self.app.config:
-                self.app.ui.checkSimulation.setChecked(self.app.config['CheckSimulation'])
             if 'AltitudeBase' in self.app.config:
                 self.app.ui.altitudeBase.setValue(self.app.config['AltitudeBase'])
             if 'AzimuthBase' in self.app.config:
@@ -286,7 +284,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     def storeConfig(self):
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
-        self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
         self.app.config['AltitudeBase'] = self.app.ui.altitudeBase.value()
         self.app.config['AzimuthBase'] = self.app.ui.azimuthBase.value()
         self.app.config['NumberGridPointsRow'] = self.app.ui.numberGridPointsRow.value()

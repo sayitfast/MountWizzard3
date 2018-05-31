@@ -31,13 +31,14 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
-    def __init__(self, app, thread, data, signalConnected):
+    def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
 
         self.app = app
         self.data = data
         self.thread = thread
         self.signalConnected = signalConnected
+        self.mountStatus = mountStatus
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.dataTimer = None
         self.cycleTimer = None
@@ -108,11 +109,13 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
-            self.app.sharedMountDataLock.lockForRead()
-            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-            self.app.sharedMountDataLock.unlock()
-            self.sendCommandQueue.queue.clear()
+        # to get order in connections, we wait for first connecting the once type
+        if self.mountStatus['Once'] and self.data['FW'] > 0:
+            if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+                self.app.sharedMountDataLock.lockForRead()
+                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+                self.app.sharedMountDataLock.unlock()
+                self.sendCommandQueue.queue.clear()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):

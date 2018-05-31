@@ -386,23 +386,6 @@ class ModelingBuild:
         self.app.mountCommandQueue.put(':Sz{0:03d}*{1:02d}#'.format(int(azimuth), int((azimuth - int(azimuth)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':Sa+{0:02d}*{1:02d}#'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':MS#')
-        if modelingData['Simulation']:
-            self.app.mountCommandQueue.put(':U2#')
-            commandSet = {'command': ':Gd#', 'reply': ''}
-            self.app.mountCommandQueue.put(commandSet)
-            while len(commandSet['reply']) == 0:
-                time.sleep(0.1)
-            dec = self.transform.degStringToDecimal(commandSet['reply'], ':')
-            commandSet = {'command': ':Gr#', 'reply': ''}
-            self.app.mountCommandQueue.put(commandSet)
-            while len(commandSet['reply']) == 0:
-                time.sleep(0.1)
-            ra = self.transform.degStringToDecimal(commandSet['reply'], ':')
-            if self.app.workerINDI.telescopeDevice != '':
-                self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(ra, indi_attr={'name': 'RA'}),
-                                             indiXML.oneNumber(dec, indi_attr={'name': 'DEC'})],
-                                            indi_attr={'name': 'EQUATORIAL_EOD_COORD', 'device': self.app.workerINDI.telescopeDevice}))
         # if there is a dome connected, we have to start slewing it, too
         if modelingData['DomeIsConnected']:
             self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
@@ -411,26 +394,12 @@ class ModelingBuild:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
                 time.sleep(0.2)
-                if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
-                    # wait for dome
-                    while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
-                        if self.cancel:
-                            self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
-                            break
-                        time.sleep(0.2)
         else:
             while not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
                 time.sleep(0.2)
-            if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
-                # wait for dome
-                while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
-                    if self.cancel:
-                        self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
-                        break
-                    time.sleep(0.2)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
         self.app.imageWindow.signalSetManualEnable.emit(False)
@@ -552,11 +521,6 @@ class ModelingBuild:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
         modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
-        # simulation only works with indi
-        if self.app.workerINDI.telescopeDevice != '':
-            modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
-        else:
-            modelingData['Simulation'] = False
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
@@ -626,11 +590,6 @@ class ModelingBuild:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
         modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
-        # simulation only works with indi
-        if self.app.workerINDI.telescopeDevice != '':
-            modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
-        else:
-            modelingData['Simulation'] = False
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
@@ -668,7 +627,6 @@ class ModelingBuild:
         settlingTime = int(self.app.ui.settlingTime.value())
         points = self.modelPoints.BasePoints + self.modelPoints.RefinementPoints
         if len(points) > 0:
-            simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
             domeIsConnected = self.app.workerAscomDome.isRunning
             self.modelingResultData = self.runModel(self.app.messageQueue, 'Check', points, modelData, settlingTime, simulation, keepImages, domeIsConnected)
@@ -687,7 +645,6 @@ class ModelingBuild:
         for i in range(0, int(self.app.ui.numberRunsTimeChange.value())):
             points.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value()),
                            PyQt5.QtWidgets.QGraphicsTextItem(''), True))
-        simulation = self.app.ui.checkSimulation.isChecked()
         keepImages = self.app.ui.checkKeepImages.isChecked()
         domeIsConnected = self.app.workerAscomDome.isRunning
         modelData = self.imagingApps.prepareImaging()
@@ -710,7 +667,6 @@ class ModelingBuild:
         for i in range(0, numberRunsHysterese):
             points.append((az1, alt1, PyQt5.QtWidgets.QGraphicsTextItem(''), True))
             points.append((az2, alt2, PyQt5.QtWidgets.QGraphicsTextItem(''), False))
-        simulation = self.app.ui.checkSimulation.isChecked()
         keepImages = self.app.ui.checkKeepImages.isChecked()
         domeIsConnected = self.app.workerAscomDome.isRunning
         self.modelingResultData = self.runModel(self.app.messageQueue, 'Hysterese', points, modelData, waitingTime, simulation, keepImages, domeIsConnected)

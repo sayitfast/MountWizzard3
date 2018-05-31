@@ -13456,27 +13456,6 @@ manually</string>
         <string>Firmware:</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkSimulation">
-       <property name="geometry">
-        <rect>
-         <x>405</x>
-         <y>230</y>
-         <width>231</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>If checked, a blind solve would be made (needs internet connection)</string>
-       </property>
-       <property name="text">
-        <string>Run in simulation mode</string>
-       </property>
-      </widget>
       <widget class="QGroupBox" name="logginLevel">
        <property name="geometry">
         <rect>
@@ -15470,7 +15449,6 @@ manually</string>
   <tabstop>loglevelInfo</tabstop>
   <tabstop>loglevelWarning</tabstop>
   <tabstop>loglevelError</tabstop>
-  <tabstop>checkSimulation</tabstop>
   <tabstop>btn_INDIConnected</tabstop>
   <tabstop>le_pinpointCatalogue</tabstop>
   <tabstop>btn_cameraConnected</tabstop>

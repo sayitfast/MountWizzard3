@@ -69,6 +69,7 @@ class MountWizzardApp(widget.MwWidget):
     signalJulianDate = PyQt5.QtCore.pyqtSignal(float)
     signalSetAnalyseFilename = PyQt5.QtCore.pyqtSignal(str)
     signalChangeStylesheet = PyQt5.QtCore.pyqtSignal(object, str, object)
+    signalSetMountStatus = PyQt5.QtCore.pyqtSignal(int)
 
     # Locks for accessing shared  data
     sharedAstrometryDataLock = PyQt5.QtCore.QReadWriteLock()
@@ -127,9 +128,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
-        self.workerMountDispatcher.signalMountConnected.connect(self.setMountStatus)
-        # prepare setup for mount status
-        self.setMountStatus({})
         # INDI client framework
         self.threadINDI = PyQt5.QtCore.QThread()
         self.workerINDI = indi_client.INDIClient(self, self.threadINDI)
@@ -276,6 +274,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
+        self.signalSetMountStatus.connect(self.setMountStatus)
 
     @staticmethod
     def timeStamp():
@@ -1039,18 +1038,12 @@ class MountWizzardApp(widget.MwWidget):
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
     def setMountStatus(self, status):
-        for key in status:
-            self.workerMountDispatcher.mountStatus[key] = status[key]
-        stat = 0
-        for key in self.workerMountDispatcher.mountStatus:
-            if self.workerMountDispatcher.mountStatus[key]:
-                stat += 1
-        if stat == 0:
+        if status == 0:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        elif stat == len(self.workerMountDispatcher.mountStatus):
-            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color:black;}')
-        else:
-            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+        elif status == 1:
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color:black;}')
+        elif status == 2:
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
     def fillMountData(self):
         for valueName in self.workerMountDispatcher.data:

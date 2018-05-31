@@ -31,13 +31,14 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     signalDestruct = PyQt5.QtCore.pyqtSignal()
     CYCLE_STATUS_ONCE = 500
 
-    def __init__(self, app, thread, data, signalConnected):
+    def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
 
         self.app = app
         self.thread = thread
         self.data = data
         self.signalConnected = signalConnected
+        self.mountStatus = mountStatus
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.dataTimer = None
         self.cycleTimer = None
@@ -123,10 +124,10 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
-        self.signalConnected.emit({'Once': True})
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerOnce connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
+        self.signalConnected.emit({'Once': True})
 
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerOnce connection fault: {0}'.format(self.socket.errorString()))
@@ -150,7 +151,12 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     def getStatusOnce(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.sendCommandQueue.put(':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#')
+            if self.data['FW'] < 21518:
+                # command newalig and endalig is due to a bug in firmware
+                command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
+            else:
+                command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
+            self.sendCommandQueue.put(command)
             self.dataTimer.stop()
 
     @PyQt5.QtCore.pyqtSlot()
@@ -172,7 +178,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
             valueList = messageToProcess.strip('#').split('#')
             # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
-            if len(valueList) == 8:
+            if len(valueList) >= 8:
                 if len(valueList[0]) > 0:
                     self.data['SiteHeight'] = valueList[0]
                 if len(valueList[1]) > 0:

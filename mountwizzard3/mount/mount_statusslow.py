@@ -32,13 +32,14 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
-    def __init__(self, app, thread, data, signalConnected):
+    def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
 
         self.app = app
         self.thread = thread
         self.data = data
         self.signalConnected = signalConnected
+        self.mountStatus = mountStatus
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.dataTimer = None
         self.cycleTimer = None
@@ -122,11 +123,13 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
-            self.app.sharedMountDataLock.lockForRead()
-            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-            self.app.sharedMountDataLock.unlock()
-            self.sendCommandQueue.queue.clear()
+        # to get order in connections, we wait for first connecting the once type
+        if self.mountStatus['Once'] and self.data['FW'] > 0:
+            if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+                self.app.sharedMountDataLock.lockForRead()
+                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+                self.app.sharedMountDataLock.unlock()
+                self.sendCommandQueue.queue.clear()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
@@ -168,8 +171,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     def getStatusSlow(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.app.sharedMountDataLock.lockForRead()
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             if self.data['FW'] < 21500:
                 self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
             else:
@@ -211,8 +212,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         try:
             if len(messageToProcess) == 0:
                 return
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
             #  +029.8# 1 0 1 +90# +00# V,2018-03-24#

@@ -83,7 +83,18 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         'LocalSiderealTime': '',
         # date of 01.05.2018
         'JulianDate': '2458240',
-        'FW': 21501
+        'FW': 0
+    }
+
+    mountStatus = {
+            'Fast': False,
+            'Medium': False,
+            'Slow': False,
+            'Once': False,
+            'GetAlign': False,
+            'SetAlign': False,
+            'GetName': False,
+            'Command': False
     }
 
     def __init__(self, app, thread):
@@ -104,61 +115,53 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # getting all threads setup
         # commands sending thread
         self.threadMountCommandRunner = PyQt5.QtCore.QThread()
-        self.workerMountCommandRunner = mount_command.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnected)
+        self.workerMountCommandRunner = mount_command.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
         # fast status thread
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnected)
+        self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
         # medium status thread
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnected)
+        self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
         self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
         # slow status thread
         self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnected)
+        self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
         # once status thread
         self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnected)
+        self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
         self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnected)
+        self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
         # set alignment model
         self.threadMountSetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountSetAlignmentModel = mount_setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnected)
+        self.workerMountSetAlignmentModel = mount_setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountSetAlignmentModel.setObjectName("MountSetAlignmentModel")
         self.workerMountSetAlignmentModel.moveToThread(self.threadMountSetAlignmentModel)
         self.threadMountSetAlignmentModel.started.connect(self.workerMountSetAlignmentModel.run)
         # get model names
         self.threadMountGetModelNames = PyQt5.QtCore.QThread()
-        self.workerMountGetModelNames = mount_getmodelnames.MountGetModelNames(self.app, self.threadMountGetModelNames, self.data, self.signalMountConnected)
+        self.workerMountGetModelNames = mount_getmodelnames.MountGetModelNames(self.app, self.threadMountGetModelNames, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountGetModelNames.setObjectName("MountGetModelNames")
         self.workerMountGetModelNames.moveToThread(self.threadMountGetModelNames)
         self.threadMountGetModelNames.started.connect(self.workerMountGetModelNames.run)
 
-        self.mountStatus = {'Fast': False,
-                            'Medium': False,
-                            'Slow': False,
-                            'Once': False,
-                            'GetAlign': False,
-                            'SetAlign': False,
-                            'GetName': False,
-                            'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
         self.programAlignmentModelStatus = None
@@ -245,6 +248,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_deleteModel.clicked.connect(self.deleteSelectedModel)
         self.app.ui.listModelName.itemDoubleClicked.connect(self.getListAction)
         self.signalMountShowModelNames.connect(self.setModelNamesList)
+        self.signalMountConnected.connect(self.setMountConnectionStatus)
 
     def initConfig(self):
         try:
@@ -327,6 +331,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def run(self):
         self.logger.info('mount dispatcher started')
+        # sending default status to gui in red
+        self.app.signalSetMountStatus.emit(0)
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -418,6 +424,23 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:
                     self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
+
+    def setMountConnectionStatus(self, status):
+        for key in status:
+            self.mountStatus[key] = status[key]
+        stat = 0
+        for key in self.mountStatus:
+            if self.mountStatus[key]:
+                stat += 1
+        if stat == 0:
+            # red
+            self.app.signalSetMountStatus.emit(0)
+        elif stat == len(self.mountStatus):
+            # all connected green
+            self.app.signalSetMountStatus.emit(2)
+        else:
+            # otherwise yellow
+            self.app.signalSetMountStatus.emit(1)
 
     def setModelNamesList(self):
         self.app.ui.listModelName.clear()
