@@ -175,6 +175,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
             valueList = messageToProcess.strip('#').split('#')
             # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
+            self.logger.info('Once raw: {0}'.format(messageToProcess))
+            self.logger.info('Once processed: {0}'.format(valueList))
             if len(valueList) >= 8:
                 if len(valueList[0]) > 0:
                     self.data['SiteHeight'] = valueList[0]
