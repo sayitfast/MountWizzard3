@@ -4,13 +4,14 @@ import platform
 
 setup(
     name='mountwizzard3',
-    version='3.0b3',
+    version='3.0b4',
     packages=[
         'mountwizzard3',
         'mountwizzard3.analyse',
         'mountwizzard3.ascom',
         'mountwizzard3.astrometry',
         'mountwizzard3.audio',
+        'mountwizzard3.build',
         'mountwizzard3.automation',
         'mountwizzard3.baseclasses',
         'mountwizzard3.imaging',
