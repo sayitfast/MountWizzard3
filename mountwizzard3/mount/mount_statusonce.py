@@ -122,13 +122,14 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
-        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
-        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
+        # self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
+        # self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerOnce connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
         self.signalConnected.emit({'Once': True})
 
+    @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerOnce connection fault: {0}'.format(self.socket.errorString()))
 
