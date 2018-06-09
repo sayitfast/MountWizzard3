@@ -244,6 +244,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.newDeviceQueue.put(device)
             self.app.sharedINDIDataLock.unlock()
 
+    @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
         self.logger.warning('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
