@@ -322,7 +322,9 @@ class HemisphereWindow(widget.MwWidget):
             return
         ind = None
         indlow = None
+        self.app.sharedMountDataLock.lockForRead()
         stars = self.app.workerMountDispatcher.data['starsTopo']
+        self.app.sharedMountDataLock.unlock()
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
         if self.ui.checkEditNone.isChecked():
@@ -333,17 +335,25 @@ class HemisphereWindow(widget.MwWidget):
                 question = 'Do you want to slew the mount to:\n\nAzimuth:\t{0}°\nAltitude:\t{1}°'.format(azimuth, altitude)
                 value = self.dialogMessage(self, 'Hemisphere direct slew', question)
                 if value == PyQt5.QtWidgets.QMessageBox.Ok:
+                    # get tracking status of mount:
+                    self.app.sharedMountDataLock.lockForRead()
+                    isTracking = (self.app.workerMountDispatcher.data['Status'] == '0')
+                    self.app.sharedMountDataLock.unlock()
                     # sending the commands for slewing
                     self.app.mountCommandQueue.put(':PO#')
                     self.app.mountCommandQueue.put(':Sz{0:03d}*00#'.format(azimuth))
                     self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(altitude))
                     self.app.mountCommandQueue.put(':MA#')
+                    # and start tracking again, if mount was in tracking mode, because :MA# command stops tracking
+                    if isTracking:
+                        self.app.mountCommandQueue.put(':AP#')
 
         if self.ui.checkPolarAlignment.isChecked():
             if event.button == 1 and event.dblclick:
                 print('got event')
                 ind = self.get_ind_under_point(event, 2, stars)
                 if ind:
+                    self.app.sharedMountDataLock.lockForRead()
                     name = self.app.workerMountDispatcher.data['starsNames'][ind]
                     # RA in degrees ICRS
                     RaJ2000 = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['starsICRS'][ind][0], ' ')
@@ -356,6 +366,7 @@ class HemisphereWindow(widget.MwWidget):
                     DecJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][3] / 3600000
                     question = 'Do you want to slew to\npolar align star:\n\n{0}'.format(name)
                     value = self.dialogMessage(self, 'Polar Align Routine', question)
+                    self.app.sharedMountDataLock.unlock()
                     if value == PyQt5.QtWidgets.QMessageBox.Ok:
                         # transform to JNOW, RAJ2000 comes in degrees, need to be hours
                         RaJNow, DecJNow = self.transform.transformERFA(RaJ2000, DecJ2000, 3)
