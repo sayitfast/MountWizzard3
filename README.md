@@ -7,7 +7,7 @@ and some more ASCOM parts. For plate solving I recommend using the new local ast
 
 (C) Michael Würtenberger 2018
 
-#### Version release: new, test version actual 3.0 beta 3
+#### Version release: new, test version actual 3.0 beta 4
 
 [Link to the extended documentation and handbook of MountWizzard3](./docu/home.md)
 
