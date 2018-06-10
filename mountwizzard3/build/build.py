@@ -21,5 +21,5 @@
 
 class BUILD:
 
-    BUILD_NO_FILE = '3.0b5.dev4'
-    BUILD_NO_WINDOW = '3.0 beta 5.dev4'
+    BUILD_NO_FILE = '3.0b5'
+    BUILD_NO_WINDOW = '3.0 beta 5'
