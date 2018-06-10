@@ -227,21 +227,37 @@ class Imaging(PyQt5.QtCore.QObject):
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
             # add the coordinates to the image of the telescope if not present
-            '''
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
+            # if we are missing coordinates, we are replacing them with actual data from mount
             if 'OBJCTRA' not in fitsHeader:
                 self.app.sharedMountDataLock.lockForRead()
                 fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(self.app.workerMountDispatcher.data['RaJ2000'], False, True, ' ')
                 fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(self.app.workerMountDispatcher.data['DecJ2000'], True, True, ' ')
                 self.app.sharedMountDataLock.unlock()
+            # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
+            if 'FOCALLEN' not in fitsHeader:
+                fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
+            if 'XPIXSZ' not in fitsHeader:
+                fitsHeader['XPIXSZ'] = self.app.ui.pixelSize.value()
+            if 'PIXSIZE1' not in fitsHeader:
+                fitsHeader['PIXSIZE1'] = self.app.ui.pixelSize.value()
+            if 'YPIXSZ' not in fitsHeader:
+                fitsHeader['YPIXSZ'] = self.app.ui.pixelSize.value()
+            if 'PIXSIZE2' not in fitsHeader:
+                fitsHeader['PIXSIZE2'] = self.app.ui.pixelSize.value()
+            if 'XBINNING' not in fitsHeader:
+                fitsHeader['XBINNING'] = self.app.ui.cameraBin.value()
+            # refreshing FITS file with that data
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            '''
             # show it
             self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
         else:
             pass
+        # now imaging process is finished and told to everybody
+        self.imageSaved.emit()
+        self.data['Imaging'] = False
 
     @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):

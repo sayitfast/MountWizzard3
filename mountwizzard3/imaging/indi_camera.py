@@ -219,12 +219,10 @@ class INDICamera:
             time.sleep(0.1)
 
         # finally idle
-        self.main.imageSaved.emit()
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = self.app.workerINDI.imagePath
         self.app.workerINDI.imagePath = ''
-        self.data['Imaging'] = False
 
     def connect(self):
         # connect the camera

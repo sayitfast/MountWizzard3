@@ -167,11 +167,9 @@ class SGPro:
             time.sleep(0.1)
 
         # finally idle
-        self.main.imageSaved.emit()
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = path.replace('\\', '/')
-        self.data['Imaging'] = False
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

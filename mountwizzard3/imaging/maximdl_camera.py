@@ -194,7 +194,5 @@ class MaximDL:
             break
 
         # finally idle
-        self.main.imageSaved.emit()
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
-        self.data['Imaging'] = False
