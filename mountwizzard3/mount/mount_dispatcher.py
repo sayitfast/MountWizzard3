@@ -300,6 +300,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # stopping all interaction
         if self.isRunning:
             # stopping thread for chang of parameters
+            self.logger.info('Stopping threads for IP change')
             self.workerMountStatusRunnerFast.stop()
             self.workerMountStatusRunnerMedium.stop()
             self.workerMountStatusRunnerSlow.stop()
@@ -311,6 +312,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.sharedMountDataLock.lockForWrite()
             self.data['MountIP'] = self.app.ui.le_mountIP.text()
             self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
+            self.logger.info('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
             self.app.sharedMountDataLock.unlock()
             # and restarting for using new parameters
             self.threadMountCommandRunner.start()
@@ -322,6 +324,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.threadMountStatusRunnerMedium.start()
             self.threadMountStatusRunnerFast.start()
         else:
+            self.logger.info('IP change when threads not running')
             self.app.sharedMountDataLock.lockForWrite()
             self.data['MountIP'] = self.app.ui.le_mountIP.text()
             self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
