@@ -3,7 +3,7 @@ from setuptools import setup
 import platform
 
 setup(
-    name='mountwizzard3',
+    name='mountwizzard3_ARM',
     version='3.0b5.dev0',
     packages=[
         'mountwizzard3',
@@ -26,10 +26,10 @@ setup(
         'mountwizzard3.remote',
         'mountwizzard3.widgets'
     ],
-    python_requires='~=3.6.3',
+    # python_requires='~=3.6.3',
     install_requires=[
-        'PyQt5==5.10.1',
-        'matplotlib==2.1.2',
+        # 'PyQt5==5.10.1',
+        # 'matplotlib==2.1.2',
         'wakeonlan>=1.0.0',
         'requests==2.18.4',
         'astropy>=3.0.0',

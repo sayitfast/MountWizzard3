@@ -19,7 +19,6 @@
 ###########################################################
 import logging
 import socket
-from baseclasses import widget
 
 
 class CheckIP:
