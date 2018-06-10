@@ -332,7 +332,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def run(self):
         self.app.ui.le_mountIP.editingFinished.connect(self.changedSettings, type=PyQt5.QtCore.Qt.QueuedConnection)
-        self.app.ui.le_mountMAC.editingFinished.connect(self.changedSettings, type=PyQt5.QtCore.Qt.QueuedConnection)
         self.logger.info('mount dispatcher started')
         # sending default status to gui in red
         self.app.signalSetMountStatus.emit(0)
@@ -348,7 +347,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
-        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.DirectConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
@@ -378,7 +377,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.cycleTimer.stop()
         self.signalDestruct.disconnect(self.destruct)
         self.app.ui.le_mountIP.editingFinished.disconnect(self.changedSettings)
-        self.app.ui.le_mountMAC.editingFinished.disconnect(self.changedSettings)
 
     def doCommand(self):
         if not self.commandDispatcherQueue.empty():
