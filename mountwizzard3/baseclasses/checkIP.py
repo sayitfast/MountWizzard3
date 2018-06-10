@@ -22,7 +22,7 @@ import socket
 from baseclasses import widget
 
 
-class CheckIP(widget.MwWidget):
+class CheckIP:
     logger = logging.getLogger(__name__)
 
     def __init__(self):
