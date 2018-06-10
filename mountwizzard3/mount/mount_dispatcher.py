@@ -232,8 +232,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 }
         }
         # signal slot
-        self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
-        self.app.ui.le_mountMAC.editingFinished.connect(self.changedMountConnectionSettings)
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
@@ -278,7 +276,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         finally:
             pass
         # setting new ip, port, mac after loading the parameters
-        self.changedMountConnectionSettings()
+        self.changedSettings()
 
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
@@ -295,7 +293,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def setCancelRunTargetRMS(self):
         self.cancelRunTargetRMS = True
 
-    def changedMountConnectionSettings(self):
+    def changedSettings(self):
         self.mutexIPChange.lock()
         # stopping all interaction
         if self.isRunning:
@@ -312,7 +310,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.sharedMountDataLock.lockForWrite()
             self.data['MountIP'] = self.app.ui.le_mountIP.text()
             self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
-            self.logger.info('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
+            self.logger.info('Setting IP address for mount to: {0}'.format(self.data['MountIP']))
             self.app.sharedMountDataLock.unlock()
             # and restarting for using new parameters
             self.threadMountCommandRunner.start()
@@ -333,6 +331,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.mutexIPChange.unlock()
 
     def run(self):
+        self.app.ui.le_mountIP.editingFinished.connect(self.changedSettings, type=PyQt5.QtCore.Qt.QueuedConnection)
+        self.app.ui.le_mountMAC.editingFinished.connect(self.changedSettings, type=PyQt5.QtCore.Qt.QueuedConnection)
         self.logger.info('mount dispatcher started')
         # sending default status to gui in red
         self.app.signalSetMountStatus.emit(0)
@@ -377,6 +377,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def destruct(self):
         self.cycleTimer.stop()
         self.signalDestruct.disconnect(self.destruct)
+        self.app.ui.le_mountIP.editingFinished.disconnect(self.changedSettings)
+        self.app.ui.le_mountMAC.editingFinished.disconnect(self.changedSettings)
 
     def doCommand(self):
         if not self.commandDispatcherQueue.empty():
