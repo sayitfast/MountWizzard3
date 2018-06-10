@@ -343,12 +343,16 @@ class ModelingBuild:
         self.numberPointsMax = 0
         self.numberSolvedPoints = 0
         self.cancel = False
+        self.imageReady = False
+        self.solveReady = False
         self.mountSlewFinished = False
         self.domeSlewFinished = False
 
         # signal slot
         self.app.workerMountDispatcher.signalSlewFinished.connect(self.setMountSlewFinished)
         self.app.workerDome.signalSlewFinished.connect(self.setDomeSlewFinished)
+        self.app.workerImaging.imageSaved.connect(self.setImageReady)
+        self.app.workerAstrometry.imageDataDownloaded.connect(self.setSolveReady)
 
     def initConfig(self):
         self.modelPoints.initConfig()
@@ -358,6 +362,12 @@ class ModelingBuild:
 
     def setCancel(self):
         self.cancel = True
+
+    def setImageReady(self):
+        self.imageReady = True
+
+    def setSolveReady(self):
+        self.solveReady = True
 
     def setMountSlewFinished(self):
         self.mountSlewFinished = True
@@ -621,6 +631,66 @@ class ModelingBuild:
             self.app.messageQueue.put('#BRModel finished with errors\n')
             self.logger.warning('Model finished with errors')
 
+    def plateSolveSync(self):
+        self.app.messageQueue.put('#BWStart Sync Mount Model\n')
+        # link to cam and check if available
+        if 'CONNECTION' in self.app.workerImaging.data:
+            if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
+                return
+        else:
+            return
+        # start prep imaging
+        self.app.mountCommandQueue.put(':PO#')
+        self.app.mountCommandQueue.put(':AP#')
+        imageParams = dict()
+        imageParams['Imagepath'] = ''
+        imageParams['Exposure'] = self.app.ui.cameraExposure.value()
+        imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
+        imageParams['File'] = 'platesolvesync.fit'
+        self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
+        self.app.workerImaging.imagingCommandQueue.put(imageParams)
+        self.imageReady = False
+        self.app.workerImaging.imagingCommandQueue.put(imageParams)
+        while not self.imageReady and not self.cancel:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+        fitsHeader = fitsFileHandle[0].header
+        imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+        imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+        if 'PIXSCALE' in fitsHeader:
+            imageParams['ScaleHint'] = float(fitsHeader['PIXSCALE'])
+        else:
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
+            if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
+        fitsFileHandle.close()
+        self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
+        self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
+        # wait for solving
+        self.solveReady = False
+        self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
+        while not self.solveReady and not self.cancel:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        if imageParams['Solved']:
+            self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
+                                                                                      self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
+            ra_form = self.transform.decimalToDegree(ra_sol_Jnow, False, False)
+            dec_form = self.transform.decimalToDegree(dec_sol_Jnow, True, False)
+            success = self.app.workerMountDispatcher.syncMountModel(ra_form, dec_form)
+            if success:
+                self.app.messageQueue.put('\tMount Model Synced\n')
+            else:
+                self.app.messageQueue.put('\tMount Model could not be synced - please check!\n')
+        else:
+            self.app.messageQueue.put('\tSolving error: {0}\n'.format(mes))
+        if not self.app.ui.checkKeepImages.isChecked():
+            shutil.rmtree(imageParams['BaseDirImages'], ignore_errors=True)
+        self.app.messageQueue.put('#BWSync Mount Model finished !\n')
+
     def runCheckModel(self):
         if not self.checkModelingAvailable():
             return
@@ -675,66 +745,3 @@ class ModelingBuild:
         if len(self.modelingResultData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
             self.analyseData.saveData(self.modelingResultData, name)
-
-    def plateSolveSync(self):
-        self.app.messageQueue.put('#BWStart Sync Mount Model\n')
-
-        # link to cam and check if available
-        if 'CONNECTION' in self.app.workerImaging.data:
-            if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
-                return
-        else:
-            return
-        # start prep imaging
-        self.app.mountCommandQueue.put(':PO#')
-        self.app.mountCommandQueue.put(':AP#')
-        imageParams = dict()
-        imageParams['Imagepath'] = ''
-        imageParams['Exposure'] = self.app.ui.cameraExposure.value()
-        imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
-        imageParams['File'] = 'platesolvesync.fit'
-
-        self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
-        self.app.workerImaging.imagingCommandQueue.put(imageParams)
-
-        while imageParams['Imagepath'] == '':
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-
-        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
-        fitsHeader = fitsFileHandle[0].header
-        imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
-        imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-        if 'PIXSCALE' in fitsHeader:
-            imageParams['ScaleHint'] = float(fitsHeader['PIXSCALE'])
-        else:
-            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
-            if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
-                imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
-        fitsFileHandle.close()
-
-        self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
-        self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
-
-        # wait for solving
-        while 'Solved' not in imageParams:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-
-        if imageParams['Solved']:
-            self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
-                                                                                      self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
-            ra_form = self.transform.decimalToDegree(ra_sol_Jnow, False, False)
-            dec_form = self.transform.decimalToDegree(dec_sol_Jnow, True, False)
-            success = self.app.workerMountDispatcher.syncMountModel(ra_form, dec_form)
-            if success:
-                self.app.messageQueue.put('\tMount Model Synced\n')
-            else:
-                self.app.messageQueue.put('\tMount Model could not be synced - please check!\n')
-        else:
-            self.app.messageQueue.put('\tSolving error: {0}\n'.format(mes))
-        if not self.app.ui.checkKeepImages.isChecked():
-            shutil.rmtree(imageParams['BaseDirImages'], ignore_errors=True)
-        self.app.messageQueue.put('#BWSync Mount Model finished !\n')
