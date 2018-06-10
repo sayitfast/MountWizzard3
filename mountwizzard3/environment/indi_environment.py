@@ -77,8 +77,20 @@ class INDIEnvironment:
             if self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
                 self.app.sharedEnvironmentDataLock.lockForWrite()
-                self.data['DewPoint'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
-                self.data['Temperature'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_TEMPERATURE'])
-                self.data['Humidity'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_HUMIDITY'])
-                self.data['Pressure'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_BAROMETER'])
+                if 'WEATHER_DEWPOINT' in self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']:
+                    self.data['DewPoint'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
+                else:
+                    self.data['DewPoint'] = 0
+                if 'WEATHER_TEMPERATURE' in self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']:
+                    self.data['Temperature'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_TEMPERATURE'])
+                else:
+                    self.data['Temperature'] = 0
+                if 'WEATHER_HUMIDITY' in self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']:
+                    self.data['Humidity'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_HUMIDITY'])
+                else:
+                    self.data['Humidity'] = 0
+                if 'WEATHER_BAROMETER' in self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']:
+                    self.data['Pressure'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_BAROMETER'])
+                else:
+                    self.data['Pressure'] = 0
                 self.app.sharedEnvironmentDataLock.unlock()
