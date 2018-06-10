@@ -255,13 +255,13 @@ class Imaging(PyQt5.QtCore.QObject):
             # refreshing FITS file with that data
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            # show it
-            self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
         else:
             pass
         # now imaging process is finished and told to everybody
         self.imageSaved.emit()
         self.data['Imaging'] = False
+        # show it
+        self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
 
     @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):
