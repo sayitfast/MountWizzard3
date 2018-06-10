@@ -217,9 +217,9 @@ class Astrometry(PyQt5.QtCore.QObject):
         else:
             self.logger.error('FITS data PIXSCALE for start solving is missing, present headers: {0}'.format(fitsHeader))
             # now trying to recalculate this value
-            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' and 'XBINNING' in fitsHeader:
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader and 'XBINNING' in fitsHeader:
                 imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
-            elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' and 'XBINNING' in fitsHeader:
+            elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader and 'XBINNING' in fitsHeader:
                 imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
             else:
                 # if we cannot recalculate, there is no chance to get this parameter

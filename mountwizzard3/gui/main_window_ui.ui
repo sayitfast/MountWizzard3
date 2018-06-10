@@ -4293,7 +4293,7 @@ manually</string>
     <widget class="QLabel" name="label_164">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>335</x>
        <y>50</y>
        <width>16</width>
        <height>26</height>
@@ -4311,7 +4311,7 @@ manually</string>
     <widget class="QLabel" name="label_165">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>335</x>
        <y>220</y>
        <width>16</width>
        <height>26</height>
@@ -4329,7 +4329,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="settlingTime">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>220</y>
        <width>71</width>
        <height>26</height>
@@ -4537,7 +4537,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="cameraBin">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>85</y>
        <width>71</width>
        <height>26</height>
@@ -4575,7 +4575,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="scaleSubframe">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>120</y>
        <width>71</width>
        <height>26</height>
@@ -4613,7 +4613,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="cameraExposure">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>50</y>
        <width>71</width>
        <height>26</height>
@@ -4651,7 +4651,7 @@ manually</string>
     <widget class="QLabel" name="label_173">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>335</x>
        <y>120</y>
        <width>16</width>
        <height>26</height>
@@ -4669,7 +4669,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="isoSetting">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>185</y>
        <width>71</width>
        <height>26</height>
@@ -4942,7 +4942,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="pixelSize">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>340</y>
        <width>71</width>
        <height>26</height>
@@ -4976,7 +4976,7 @@ manually</string>
     <widget class="QLabel" name="label_167">
      <property name="geometry">
       <rect>
-       <x>265</x>
+       <x>330</x>
        <y>340</y>
        <width>21</width>
        <height>26</height>
@@ -5012,7 +5012,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="focalLength">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>375</y>
        <width>71</width>
        <height>26</height>
@@ -5047,7 +5047,7 @@ manually</string>
     <widget class="QLabel" name="label_169">
      <property name="geometry">
       <rect>
-       <x>265</x>
+       <x>330</x>
        <y>375</y>
        <width>26</width>
        <height>26</height>
@@ -5106,7 +5106,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="astrometryDownsampling">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>255</x>
        <y>410</y>
        <width>71</width>
        <height>26</height>
@@ -5146,7 +5146,7 @@ manually</string>
       <rect>
        <x>20</x>
        <y>410</y>
-       <width>156</width>
+       <width>201</width>
        <height>26</height>
       </rect>
      </property>
