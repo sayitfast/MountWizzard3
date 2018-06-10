@@ -190,6 +190,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.solveImage(imageParams)
 
     def solveImage(self, imageParams):
+        dataPresentForSolving = True
         if self.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # reset message
@@ -197,40 +198,57 @@ class Astrometry(PyQt5.QtCore.QObject):
         # check for use of FITS data
         if not os.path.isfile(imageParams['Imagepath']):
             return
-        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+        # open the fits header and check content.
+        # we need for solving "OBJCTRA", "OBJCTDEC" and "PIXSCALE" field
+        fitsFileHandle = pyfits.open(imageParams['Imagepath'])
         fitsHeader = fitsFileHandle[0].header
-        if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-            imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
-        elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
-            imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
-        else:
-            imageParams['ScaleHint'] = imageParams['ScaleHint'] = self.app.ui.pixelSize.value() * 206.6 / self.app.ui.focalLength.value()
-        fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
-        # if no telescope connected, we get no object data, therefore no startpoint for solving is there
-        # we won't start solving without startpoint given. we define no default startpoint here
         if 'OBJCTRA' in fitsHeader:
             imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+        else:
+            self.logger.error('FITS data OBJCTRA for start solving is missing, present headers: {0}'.format(fitsHeader))
+            dataPresentForSolving = False
+        if 'OBJCTDEC' in fitsHeader:
             imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-            fitsFileHandle.flush()
+        else:
+            self.logger.error('FITS data OBJCTDEC for start solving is missing, present headers: {0}'.format(fitsHeader))
+            dataPresentForSolving = False
+        if 'PIXSCALE' in fitsHeader:
+            imageParams['ScaleHint'] = self.transform.degStringToDecimal(fitsHeader['PIXSCALE'], ' ')
+        else:
+            self.logger.error('FITS data PIXSCALE for start solving is missing, present headers: {0}'.format(fitsHeader))
+            # now trying to recalculate this value
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' and 'XBINNING' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
+            elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' and 'XBINNING' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
+            else:
+                # if we cannot recalculate, there is no chance to get this parameter
+                self.logger.error('FITS data FOCALLEN or XPIXSZ or PIXSIZE1 or XBINNING for start solving is missing, present headers: {0}'.format(fitsHeader))
+                dataPresentForSolving = False
+        fitsFileHandle.close()
+        if dataPresentForSolving:
             self.astrometryHandler.solveImage(imageParams)
             self.logger.info('Image params: {0}'.format(imageParams))
-        else:
-            self.logger.error('FITS data for start solving is missing, present headers: {0}'.format(fitsHeader))
-        fitsFileHandle.close()
-        if self.app.imageWindow.showStatus:
-            if 'Solved' in imageParams:
-                if imageParams['Solved']:
-                    self.app.imageWindow.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
-                    self.app.imageWindow.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
-                    self.app.imageWindow.signalSetAngleSolved.emit('{0:3.1f}'.format(imageParams['Angle']))
+            if self.app.imageWindow.showStatus:
+                if 'Solved' in imageParams:
+                    if imageParams['Solved']:
+                        self.app.imageWindow.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
+                        self.app.imageWindow.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+                        self.app.imageWindow.signalSetAngleSolved.emit('{0:3.1f}'.format(imageParams['Angle']))
+                    else:
+                        self.app.imageWindow.signalSetRaSolved.emit('not solved')
+                        self.app.imageWindow.signalSetDecSolved.emit('not solved')
+                        self.app.imageWindow.signalSetAngleSolved.emit('-')
                 else:
                     self.app.imageWindow.signalSetRaSolved.emit('not solved')
                     self.app.imageWindow.signalSetDecSolved.emit('not solved')
                     self.app.imageWindow.signalSetAngleSolved.emit('-')
-            else:
-                self.app.imageWindow.signalSetRaSolved.emit('not solved')
-                self.app.imageWindow.signalSetDecSolved.emit('not solved')
-                self.app.imageWindow.signalSetAngleSolved.emit('-')
+        else:
+            imageParams['Solved'] = False
+            imageParams['Message'] = 'FITS header parameters missing'
+            self.app.imageWindow.signalSetRaSolved.emit('no data')
+            self.app.imageWindow.signalSetDecSolved.emit('no data')
+            self.app.imageWindow.signalSetAngleSolved.emit('-')
 
     @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):
