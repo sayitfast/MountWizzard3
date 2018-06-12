@@ -541,6 +541,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.commandDispatcherQueue.put(action)
 
     def mountShutdown(self):
+        # mount has to run
+        if self.workerMountCommandRunner.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+            return
         commandSet = {'command': ':shutdown#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:

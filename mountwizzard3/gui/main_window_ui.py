@@ -6135,7 +6135,7 @@ class Ui_MainWindow(object):
         self.btn_relay8.setToolTip(_translate("MainWindow", "<html><head/><body><p>Starts for Relay the defined function (Switch or Pulse)</p></body></html>"))
         self.btn_relay8.setText(_translate("MainWindow", "Relay8"))
         self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.Relay), _translate("MainWindow", "Relay"))
-        self.settingsTabWidget.setToolTip(_translate("MainWindow", "<html><head/><body><p>Configuration of the imaging / plate solving program and the ASCOM drivers</p></body></html>"))
+        self.settingsTabWidget.setToolTip(_translate("MainWindow", "<html><head/><body><p>Configuration of settings</p></body></html>"))
         self.label_139.setText(_translate("MainWindow", "Environment Connection"))
         self.pd_chooseEnvironment.setToolTip(_translate("MainWindow", "<html><head/><body><p>Chooses the framework for getting environment data.</p></body></html>"))
         self.label_140.setText(_translate("MainWindow", "Dome Connection"))
