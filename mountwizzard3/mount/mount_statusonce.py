@@ -67,7 +67,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.dataTimer.setSingleShot(False)
         self.dataTimer.timeout.connect(self.getStatusOnce)
         self.dataTimer.start(self.CYCLE_STATUS_ONCE)
-        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.DirectConnection)
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
