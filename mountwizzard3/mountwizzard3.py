@@ -674,6 +674,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModelingDispatcher.storeConfig()
         self.workerEnvironment.storeConfig()
         self.workerDome.storeConfig()
+        self.workerRemote.storeConfig()
         self.workerImaging.storeConfig()
         self.workerAstrometry.storeConfig()
         if platform.system() == 'Windows':
