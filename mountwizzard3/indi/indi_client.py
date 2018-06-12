@@ -420,7 +420,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         if len(self.messageString) == 0:
             self.messageString = "<data>"
         # Get message from socket.
-        while self.socket.bytesAvailable():
+        while self.socket.bytesAvailable() and self.isRunning:
             # print(self.socket.bytesAvailable(), len(self.messageString))
             try:
                 self.messageString += self.socket.read(100000).decode()

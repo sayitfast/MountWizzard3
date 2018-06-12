@@ -156,7 +156,7 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
-        while self.socket.bytesAvailable():
+        while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(4000).decode()
 
         if self.messageString.count('#') != 50:

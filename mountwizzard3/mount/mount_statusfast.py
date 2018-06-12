@@ -165,7 +165,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
-        while self.socket.bytesAvailable():
+        while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
         if len(self.messageString) < 71:
             return
