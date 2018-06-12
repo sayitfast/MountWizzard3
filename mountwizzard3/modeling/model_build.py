@@ -648,14 +648,12 @@ class ModelingBuild:
         imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
         imageParams['File'] = 'platesolvesync.fit'
         self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
-        self.app.workerImaging.imagingCommandQueue.put(imageParams)
         self.imageReady = False
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
         while not self.imageReady and not self.cancel:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
-        self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
         # wait for solving
         self.solveReady = False
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
