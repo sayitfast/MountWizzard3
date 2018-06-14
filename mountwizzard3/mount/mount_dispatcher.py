@@ -252,8 +252,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         try:
             if 'MountIP' in self.app.config:
                 self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
+                self.app.sharedMountDataLock.lockForWrite()
+                self.data['MountIP'] = self.app.config['MountIP']
+                self.app.sharedMountDataLock.unlock()
             if 'MountMAC' in self.app.config:
                 self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
+                self.app.sharedMountDataLock.lockForWrite()
+                self.data['MountMAC'] = self.app.config['MountMAC']
+                self.app.sharedMountDataLock.unlock()
             if 'CheckAutoRefractionContinuous' in self.app.config:
                 self.app.ui.checkAutoRefractionContinous.setChecked(self.app.config['CheckAutoRefractionContinuous'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
@@ -270,13 +276,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.app.signalMountSiteData.emit(self.data['SiteLatitude'],
                                                   self.data['SiteLongitude'],
                                                   self.data['SiteHeight'])
-
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # setting new ip, port, mac after loading the parameters
-        self.changedSettings()
 
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
