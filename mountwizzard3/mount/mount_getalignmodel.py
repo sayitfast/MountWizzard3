@@ -54,6 +54,8 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.socket = PyQt5.QtNetwork.QTcpSocket()
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
@@ -117,8 +119,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
-        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
-        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.signalConnected.emit({'GetAlign': True})
         self.logger.info('Mount GetAlignmentModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.getAlignmentModel()
