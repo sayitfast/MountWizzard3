@@ -25,7 +25,8 @@ import time
 class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE = 200
+    CONNECTION_TIMEOUT = 3000
+    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
     # define the number of bytes for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like number of
@@ -80,6 +81,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.mountStatus = mountStatus
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
+        self.connectCounter = 0
         self.socket = None
         self.sendLock = False
         self.cycleTimer = None
@@ -170,9 +172,19 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         # to get order in connections, we wait for first connecting the once type
         if self.mountStatus['Once'] and self.data['FW'] > 0:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+                self.connectCounter = 0
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.app.sharedMountDataLock.unlock()
+            else:
+                if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                    self.connectCounter += 1
+                    print('Wait')
+                    if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                        print('Timeout, abort')
+                        self.socket.abort()
+                else:
+                    self.connectCounter = 0
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):

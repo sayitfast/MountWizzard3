@@ -27,9 +27,10 @@ from astrometry import transform
 class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
+    CYCLE = 250
     CYCLE_STATUS_ONCE = 500
+    CONNECTION_TIMEOUT = 3000
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
@@ -43,6 +44,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.dataTimer = None
         self.cycleTimer = None
         self.isRunning = False
+        self.connectCounter = 0
         self.socket = None
         self.sendLock = False
         self.messageString = ''
@@ -57,7 +59,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.socket = PyQt5.QtNetwork.QTcpSocket()
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
-        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
+        # self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
@@ -112,11 +114,23 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
+        print('Socket state: ', self.socket.state())
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+            print('Connect to Host')
+            self.connectCounter = 0
             self.app.sharedMountDataLock.lockForRead()
             self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
             self.app.sharedMountDataLock.unlock()
             self.sendCommandQueue.queue.clear()
+        else:
+            if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                self.connectCounter += 1
+                print('Wait')
+                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                    print('Timeout, abort')
+                    self.socket.abort()
+            else:
+                self.connectCounter = 0
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):

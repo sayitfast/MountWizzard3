@@ -27,6 +27,7 @@ from astrometry import transform
 class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
+    CONNECTION_TIMEOUT = 3000
     CYCLE_STATUS_MEDIUM = 3000
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
@@ -43,6 +44,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.dataTimer = None
         self.cycleTimer = None
         self.isRunning = False
+        self.connectCounter = 0
         self.socket = None
         self.sendLock = False
         self.messageString = ''
@@ -115,10 +117,20 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         # to get order in connections, we wait for first connecting the once type
         if self.mountStatus['Once'] and self.data['FW'] > 0:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+                self.connectCounter = 0
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.app.sharedMountDataLock.unlock()
                 self.sendCommandQueue.queue.clear()
+            else:
+                if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                    self.connectCounter += 1
+                    print('Wait')
+                    if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                        print('Timeout, abort')
+                        self.socket.abort()
+                else:
+                    self.connectCounter = 0
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):

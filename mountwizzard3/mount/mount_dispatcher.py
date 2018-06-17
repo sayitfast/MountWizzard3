@@ -361,14 +361,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if self.isRunning:
             self.isRunning = False
             self.signalDestruct.emit()
-            self.workerMountStatusRunnerFast.stop()
-            self.workerMountStatusRunnerMedium.stop()
-            self.workerMountStatusRunnerSlow.stop()
-            self.workerMountStatusRunnerOnce.stop()
-            self.workerMountGetAlignmentModel.stop()
-            self.workerMountSetAlignmentModel.stop()
-            self.workerMountGetModelNames.stop()
-            self.workerMountCommandRunner.stop()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
@@ -378,6 +370,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
         self.cycleTimer.stop()
+        self.workerMountStatusRunnerFast.stop()
+        self.workerMountStatusRunnerMedium.stop()
+        self.workerMountStatusRunnerSlow.stop()
+        self.workerMountStatusRunnerOnce.stop()
+        self.workerMountGetAlignmentModel.stop()
+        self.workerMountSetAlignmentModel.stop()
+        self.workerMountGetModelNames.stop()
+        self.workerMountCommandRunner.stop()
         self.signalDestruct.disconnect(self.destruct)
         self.app.ui.le_mountIP.editingFinished.disconnect(self.changedSettings)
 
