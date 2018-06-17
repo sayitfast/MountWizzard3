@@ -208,6 +208,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.app.sharedINDIDataLock.unlock()
             else:
                 # connection build up is ongoing
+                pass
             if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
                 self.socket.abort()
                 self.connectCounter = 0
