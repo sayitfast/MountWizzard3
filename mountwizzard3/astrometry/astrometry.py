@@ -213,7 +213,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.logger.error('FITS data OBJCTDEC for start solving is missing, present headers: {0}'.format(fitsHeader))
             dataPresentForSolving = False
         if 'PIXSCALE' in fitsHeader:
-            imageParams['ScaleHint'] = self.transform.degStringToDecimal(fitsHeader['PIXSCALE'], ' ')
+            imageParams['ScaleHint'] = fitsHeader['PIXSCALE']
         else:
             self.logger.info('FITS data PIXSCALE for start solving is missing try to recalculate')
             # now trying to recalculate this value
