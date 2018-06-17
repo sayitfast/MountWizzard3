@@ -57,6 +57,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     AUX_INTERFACE = (1 << 15)
 
     CYCLE = 200
+    CONNECTION_TIMEOUT = 2000
 
     data = {
         'ServerIP': '',
@@ -70,6 +71,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.isRunning = False
+        self.connectCounter = 0
         self.mutexIPChange = PyQt5.QtCore.QMutex()
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.checkIP = checkIP.CheckIP()
@@ -200,9 +202,27 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def doReconnect(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
-            self.app.sharedINDIDataLock.lockForRead()
-            self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-            self.app.sharedINDIDataLock.unlock()
+            if self.connectCounter == 0:
+                self.app.sharedINDIDataLock.lockForRead()
+                self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+                self.app.sharedINDIDataLock.unlock()
+            else:
+                # connection build up is ongoing
+            if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                self.socket.abort()
+                self.connectCounter = 0
+            else:
+                self.connectCounter += 1
+        else:
+            if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                    self.socket.abort()
+                    self.connectCounter = 0
+                else:
+                    self.connectCounter += 1
+            else:
+                # connected
+                pass
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):

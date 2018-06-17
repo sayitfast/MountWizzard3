@@ -114,9 +114,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        print('Socket state: ', self.socket.state(), ' Counter: ', self.connectCounter)
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
-            print('Connect to Host')
             if self.connectCounter == 0:
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
@@ -124,27 +122,22 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.sendCommandQueue.queue.clear()
             else:
                 # connection build up is ongoing
-                print('Connect to host already running')
+                pass
             if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
-                print('Timeout, abort')
                 self.socket.abort()
                 self.connectCounter = 0
             else:
                 self.connectCounter += 1
-                print('Wait')
         else:
             if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                 if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
-                    print('Timeout, abort')
                     self.socket.abort()
                     self.connectCounter = 0
                 else:
                     self.connectCounter += 1
-                    print('Wait')
             else:
                 # connected
                 pass
-                print('Connected')
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
