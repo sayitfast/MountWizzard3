@@ -21,7 +21,7 @@ from astrometry import transform
 class MountSetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CONNECTION_TIMEOUT = 3000
+    CONNECTION_TIMEOUT = 2000
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
@@ -107,20 +107,29 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         # to get order in connections, we wait for first connecting the once type
         if self.mountStatus['Once'] and self.data['FW'] > 0:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
-                self.connectCounter = 0
-                self.app.sharedMountDataLock.lockForRead()
-                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.app.sharedMountDataLock.unlock()
-                self.sendCommandQueue.queue.clear()
+                if self.connectCounter == 0:
+                    self.app.sharedMountDataLock.lockForRead()
+                    self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+                    self.app.sharedMountDataLock.unlock()
+                    self.sendCommandQueue.queue.clear()
+                else:
+                    # connection build up is ongoing
+                    pass
+                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                    self.socket.abort()
+                    self.connectCounter = 0
+                else:
+                    self.connectCounter += 1
             else:
                 if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                    self.connectCounter += 1
-                    print('Wait')
                     if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
-                        print('Timeout, abort')
                         self.socket.abort()
+                        self.connectCounter = 0
+                    else:
+                        self.connectCounter += 1
                 else:
-                    self.connectCounter = 0
+                    # connected
+                    pass
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
