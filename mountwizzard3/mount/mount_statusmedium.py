@@ -82,6 +82,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         if self.isRunning:
             self.isRunning = False
             self.signalDestruct.emit()
+            self.signalConnected.emit({'Medium': False})
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
@@ -100,11 +101,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.socket.disconnected.disconnect(self.handleDisconnect)
         self.socket.error.disconnect(self.handleError)
         self.socket.readyRead.disconnect(self.handleReadyRead)
-        if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.abort()
-        else:
-            self.socket.disconnectFromHost()
-            self.socket.close()
+        self.socket.abort()
 
     def doCommand(self):
         self.doReconnect()
@@ -156,7 +153,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        self.logger.warning('Mount RunnerMedium connection fault: {0}'.format(self.socket.errorString()))
+        self.logger.warning('Mount RunnerMedium connection fault: {0}'.format(socketError))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
