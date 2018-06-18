@@ -179,10 +179,10 @@ class Astrometry(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
-        self.signalDestruct.disconnect(self.destruct)
         self.cycleTimer.stop()
         self.statusTimer.stop()
         self.astrometryHandler.stop()
+        self.signalDestruct.disconnect(self.destruct)
 
     def doCommand(self):
         if not self.astrometryCommandQueue.empty():

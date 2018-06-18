@@ -122,7 +122,11 @@ class AstrometryClient:
         self.application['APIKey'] = self.app.ui.le_AstrometryAPIKey.text()
         self.application['Name'] = 'Astrometry'
         self.application['TimeoutMax'] = float(self.app.ui.le_astrometryTimeout.text())
-        self.app.messageQueue.put('Setting IP address for astrometry to: {0}:{1}\n'.format(self.application['AstrometryHost'], self.application['AstrometryPort']))
+        self.app.messageQueue.put('Setting IP address for astrometry to: {0}:{1}\n'.format(self.application['AstrometryHost'],
+                                                                                           self.application['AstrometryPort']))
+        self.logger.info('Setting IP address for astrometry to: {0}:{1}, key: {2}'.format(self.application['AstrometryHost'],
+                                                                                          self.application['AstrometryPort'],
+                                                                                          self.application['APIKey']))
 
     def getStatus(self):
         if self.application['URLAPI'] == '':
