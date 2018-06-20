@@ -265,7 +265,7 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        self.logger.warning('INDI client connection fault, error: {1}'.format(socketError))
+        self.logger.warning('INDI client connection fault, error: {0}'.format(socketError))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
