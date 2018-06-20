@@ -294,12 +294,15 @@ class ImagesWindow(widget.MwWidget):
         self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
         try:
             fitsFileHandle = pyfits.open(filename)
+            error = False
         except Exception as e:
-            fitsFileHandle.close()
+            error = True
+            if fitsFileHandle:
+                fitsFileHandle.close()
             self.logger.error('File {0} could not be loaded, error: {1}'.format(self.imagePath, e))
-            return
         finally:
-            pass
+            if error:
+                return
         self.image = copy.copy(fitsFileHandle[0].data)
         fitsFileHandle.close()
         strechMode = self.getStrechMode()
