@@ -70,9 +70,9 @@ class AstrometryClient:
             'Status': ''
         }
 
-        self.app.ui.le_AstrometryHost.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.le_AstrometryPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.le_AstrometryAPIKey.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.le_AstrometryHost.editingFinished.connect(self.changeIPSettings)
+        self.app.ui.le_AstrometryPort.editingFinished.connect(self.changeIPSettings)
+        self.app.ui.le_AstrometryAPIKey.editingFinished.connect(self.changeIPSettings)
 
     def initConfig(self):
         try:
@@ -90,7 +90,7 @@ class AstrometryClient:
             self.logger.error('Item in config.cfg for astrometry client could not be initialized, error:{0}'.format(e))
         finally:
             pass
-        self.changedAstrometryClientConnectionSettings()
+        self.changeIPSettings()
 
     def storeConfig(self):
         self.app.config['AstrometryPort'] = self.app.ui.le_AstrometryPort.text()
@@ -110,7 +110,7 @@ class AstrometryClient:
         self.cancel = True
         self.mutexCancel.unlock()
 
-    def changedAstrometryClientConnectionSettings(self):
+    def changeIPSettings(self):
         self.data['Status'] = 'ERROR'
         self.data['CONNECTION']['CONNECT'] = 'Off'
         host = self.app.ui.le_AstrometryHost.text()
