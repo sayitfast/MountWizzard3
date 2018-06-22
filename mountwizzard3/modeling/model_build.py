@@ -281,8 +281,8 @@ class Platesolve(PyQt5.QtCore.QObject):
                     self.main.solvedPointsQueue.put(copy.copy(modelingData))
                 else:
                     if 'Message' in modelingData:
-                        self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:90]))
-                        self.logger.warning('Solving error for point {0}: {1}'.format(modelingData['Index'] + 1, modelingData['Message'][:90]))
+                        self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message']))
+                        self.logger.warning('Solving error for point {0}: {1}'.format(modelingData['Index'] + 1, modelingData['Message']))
                     else:
                         self.main.app.messageQueue.put('\tSolving canceled\n')
                         self.logger.warning('Solving canceled')

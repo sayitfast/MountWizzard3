@@ -222,11 +222,6 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['Speed'] = 'HiSpeed'
         else:
             imageParams['Speed'] = 'Normal'
-        # in case our imaging software does not store the RA and DEC parameter in the FITS header, we keep the actual one for later use
-        self.app.sharedMountDataLock.lockForRead()
-        actualRA = self.transform.decimalToDegree(self.app.workerMountDispatcher.data['RaJ2000'], False, True, ' ')
-        actualDEC = self.transform.decimalToDegree(self.app.workerMountDispatcher.data['DecJ2000'], True, True, ' ')
-        self.app.sharedMountDataLock.unlock()
         # now we take the picture
         self.cameraHandler.getImage(imageParams)
         self.logger.info('Image params: {0}'.format(imageParams))
@@ -236,9 +231,10 @@ class Imaging(PyQt5.QtCore.QObject):
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
             # if we are missing coordinates, we are replacing them with actual data from mount
-            if 'OBJCTRA' not in fitsHeader:
-                fitsHeader['OBJCTRA'] = actualRA
-                fitsHeader['OBJCTDEC'] = actualDEC
+            if 'OBJCTRA' not in fitsHeader and 'RaJ2000' in imageParams:
+                fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
+            if 'OBJCTDEC' not in fitsHeader and 'DecJ2000' in imageParams:
+                fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
