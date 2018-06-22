@@ -233,21 +233,29 @@ class Imaging(PyQt5.QtCore.QObject):
             # if we are missing coordinates, we are replacing them with actual data from mount
             if 'OBJCTRA' not in fitsHeader and 'RaJ2000' in imageParams:
                 fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
+                self.logger.warning('No OBJCTRA in FITS Header, writing')
             if 'OBJCTDEC' not in fitsHeader and 'DecJ2000' in imageParams:
                 fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
+                self.logger.warning('No OBJCTDEC in FITS Header, writing')
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
+                self.logger.warning('No FOCALLEN in FITS Header, writing')
             if 'XPIXSZ' not in fitsHeader:
                 fitsHeader['XPIXSZ'] = self.app.ui.pixelSize.value()
+                self.logger.warning('No XPIXSZ in FITS Header, writing')
             if 'PIXSIZE1' not in fitsHeader:
                 fitsHeader['PIXSIZE1'] = self.app.ui.pixelSize.value()
+                self.logger.warning('No PIXSIZE1 in FITS Header, writing')
             if 'YPIXSZ' not in fitsHeader:
                 fitsHeader['YPIXSZ'] = self.app.ui.pixelSize.value()
+                self.logger.warning('No YPIXSZ in FITS Header, writing')
             if 'PIXSIZE2' not in fitsHeader:
                 fitsHeader['PIXSIZE2'] = self.app.ui.pixelSize.value()
+                self.logger.warning('No PIXSIZE2 in FITS Header, writing')
             if 'XBINNING' not in fitsHeader:
                 fitsHeader['XBINNING'] = self.app.ui.cameraBin.value()
+                self.logger.warning('No XBINNING in FITS Header, writing')
             # refreshing FITS file with that data
             fitsFileHandle.flush()
             fitsFileHandle.close()
