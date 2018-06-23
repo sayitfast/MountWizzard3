@@ -225,15 +225,15 @@ class Imaging(PyQt5.QtCore.QObject):
         # now we take the picture
         self.logger.info('Params before starting imaging: {0}'.format(imageParams))
         # setting mount conditions for the taken image
-        imageParams['LocalSiderealTime'] = copy.copy(self.main.app.workerMountDispatcher.data['LocalSiderealTime'])
-        imageParams['LocalSiderealTimeFloat'] = copy.copy(self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9]))
-        imageParams['RaJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJ2000'])
-        imageParams['DecJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJ2000'])
-        imageParams['RaJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJNow'])
-        imageParams['DecJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJNow'])
-        imageParams['Pierside'] = copy.copy(self.main.app.workerMountDispatcher.data['Pierside'])
-        imageParams['RefractionTemperature'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionTemperature'])
-        imageParams['RefractionPressure'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionPressure'])
+        imageParams['LocalSiderealTime'] = str(self.main.app.workerMountDispatcher.data['LocalSiderealTime'])
+        imageParams['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
+        imageParams['RaJ2000'] = float(self.app.workerMountDispatcher.data['RaJ2000'])
+        imageParams['DecJ2000'] = float(self.app.workerMountDispatcher.data['DecJ2000'])
+        imageParams['RaJNow'] = float(self.app.workerMountDispatcher.data['RaJNow'])
+        imageParams['DecJNow'] = float(self.app.workerMountDispatcher.data['DecJNow'])
+        imageParams['Pierside'] = str(self.app.workerMountDispatcher.data['Pierside'])
+        imageParams['RefractionTemperature'] = float(self.app.workerMountDispatcher.data['RefractionTemperature'])
+        imageParams['RefractionPressure'] = float(self.app.workerMountDispatcher.data['RefractionPressure'])
         self.cameraHandler.getImage(imageParams)
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
