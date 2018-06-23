@@ -199,10 +199,10 @@ class AstrometryClient:
         # start uploading the data and define the parameters
         data = self.solveData
         data['downsample_factor'] = downsampleFactor
-        data['scale_est'] = imageParams['ScaleHint']
+        data['scale_est'] = float(imageParams['ScaleHint'])
         # ra is in hours
         data['center_ra'] = imageParams['RaJ2000'] * 360 / 24
-        data['center_dec'] = imageParams['DecJ2000']
+        data['center_dec'] = float(imageParams['DecJ2000'])
 
         if not errorState:
             fields = collections.OrderedDict()
@@ -334,6 +334,11 @@ class AstrometryClient:
                 imageParams['Message'] = 'Solved with success'
             except Exception as e:
                 self.logger.error('Problem get calibration data, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                imageParams['RaJ2000Solved'] = 0
+                imageParams['DecJ2000Solved'] = 0
+                imageParams['Scale'] = 0
+                imageParams['Angle'] = 0
+                imageParams['TimeTS'] = time.time()-timeSolvingStart
                 imageParams['Solved'] = False
                 imageParams['Message'] = 'Solve failed'
             finally:

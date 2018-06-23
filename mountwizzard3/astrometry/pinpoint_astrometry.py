@@ -139,6 +139,12 @@ class PinPoint:
                 imageParams['Angle'] = float(self.pinpoint.RollAngle)
                 imageParams['TimeTS'] = 2.0
                 imageParams['Message'] = 'OK'
+            else:
+                imageParams['DecJ2000Solved'] = 0
+                imageParams['RaJ2000Solved'] = 0
+                imageParams['Scale'] = 0
+                imageParams['Angle'] = 0
+                imageParams['TimeTS'] = 2.0
 
         except Exception as e:
             imageParams['Solved'] = False

@@ -225,7 +225,7 @@ class Imaging(PyQt5.QtCore.QObject):
         # now we take the picture
         self.logger.info('Params before starting imaging: {0}'.format(imageParams))
         # setting mount conditions for the taken image
-        imageParams['LocalSiderealTime'] = str(self.main.app.workerMountDispatcher.data['LocalSiderealTime'])
+        imageParams['LocalSiderealTime'] = str(self.app.workerMountDispatcher.data['LocalSiderealTime'])
         imageParams['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
         imageParams['RaJ2000'] = float(self.app.workerMountDispatcher.data['RaJ2000'])
         imageParams['DecJ2000'] = float(self.app.workerMountDispatcher.data['DecJ2000'])

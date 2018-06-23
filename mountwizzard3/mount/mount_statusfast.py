@@ -208,10 +208,10 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                         if len(value) == 8:
                             self.data['RaJNow'] = float(value[0])
                             self.data['DecJNow'] = float(value[1])
-                            self.data['Pierside'] = value[2]
+                            self.data['Pierside'] = str(value[2])
                             self.data['Az'] = float(value[3])
                             self.data['Alt'] = float(value[4])
-                            self.data['JulianDate'] = value[5]
+                            self.data['JulianDate'] = str(value[5])
                             self.data['Status'] = int(value[6])
                             # if stop , emit warning
                             if value[6] in ['1', '98', '99']:

@@ -146,9 +146,16 @@ class SGPro:
                 imageParams['Angle'] = float(angle)
                 imageParams['TimeTS'] = float(timeTS)
                 imageParams['Message'] = 'Solved'
-                time.sleep(0.1)
+                break
+            else:
+                imageParams['RaJ2000Solved'] = 0
+                imageParams['DecJ2000Solved'] = 0
+                imageParams['Scale'] = 0
+                imageParams['Angle'] = 0
+                imageParams['TimeTS'] = 0
+                break
+            time.sleep(0.1)
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-            break
 
         # finally idle
         self.main.imageDataDownloaded.emit()
