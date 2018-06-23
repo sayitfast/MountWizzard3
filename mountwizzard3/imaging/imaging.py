@@ -224,6 +224,16 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['Speed'] = 'Normal'
         # now we take the picture
         self.logger.info('Params before starting imaging: {0}'.format(imageParams))
+        # setting mount conditions for the taken image
+        imageParams['LocalSiderealTime'] = copy.copy(self.main.app.workerMountDispatcher.data['LocalSiderealTime'])
+        imageParams['LocalSiderealTimeFloat'] = copy.copy(self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9]))
+        imageParams['RaJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJ2000'])
+        imageParams['DecJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJ2000'])
+        imageParams['RaJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJNow'])
+        imageParams['DecJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJNow'])
+        imageParams['Pierside'] = copy.copy(self.main.app.workerMountDispatcher.data['Pierside'])
+        imageParams['RefractionTemperature'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionTemperature'])
+        imageParams['RefractionPressure'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionPressure'])
         self.cameraHandler.getImage(imageParams)
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
@@ -231,12 +241,17 @@ class Imaging(PyQt5.QtCore.QObject):
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
             # if we are missing coordinates, we are replacing them with actual data from mount
-            if 'OBJCTRA' not in fitsHeader and 'RaJ2000' in imageParams:
-                fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
+            if 'OBJCTRA' not in fitsHeader:
                 self.logger.warning('No OBJCTRA in FITS Header, writing')
-            if 'OBJCTDEC' not in fitsHeader and 'DecJ2000' in imageParams:
-                fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
+            else:
+                self.logger.info('OBJCTRA in header was: {0}'.format(fitsHeader['OBJCTRA']))
+            if 'OBJCTDEC' not in fitsHeader:
                 self.logger.warning('No OBJCTDEC in FITS Header, writing')
+            else:
+                self.logger.info('OBJCTDEC in header was: {0}'.format(fitsHeader['OBJCTDEC']))
+            # setting coordinates explicit, because MW does slewing after imaging and MW does not know, when imaging application takes coordinates from mount driver
+            fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
+            fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()

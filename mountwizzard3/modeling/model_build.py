@@ -173,15 +173,6 @@ class Image(PyQt5.QtCore.QObject):
             self.imageIntegrated = False
             self.mutexImageIntegrated.unlock()
             modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
-            modelingData['LocalSiderealTime'] = copy.copy(self.main.app.workerMountDispatcher.data['LocalSiderealTime'])
-            modelingData['LocalSiderealTimeFloat'] = copy.copy(self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9]))
-            modelingData['RaJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJ2000'])
-            modelingData['DecJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJ2000'])
-            modelingData['RaJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJNow'])
-            modelingData['DecJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJNow'])
-            modelingData['Pierside'] = copy.copy(self.main.app.workerMountDispatcher.data['Pierside'])
-            modelingData['RefractionTemperature'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionTemperature'])
-            modelingData['RefractionPressure'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionPressure'])
             modelingData['Imagepath'] = ''
             self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
             self.logger.info('Capturing image for model point {0:2d}'.format(modelingData['Index'] + 1))
