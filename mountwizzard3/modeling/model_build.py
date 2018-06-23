@@ -173,15 +173,15 @@ class Image(PyQt5.QtCore.QObject):
             self.imageIntegrated = False
             self.mutexImageIntegrated.unlock()
             modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
-            modelingData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
-            modelingData['LocalSiderealTimeFloat'] = self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
-            modelingData['RaJ2000'] = self.main.app.workerMountDispatcher.data['RaJ2000']
-            modelingData['DecJ2000'] = self.main.app.workerMountDispatcher.data['DecJ2000']
-            modelingData['RaJNow'] = self.main.app.workerMountDispatcher.data['RaJNow']
-            modelingData['DecJNow'] = self.main.app.workerMountDispatcher.data['DecJNow']
-            modelingData['Pierside'] = self.main.app.workerMountDispatcher.data['Pierside']
-            modelingData['RefractionTemperature'] = self.main.app.workerMountDispatcher.data['RefractionTemperature']
-            modelingData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
+            modelingData['LocalSiderealTime'] = copy.copy(self.main.app.workerMountDispatcher.data['LocalSiderealTime'])
+            modelingData['LocalSiderealTimeFloat'] = copy.copy(self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9]))
+            modelingData['RaJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJ2000'])
+            modelingData['DecJ2000'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJ2000'])
+            modelingData['RaJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['RaJNow'])
+            modelingData['DecJNow'] = copy.copy(self.main.app.workerMountDispatcher.data['DecJNow'])
+            modelingData['Pierside'] = copy.copy(self.main.app.workerMountDispatcher.data['Pierside'])
+            modelingData['RefractionTemperature'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionTemperature'])
+            modelingData['RefractionPressure'] = copy.copy(self.main.app.workerMountDispatcher.data['RefractionPressure'])
             modelingData['Imagepath'] = ''
             self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
             self.logger.info('Capturing image for model point {0:2d}'.format(modelingData['Index'] + 1))
@@ -660,17 +660,20 @@ class ModelingBuild:
         while not self.solveReady and not self.cancel:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        if imageParams['Solved']:
-            self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
-                                                                                      self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
-            ra_form = self.transform.decimalToDegree(ra_sol_Jnow, False, False)
-            dec_form = self.transform.decimalToDegree(dec_sol_Jnow, True, False)
-            success = self.app.workerMountDispatcher.syncMountModel(ra_form, dec_form)
-            if success:
-                self.app.messageQueue.put('\tMount Model Synced\n')
+        if 'Solved' in imageParams:
+            if imageParams['Solved']:
+                self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
+                                                                                          self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
+                ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
+                ra_form = self.transform.decimalToDegree(ra_sol_Jnow, False, False)
+                dec_form = self.transform.decimalToDegree(dec_sol_Jnow, True, False)
+                success = self.app.workerMountDispatcher.syncMountModel(ra_form, dec_form)
+                if success:
+                    self.app.messageQueue.put('\tMount Model Synced\n')
+                else:
+                    self.app.messageQueue.put('\tMount Model could not be synced - please check!\n')
             else:
-                self.app.messageQueue.put('\tMount Model could not be synced - please check!\n')
+                self.logger.warning('Solve key in imageParams missing')
         else:
             self.app.messageQueue.put('\tSolving error: {0}\n'.format(mes))
         if not self.app.ui.checkKeepImages.isChecked():
