@@ -222,8 +222,6 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['Speed'] = 'HiSpeed'
         else:
             imageParams['Speed'] = 'Normal'
-        # now we take the picture
-        self.logger.info('Params before starting imaging: {0}'.format(imageParams))
         # setting mount conditions for the taken image
         imageParams['LocalSiderealTime'] = str(self.app.workerMountDispatcher.data['LocalSiderealTime'])
         imageParams['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
@@ -234,6 +232,8 @@ class Imaging(PyQt5.QtCore.QObject):
         imageParams['Pierside'] = str(self.app.workerMountDispatcher.data['Pierside'])
         imageParams['RefractionTemperature'] = float(self.app.workerMountDispatcher.data['RefractionTemperature'])
         imageParams['RefractionPressure'] = float(self.app.workerMountDispatcher.data['RefractionPressure'])
+        self.logger.info('Params before imaging: {0}'.format(imageParams))
+        # now we take the picture
         self.cameraHandler.getImage(imageParams)
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
@@ -257,13 +257,13 @@ class Imaging(PyQt5.QtCore.QObject):
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
                 self.logger.warning('No FOCALLEN in FITS Header, writing')
             if 'XPIXSZ' not in fitsHeader:
-                fitsHeader['XPIXSZ'] = self.app.ui.pixelSize.value()
+                fitsHeader['XPIXSZ'] = self.app.ui.pixelSize.value() * self.app.ui.cameraBin.value()
                 self.logger.warning('No XPIXSZ in FITS Header, writing')
             if 'PIXSIZE1' not in fitsHeader:
                 fitsHeader['PIXSIZE1'] = self.app.ui.pixelSize.value()
                 self.logger.warning('No PIXSIZE1 in FITS Header, writing')
             if 'YPIXSZ' not in fitsHeader:
-                fitsHeader['YPIXSZ'] = self.app.ui.pixelSize.value()
+                fitsHeader['YPIXSZ'] = self.app.ui.pixelSize.value() * self.app.ui.cameraBin.value()
                 self.logger.warning('No YPIXSZ in FITS Header, writing')
             if 'PIXSIZE2' not in fitsHeader:
                 fitsHeader['PIXSIZE2'] = self.app.ui.pixelSize.value()

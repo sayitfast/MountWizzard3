@@ -227,8 +227,9 @@ class Astrometry(PyQt5.QtCore.QObject):
                 dataPresentForSolving = False
         fitsFileHandle.close()
         if dataPresentForSolving:
+            self.logger.info('Params before solving: {0}'.format(imageParams))
             self.astrometryHandler.solveImage(imageParams)
-            self.logger.info('Image params: {0}'.format(imageParams))
+            self.logger.info('Params after solving: {0}'.format(imageParams))
             if self.app.imageWindow.showStatus:
                 if 'Solved' in imageParams:
                     if imageParams['Solved']:
