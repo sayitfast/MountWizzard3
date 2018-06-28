@@ -705,7 +705,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.messageQueue.put('Data synced\n')
             returnValue = True
         else:
-            self.logger.warning('Size mount modeling {0} and modeling data {1} do not fit !'.format(len(modelingData), len(self.data['ModelError'])))
+            self.logger.warning('Size mount modeling {0} and modeling data {1} do not fit !'.format(len(modelingData['Index']), len(self.data['ModelError'])))
             self.app.messageQueue.put('Mount Model and Model Data could not be synced\n')
             self.app.messageQueue.put('Error data sync mismatch!\n')
             returnValue = False
