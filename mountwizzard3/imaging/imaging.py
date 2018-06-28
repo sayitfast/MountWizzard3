@@ -252,6 +252,8 @@ class Imaging(PyQt5.QtCore.QObject):
             # setting coordinates explicit, because MW does slewing after imaging and MW does not know, when imaging application takes coordinates from mount driver
             fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
             fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
+            self.logger.info('OBJCTRA in header written: {0}'.format(fitsHeader['OBJCTRA']))
+            self.logger.info('OBJCTDEC in header written: {0}'.format(fitsHeader['OBJCTDEC']))
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
