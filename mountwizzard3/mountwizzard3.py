@@ -34,6 +34,7 @@ if platform.system() == 'Windows':
 from queue import Queue
 import PyQt5
 import PyQt5.QtMultimedia
+import numpy
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot
@@ -1262,6 +1263,104 @@ class MountWizzardApp(widget.MwWidget):
         self.workerAstrometry.updateApplicationName()
 
 
+class SplashScreen(PyQt5.QtCore.QObject):
+
+    def __init__(self, pix, qapp=None):
+        super().__init__()
+        self._qapp = qapp
+        self._pxm = pix
+        self._qss = PyQt5.QtWidgets.QSplashScreen(self._pxm, (PyQt5.QtCore.Qt.WindowStaysOnTopHint | PyQt5.QtCore.Qt.X11BypassWindowManagerHint))
+
+        self._msg = ''
+        self._maxv = 100.0
+        self._minv = 0.0
+        self._cval = 0.0
+
+        self._qss.__drawContents__ = self._qss.drawContents
+        self._qss.drawContents = self._drawContents
+
+        self._qss.show()
+
+        self.processEvents()
+
+    def close(self):
+        self.update()
+        self._qss.close()
+
+    def setMaximum(self, val):
+        self._maxv = val
+        self.update()
+
+    def setMinimum(self, val):
+        self._minv = val
+        self.update()
+
+    def setValue(self, val):
+        for i in numpy.arange(self._cval, val, self._maxv / 1000.0):
+            self._cval = i
+            self.update()
+
+    def maximum(self):
+        return self._maxv
+
+    def minimum(self):
+        return self._minv
+
+    def value(self):
+        return self._cval
+
+    def message(self):
+        return self._msg
+
+    def showMessage(self, msg):
+        self._msg = msg
+        # self._qss.showMessage(msg,QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeft,QtCore.Qt.white)
+        self.update()
+
+    def update(self):
+        self._qss.update()
+        self.processEvents()
+
+    def _drawContents(self, painter):
+        # self._qss.__drawContents__(painter)
+
+        view_port = painter.viewport()
+
+        w = view_port.right()
+        h = view_port.bottom()
+
+        painter.setPen(PyQt5.QtGui.QColor(55, 55, 55, 255))
+        painter.setBrush(PyQt5.QtGui.QColor(0, 0, 0, 255))
+        painter.drawRect(10, h - 25, w - 20, 15)
+
+        redlg = PyQt5.QtGui.QLinearGradient(0, 0, w, 0)
+        redlg.setColorAt(0, PyQt5.QtGui.QColor(10, 10, 155))
+        redlg.setColorAt(0.8, PyQt5.QtGui.QColor(10, 10, 255))
+
+        alg = PyQt5.QtGui.QLinearGradient(0, h - 25, 0, h)
+        alg.setColorAt(0, PyQt5.QtGui.QColor(0, 0, 0, 150))
+        alg.setColorAt(0.5, PyQt5.QtGui.QColor(0, 0, 0, 0))
+
+        painter.setPen(PyQt5.QtCore.Qt.NoPen)
+        painter.setBrush(redlg)
+        painter.drawRect(11, h - 24, (w - 21) * self._cval / self._maxv, 14)
+
+        painter.setBrush(alg)
+        painter.drawRect(11, h - 24, (w - 21) * self._cval / self._maxv, 14)
+
+        painter.setPen(PyQt5.QtCore.Qt.white)
+
+        rect = PyQt5.QtCore.QRectF(10, h - 23, w - 20, 15)
+        painter.drawText(rect, PyQt5.QtCore.Qt.AlignCenter, str(self._msg))
+
+    def finish(self, qwid):
+        self._qss.finish(qwid)
+
+    def processEvents(self):
+        if self._qapp is not None:
+            self._qapp.processEvents()
+
+
 class MyApp(PyQt5.QtWidgets.QApplication):
 
     def notify(self, obj, event):
@@ -1304,10 +1403,13 @@ if __name__ == "__main__":
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
-    splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint)
-    splash.setMask(splash_pix.mask())
-    splash.show()
-    app.processEvents()
+    # splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint | PyQt5.QtCore.Qt.X11BypassWindowManagerHint)
+    # splash.setMask(splash_pix.mask())
+    # splash.show()
+    # app.processEvents()
+    splash = SplashScreen(splash_pix, app)
+    splash.showMessage('Initialising logger')
+    splash.setValue(10)
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -1316,6 +1418,9 @@ if __name__ == "__main__":
                         format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
+    splash.showMessage('Checking work directories')
+    splash.setValue(20)
+
     # population the working directory with necessary subdir
     if not os.path.isdir(os.getcwd() + '/analysedata'):
         os.makedirs(os.getcwd() + '/analysedata')
@@ -1323,6 +1428,9 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/images')
     if not os.path.isdir(os.getcwd() + '/config'):
         os.makedirs(os.getcwd() + '/config')
+
+    splash.showMessage('Starting logging')
+    splash.setValue(30)
 
     # start logging with basic system data for information
     hostSummary = socket.gethostbyname_ex(socket.gethostname())
@@ -1348,7 +1456,10 @@ if __name__ == "__main__":
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
 
-    # generating the necessary folders
+    splash.showMessage('Checking work dirs')
+    splash.setValue(50)
+
+    # checking if writable
     if not os.access(os.getcwd(), os.W_OK):
         logging.error('no write access to workdir')
     if not os.access(os.getcwd() + '/images', os.W_OK):
@@ -1358,12 +1469,23 @@ if __name__ == "__main__":
     if not os.access(os.getcwd() + '/analysedata', os.W_OK):
         logging.error('no write access to /analysedata')
 
+    splash.showMessage('Preparing application')
+    splash.setValue(70)
+
     # and finally starting the application
     sys.excepthook = except_hook
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
     mountApp = MountWizzardApp()
+
+    splash.showMessage('Launching GUI')
+    splash.setValue(90)
+
     mountApp.show()
 
     # end of splash screen
-    splash.finish(mountApp)
+    # splash.finish(mountApp)
+    splash.showMessage('Loaded')
+    splash.setValue(100)
+
+    splash.close()
     sys.exit(app.exec_())
