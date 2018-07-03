@@ -1363,6 +1363,8 @@ class SplashScreen(PyQt5.QtCore.QObject):
 
 class MyApp(PyQt5.QtWidgets.QApplication):
 
+    PyQt5.QtWidgets.QApplication.setAttribute(PyQt5.QtCore.Qt.AA_EnableHighDpiScaling, True)
+
     def notify(self, obj, event):
         try:
             returnValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
@@ -1484,7 +1486,7 @@ if __name__ == "__main__":
 
     # end of splash screen
     # splash.finish(mountApp)
-    splash.showMessage('Loaded')
+    splash.showMessage('Finishing Loading')
     splash.setValue(100)
 
     splash.close()
