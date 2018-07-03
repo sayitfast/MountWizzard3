@@ -1402,14 +1402,14 @@ if __name__ == "__main__":
 
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
-    splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
+    splash_pix = PyQt5.QtGui.QPixmap(':/mw.ico')
     # splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint | PyQt5.QtCore.Qt.X11BypassWindowManagerHint)
     # splash.setMask(splash_pix.mask())
     # splash.show()
     # app.processEvents()
     splash = SplashScreen(splash_pix, app)
     splash.showMessage('Initialising logger')
-    splash.setValue(10)
+    splash.setValue(20)
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -1419,7 +1419,7 @@ if __name__ == "__main__":
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
     splash.showMessage('Checking work directories')
-    splash.setValue(20)
+    splash.setValue(30)
 
     # population the working directory with necessary subdir
     if not os.path.isdir(os.getcwd() + '/analysedata'):
@@ -1430,7 +1430,7 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/config')
 
     splash.showMessage('Starting logging')
-    splash.setValue(30)
+    splash.setValue(40)
 
     # start logging with basic system data for information
     hostSummary = socket.gethostbyname_ex(socket.gethostname())
@@ -1470,7 +1470,7 @@ if __name__ == "__main__":
         logging.error('no write access to /analysedata')
 
     splash.showMessage('Preparing application')
-    splash.setValue(70)
+    splash.setValue(60)
 
     # and finally starting the application
     sys.excepthook = except_hook
@@ -1478,7 +1478,7 @@ if __name__ == "__main__":
     mountApp = MountWizzardApp()
 
     splash.showMessage('Launching GUI')
-    splash.setValue(90)
+    splash.setValue(80)
 
     mountApp.show()
 
