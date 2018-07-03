@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='mountwizzard3',
-    version='3.0b8.dev0',
+    version='3.0b8.dev1',
     packages=[
         'mountwizzard3',
         'mountwizzard3.analyse',
@@ -28,11 +28,11 @@ setup(
     ],
     python_requires='~=3.6.3',
     install_requires=[
-        'PyQt5==5.10.1',
-        'matplotlib==2.1.2',
+        'PyQt5==5.11.2',
+        'matplotlib==2.2.2',
         'wakeonlan>=1.0.0',
         'requests==2.18.4',
-        'astropy>=3.0.0',
+        'astropy==3.0.3',
         'numpy==1.14.0',
         'requests_toolbelt==0.8.0'
     ]
