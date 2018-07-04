@@ -1265,6 +1265,14 @@ class MountWizzardApp(widget.MwWidget):
 
 class SplashScreen(PyQt5.QtCore.QObject):
 
+    # Part from Maurizio D'Addona <mauritiusdadd@gmail.com> under license APL2.0
+    # Ported from PYQT4 to PYQT5
+    # Agreement for License (email from 04.07.2018):
+    # Hi Michel,
+    # sure, there is no problem for me. I'm glad you have found it useful.
+    # Best regards,
+    # Maurizio
+
     def __init__(self, pix, qapp=None):
         super().__init__()
         self._qapp = qapp
@@ -1331,26 +1339,19 @@ class SplashScreen(PyQt5.QtCore.QObject):
 
         painter.setPen(PyQt5.QtGui.QColor(55, 55, 55, 255))
         painter.setBrush(PyQt5.QtGui.QColor(0, 0, 0, 255))
-        painter.drawRect(10, h - 25, w - 20, 15)
+        painter.drawRect(10, h - 65, w - 20, 17)
 
-        redlg = PyQt5.QtGui.QLinearGradient(0, 0, w, 0)
-        redlg.setColorAt(0, PyQt5.QtGui.QColor(10, 10, 155))
-        redlg.setColorAt(0.8, PyQt5.QtGui.QColor(10, 10, 255))
-
-        alg = PyQt5.QtGui.QLinearGradient(0, h - 25, 0, h)
-        alg.setColorAt(0, PyQt5.QtGui.QColor(0, 0, 0, 150))
-        alg.setColorAt(0.5, PyQt5.QtGui.QColor(0, 0, 0, 0))
+        redlg = PyQt5.QtGui.QLinearGradient(0, h - 65, 0, h)
+        redlg.setColorAt(0.5, PyQt5.QtGui.QColor(32, 144, 192))
+        redlg.setColorAt(0, PyQt5.QtGui.QColor(8, 36, 48))
 
         painter.setPen(PyQt5.QtCore.Qt.NoPen)
         painter.setBrush(redlg)
-        painter.drawRect(11, h - 24, (w - 21) * self._cval / self._maxv, 14)
-
-        painter.setBrush(alg)
-        painter.drawRect(11, h - 24, (w - 21) * self._cval / self._maxv, 14)
+        painter.drawRect(11, h - 63, (w - 21) * self._cval / self._maxv, 14)
 
         painter.setPen(PyQt5.QtCore.Qt.white)
 
-        rect = PyQt5.QtCore.QRectF(10, h - 23, w - 20, 15)
+        rect = PyQt5.QtCore.QRectF(10, h - 63, w - 20, 15)
         painter.drawText(rect, PyQt5.QtCore.Qt.AlignCenter, str(self._msg))
 
     def finish(self, qwid):
@@ -1405,10 +1406,6 @@ if __name__ == "__main__":
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw.ico')
-    # splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint | PyQt5.QtCore.Qt.X11BypassWindowManagerHint)
-    # splash.setMask(splash_pix.mask())
-    # splash.show()
-    # app.processEvents()
     splash = SplashScreen(splash_pix, app)
     splash.showMessage('Initialising logger')
     splash.setValue(20)
@@ -1485,7 +1482,6 @@ if __name__ == "__main__":
     mountApp.show()
 
     # end of splash screen
-    # splash.finish(mountApp)
     splash.showMessage('Finishing Loading')
     splash.setValue(100)
 
