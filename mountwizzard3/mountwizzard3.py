@@ -1407,7 +1407,7 @@ if __name__ == "__main__":
     app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw.ico')
     splash = SplashScreen(splash_pix, app)
-    splash.showMessage('Initialising logger')
+    splash.showMessage('Start initialising')
     splash.setValue(20)
 
     warnings.filterwarnings("ignore")
@@ -1455,7 +1455,7 @@ if __name__ == "__main__":
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
 
-    splash.showMessage('Checking work dirs')
+    splash.showMessage('Checking work directories')
     splash.setValue(50)
 
     # checking if writable
@@ -1482,7 +1482,7 @@ if __name__ == "__main__":
     mountApp.show()
 
     # end of splash screen
-    splash.showMessage('Finishing Loading')
+    splash.showMessage('Finishing loading')
     splash.setValue(100)
 
     splash.close()
