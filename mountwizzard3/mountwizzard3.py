@@ -1342,12 +1342,12 @@ class SplashScreen(PyQt5.QtCore.QObject):
         painter.drawRect(10, h - 65, w - 20, 17)
 
         redlg = PyQt5.QtGui.QLinearGradient(0, h - 65, 0, h)
-        redlg.setColorAt(0.5, PyQt5.QtGui.QColor(32, 144, 192))
-        redlg.setColorAt(0, PyQt5.QtGui.QColor(8, 36, 48))
+        redlg.setColorAt(0.3, PyQt5.QtGui.QColor(8, 36, 48))
+        redlg.setColorAt(0, PyQt5.QtGui.QColor(32, 144, 192))
 
         painter.setPen(PyQt5.QtCore.Qt.NoPen)
         painter.setBrush(redlg)
-        painter.drawRect(11, h - 63, (w - 21) * self._cval / self._maxv, 14)
+        painter.drawRect(12, h - 63, (w - 20) * self._cval / self._maxv, 14)
 
         painter.setPen(PyQt5.QtCore.Qt.white)
 
