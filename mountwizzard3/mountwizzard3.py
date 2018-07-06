@@ -290,10 +290,10 @@ class MountWizzardApp(widget.MwWidget):
 
     def setupIcons(self):
         # show icon in main gui and add some icons for push buttons
-        self.widgetIcon(self.ui.btn_openMessageWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DesktopIcon))
-        self.widgetIcon(self.ui.btn_openAnalyseWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DesktopIcon))
-        self.widgetIcon(self.ui.btn_openImageWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DesktopIcon))
-        self.widgetIcon(self.ui.btn_openHemisphereWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DesktopIcon))
+        self.widgetIcon(self.ui.btn_openMessageWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
+        self.widgetIcon(self.ui.btn_openAnalyseWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
+        self.widgetIcon(self.ui.btn_openImageWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
+        self.widgetIcon(self.ui.btn_openHemisphereWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
         self.widgetIcon(self.ui.btn_saveConfigAs, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
         self.widgetIcon(self.ui.btn_loadFrom, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DirOpenIcon))
         self.widgetIcon(self.ui.btn_saveConfig, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
