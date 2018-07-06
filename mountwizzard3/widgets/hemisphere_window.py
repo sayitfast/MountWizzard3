@@ -184,6 +184,11 @@ class HemisphereWindow(widget.MwWidget):
         self.setVisible(True)
         self.drawHemisphere()
         self.show()
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openHemisphereWindow, 'running', 'true')
+
+    def closeEvent(self, closeEvent):
+        super().closeEvent(closeEvent)
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openHemisphereWindow, 'running', 'false')
 
     def selectHorizonPointsMode(self):
         msg = self.app.workerModelingDispatcher.modelingRunner.modelPoints.loadHorizonPoints(self.app.ui.le_horizonPointsFileName.text(),

@@ -183,6 +183,11 @@ class AnalyseWindow(widget.MwWidget):
         self.setVisible(True)
         self.showView()
         self.show()
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openAnalyseWindow, 'running', 'true')
+
+    def closeEvent(self, closeEvent):
+        super().closeEvent(closeEvent)
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openAnalyseWindow, 'running', 'false')
 
     def showView(self):
         if self.analyseView == 1:

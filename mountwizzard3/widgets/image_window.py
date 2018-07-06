@@ -230,7 +230,12 @@ class ImagesWindow(widget.MwWidget):
     def showWindow(self):
         self.showStatus = True
         self.signalShowFitsImage.emit(self.imagePath)
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openImageWindow, 'running', 'true')
         self.setVisible(True)
+
+    def closeEvent(self, closeEvent):
+        super().closeEvent(closeEvent)
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openImageWindow, 'running', 'false')
 
     def cancelAction(self):
         self.cancel = True

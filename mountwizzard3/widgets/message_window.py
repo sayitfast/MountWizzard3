@@ -73,3 +73,8 @@ class MessageWindow(widget.MwWidget):
         self.showStatus = True
         self.setVisible(True)
         self.show()
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openMessageWindow, 'running', 'true')
+
+    def closeEvent(self, closeEvent):
+        super().closeEvent(closeEvent)
+        self.app.signalChangeStylesheet.emit(self.app.ui.btn_openMessageWindow, 'running', 'false')
