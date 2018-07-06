@@ -69,6 +69,13 @@ class MessageWindow(widget.MwWidget):
         self.app.config['MessageWindowShowStatus'] = self.showStatus
         self.app.config['MessageWindowHeight'] = self.height()
 
+    def toggleWindow(self):
+        self.showStatus = not self.showStatus
+        if self.showStatus:
+            self.showWindow()
+        else:
+            self.close()
+
     def showWindow(self):
         self.showStatus = True
         self.setVisible(True)

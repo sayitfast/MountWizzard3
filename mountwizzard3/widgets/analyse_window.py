@@ -176,6 +176,13 @@ class AnalyseWindow(widget.MwWidget):
         self.app.config['AnalyseWindowHeight'] = self.height()
         self.app.config['AnalyseWindowWidth'] = self.width()
 
+    def toggleWindow(self):
+        self.showStatus = not self.showStatus
+        if self.showStatus:
+            self.showWindow()
+        else:
+            self.close()
+
     def showWindow(self):
         self.getData()
         self.setWindowTitle('Analyse:    ' + self.app.ui.le_analyseFileName.text())

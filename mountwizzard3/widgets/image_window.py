@@ -227,6 +227,13 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImageWindowHeight'] = self.height()
         self.app.config['ImageWindowWidth'] = self.width()
 
+    def toggleWindow(self):
+        self.showStatus = not self.showStatus
+        if self.showStatus:
+            self.showWindow()
+        else:
+            self.close()
+
     def showWindow(self):
         self.showStatus = True
         self.signalShowFitsImage.emit(self.imagePath)

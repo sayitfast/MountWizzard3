@@ -179,6 +179,13 @@ class HemisphereWindow(widget.MwWidget):
         self.app.config['HemisphereWindowHeight'] = self.height()
         self.app.config['HemisphereWindowWidth'] = self.width()
 
+    def toggleWindow(self):
+        self.showStatus = not self.showStatus
+        if self.showStatus:
+            self.showWindow()
+        else:
+            self.close()
+
     def showWindow(self):
         self.showStatus = True
         self.setVisible(True)
