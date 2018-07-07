@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.11.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -189,7 +189,7 @@ class Ui_MainWindow(object):
         self.le_meridianLimitGuide.setObjectName("le_meridianLimitGuide")
         self.le_telescopePierSide = QtWidgets.QLineEdit(self.tab_2)
         self.le_telescopePierSide.setEnabled(False)
-        self.le_telescopePierSide.setGeometry(QtCore.QRect(375, 250, 66, 21))
+        self.le_telescopePierSide.setGeometry(QtCore.QRect(375, 250, 41, 21))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(10)
@@ -6448,4 +6448,14 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.setText(_translate("MainWindow", "Image"))
         self.btn_openAnalyseWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the analyse window for checking measurements and modlelling data.</p></body></html>"))
         self.btn_openAnalyseWindow.setText(_translate("MainWindow", "Analyse"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
