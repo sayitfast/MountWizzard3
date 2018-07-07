@@ -319,8 +319,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                         if 'format' in message.getElt(0).attr:
                             try:
                                 if self.imagePath != '':
-                                    # todo: image should be stored in indicamera, only data should be transferred via signal
-                                    # todo: therefore imageHDU has to be a class variable to not be garbage collected
                                     if message.getElt(0).attr['format'] == '.fits':
                                         imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
                                         imageHDU.writeto(self.imagePath, overwrite=True)
@@ -331,6 +329,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                                         self.logger.debug('Image BLOB is compressed fits format')
                                     self.receivedImage.emit(True)
                                 else:
+                                    # here are some functions to listen to image transfer on ethernet
                                     if self.app.ui.checkEnableINDIListening.isChecked():
                                         # received an image without asking for it. just listening
                                         path = os.getcwd() + '/images/listen.fit'
@@ -343,6 +342,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                                             imageHDU.writeto(path, overwrite=True)
                                             self.logger.debug('Image while listening is received in compressed fits format')
                                         self.app.imageWindow.signalShowFitsImage.emit(path)
+                                        # if there is a hint, we could solve it as well automatically
                                         if self.app.ui.checkEnableINDISolving.isChecked():
                                             self.app.imageWindow.signalSolveFitsImage.emit(path)
                                     else:
