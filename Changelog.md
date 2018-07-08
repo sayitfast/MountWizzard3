@@ -12,8 +12,6 @@ System tuning:
 
 Features fine tuning:
 - disable exposures when no camera attached
-- search radius of astrometry in gui
-- blind solver option for SGPro back
 - setting site parameters
 - documentation and cleanup
 - more set buttons for config in gui

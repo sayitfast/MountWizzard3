@@ -5120,7 +5120,7 @@ manually</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>downsample_factor: float, &gt;1. Downsample (bin) your image by this factor before performing source detection. This often helps with saturated images, noisy images, and large images. 2 and 4 are commonly-useful values.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;downsample_factor: float, &gt;1. Downsample (bin) your image by this factor before performing source detection. This often helps with saturated images, noisy images, and large images. 2 and 4 are commonly-useful values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5194,7 +5194,7 @@ manually</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>Radius: float, in degrees. Used with center_ra, center_dec to specify that you know roughly where your image is on the sky. Please set to 0 if you don't know.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Radius: float, in degrees. Used with center_ra, center_dec to specify that you know roughly where your image is on the sky. Please set to 0 if you don't know.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5248,7 +5248,7 @@ manually</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>Checked if you would like to keep the images of modeling session</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Checked if you would like to enable blind solver function in SGPro&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
