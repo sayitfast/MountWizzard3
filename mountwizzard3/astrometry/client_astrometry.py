@@ -25,6 +25,7 @@ from requests_toolbelt.multipart import encoder
 from baseclasses import checkIP
 import json
 import collections
+import copy
 
 
 class AstrometryClient:
@@ -40,7 +41,7 @@ class AstrometryClient:
                  'scale_err': 20,
                  'center_ra': 315,
                  'center_dec': 68,
-                 'radius': 3,
+                 'radius': 1,
                  'downsample_factor': 2,
                  'use_sextractor': False,
                  'crpix_center': True,
@@ -86,6 +87,8 @@ class AstrometryClient:
                 self.app.ui.le_AstrometryAPIKey.setText(self.app.config['AstrometryAPIKey'])
             if 'AstrometryDownsample' in self.app.config:
                 self.app.ui.astrometryDownsampling.setValue(self.app.config['AstrometryDownsample'])
+            if 'AstrometryRadius' in self.app.config:
+                self.app.ui.astrometryRadius.setValue(self.app.config['AstrometryRadius'])
         except Exception as e:
             self.logger.error('Item in config.cfg for astrometry client could not be initialized, error:{0}'.format(e))
         finally:
@@ -98,6 +101,7 @@ class AstrometryClient:
         self.app.config['AstrometryAPIKey'] = self.app.ui.le_AstrometryAPIKey.text()
         self.app.config['AstrometryTimeout'] = self.app.ui.le_astrometryTimeout.text()
         self.app.config['AstrometryDownsample'] = self.app.ui.astrometryDownsampling.value()
+        self.app.config['AstrometryRadius'] = self.app.ui.astrometryRadius.value()
 
     def start(self):
         pass
@@ -147,6 +151,7 @@ class AstrometryClient:
         self.mutexCancel.unlock()
 
         downsampleFactor = self.app.ui.astrometryDownsampling.value()
+        radius = self.app.ui.astrometryRadius.value()
         # waiting for start solving
         timeSolvingStart = time.time()
         # defining start values
@@ -197,8 +202,14 @@ class AstrometryClient:
         # loop for upload
         self.main.astrometryStatusText.emit('UPLOAD')
         # start uploading the data and define the parameters
-        data = self.solveData
+        data = copy.copy(self.solveData)
         data['downsample_factor'] = downsampleFactor
+        # check if you want to use this parameter. if 0, than remove it
+        if radius > 0:
+            data['radius'] = radius
+        else:
+            if 'radius' in data:
+                del data['radius']
         data['scale_est'] = float(imageParams['ScaleHint'])
         # ra is in hours
         data['center_ra'] = imageParams['RaJ2000'] * 360 / 24

@@ -4087,7 +4087,7 @@ manually</string>
       <rect>
        <x>665</x>
        <y>180</y>
-       <width>21</width>
+       <width>26</width>
        <height>26</height>
       </rect>
      </property>
@@ -4097,7 +4097,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>°</string>
+      <string>deg</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -4312,7 +4312,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>335</x>
-       <y>220</y>
+       <y>195</y>
        <width>16</width>
        <height>26</height>
       </rect>
@@ -4330,7 +4330,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>220</y>
+       <y>195</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -4368,7 +4368,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>185</y>
+       <y>165</y>
        <width>181</width>
        <height>26</height>
       </rect>
@@ -4386,7 +4386,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>155</y>
+       <y>140</y>
        <width>291</width>
        <height>20</height>
       </rect>
@@ -4410,7 +4410,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>85</y>
+       <y>80</y>
        <width>131</width>
        <height>26</height>
       </rect>
@@ -4448,7 +4448,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>220</y>
+       <y>195</y>
        <width>111</width>
        <height>26</height>
       </rect>
@@ -4466,7 +4466,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>120</y>
+       <y>110</y>
        <width>111</width>
        <height>26</height>
       </rect>
@@ -4490,7 +4490,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>255</y>
+       <y>225</y>
        <width>231</width>
        <height>21</height>
       </rect>
@@ -4538,7 +4538,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>85</y>
+       <y>80</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -4576,7 +4576,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>120</y>
+       <y>110</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -4652,7 +4652,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>335</x>
-       <y>120</y>
+       <y>110</y>
        <width>16</width>
        <height>26</height>
       </rect>
@@ -4670,7 +4670,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>185</y>
+       <y>165</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -4925,7 +4925,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>340</y>
+       <y>295</y>
        <width>171</width>
        <height>26</height>
       </rect>
@@ -4936,14 +4936,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Pixel Size x/y for Camera</string>
+      <string>Pixel size x/y for camera</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="pixelSize">
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>340</y>
+       <y>295</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -4977,7 +4977,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>340</y>
+       <y>295</y>
        <width>21</width>
        <height>26</height>
       </rect>
@@ -4995,7 +4995,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>375</y>
+       <y>325</y>
        <width>156</width>
        <height>26</height>
       </rect>
@@ -5006,14 +5006,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Focal Length of Telescope</string>
+      <string>Focal length of telescope</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="focalLength">
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>375</y>
+       <y>325</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -5048,7 +5048,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>375</y>
+       <y>325</y>
        <width>26</width>
        <height>26</height>
       </rect>
@@ -5066,7 +5066,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>310</y>
+       <y>265</y>
        <width>231</width>
        <height>21</height>
       </rect>
@@ -5079,14 +5079,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Imaging Configuration for Modeling</string>
+      <string>Configuration for solving</string>
      </property>
     </widget>
     <widget class="Line" name="line_36">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>330</y>
+       <y>285</y>
        <width>331</width>
        <height>1</height>
       </rect>
@@ -5107,7 +5107,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>410</y>
+       <y>355</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -5120,7 +5120,7 @@ manually</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>Sets the time to wait after mount stop before imaging</string>
+      <string>downsample_factor: float, &gt;1. Downsample (bin) your image by this factor before performing source detection. This often helps with saturated images, noisy images, and large images. 2 and 4 are commonly-useful values.</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5145,7 +5145,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>410</y>
+       <y>355</y>
        <width>201</width>
        <height>26</height>
       </rect>
@@ -5156,7 +5156,81 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Astrometry Downsample Factor</string>
+      <string>Astrometry downsample factor</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_221">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>385</y>
+       <width>201</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Astrometry radius</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="astrometryRadius">
+     <property name="geometry">
+      <rect>
+       <x>255</x>
+       <y>385</y>
+       <width>71</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Radius: float, in degrees. Used with center_ra, center_dec to specify that you know roughly where your image is on the sky. Please set to 0 if you don't know.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>3.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+     <property name="value">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_222">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>385</y>
+       <width>26</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>deg</string>
      </property>
     </widget>
    </widget>
