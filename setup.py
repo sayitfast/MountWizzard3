@@ -1,10 +1,11 @@
 # from distutils.core import setup
 from setuptools import setup
+import mountwizzard3.build.build
 import platform
 
 setup(
     name='mountwizzard3',
-    version='3.0b8.dev2',
+    version=mountwizzard3.build.build.BUILD().BUILD_NO_FILE,
     packages=[
         'mountwizzard3',
         'mountwizzard3.analyse',
