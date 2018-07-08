@@ -151,7 +151,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        if self.socket.error() != -1:
+        if self.socket.error() > 0:
             self.logger.warning('Mount RunnerOnce connection fault: {0}'.format(socketError))
 
     @PyQt5.QtCore.pyqtSlot()
