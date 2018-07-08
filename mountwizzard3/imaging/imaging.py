@@ -257,7 +257,7 @@ class Imaging(PyQt5.QtCore.QObject):
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
-                self.logger.warning('No FOCALLEN in FITS Header, writing')y
+                self.logger.warning('No FOCALLEN in FITS Header, writing')
             if 'XPIXSZ' not in fitsHeader:
                 fitsHeader['XPIXSZ'] = self.app.ui.pixelSize.value() * self.app.ui.cameraBin.value()
                 self.logger.warning('No XPIXSZ in FITS Header, writing')
