@@ -66,6 +66,18 @@ class SGPro:
             else:
                 self.logger.info('Application SGPro not found on computer')
 
+    def initConfig(self):
+        try:
+            if 'UseBlindSolving' in self.app.config:
+                self.app.ui.checkUseBlindSolving.setChecked(self.app.config['UseBlindSolving'])
+        except Exception as e:
+            self.logger.error('Item in config.cfg for sgpro astrometry client could not be initialized, error:{0}'.format(e))
+        finally:
+            pass
+
+    def storeConfig(self):
+        self.app.config['UseBlindSolving'] = self.app.ui.checkUseBlindSolving.isChecked()
+
     def start(self):
         pass
 
@@ -101,9 +113,14 @@ class SGPro:
         timeSolvingStart = time.time()
         self.main.astrometryStatusText.emit('START')
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
-        suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                           BlindSolve=False,
-                                           UseFitsHeaders=True)
+        if self.app.ui.checkUseBlindSolving.isChecked():
+            suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
+                                               BlindSolve=True,
+                                               UseFitsHeaders=True)
+        else:
+            suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
+                                               BlindSolve=False,
+                                               UseFitsHeaders=True)
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
             self.main.astrometryStatusText.emit('ERROR')

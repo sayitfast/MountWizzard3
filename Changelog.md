@@ -7,6 +7,9 @@ Features new:
 - moon
 - flexure analyses back
 
+System tuning:
+- reduce number of threads (once + slow, model names and align model)
+
 Features fine tuning:
 - disable exposures when no camera attached
 - search radius of astrometry in gui
@@ -14,8 +17,6 @@ Features fine tuning:
 - setting site parameters
 - documentation and cleanup
 - more set buttons for config in gui
-- reduce number of threads (once + slow, model names and align model)
-- more parameters astrometry
 - double click for managing window size
 
 Problems:

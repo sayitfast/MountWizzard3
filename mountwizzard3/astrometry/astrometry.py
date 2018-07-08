@@ -110,11 +110,15 @@ class Astrometry(PyQt5.QtCore.QObject):
         finally:
             pass
         self.AstrometryClient.initConfig()
+        if platform.system() == 'Windows':
+            self.SGPro.initConfig()
         self.chooseAstrometry()
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
         self.app.config['PinPointCatalogue'] = self.app.ui.le_pinpointCatalogue.text()
+        if platform.system() == 'Windows':
+            self.SGPro.storeConfig()
         self.AstrometryClient.storeConfig()
 
     def setCancelAstrometry(self):

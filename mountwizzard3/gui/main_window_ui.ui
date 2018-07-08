@@ -5233,6 +5233,33 @@ manually</string>
       <string>deg</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="checkUseBlindSolving">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>415</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Checked if you would like to keep the images of modeling session</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Use blind solving (SGPro)</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_15">
     <attribute name="title">
