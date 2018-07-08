@@ -221,13 +221,13 @@ class Astrometry(PyQt5.QtCore.QObject):
                 if float(fitsHeader['FOCALLEN']) > 0:
                     imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
                 else:
-                    self.logger.error('FITS data FOCALLEN or XPIXSZ or PIXSIZE1 or XBINNING for start solving is missing, present headers: {0}'.format(fitsHeader))
+                    self.logger.error('FITS data FOCALLEN is 0 -> cannot solve, present headers: {0}'.format(fitsHeader))
                     dataPresentForSolving = False
             elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader and 'XBINNING' in fitsHeader:
                 if float(fitsHeader['FOCALLEN']) > 0:
                     imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
                 else:
-                    self.logger.error('FITS data FOCALLEN or XPIXSZ or PIXSIZE1 or XBINNING for start solving is missing, present headers: {0}'.format(fitsHeader))
+                    self.logger.error('FITS data FOCALLEN is 0 -> cannot solve, present headers: {0}'.format(fitsHeader))
                     dataPresentForSolving = False
             else:
                 # if we cannot recalculate, there is no chance to get this parameter
