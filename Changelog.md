@@ -19,5 +19,3 @@
 - moon
 - more parameters astrometry
 - double click for managing window size
-- length splash screen
-- height + 1pix lower
