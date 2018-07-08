@@ -13,7 +13,6 @@ System tuning:
 Features fine tuning:
 - disable exposures when no camera attached
 - setting site parameters
-- documentation and cleanup
 - more set buttons for config in gui
 - double click for managing window size
 

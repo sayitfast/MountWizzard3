@@ -22,4 +22,4 @@
 class BUILD:
 
     BUILD_NO_FILE = '3.0b8.dev2'
-    BUILD_NO_WINDOW = '3.0 beta 8.dev2'
+    BUILD_NO_WINDOW = 'Version: 3.0  Build: ' + BUILD_NO_FILE

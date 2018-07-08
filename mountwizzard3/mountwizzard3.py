@@ -104,14 +104,14 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.checkPlatformDependableMenus()
-        self.setWindowTitle('MountWizzard3   (Build: ' + BUILD_NO + ')')
+        self.setWindowTitle('MountWizzard3   (' + BUILD_NO + ')')
         # enable a matplotlib figure polar plot in main gui
         self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
         # finalize gui with icons
         self.setupIcons()
 
         # putting header to message window
-        self.messageQueue.put('#BWMountWizzard3  Build:{0} started \n'.format(BUILD_NO))
+        self.messageQueue.put('#BWMountWizzard3  {0} started \n'.format(BUILD_NO))
         self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n'.format(platform.machine()))
