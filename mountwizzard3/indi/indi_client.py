@@ -472,10 +472,12 @@ class INDIClient(PyQt5.QtCore.QObject):
             if self.messageString == '':
                 # first entry, catch first tag in XML
                 self.messageString += self.socket.read(100)
+                # get first tag frame
                 self.tagFrame = 'test'
                 messageComplete = False
             else:
-                # just adding length and checking if closing first tag is there
+                # just adding length
+                # checking if closing first tag is there
                 if self.tagFrame:
                     # last part of message, process now
                     messageComplete = True
