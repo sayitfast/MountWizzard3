@@ -72,13 +72,14 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.thread = thread
         self.isRunning = False
         self.connectCounter = 0
+        self.tagFrame = ''
+        self.messageString = ''
         self.mutexIPChange = PyQt5.QtCore.QMutex()
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.checkIP = checkIP.CheckIP()
         self.socket = None
         self.newDeviceQueue = queue.Queue()
         self.imagePath = ''
-        self.messageString = ''
         self.cameraDevice = ''
         self.environmentDevice = ''
         self.domeDevice = ''
@@ -435,7 +436,9 @@ class INDIClient(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Add starting tag if this is new message.
+        # we have to check and keep the first XML tag
         if len(self.messageString) == 0:
+            # todo: adding the tag at the end
             self.messageString = "<data>"
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
@@ -447,8 +450,10 @@ class INDIClient(PyQt5.QtCore.QObject):
             finally:
                 pass
         # Add closing tag.
+        # todo closing tag only at the end
         self.messageString += "</data>"
         # Try and parse the message.
+        # todo: not try to decode every cycle, but only at the end !
         try:
             messages = ElementTree.fromstring(self.messageString)
             self.messageString = ""
@@ -458,6 +463,51 @@ class INDIClient(PyQt5.QtCore.QObject):
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
             self.messageString = self.messageString[:-7]
+
+    @PyQt5.QtCore.pyqtSlot()
+    def handleReadyReadNew(self):
+        # Get message from socket.
+        while self.socket.bytesAvailable() and self.isRunning:
+            print(self.socket.bytesAvailable(), len(self.messageString))
+            if self.messageString == '':
+                # first entry, catch first tag in XML
+                self.messageString += self.socket.read(100)
+                self.tagFrame = 'test'
+                messageComplete = False
+            else:
+                # just adding length and checking if closing first tag is there
+                if self.tagFrame:
+                    # last part of message, process now
+                    messageComplete = True
+                else:
+                    # incomplete, proceed
+                    messageComplete = False
+
+        if messageComplete:
+            # decode message and catch error
+            try:
+                self.messageString = self.messageString.decode()
+            except Exception as e:
+                self.logger.error('INDI message raw decode, error:{0}'.format(e))
+            finally:
+                pass
+            # adding frame tags for INDI
+            self.messageString = "<data>" + self.messageString + "</data>"
+            try:
+                # decode INDI XML elements
+                messages = ElementTree.fromstring(self.messageString)
+                # clear message
+                self.messageString = ""
+                for message in messages:
+                    xmlMessage = indiXML.parseETree(message)
+                    self.processMessage.emit(xmlMessage)
+            except ElementTree.ParseError:
+                self.logger.error('INDI XML message parse error')
+            finally:
+                pass
+        else:
+            # move on
+            pass
 
     def sendMessage(self, indiCommand):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
