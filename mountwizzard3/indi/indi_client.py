@@ -84,6 +84,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.environmentDevice = ''
         self.domeDevice = ''
         self.telescopeDevice = ''
+        self.auxDevice = ''
         self.cycleTimer = None
         # signal slot
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
@@ -241,6 +242,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             device = self.newDeviceQueue.get()
             # now place the information about accessible devices in the gui and set the connection status
             # and configure the new devices adequately
+            # todo: handling of multiple devices of one type and doing the selection
             self.app.sharedINDIDataLock.lockForRead()
             if device in self.data['Device']:
                 if 'DRIVER_INFO' in self.data['Device'][device]:
@@ -259,6 +261,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                         # make a shortcut for later use
                         self.domeDevice = device
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.AUX_INTERFACE:
+                        # make a shortcut for later use
+                        if device == 'SQM':
+                            self.auxDevice = device
                 else:
                     # if not ready, put it on the stack again !
                     self.newDeviceQueue.put(device)
@@ -288,6 +294,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'Aux', 'value': '---'})
 
     @PyQt5.QtCore.pyqtSlot(object)
     def handleReceived(self, message):
@@ -431,6 +438,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': device})
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.AUX_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Aux', 'value': device})
         self.app.sharedINDIDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
@@ -438,7 +447,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         # Add starting tag if this is new message.
         # we have to check and keep the first XML tag
         if len(self.messageString) == 0:
-            # todo: adding the tag at the end
             self.messageString = "<data>"
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
@@ -450,10 +458,8 @@ class INDIClient(PyQt5.QtCore.QObject):
             finally:
                 pass
         # Add closing tag.
-        # todo closing tag only at the end
         self.messageString += "</data>"
-        # Try and parse the message.
-        # todo: not try to decode every cycle, but only at the end !
+        # Try and parse the message.!
         try:
             messages = ElementTree.fromstring(self.messageString)
             self.messageString = ""
@@ -463,50 +469,52 @@ class INDIClient(PyQt5.QtCore.QObject):
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
             self.messageString = self.messageString[:-7]
+        finally:
+            pass
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyReadNew(self):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
-            print(self.socket.bytesAvailable(), len(self.messageString))
-            if self.messageString == '':
-                # first entry, catch first tag in XML
-                self.messageString += self.socket.read(100)
-                # get first tag frame
-                self.tagFrame = 'test'
-                messageComplete = False
-            else:
-                # just adding length
-                # checking if closing first tag is there
-                if self.tagFrame:
-                    # last part of message, process now
-                    messageComplete = True
-                else:
-                    # incomplete, proceed
-                    messageComplete = False
-
-        if messageComplete:
             # decode message and catch error
             try:
-                self.messageString = self.messageString.decode()
+                self.messageString += self.socket.read(10000).decode()
             except Exception as e:
                 self.logger.error('INDI message raw decode, error:{0}'.format(e))
             finally:
                 pass
+        # get first tag frame
+        if self.tagFrame == '':
+            self.tagFrame = self.messageString[1:50].split(' ')[0]
+            print('start: ', self.tagFrame, len(self.messageString))
+        # checking if closing first tag is there
+        if self.messageString.endswith('</' + self.tagFrame + '>') or self.messageString.endswith('</' + self.tagFrame + '>\n'):
+            # last part of message, process now
+            messageComplete = True
+            print('finished: ' + self.tagFrame)
+        else:
+            # otherwise continue
+            messageComplete = False
+            print(len(self.messageString), self.messageString[len(self.messageString)-30:], ord(self.messageString[-2]), ord(self.messageString[-1]))
+
+        if messageComplete:
             # adding frame tags for INDI
             self.messageString = "<data>" + self.messageString + "</data>"
             try:
                 # decode INDI XML elements
                 messages = ElementTree.fromstring(self.messageString)
                 # clear message
-                self.messageString = ""
                 for message in messages:
+                    # print('message: ', message)
                     xmlMessage = indiXML.parseETree(message)
                     self.processMessage.emit(xmlMessage)
             except ElementTree.ParseError:
+                print('error parse')
                 self.logger.error('INDI XML message parse error')
             finally:
-                pass
+                print('reset to next round')
+                self.messageString = ''
+                self.tagFrame = ''
         else:
             # move on
             pass

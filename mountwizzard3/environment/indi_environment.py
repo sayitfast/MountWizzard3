@@ -94,3 +94,14 @@ class INDIEnvironment:
                 else:
                     self.data['Pressure'] = 0
                 self.app.sharedEnvironmentDataLock.unlock()
+
+        # check if client has device SQM found
+        if self.app.workerINDI.auxDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.auxDevice]['CONNECTION']['CONNECT'] == 'On':
+            # than get the data
+            self.app.sharedEnvironmentDataLock.lockForWrite()
+            if 'WEATHER_DEWPOINT' in self.app.workerINDI.data['Device'][self.app.workerINDI.auxDevice]['WEATHER_PARAMETERS']:
+                self.data['SQR'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.auxDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
+            else:
+                self.data['SQR'] = 0
+            self.app.sharedEnvironmentDataLock.unlock()
