@@ -261,7 +261,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                         # make a shortcut for later use
                         self.domeDevice = device
-                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.AUX_INTERFACE:
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) == 0:
                         # make a shortcut for later use
                         if device == 'SQM':
                             self.auxDevice = device
@@ -459,14 +459,14 @@ class INDIClient(PyQt5.QtCore.QObject):
                 pass
         # Add closing tag.
         self.messageString += "</data>"
-        # Try and parse the message.!
+        # Try and parse the message !
         try:
             messages = ElementTree.fromstring(self.messageString)
             self.messageString = ""
             for message in messages:
                 xmlMessage = indiXML.parseETree(message)
                 self.processMessage.emit(xmlMessage)
-        # Message is incomplete, remove </data> and wait..
+        # Message is incomplete, remove </data> and try again with more data
         except ElementTree.ParseError:
             self.messageString = self.messageString[:-7]
         finally:

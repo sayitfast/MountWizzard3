@@ -501,9 +501,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>375</x>
+       <x>370</x>
        <y>250</y>
-       <width>41</width>
+       <width>46</width>
        <height>21</height>
       </rect>
      </property>
@@ -669,9 +669,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>375</x>
+       <x>370</x>
        <y>340</y>
-       <width>41</width>
+       <width>46</width>
        <height>21</height>
       </rect>
      </property>
@@ -1483,9 +1483,9 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>375</x>
+       <x>370</x>
        <y>370</y>
-       <width>41</width>
+       <width>46</width>
        <height>21</height>
       </rect>
      </property>
@@ -1609,9 +1609,9 @@
     <widget class="QLineEdit" name="le_horizonLimitHigh">
      <property name="geometry">
       <rect>
-       <x>375</x>
+       <x>370</x>
        <y>400</y>
-       <width>41</width>
+       <width>46</width>
        <height>21</height>
       </rect>
      </property>
