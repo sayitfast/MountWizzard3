@@ -261,10 +261,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                         # make a shortcut for later use
                         self.domeDevice = device
-                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) == 0:
+                    elif device == 'SQM':
+                        self.auxDevice = device
+                    # elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) == 0:
                         # make a shortcut for later use
-                        if device == 'SQM':
-                            self.auxDevice = device
                 else:
                     # if not ready, put it on the stack again !
                     self.newDeviceQueue.put(device)
