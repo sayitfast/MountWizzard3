@@ -278,16 +278,6 @@ class MountWizzardApp(widget.MwWidget):
         self.signalChangeStylesheet.connect(self.changeStylesheet)
         self.signalSetMountStatus.connect(self.setMountStatus)
 
-    @staticmethod
-    def timeStamp():
-        return time.strftime('%H:%M:%S - ', time.localtime())
-
-    @staticmethod
-    def changeStylesheet(ui, item, value):
-        ui.setProperty(item, value)
-        ui.style().unpolish(ui)
-        ui.style().polish(ui)
-
     def setupIcons(self):
         # show icon in main gui and add some icons for push buttons
         self.widgetIcon(self.ui.btn_openMessageWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))

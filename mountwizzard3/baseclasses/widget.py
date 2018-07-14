@@ -67,6 +67,16 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
             self.setStyleSheet(self.NON_MAC_STYLE + self.BASIC_STYLE)
 
     @staticmethod
+    def timeStamp():
+        return time.strftime('%H:%M:%S - ', time.localtime())
+
+    @staticmethod
+    def changeStylesheet(ui, item, value):
+        ui.setProperty(item, value)
+        ui.style().unpolish(ui)
+        ui.style().polish(ui)
+
+    @staticmethod
     def selectFile(window, title, folder, filterSet, openFile=True):
         dlg = PyQt5.QtWidgets.QFileDialog()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
