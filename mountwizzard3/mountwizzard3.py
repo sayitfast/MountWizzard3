@@ -301,7 +301,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_generateNormalPoints, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_generateMinPoints, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_generateDSOPoints, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
-        self.widgetIcon(self.ui.btn_runTimeChangeModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
+        self.widgetIcon(self.ui.btn_runFlexure, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_runHystereseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogCancelButton))
         self.widgetIcon(self.ui.btn_stop, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_MessageBoxWarning))
@@ -357,8 +357,8 @@ class MountWizzardApp(widget.MwWidget):
 
     def checkPlatformDependableMenus(self):
         # get index of analyse data:
-        index = self.ui.mainTabWidget.indexOf(self.ui.mainTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Analyse'))
-        self.ui.mainTabWidget.removeTab(index)
+        # index = self.ui.mainTabWidget.indexOf(self.ui.mainTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Analyse'))
+        # self.ui.mainTabWidget.removeTab(index)
         if platform.system() != 'Windows':
             # get index of ASCOM data:
             index = self.ui.settingsTabWidget.indexOf(self.ui.settingsTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'ASCOM'))

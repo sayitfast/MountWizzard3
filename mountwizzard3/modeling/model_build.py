@@ -524,6 +524,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
+        # now starting work
         timeStartModeling = time.time()
         self.app.messageQueue.put('#BWStart Initial Model\n')
         self.app.workerMountDispatcher.mountModelHandling.saveModel('BACKUP')
@@ -594,6 +595,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
+        # now starting work
         timeStartModeling = time.time()
         self.app.messageQueue.put('#BWStart Full Model\n')
         self.app.workerMountDispatcher.mountModelHandling.saveModel('BACKUP')
@@ -671,42 +673,94 @@ class ModelingBuild:
             shutil.rmtree(imageParams['BaseDirImages'], ignore_errors=True)
         self.app.messageQueue.put('#BWSync Mount Model finished !\n')
 
-    def runCheckModel(self):
-        if not self.checkModelingAvailable():
+    def runFlexure(self):
+        # imaging has to be connected
+        if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
-        settlingTime = int(self.app.ui.settlingTime.value())
-        points = self.modelPoints.BasePoints + self.modelPoints.RefinementPoints
-        if len(points) > 0:
-            keepImages = self.app.ui.checkKeepImages.isChecked()
-            domeIsConnected = self.app.workerAscomDome.isRunning
-            self.modelingResultData = self.runModel(self.app.messageQueue, 'Check', points, modelData, settlingTime, simulation, keepImages, domeIsConnected)
-            name = modelData['Directory'] + '_check.dat'
-            if len(self.modelingResultData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)
-                self.analyseData.saveData(self.modelingResultData, name)
-        else:
-            self.logger.warning('There are no Refinement or Base Points to modeling')
-
-    def runTimeChangeModel(self):
-        if not self.checkModelingAvailable():
+        if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
             return
-        settlingTime = int(self.app.ui.settlingTime.value())
-        points = []
+        # solver has to be connected
+        if 'CONNECTION' not in self.app.workerAstrometry.astrometryHandler.data:
+            return
+        if self.app.workerAstrometry.data['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # telescope has to be connected
+        if not self.app.workerMountDispatcher.mountStatus['Command']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Once']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Slow']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Medium']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Fast']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['GetAlign']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['SetAlign']:
+            return
+        # calculate model points
+        self.modelPoints.modelPoints = []
         for i in range(0, int(self.app.ui.numberRunsTimeChange.value())):
-            points.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value()),
-                           PyQt5.QtWidgets.QGraphicsTextItem(''), True))
-        keepImages = self.app.ui.checkKeepImages.isChecked()
-        domeIsConnected = self.app.workerAscomDome.isRunning
-        modelData = self.imagingApps.prepareImaging()
-        self.modelingResultData = self.runModel(self.app.messageQueue, 'TimeChange', points, modelData, settlingTime, simulation, keepImages, domeIsConnected)
-        name = modelData['Directory'] + '_timechange.dat'
-        if len(self.modelingResultData) > 0:
-            self.app.ui.le_analyseFileName.setText(name)
-            self.analyseData.saveData(self.modelingResultData, name)
+            self.modelPoints.modelPoints.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value())))
+        # if dome is present, it has to be connected, too
+        if not self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
+            domeIsConnected = self.app.workerDome.data['Connected']
+        else:
+            domeIsConnected = False
+        modelingData['DomeIsConnected'] = domeIsConnected
+        modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
+        modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
+        self.app.workerImaging.cameraHandler.cancel = False
+        self.app.workerAstrometry.astrometryHandler.cancel = False
+        self.cancel = False
+        # now starting work
+        timeStartModeling = time.time()
+        self.app.messageQueue.put('#BWStart Flexure\n')
+        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        self.app.messageQueue.put('#BWFlexure processed\n')
+        name = modelingData['Directory'] + '_flexure'
+        if len(self.modelAlignmentData) > 0:
+            self.analyseData.saveData(self.modelAlignmentData, name)
+            self.app.signalSetAnalyseFilename.emit(name)
+            if self.app.analyseWindow.showStatus:
+                self.app.ui.btn_openAnalyseWindow.clicked.emit()
+            self.app.audioCommandQueue.put('ModelingFinished')
+            self.app.messageQueue.put('#BGFlexure finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+            self.logger.info('Flexure finished with success, runtime: {0} (MM:SS)'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+        else:
+            self.app.messageQueue.put('#BRFlexure finished with errors\n')
+            self.logger.warning('Flexure finished with errors')
 
     def runHystereseModel(self):
-        if not self.checkModelingAvailable():
+        # imaging has to be connected
+        if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
+        if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # solver has to be connected
+        if 'CONNECTION' not in self.app.workerAstrometry.astrometryHandler.data:
+            return
+        if self.app.workerAstrometry.data['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # telescope has to be connected
+        if not self.app.workerMountDispatcher.mountStatus['Command']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Once']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Slow']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Medium']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Fast']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['GetAlign']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['SetAlign']:
+            return
+
+        self.main.slewMountDome(modelingData)
+
         waitingTime = int(self.app.ui.settlingTime.value())
         alt1 = int(self.app.ui.altitudeHysterese1.value())
         alt2 = int(self.app.ui.altitudeHysterese2.value())

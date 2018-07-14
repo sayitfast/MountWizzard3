@@ -77,12 +77,12 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'RunTimeChangeModel':
+            'RunFlexure':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_runTimeChangeModel,
-                            'Method': self.modelingRunner.runTimeChangeModel,
+                            'Button': self.app.ui.btn_runFlexure,
+                            'Method': self.modelingRunner.runFlexure,
                             'Cancel': self.app.ui.btn_cancelAnalyseModel
                         }
                     ]
@@ -225,7 +225,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
-        self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTimeChangeModel'))
+        self.app.ui.btn_runFlexure.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFlexure'))
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHystereseModel'))
         self.app.ui.btn_runFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFullModel'))
         self.app.ui.btn_runInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunInitialModel'))

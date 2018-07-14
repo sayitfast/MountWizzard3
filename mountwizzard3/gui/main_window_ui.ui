@@ -8044,7 +8044,7 @@ manually</string>
     </widget>
     <widget class="QPushButton" name="btn_cancelAnalyseModel">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -8061,9 +8061,9 @@ manually</string>
       <string>Cancel Analyse Run</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runTimeChangeModel">
+    <widget class="QPushButton" name="btn_runFlexure">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -8419,7 +8419,7 @@ manually</string>
     </widget>
     <widget class="QPushButton" name="btn_runHystereseModel">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -8917,7 +8917,7 @@ manually</string>
     <zorder>line_52</zorder>
     <zorder>label_107</zorder>
     <zorder>btn_cancelAnalyseModel</zorder>
-    <zorder>btn_runTimeChangeModel</zorder>
+    <zorder>btn_runFlexure</zorder>
     <zorder>label_174</zorder>
     <zorder>azimuthTimeChange</zorder>
     <zorder>label_175</zorder>
@@ -15452,7 +15452,7 @@ manually</string>
   <tabstop>azimuthTimeChange</tabstop>
   <tabstop>numberRunsTimeChange</tabstop>
   <tabstop>delayTimeTimeChange</tabstop>
-  <tabstop>btn_runTimeChangeModel</tabstop>
+  <tabstop>btn_runFlexure</tabstop>
   <tabstop>altitudeHysterese1</tabstop>
   <tabstop>azimuthHysterese1</tabstop>
   <tabstop>altitudeHysterese2</tabstop>
