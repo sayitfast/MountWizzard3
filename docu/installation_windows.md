@@ -29,7 +29,7 @@ including tests so that it enables others to participate in improving MountWizza
 There are basically two versions of each release: a version which is called mountwizzard_vx.y.z and a
 second version called mountwizzard-console_vx.y.z. Both of them share the same functionality. The only
 difference is that the console version show in addition to the MountWizzard windows a command window,
-where the pyinstaller bootloader writes his output to. So in case you have troubles starting MountWizzard,
+where the pyinstaller boot loader writes his output to. So in case you have troubles starting MountWizzard,
 please start the console version and save the output of the command window for further investigations.
 
 So the best way is to download both versions (pure and console) to you computer.
@@ -41,7 +41,7 @@ Before I put the application to github they are OK, but you never know.
 Actually the application package (.EXE) is tested and verified to be able to run in win7 and win10
 operating systems. Both 32bit and 64bit are supported. The bundle itself contains only 32bit runtime
 libraries. Older versions like vista have not been tested successful.
-The package file (.tar.gz) is tested in ubuntu 16.04 LTS and Mac OSx high sierra. On these systems
+The package file (.tar.gz) is tested in ubuntu 16.04 / 18.04 LTS and Mac OSx High Sierra. On these systems
 python 3.6.5 has to be installed manually.
 
 [Back to Home](home.md)

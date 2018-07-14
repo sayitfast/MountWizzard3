@@ -1,4 +1,4 @@
-## Installation of MountWizzard on ubuntu 16.04 linux
+## Installation of MountWizzard on ubuntu 16.04 / 18.04 linux
 
 Please read the following parts to be sure to make the right steps for the successful installation of
 MountWizzard. If you have problems, the right spot where to post messages is the 10micron software
@@ -50,6 +50,6 @@ What happens in this file ?
 - Second line: Calls python3 with the path, where the installer put the MountWizzard3 package and starts the main routine
 mountwizzard3.py
 
-After that done correctly, a double click on the scriptfile start_mw.sh will open a terminal window and start MoutnWizzard3.
+After that done correctly, a double click on the script file start_mw.sh will open a terminal window and start MountWizzard3.
 
 [Back to Home](home.md)[Back to Home](home.md)

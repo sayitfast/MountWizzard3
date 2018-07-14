@@ -14,7 +14,7 @@ strong request for it. First, there is the main screen:
 
 ### Hemisphere Window
 This is the center of defining and watching your setup of model making. You see a hemisphere, where your horizon
-mask is shown , the model points are plottet, where you could see model making progress and you can edit model
+mask is shown , the model points are plotted, where you could see model making progress and you can edit model
 points and the horizon mask as well.
 
 <img src="pics/hemisphere_gui.png"/>

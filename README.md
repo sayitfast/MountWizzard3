@@ -23,7 +23,8 @@ on board.
 - Auto refraction update if weather station is available for pressure and temperature to mount
 - A lot of settings of mount visible and changeable (no need for virtual handcontroller)
 - Define up to 6 mount positions, which could be slew directly (e.g. flat panel, check ccd etc.)
-- Getting data from open weather (API key needed) and Stickstation
+- Getting data from open weather (API key needed, windows) and Stickstation
+- Reading Unihedron SQM Device
 - Direct IP connection to mount. High performance for getting / setting data.
 - Analyse modeling data with separate plots.
 - Hemisphere window for edit / load / save model points
