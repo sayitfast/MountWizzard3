@@ -83,17 +83,17 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runFlexure,
                             'Method': self.modelingRunner.runFlexure,
-                            'Cancel': self.app.ui.btn_cancelAnalyseModel
+                            'Cancel': self.app.ui.btn_cancelAnalyse
                         }
                     ]
                 },
-            'RunHystereseModel':
+            'RunHysterese':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_runHystereseModel,
-                            'Method': self.modelingRunner.runHystereseModel,
-                            'Cancel': self.app.ui.btn_cancelAnalyseModel
+                            'Button': self.app.ui.btn_runHysterese,
+                            'Method': self.modelingRunner.runHysterese,
+                            'Cancel': self.app.ui.btn_cancelAnalyse
                         }
                     ]
                 },
@@ -226,7 +226,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.btn_runFlexure.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFlexure'))
-        self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHystereseModel'))
+        self.app.ui.btn_runHysterese.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHysterese'))
         self.app.ui.btn_runFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFullModel'))
         self.app.ui.btn_runInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunInitialModel'))
 

@@ -709,7 +709,7 @@ class ModelingBuild:
         else:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
-        modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
+        modelingData['SettlingTime'] = int(self.app.ui.delayTimeFlexure.value())
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
@@ -732,7 +732,7 @@ class ModelingBuild:
             self.app.messageQueue.put('#BRFlexure finished with errors\n')
             self.logger.warning('Flexure finished with errors')
 
-    def runHystereseModel(self):
+    def runHysterese(self):
         # imaging has to be connected
         if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
@@ -758,24 +758,41 @@ class ModelingBuild:
             return
         if not self.app.workerMountDispatcher.mountStatus['SetAlign']:
             return
-
-        self.main.slewMountDome(modelingData)
-
-        waitingTime = int(self.app.ui.settlingTime.value())
+        # calculate model points
         alt1 = int(self.app.ui.altitudeHysterese1.value())
         alt2 = int(self.app.ui.altitudeHysterese2.value())
         az1 = int(self.app.ui.azimuthHysterese1.value())
         az2 = int(self.app.ui.azimuthHysterese2.value())
         numberRunsHysterese = int(self.app.ui.numberRunsHysterese.value())
-        points = []
+        self.modelPoints.modelPoints = []
         for i in range(0, numberRunsHysterese):
-            points.append((az1, alt1, PyQt5.QtWidgets.QGraphicsTextItem(''), True))
-            points.append((az2, alt2, PyQt5.QtWidgets.QGraphicsTextItem(''), False))
-        keepImages = self.app.ui.checkKeepImages.isChecked()
-        domeIsConnected = self.app.workerAscomDome.isRunning
-        self.modelingResultData = self.runModel(self.app.messageQueue, 'Hysterese', points, modelData, waitingTime, simulation, keepImages, domeIsConnected)
-        name = modelData['Directory'] + '_hysterese.dat'
-        self.app.ui.le_analyseFileName.setText(name)
-        if len(self.modelingResultData) > 0:
-            self.app.ui.le_analyseFileName.setText(name)
-            self.analyseData.saveData(self.modelingResultData, name)
+            self.modelPoints.modelPoints.append((az1, alt1))
+            self.modelPoints.modelPoints.append((az2, alt2))
+        # if dome is present, it has to be connected, too
+        if not self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
+            domeIsConnected = self.app.workerDome.data['Connected']
+        else:
+            domeIsConnected = False
+        modelingData['DomeIsConnected'] = domeIsConnected
+        modelingData['SettlingTime'] = int(self.app.ui.delayTimeHysterese.value())
+        modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
+        self.app.workerImaging.cameraHandler.cancel = False
+        self.app.workerAstrometry.astrometryHandler.cancel = False
+        self.cancel = False
+        # now starting work
+        timeStartModeling = time.time()
+        self.app.messageQueue.put('#BWStart Flexure\n')
+        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        self.app.messageQueue.put('#BWFlexure processed\n')
+        name = modelingData['Directory'] + '_flexure'
+        if len(self.modelAlignmentData) > 0:
+            self.analyseData.saveData(self.modelAlignmentData, name)
+            self.app.signalSetAnalyseFilename.emit(name)
+            if self.app.analyseWindow.showStatus:
+                self.app.ui.btn_openAnalyseWindow.clicked.emit()
+            self.app.audioCommandQueue.put('ModelingFinished')
+            self.app.messageQueue.put('#BGFlexure finished with success, runtime: {0} (MM:SS)\n'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+            self.logger.info('Flexure finished with success, runtime: {0} (MM:SS)'.format(time.strftime('%M:%S', time.gmtime(time.time() - timeStartModeling))))
+        else:
+            self.app.messageQueue.put('#BRFlexure finished with errors\n')
+            self.logger.warning('Flexure finished with errors')

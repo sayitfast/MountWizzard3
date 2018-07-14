@@ -253,7 +253,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
         self.ui.btn_cancelFullModel.clicked.connect(self.cancelFullModel)
         self.ui.btn_cancelInitialModel.clicked.connect(self.cancelInitialModel)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModeling)
+        self.ui.btn_cancelAnalyse.clicked.connect(self.cancelAnalyse)
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.cancelRunTargetRMSFunction)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
@@ -302,8 +302,8 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_generateMinPoints, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_generateDSOPoints, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
         self.widgetIcon(self.ui.btn_runFlexure, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
-        self.widgetIcon(self.ui.btn_runHystereseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
-        self.widgetIcon(self.ui.btn_cancelAnalyseModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogCancelButton))
+        self.widgetIcon(self.ui.btn_runHysterese, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward))
+        self.widgetIcon(self.ui.btn_cancelAnalyse, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogCancelButton))
         self.widgetIcon(self.ui.btn_stop, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_MessageBoxWarning))
         self.widgetIcon(self.ui.btn_startTracking, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogYesButton))
         self.widgetIcon(self.ui.btn_stopTracking, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogNoButton))
@@ -971,10 +971,10 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.info('User canceled modeling')
             self.workerModelingDispatcher.signalCancel.emit()
 
-    def cancelAnalyseModeling(self):
+    def cancelAnalyse(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
-            self.changeStylesheet(self.ui.btn_cancelAnalyseModel, 'cancel', True)
-            self.logger.info('User canceled analyse modeling')
+            self.changeStylesheet(self.ui.btn_cancelAnalyse, 'cancel', True)
+            self.logger.info('User canceled analyse')
             self.workerModelingDispatcher.signalCancel.emit()
 
     def cancelRunTargetRMSFunction(self):

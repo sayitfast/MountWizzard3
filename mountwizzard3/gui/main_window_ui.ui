@@ -8042,7 +8042,7 @@ manually</string>
       <string>Analyse - Time Flexure</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelAnalyseModel">
+    <widget class="QPushButton" name="btn_cancelAnalyse">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -8321,7 +8321,7 @@ manually</string>
       <string>Delay</string>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="delayTimeTimeChange">
+    <widget class="QDoubleSpinBox" name="delayTimeFlexure">
      <property name="geometry">
       <rect>
        <x>290</x>
@@ -8417,7 +8417,7 @@ manually</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runHystereseModel">
+    <widget class="QPushButton" name="btn_runHysterese">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -8916,7 +8916,7 @@ manually</string>
     <zorder>line_43</zorder>
     <zorder>line_52</zorder>
     <zorder>label_107</zorder>
-    <zorder>btn_cancelAnalyseModel</zorder>
+    <zorder>btn_cancelAnalyse</zorder>
     <zorder>btn_runFlexure</zorder>
     <zorder>label_174</zorder>
     <zorder>azimuthTimeChange</zorder>
@@ -8927,11 +8927,11 @@ manually</string>
     <zorder>label_111</zorder>
     <zorder>label_112</zorder>
     <zorder>label_177</zorder>
-    <zorder>delayTimeTimeChange</zorder>
+    <zorder>delayTimeFlexure</zorder>
     <zorder>label_115</zorder>
     <zorder>label_118</zorder>
     <zorder>line_37</zorder>
-    <zorder>btn_runHystereseModel</zorder>
+    <zorder>btn_runHysterese</zorder>
     <zorder>label_182</zorder>
     <zorder>numberRunsHysterese</zorder>
     <zorder>label_183</zorder>
@@ -15451,7 +15451,7 @@ manually</string>
   <tabstop>altitudeTimeChange</tabstop>
   <tabstop>azimuthTimeChange</tabstop>
   <tabstop>numberRunsTimeChange</tabstop>
-  <tabstop>delayTimeTimeChange</tabstop>
+  <tabstop>delayTimeFlexure</tabstop>
   <tabstop>btn_runFlexure</tabstop>
   <tabstop>altitudeHysterese1</tabstop>
   <tabstop>azimuthHysterese1</tabstop>
@@ -15459,8 +15459,8 @@ manually</string>
   <tabstop>azimuthHysterese2</tabstop>
   <tabstop>numberRunsHysterese</tabstop>
   <tabstop>delayTimeHysterese</tabstop>
-  <tabstop>btn_runHystereseModel</tabstop>
-  <tabstop>btn_cancelAnalyseModel</tabstop>
+  <tabstop>btn_runHysterese</tabstop>
+  <tabstop>btn_cancelAnalyse</tabstop>
   <tabstop>btn_relay1</tabstop>
   <tabstop>btn_relay2</tabstop>
   <tabstop>btn_relay3</tabstop>
