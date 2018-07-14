@@ -218,6 +218,7 @@ class MountWizzardApp(widget.MwWidget):
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
+        self.ui.checkShowErrorValues.stateChanged.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
         self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
@@ -326,15 +327,16 @@ class MountWizzardApp(widget.MwWidget):
         widget.axes = widget.fig.add_subplot(1, 1, 1, polar=True)
         widget.axes.grid(True, color='#404040')
         widget.axes.set_title('Actual Mount Model', color='white', fontweight='bold', y=1.15)
-        widget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
+        widget.fig.subplots_adjust(left=0.07, right=1, bottom=0.03, top=0.97)
         widget.axes.set_facecolor((32/256, 32/256, 32/256))
         widget.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
         widget.axes.tick_params(axis='y', colors='#2090C0', labelsize=12)
         widget.axes.set_theta_zero_location('N')
         widget.axes.set_theta_direction(-1)
         widget.axes.set_yticks(range(0, 90, 10))
-        yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
-        widget.axes.set_yticklabels(yLabel, color='white')
+        yLabel = ['', '', '', '', '', '', '', '', '', '']
+        widget.axes.set_yticklabels(yLabel, color='#2090C0', fontweight='bold')
+        widget.axes.set_rlabel_position(45)
         if 'ModelIndex' in self.workerMountDispatcher.data:
             if len(self.workerMountDispatcher.data['ModelIndex']) != 0:
                 azimuth = numpy.asarray(self.workerMountDispatcher.data['ModelAzimuth'])
@@ -343,11 +345,14 @@ class MountWizzardApp(widget.MwWidget):
                 colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
                 scaleErrorMax = max(colors)
                 scaleErrorMin = min(colors)
-                area = [150 if x >= max(colors) else 40 for x in self.workerMountDispatcher.data['ModelError']]
+                area = [200 if x >= max(colors) else 60 for x in self.workerMountDispatcher.data['ModelError']]
                 theta = azimuth / 180.0 * math.pi
                 r = 90 - altitude
-                scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm)
-                scatter.set_alpha(0.75)
+                scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm, zorder=0)
+                if self.ui.checkShowErrorValues.isChecked():
+                    for i in range(0, len(theta)):
+                        widget.axes.annotate('{0:3.1f}'.format(self.workerMountDispatcher.data['ModelError'][i]), xy=(theta[i], r[i]), color='#2090C0', fontsize=8, fontweight='bold', zorder=1)
+                scatter.set_alpha(0.8)
                 colorbar = widget.fig.colorbar(scatter, pad=0.1)
                 colorbar.set_label('Error [arcsec]', color='white')
                 matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
@@ -540,8 +545,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
             if 'NumberRunsTimeChange' in self.config:
                 self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
-            if 'DelayTimeTimeChange' in self.config:
-                self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
+            if 'DelayTimeFlexure' in self.config:
+                self.ui.delayTimeFlexure.setValue(self.config['DelayTimeFlexure'])
             if 'AltitudeHysterese1' in self.config:
                 self.ui.altitudeHysterese1.setValue(self.config['AltitudeHysterese1'])
             if 'AltitudeHysterese2' in self.config:
@@ -576,6 +581,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.loglevelWarning.setChecked(self.config['CheckLoglevelWarning'])
             if 'CheckLoglevelError' in self.config:
                 self.ui.loglevelError.setChecked(self.config['CheckLoglevelError'])
+            if 'CheckShowErrorValues' in self.config:
+                self.ui.checkShowErrorValues.setChecked(self.config['CheckShowErrorValues'])
 
         except Exception as e:
             self.logger.error('Item in config.cfg for main window could not be initialized, error:{0}'.format(e))
@@ -645,7 +652,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['AltitudeTimeChange'] = self.ui.altitudeTimeChange.value()
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
         self.config['NumberRunsTimeChange'] = self.ui.numberRunsTimeChange.value()
-        self.config['DelayTimeTimeChange'] = self.ui.delayTimeTimeChange.value()
+        self.config['DelayTimeTFlexure'] = self.ui.delayTimeFlexure.value()
         self.config['AltitudeHysterese1'] = self.ui.altitudeHysterese1.value()
         self.config['AltitudeHysterese2'] = self.ui.altitudeHysterese2.value()
         self.config['AzimuthHysterese1'] = self.ui.azimuthHysterese1.value()
@@ -659,6 +666,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['CheckLoglevelInfo'] = self.ui.loglevelInfo.isChecked()
         self.config['CheckLoglevelWarning'] = self.ui.loglevelWarning.isChecked()
         self.config['CheckLoglevelError'] = self.ui.loglevelError.isChecked()
+        self.config['CheckShowErrorValues'] = self.ui.checkShowErrorValues.isChecked()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()

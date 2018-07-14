@@ -9024,7 +9024,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>225</y>
+       <y>240</y>
        <width>291</width>
        <height>1</height>
       </rect>
@@ -9095,7 +9095,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>205</y>
+       <y>220</y>
        <width>251</width>
        <height>21</height>
       </rect>
@@ -9139,10 +9139,10 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>411</width>
-       <height>431</height>
+       <x>5</x>
+       <y>5</y>
+       <width>431</width>
+       <height>446</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -9390,7 +9390,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>265</y>
+       <y>280</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -9406,9 +9406,9 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>236</y>
+       <y>250</y>
        <width>201</width>
-       <height>201</height>
+       <height>196</height>
       </rect>
      </property>
     </widget>
@@ -9416,7 +9416,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>235</y>
+       <y>250</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -9432,7 +9432,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>295</y>
+       <y>310</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -9442,6 +9442,30 @@ manually</string>
      </property>
      <property name="text">
       <string>Delete</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkShowErrorValues">
+     <property name="geometry">
+      <rect>
+       <x>465</x>
+       <y>190</y>
+       <width>266</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Use Highspeed download of CCD camera if availabe</string>
+     </property>
+     <property name="text">
+      <string>Show error values in polar plot</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
     </widget>
     <zorder>line_18</zorder>
@@ -9467,6 +9491,7 @@ manually</string>
     <zorder>listModelName</zorder>
     <zorder>btn_loadModel</zorder>
     <zorder>btn_deleteModel</zorder>
+    <zorder>checkShowErrorValues</zorder>
    </widget>
    <widget class="QWidget" name="Relay">
     <attribute name="title">
