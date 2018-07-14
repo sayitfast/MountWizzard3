@@ -1474,6 +1474,6 @@ if __name__ == "__main__":
     # end of splash screen
     splash.showMessage('Finishing loading')
     splash.setValue(100)
-
     splash.close()
+    # quit app
     sys.exit(app.exec_())

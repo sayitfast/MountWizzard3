@@ -1,11 +1,11 @@
+Feature postponed:
+- check TSX
 
 Features new:
-- check TSX
 - check for southern hemisphere and latitudes < 0
 - show directions how to turn know for polar alignment
 - TLE data load / filter / show / start / stop
 - moon
-- flexure analyses back
 
 System tuning:
 - reduce number of threads (once + slow, model names and align model)
