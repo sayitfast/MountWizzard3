@@ -283,7 +283,6 @@ class AnalyseWindow(widget.MwWidget):
         theta = azimuth / 180.0 * math.pi
         r = 90 - altitude
         scatter = axe2.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, cmap=cm, zorder=10)
-        scatter.set_alpha(0.75)
         colorbar = self.analyseMatplotlib.fig.colorbar(scatter, pad=0.1)
         colorbar.set_label('Error [arcsec]', color='white')
         matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
