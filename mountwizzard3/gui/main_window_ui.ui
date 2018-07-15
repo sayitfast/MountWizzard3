@@ -8957,9 +8957,9 @@ manually</string>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>605</x>
+       <x>615</x>
        <y>85</y>
-       <width>61</width>
+       <width>81</width>
        <height>26</height>
       </rect>
      </property>
@@ -8975,9 +8975,9 @@ manually</string>
     <widget class="QPushButton" name="btn_runTargetRMSAlignment">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>85</y>
-       <width>116</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -8991,7 +8991,7 @@ manually</string>
     <widget class="QDoubleSpinBox" name="targetRMS">
      <property name="geometry">
       <rect>
-       <x>700</x>
+       <x>705</x>
        <y>85</y>
        <width>51</width>
        <height>26</height>
@@ -9023,7 +9023,7 @@ manually</string>
     <widget class="Line" name="line_18">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>240</y>
        <width>281</width>
        <height>1</height>
@@ -9039,9 +9039,9 @@ manually</string>
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>50</y>
-       <width>116</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -9055,7 +9055,7 @@ manually</string>
     <widget class="Line" name="line_44">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>40</y>
        <width>281</width>
        <height>1</height>
@@ -9074,7 +9074,7 @@ manually</string>
     <widget class="QLabel" name="label_124">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>20</y>
        <width>161</width>
        <height>21</height>
@@ -9094,7 +9094,7 @@ manually</string>
     <widget class="QLabel" name="label_125">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>220</y>
        <width>251</width>
        <height>21</height>
@@ -9114,7 +9114,7 @@ manually</string>
     <widget class="Line" name="line_46">
      <property name="geometry">
       <rect>
-       <x>440</x>
+       <x>445</x>
        <y>10</y>
        <width>21</width>
        <height>431</height>
@@ -9141,7 +9141,7 @@ manually</string>
       <rect>
        <x>5</x>
        <y>5</y>
-       <width>441</width>
+       <width>446</width>
        <height>446</height>
       </rect>
      </property>
@@ -9152,9 +9152,9 @@ manually</string>
     <widget class="QPushButton" name="btn_cancelRunTargetRMSAlignment">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>120</y>
-       <width>116</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -9171,7 +9171,7 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>700</x>
+       <x>705</x>
        <y>120</y>
        <width>36</width>
        <height>26</height>
@@ -9213,9 +9213,9 @@ manually</string>
     <widget class="QLabel" name="label_75">
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>610</x>
        <y>120</y>
-       <width>66</width>
+       <width>91</width>
        <height>26</height>
       </rect>
      </property>
@@ -9231,9 +9231,9 @@ manually</string>
     <widget class="QPushButton" name="btn_clearModel">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>155</y>
-       <width>116</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -9250,7 +9250,7 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>720</x>
+       <x>725</x>
        <y>155</y>
        <width>31</width>
        <height>26</height>
@@ -9292,7 +9292,7 @@ manually</string>
     <widget class="QLabel" name="label_76">
      <property name="geometry">
       <rect>
-       <x>685</x>
+       <x>690</x>
        <y>155</y>
        <width>36</width>
        <height>26</height>
@@ -9313,9 +9313,9 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>640</x>
+       <x>650</x>
        <y>155</y>
-       <width>36</width>
+       <width>31</width>
        <height>26</height>
       </rect>
      </property>
@@ -9355,7 +9355,7 @@ manually</string>
     <widget class="QLabel" name="label_209">
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>610</x>
        <y>155</y>
        <width>41</width>
        <height>26</height>
@@ -9373,9 +9373,9 @@ manually</string>
     <widget class="QPushButton" name="btn_reloadAlignmentModel">
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>610</x>
        <y>50</y>
-       <width>151</width>
+       <width>146</width>
        <height>26</height>
       </rect>
      </property>
@@ -9389,7 +9389,7 @@ manually</string>
     <widget class="QPushButton" name="btn_saveModel">
      <property name="geometry">
       <rect>
-       <x>670</x>
+       <x>675</x>
        <y>280</y>
        <width>81</width>
        <height>26</height>
@@ -9405,7 +9405,7 @@ manually</string>
     <widget class="QListWidget" name="listModelName">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>475</x>
        <y>250</y>
        <width>191</width>
        <height>196</height>
@@ -9415,7 +9415,7 @@ manually</string>
     <widget class="QPushButton" name="btn_loadModel">
      <property name="geometry">
       <rect>
-       <x>670</x>
+       <x>675</x>
        <y>250</y>
        <width>81</width>
        <height>26</height>
@@ -9431,7 +9431,7 @@ manually</string>
     <widget class="QPushButton" name="btn_deleteModel">
      <property name="geometry">
       <rect>
-       <x>670</x>
+       <x>675</x>
        <y>310</y>
        <width>81</width>
        <height>26</height>
@@ -9447,7 +9447,7 @@ manually</string>
     <widget class="QCheckBox" name="checkShowErrorValues">
      <property name="geometry">
       <rect>
-       <x>475</x>
+       <x>480</x>
        <y>190</y>
        <width>266</width>
        <height>20</height>
