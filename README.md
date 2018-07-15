@@ -15,7 +15,7 @@ on board.
 [Link to FAQ and how to make a problem report](./docu/FAQ.md)
 
 ## Features:
-- Runs multi platform (Windows7,10, Linux, Mac OSX)
+- Runs multi platform (Windows 7 / 10, Linux Ubuntu 16.04 / 18.04 LTS, Mac OSx High Sierra tested)
 - Imaging Software: Sequence Generator Pro, INDI are supported. Please refer to their homepages for use.
 - Plate Solving Software: PinPoint, SGPro, Astrometry.net (see Jussi's astrometry-api-lite for linux and windows)
 - Generate model point based on various algorithms (grid, manual, greater celestial circles, track path)
