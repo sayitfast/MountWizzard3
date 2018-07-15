@@ -362,7 +362,7 @@ class MountWizzardApp(widget.MwWidget):
         scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm, zorder=0)
         if self.ui.checkShowErrorValues.isChecked():
             for i in range(0, len(theta)):
-                widget.axes.annotate('{0:3.1f}'.format(self.workerMountDispatcher.data['ModelError'][i]), xy=(theta[i], r[i]), color='#2090C0', fontsize=8, fontweight='bold', zorder=1)
+                widget.axes.annotate('{0:3.1f}'.format(self.workerMountDispatcher.data['ModelError'][i]), xy=(theta[i], r[i]), color='#2090C0', fontsize=9, fontweight='bold', zorder=1)
         colorbar = widget.fig.colorbar(scatter, pad=0.1, fraction=0.12, aspect=25, shrink=0.9, format=matplotlib.ticker.FormatStrFormatter('%1.0f'))
         colorbar.set_label('Error [arcsec]', color='white')
         matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='#2090C0', fontweight='bold')

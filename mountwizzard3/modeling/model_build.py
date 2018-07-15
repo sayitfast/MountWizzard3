@@ -674,6 +674,7 @@ class ModelingBuild:
         self.app.messageQueue.put('#BWSync Mount Model finished !\n')
 
     def runFlexure(self):
+        modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
         if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
@@ -733,6 +734,7 @@ class ModelingBuild:
             self.logger.warning('Flexure finished with errors')
 
     def runHysterese(self):
+        modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
         if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return

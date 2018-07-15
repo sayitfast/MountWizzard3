@@ -8039,7 +8039,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Analyse - Time Flexure</string>
+      <string>Analyse - Flexure</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_cancelAnalyse">
@@ -8077,7 +8077,7 @@ manually</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs a analyse cycle by constant pointing to given alt/az and measuring the error each delay seconds.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Run Time Flexure</string>
+      <string>Run Flexure</string>
      </property>
     </widget>
     <widget class="Line" name="line_33">
