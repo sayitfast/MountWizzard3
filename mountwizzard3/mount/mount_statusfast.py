@@ -185,11 +185,14 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if len(self.messageString) < 71:
+        if self.messageString.count('#') < 2:
             return
+        if self.messageString.count(',') != 7 or self.messageString.count('#') != 2:
+            self.messageString = ''
+            self.logger.error('Receiving fast is out of sync')
         else:
-            messageToProcess = self.messageString[:71]
-            self.messageString = self.messageString[71:]
+            messageToProcess = self.messageString
+            self.messageString = ''
         # Try and parse the message. In Fast we ask for GS and Ginfo so we expect 2
         try:
             if len(messageToProcess) == 0:

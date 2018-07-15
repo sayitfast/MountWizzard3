@@ -39,7 +39,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
     signalStartSlewing = PyQt5.QtCore.pyqtSignal()
     signalPointImaged = PyQt5.QtCore.pyqtSignal(float, float)
 
-    CYCLE = 200
+    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
@@ -100,6 +100,15 @@ class Slewpoint(PyQt5.QtCore.QObject):
             self.main.workerImage.queueImage.put(modelingData)
             # make signal for hemisphere that point is imaged
             self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
+            # if I have flexure or hysterese, I wait for the next point to slew
+            if 'WaitingTime' in modelingData:
+                # make it with 0.1 sec steps
+                n = int(modelingData['WaitingTime'] / 10)
+                for i in range(0, n):
+                    time.sleep(0.1)
+                    # check for shutdown
+                    if not self.isRunning:
+                        break
 
 
 class Image(PyQt5.QtCore.QObject):
@@ -108,7 +117,7 @@ class Image(PyQt5.QtCore.QObject):
     queueImage = Queue()
     signalImaging = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE = 200
+    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
@@ -198,7 +207,7 @@ class Platesolve(PyQt5.QtCore.QObject):
 
     queuePlatesolve = Queue()
 
-    CYCLE = 200
+    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
@@ -710,7 +719,8 @@ class ModelingBuild:
         else:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
-        modelingData['SettlingTime'] = int(self.app.ui.delayTimeFlexure.value())
+        modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
+        modelingData['WaitingTime'] = int(self.app.ui.delayTimeFlexure.value())
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
@@ -776,7 +786,8 @@ class ModelingBuild:
         else:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
-        modelingData['SettlingTime'] = int(self.app.ui.delayTimeHysterese.value())
+        modelingData['WaitingTime'] = int(self.app.ui.delayTimeHysterese.value())
+        modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False

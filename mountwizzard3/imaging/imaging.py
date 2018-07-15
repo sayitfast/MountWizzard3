@@ -23,6 +23,7 @@ import time
 import platform
 import PyQt5
 import queue
+import copy
 import astropy.io.fits as pyfits
 from astrometry import transform
 from imaging import none_camera
@@ -223,15 +224,15 @@ class Imaging(PyQt5.QtCore.QObject):
         else:
             imageParams['Speed'] = 'Normal'
         # setting mount conditions for the taken image
-        imageParams['LocalSiderealTime'] = str(self.app.workerMountDispatcher.data['LocalSiderealTime'])
+        imageParams['LocalSiderealTime'] = copy.copy(self.app.workerMountDispatcher.data['LocalSiderealTime'])
         imageParams['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
-        imageParams['RaJ2000'] = float(self.app.workerMountDispatcher.data['RaJ2000'])
-        imageParams['DecJ2000'] = float(self.app.workerMountDispatcher.data['DecJ2000'])
-        imageParams['RaJNow'] = float(self.app.workerMountDispatcher.data['RaJNow'])
-        imageParams['DecJNow'] = float(self.app.workerMountDispatcher.data['DecJNow'])
-        imageParams['Pierside'] = str(self.app.workerMountDispatcher.data['Pierside'])
-        imageParams['RefractionTemperature'] = float(self.app.workerMountDispatcher.data['RefractionTemperature'])
-        imageParams['RefractionPressure'] = float(self.app.workerMountDispatcher.data['RefractionPressure'])
+        imageParams['RaJ2000'] = copy.copy(self.app.workerMountDispatcher.data['RaJ2000'])
+        imageParams['DecJ2000'] = copy.copy(self.app.workerMountDispatcher.data['DecJ2000'])
+        imageParams['RaJNow'] = copy.copy(self.app.workerMountDispatcher.data['RaJNow'])
+        imageParams['DecJNow'] = copy.copy(self.app.workerMountDispatcher.data['DecJNow'])
+        imageParams['Pierside'] = copy.copy(self.app.workerMountDispatcher.data['Pierside'])
+        imageParams['RefractionTemperature'] = copy.copy(self.app.workerMountDispatcher.data['RefractionTemperature'])
+        imageParams['RefractionPressure'] = copy.copy(self.app.workerMountDispatcher.data['RefractionPressure'])
         self.logger.info('Params before imaging: {0}'.format(imageParams))
         # now we take the picture
         self.cameraHandler.getImage(imageParams)
