@@ -194,6 +194,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
+        # todo: change it to the way i made it for fast
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
         if self.data['FW'] < 21500:

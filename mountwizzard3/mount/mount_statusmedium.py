@@ -213,7 +213,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
-        # Get message from socket.
+        # Get message from socket
+        # todo: change it to the way i made it for fast
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
             # print(self.messageString)

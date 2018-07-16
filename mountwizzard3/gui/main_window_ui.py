@@ -5324,6 +5324,14 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.label_59.setFont(font)
         self.label_59.setObjectName("label_59")
+        self.btn_resetWindowSizes = QtWidgets.QPushButton(self.tab_11)
+        self.btn_resetWindowSizes.setGeometry(QtCore.QRect(410, 225, 176, 26))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(10)
+        self.btn_resetWindowSizes.setFont(font)
+        self.btn_resetWindowSizes.setStyleSheet("")
+        self.btn_resetWindowSizes.setObjectName("btn_resetWindowSizes")
         self.settingsTabWidget.addTab(self.tab_11, "")
         self.mainTabWidget.addTab(self.tab_3, "")
         self.btn_saveConfigQuit = QtWidgets.QPushButton(MainWindow)
@@ -6162,7 +6170,7 @@ class Ui_MainWindow(object):
         self.label_121.setText(_translate("MainWindow", "°"))
         self.label_186.setText(_translate("MainWindow", "Azimuth"))
         self.label_187.setText(_translate("MainWindow", "Point 2    Altitude"))
-        self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.Analyse), _translate("MainWindow", "Analyse Tests"))
+        self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.Analyse), _translate("MainWindow", "Analyse"))
         self.label_37.setText(_translate("MainWindow", "Target RMS"))
         self.btn_runTargetRMSAlignment.setToolTip(_translate("MainWindow", "<html><head/><body><p>Deletes worst point of actual alignment model until error is below target RMS.</p></body></html>"))
         self.btn_runTargetRMSAlignment.setText(_translate("MainWindow", "Run Optimise"))
@@ -6454,6 +6462,8 @@ class Ui_MainWindow(object):
         self.loglevelError.setToolTip(_translate("MainWindow", "<html><head/><body><p>Choose online solver nova.astrometry.net as solver</p></body></html>"))
         self.loglevelError.setText(_translate("MainWindow", "Error"))
         self.label_59.setText(_translate("MainWindow", "Misc Settings"))
+        self.btn_resetWindowSizes.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the image window</p></body></html>"))
+        self.btn_resetWindowSizes.setText(_translate("MainWindow", "Reset window sizes"))
         self.settingsTabWidget.setTabText(self.settingsTabWidget.indexOf(self.tab_11), _translate("MainWindow", "Versions"))
         self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.tab_3), _translate("MainWindow", "Settings"))
         self.btn_saveConfigQuit.setToolTip(_translate("MainWindow", "Quits the tool and saves the settings data in config.cfg"))
@@ -6497,4 +6507,14 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.setText(_translate("MainWindow", "Image"))
         self.btn_openAnalyseWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the analyse window for checking measurements and modlelling data.</p></body></html>"))
         self.btn_openAnalyseWindow.setText(_translate("MainWindow", "Analyse"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 

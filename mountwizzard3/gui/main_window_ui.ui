@@ -8020,7 +8020,7 @@ manually</string>
    </widget>
    <widget class="QWidget" name="Analyse">
     <attribute name="title">
-     <string>Analyse Tests</string>
+     <string>Analyse</string>
     </attribute>
     <widget class="QLabel" name="label_107">
      <property name="geometry">
@@ -14688,6 +14688,31 @@ manually</string>
        </property>
        <property name="text">
         <string>Misc Settings</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_resetWindowSizes">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>225</y>
+         <width>176</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the image window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Reset window sizes</string>
        </property>
       </widget>
      </widget>

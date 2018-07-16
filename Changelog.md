@@ -11,7 +11,6 @@ System tuning:
 - reduce number of threads (once + slow, model names and align model)
 
 Features fine tuning:
-- disable exposures when no camera attached
 - setting site parameters
 - more set buttons for config in gui
 - double click for managing window size
