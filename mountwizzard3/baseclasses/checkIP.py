@@ -45,3 +45,24 @@ class CheckIP:
         finally:
             sock.close()
         return returnValue
+
+    @staticmethod
+    def checkPort(ui):
+        cursorPosition = ui.cursorPosition()
+        if ui.text().strip() != '':
+            port = int(ui.text())
+        else:
+            port = 0
+        if 1 < port < 64535:
+            valid = True
+            ui.setProperty('check', True)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
+        else:
+            valid = False
+            ui.setProperty('check', False)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
+        ui.setText('{0}'.format(port))
+        ui.setCursorPosition(cursorPosition)
+        return valid, port
