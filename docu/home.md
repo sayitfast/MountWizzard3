@@ -29,16 +29,17 @@ just put you mouse above a field or button and you will see the tooltip!
 - Performance improvements (faster model making)
 - Always showing actual model data
 
-
 ### Overview
 To get a first impression after start, please have a look to the [main screens and the gui](overview.md)
 MountWizzard is using and which windows you will experience from the beginning on.
+
+I wrote down some thoughs about model building on 10micron mounts: [Link to model building](modelbuilding)
 
 ### Installation
 Please look to
 
 - [installation on windows 7 / 10 with EXE package ](installation_windows.md)
-- [installation on ubuntu 16.04 / 18.04 linux](installation_linux.md)
+- [installation on ubuntu 16.04 / 18.04 Ubuntu Linux](installation_linux.md)
 - [installation on Mac HighSierra](installation_mac.md)
 - [installation of other frameworks](installation_other.md)
 
@@ -46,28 +47,13 @@ for detailed information, what and when to do.
 
 ### Setting up MountWizzard
 All necessary steps for the [configuration of MountWizzard](configuration.md) are explained.
+
 ### Setting up my gear
 Based on my equipment, i tried to explain what to do for an astronomy imaging setup. There are a lot of
  possibilities to do this and I'm happy about any hint you give me.
  [Stepping through my personal setup](./setup_gear/setup_gear.md)
 
-### Remarks about model building
-As there was (and is) ModelMaker from Per in the past (btw which influenced me to buy the right mount)
-some more solutions like ModelCreator from Martin happened. I'm doing MountWizzard work the way like I
-use it personally, but if there are ideas which should be realized from users side, please let me know.
 
-This said, I follow a different path in modeling for 10micron mount than in the past. There was always the first
-step by using 3 base points for the start. There is no reason about that but the fact that you need at least
-3 stars to build a first model to get some information about you polar alignment etc. But there could be even
-more of them to get a better picture of your actual setup. Others (like me) use fixed piers with good
-markers on it and with the quality of a good model I don't need a first setup for alignment, I just want
-to get a new model.
-
-For that reason I split the workflow into two parts: The Initial Model (for the
-first use case) and the Full Model (for the second one). Another difference you might discover: I do not
-build the model step by step over all the stars, I just make all the slewing work, images and solve in
-parallel and than process them to the mount. As you have all the data for a model collected, you could
-redo any model making session just with the data already saved on your computer.
 
 
 
