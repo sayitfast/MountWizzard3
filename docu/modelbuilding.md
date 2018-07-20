@@ -37,6 +37,10 @@ calclulated numbers)
 potting the moutn on top, I only have to use 3 stars to get a reasonable result.
 - Please think of tha task: you would like to do a polar alignment. So think of the mechanics of the
 orinetations in the sky and remember what you would like to do. Does the choice of stars help or not?
+- Please don't thenk just addin gmore stars for a first model to do polar alignment will result
+automatically in the best result. All the hints you get from the mount (how to turn knobs, alignment
+star) improve the alignement. As the model is only an approximation for the error correction, it will
+be not an one step approach. If you aim for the best result, please think of 2-3 iterations.
 
 #### Model build:
 
@@ -75,11 +79,25 @@ To sum it up: you have the think about your targets and don't just shoot the num
 For that reason I split the workflow into two parts: The Initial Model (for the first use case)
 and the Full Model (for the second one).
 
-With the initial model you coudl do the setup, which is basically polar alignment. And therefore you
-are not limited to 3 stars! Beside an average distibution over the sky you could alter stars location
-according to visibility or other constraints.
+##### Step 1
+
+With the initial model you could do the setup, which is basically polar alignment. You
+are not limited to 3 stars. Beside an average distibution over the sky you could alter stars location
+according to visibility or other constraints. Once you reach the performance you think it's OK, you
+could go for step 2. Please consider the amount of time used against the improvements for each
+additional step.
+
+If you have a setup which is quite stable and / or repeatable
+
+##### Step 2
+
+There were multiple choices to define the alignment stars for your model. All selections take care
+of visual constraints (horizon mask) or other limitation. MountWizzard3 tries to optimize the slewing
+path, order and functions to minimize the time for modeling. In general it should be possible to to
+45 point within 15 minutes. So doing 2-3 points more should not cause any big time delay.
 
 
+##### Step 3
 
 Another difference you might discover: I do not
 build the model step by step over all the stars, I just make all the slewing work, images and solve in
