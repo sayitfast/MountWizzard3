@@ -87,7 +87,8 @@ according to visibility or other constraints. Once you reach the performance you
 could go for step 2. Please consider the amount of time used against the improvements for each
 additional step.
 
-If you have a setup which is quite stable and / or repeatable
+If you have a setup which is quite stable and / or repeatable, you could omit step 1 and directly start
+with step 2.
 
 ##### Step 2
 
