@@ -6508,3 +6508,13 @@ class Ui_MainWindow(object):
         self.btn_openAnalyseWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the analyse window for checking measurements and modlelling data.</p></body></html>"))
         self.btn_openAnalyseWindow.setText(_translate("MainWindow", "Analyse"))
 
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
