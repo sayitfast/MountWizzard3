@@ -5,6 +5,11 @@ MountWizzard. If you have problems, the right spot where to post messages is the
 developer forum on: http://www.10micron.eu/forum/viewforum.php?f=18. Please take into account that I'm
 doing the software as a hobby and you can't expect the support you will have on paid software :-)
 
+### New installation method on MAC for testing !
+
+All you need is to download the mountwizzard3.app.zip file and extract it. Than you have a MAC APP,
+which you could place to your working directory like the windows version. That's all.
+
 ### Installation of python on mac
 
 You need to install python 3.6.5. You can download it from:
