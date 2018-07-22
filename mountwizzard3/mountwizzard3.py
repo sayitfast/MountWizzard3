@@ -1415,10 +1415,12 @@ if __name__ == "__main__":
     if getattr(sys, 'frozen', False):
         # we are running in a bundle
         bundle_dir = sys._MEIPASS
-        os.chdir(os.path.dirname(sys.executable))
-        os.chdir('..')
-        os.chdir('..')
-        os.chdir('..')
+        # on mac we have to change path of working directory
+        if platform.system() == 'Darwin':
+            os.chdir(os.path.dirname(sys.executable))
+            os.chdir('..')
+            os.chdir('..')
+            os.chdir('..')
         frozen = True
     else:
         # we are running in a normal Python environment
