@@ -207,9 +207,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         if self.messageString.count('#') < numberResults:
             return
         if self.messageString.count('#') != numberResults:
+            self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
-            self.logger.error('Receiving slow is out of sync')
         else:
             messageToProcess = self.messageString
             self.messageString = ''
