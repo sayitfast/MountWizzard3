@@ -1411,6 +1411,20 @@ if __name__ == "__main__":
         logging.error('----------------------------------------------------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
+    # checking workdir and if the system is started from frozen app
+    if getattr(sys, 'frozen', False):
+        # we are running in a bundle
+        bundle_dir = sys._MEIPASS
+        os.chdir(os.path.dirname(sys.executable))
+        os.chdir('..')
+        os.chdir('..')
+        os.chdir('..')
+        frozen = True
+    else:
+        # we are running in a normal Python environment
+        bundle_dir = os.path.dirname(os.path.abspath(__file__))
+        frozen = False
+
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw.ico')
@@ -1427,10 +1441,6 @@ if __name__ == "__main__":
 
     splash.showMessage('Checking work directories')
     splash.setValue(30)
-
-    print(os.getcwd())
-    print(os.path.dirname(os.path.realpath(__file__)))
-    print(os.path.dirname(sys.argv[0]))
 
     # population the working directory with necessary subdir
     if not os.path.isdir(os.getcwd() + '/analysedata'):
@@ -1450,20 +1460,29 @@ if __name__ == "__main__":
     logging.info('MountWizzard ' + BUILD_NO + ' started !')
     logging.info('')
     logging.info('----------------------------------------------------------------------------------')
-    logging.info('Platform : ' + platform.system())
-    logging.info('Release  : ' + platform.release())
-    logging.info('Version  : ' + platform.version())
-    logging.info('Machine  : ' + platform.machine())
-    logging.info('CPU      : ' + platform.processor())
-    logging.info('Python   : ' + platform.python_version())
-    logging.info('PyQt5    : ' + PYQT_VERSION_STR)
-    logging.info('Qt       : ' + QT_VERSION_STR)
+    logging.info('Platform        : ' + platform.system())
+    logging.info('Release         : ' + platform.release())
+    logging.info('Version         : ' + platform.version())
+    logging.info('Machine         : ' + platform.machine())
+    logging.info('CPU             : ' + platform.processor())
+    logging.info('Python          : ' + platform.python_version())
+    logging.info('PyQt5           : ' + PYQT_VERSION_STR)
+    logging.info('Qt              : ' + QT_VERSION_STR)
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
         logging.info('IP addr. : ' + host[i])
-    logging.info('Node     : ' + platform.node())
-    logging.info('Hosts....: {0}'.format(hostSummary))
-    logging.info('Workdir. : ' + os.getcwd())
+    logging.info('Node            : ' + platform.node())
+    logging.info('Hosts....       : {0}'.format(hostSummary))
+    if frozen:
+        logging.info('MountWizzard3 is running in a frozen environment')
+    else:
+        logging.info('MountWizzard3 is running in a live environment')
+    logging.info('Actual workdir  : {0}'.format(os.getcwd()))
+    logging.info('Bundle dir      : {0}'.format(bundle_dir))
+    logging.info('sys.argv[0]     : {0}'.format(sys.argv[0]))
+    logging.info('sys.executable  : {0}'.format(sys.executable))
+    logging.info('os.path.basename: {0}'.format(os.path.basename(sys.argv[0])))
+
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
 

@@ -52,7 +52,7 @@ exe = EXE(pyz,
           upx=True,
           console=True,
           # onefile=True,
-          onedir=True,
+          onefile=True,
           icon='./mountwizzard3/icons/mw.icns',
           # exclude_binaries=True,
           )
