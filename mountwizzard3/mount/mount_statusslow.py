@@ -209,7 +209,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         if self.messageString.count('#') != numberResults:
             self.messageString = ''
             messageToProcess = ''
-            self.logger.error('Receiving medium is out of sync')
+            self.logger.error('Receiving slow is out of sync')
         else:
             messageToProcess = self.messageString
             self.messageString = ''
