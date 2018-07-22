@@ -8,7 +8,7 @@ WORKPATH = '../build'
 
 
 a = Analysis(['mountwizzard3/mountwizzard3.py'],
-             # pathex=['/Users/mw/PycharmProjects/MountWizzard3'],
+             pathex=['/Users/mw/PycharmProjects/MountWizzard3/mountwizzard3'],
              binaries=[],
              datas=[
              ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/fits', './astropy/io/fits'),
