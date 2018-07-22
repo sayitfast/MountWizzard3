@@ -3,13 +3,12 @@
 # to remember: import astropy.tests from __init__.py was removed manually
 #
 block_cipher = None
-import sys
 DISTPATH = '../dist'
 WORKPATH = '../build'
 
 
 a = Analysis(['mountwizzard3/mountwizzard3.py'],
-             pathex=['/Users/mw/PycharmProjects/MountWizzard3'],
+             # pathex=['/Users/mw/PycharmProjects/MountWizzard3'],
              binaries=[],
              datas=[
              ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/fits', './astropy/io/fits'),
@@ -35,6 +34,8 @@ a = Analysis(['mountwizzard3/mountwizzard3.py'],
              hookspath=[],
              runtime_hooks=[],
              excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'astropy'],
+             win_no_prefer_redirects=False,
+             win_private_assemblies=False,
              cipher=block_cipher)
 
 pyz = PYZ(a.pure, a.zipped_data,
