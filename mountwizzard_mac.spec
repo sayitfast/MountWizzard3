@@ -51,7 +51,9 @@ exe = EXE(pyz,
           strip=True,
           upx=True,
           console=True,
-          onefile=True,
+          # onefile=True,
+          onedir=True,
+          icon='./mountwizzard3/icons/mw.icns',
           # exclude_binaries=True,
           )
 
@@ -63,11 +65,11 @@ exe = EXE(pyz,
 #               upx=True,
 #               name='mountwizzard3')
 
-#app = BUNDLE(exe,
-#             name='MountWizzard3.app',
-#             version='1',
-#             icon='./mountwizzard3/icons/mw.icns',
-#             bundle_identifier=None)
+app = BUNDLE(exe,
+             name='MountWizzard3.app',
+             version=3,
+             icon='./mountwizzard3/icons/mw.icns',
+             bundle_identifier=None)
 
 # rename the file to version number
 # import build.build

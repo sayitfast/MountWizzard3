@@ -1415,18 +1415,29 @@ if __name__ == "__main__":
     app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw.ico')
     splash = SplashScreen(splash_pix, app)
+    print('Splash')
     splash.showMessage('Start initialising')
+    print('Splash')
     splash.setValue(20)
+    print('Splash')
 
     warnings.filterwarnings("ignore")
+    print('Warnings')
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
+    print('Logger')
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
+    print('Handler')
     logging.basicConfig(level=logging.INFO,
                         format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
+    print('config')
 
     splash.showMessage('Checking work directories')
     splash.setValue(30)
+
+    print(os.getcwd())
+    print(os.path.dirname(os.path.realpath(__file__)))
+    print(os.path.dirname(sys.argv[0]))
 
     # population the working directory with necessary subdir
     if not os.path.isdir(os.getcwd() + '/analysedata'):
