@@ -180,16 +180,19 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
-        messageToProcess = ''
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-            if len(self.messageString.strip('#').split('#')) < 10:
-                return
-            else:
-                messageToProcess = self.messageString
-                self.messageString = ''
-        # now transfer the model data
+        if self.messageString.count('#') < 10:
+            return
+        if self.messageString.count('#') != 10:
+            self.messageString = ''
+            messageToProcess = ''
+            self.logger.error('Receiving once is out of sync')
+        else:
+            messageToProcess = self.messageString
+            self.messageString = ''
+        # Try and parse the message. In once we expect 6
         try:
             if len(messageToProcess) == 0:
                 return

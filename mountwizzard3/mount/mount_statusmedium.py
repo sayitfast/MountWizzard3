@@ -213,17 +213,19 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
-        # Get message from socket
-        # todo: change it to the way i made it for fast
+        # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-            # print(self.messageString)
-        if len(self.messageString) < 28:
+        if self.messageString.count('#') < 7:
             return
+        if self.messageString.count('#') != 7:
+            self.messageString = ''
+            messageToProcess = ''
+            self.logger.error('Receiving medium is out of sync')
         else:
-            messageToProcess = self.messageString[:28]
-            self.messageString = self.messageString[28:]
-        # Try and parse the message.
+            messageToProcess = self.messageString
+            self.messageString = ''
+        # Try and parse the message. In medium we expect 6
         try:
             if len(messageToProcess) == 0:
                 return
