@@ -57,7 +57,7 @@ What happens in this file ?
   working directory. Mine is /mw (is my user name) and /mountwizzard (is the directory)
 - Third line: Calls python3 with the path, where the installer put the MountWizzard3 package and starts the main routine mountwizzard3.py
 
-After that done correctly, a double click on the scriptfile start_mw.sh will open a terminal window and start MoutnWizzard3.
+After that done correctly, a double click on the script file start_mw.sh will open a terminal window and start MoutnWizzard3.
 
 If you would like to close the terminal application automatically after finishing MountWizzard3, you can
 configure on Mac the terminal app like:
