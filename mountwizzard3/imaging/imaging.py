@@ -239,7 +239,7 @@ class Imaging(PyQt5.QtCore.QObject):
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
             # add the coordinates to the image of the telescope if not present
-            # problem is the viarity of definitions and fields, which could be used
+            # problem is the variety of definitions and fields, which could be used
             # find e.g. https://heasarc.gsfc.nasa.gov/docs/fcg/common_dict.html
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
