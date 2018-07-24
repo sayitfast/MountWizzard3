@@ -97,7 +97,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
             self.main.app.messageQueue.put('\tWait mount settling / delay time:  {0:02d} sec\n'.format(modelingData['SettlingTime']))
             self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
             time.sleep(modelingData['SettlingTime'])
-            self.main.workerImage.queueImage.put(modelingData)
+            self.main.workerImage.queueImage.put(copy.copy(modelingData))
             # make signal for hemisphere that point is imaged
             self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
             # if I have flexure or hysterese, I wait for the next point to slew
@@ -174,7 +174,7 @@ class Image(PyQt5.QtCore.QObject):
 
     def doCommand(self):
         if not self.queueImage.empty():
-            modelingData = copy.copy(self.queueImage.get())
+            modelingData = self.queueImage.get()
             self.mutexImageSaved.lock()
             self.imageSaved = False
             self.mutexImageSaved.unlock()
@@ -199,7 +199,7 @@ class Image(PyQt5.QtCore.QObject):
                 PyQt5.QtWidgets.QApplication.processEvents()
             self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
             self.logger.info('Imaged {0:02d}'.format(modelingData['Index'] + 1))
-            self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
+            self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
 
 
 class Platesolve(PyQt5.QtCore.QObject):
@@ -258,7 +258,7 @@ class Platesolve(PyQt5.QtCore.QObject):
             self.mutexImageDataDownloaded.lock()
             self.imageDataDownloaded = False
             self.mutexImageDataDownloaded.unlock()
-            modelingData = copy.copy(self.queuePlatesolve.get())
+            modelingData = self.queuePlatesolve.get()
             if modelingData['Imagepath'] != '':
                 self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
                 self.logger.info('Solving image for model point {0}'.format(modelingData['Index'] + 1))
@@ -278,7 +278,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                     self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                     self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
                     self.logger.info('RA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}, image path: {2}'.format(modelingData['RaError'], modelingData['DecError'], modelingData['Imagepath']))
-                    self.main.solvedPointsQueue.put(modelingData)
+                    self.main.solvedPointsQueue.put(copy.copy(modelingData))
                 else:
                     if 'Message' in modelingData:
                         self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message']))
