@@ -33,7 +33,7 @@ just put you mouse above a field or button and you will see the tooltip!
 To get a first impression after start, please have a look to the [main screens and the gui](overview.md)
 MountWizzard is using and which windows you will experience from the beginning on.
 
-I wrote down some thoughs about model building on 10micron mounts: [Link to model building](modelbuilding)
+I wrote down some thoughts about model building on 10micron mounts: [Link to model building](modelbuilding.md)
 
 ### Installation
 Please look to

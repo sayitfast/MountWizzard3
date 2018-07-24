@@ -174,7 +174,7 @@ class Image(PyQt5.QtCore.QObject):
 
     def doCommand(self):
         if not self.queueImage.empty():
-            modelingData = self.queueImage.get()
+            modelingData = copy.copy(self.queueImage.get())
             self.mutexImageSaved.lock()
             self.imageSaved = False
             self.mutexImageSaved.unlock()
@@ -199,7 +199,7 @@ class Image(PyQt5.QtCore.QObject):
                 PyQt5.QtWidgets.QApplication.processEvents()
             self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
             self.logger.info('Imaged {0:02d}'.format(modelingData['Index'] + 1))
-            self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
+            self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
 
 
 class Platesolve(PyQt5.QtCore.QObject):
@@ -258,7 +258,7 @@ class Platesolve(PyQt5.QtCore.QObject):
             self.mutexImageDataDownloaded.lock()
             self.imageDataDownloaded = False
             self.mutexImageDataDownloaded.unlock()
-            modelingData = self.queuePlatesolve.get()
+            modelingData = copy.copy(self.queuePlatesolve.get())
             if modelingData['Imagepath'] != '':
                 self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
                 self.logger.info('Solving image for model point {0}'.format(modelingData['Index'] + 1))
@@ -278,7 +278,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                     self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                     self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
                     self.logger.info('RA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}, image path: {2}'.format(modelingData['RaError'], modelingData['DecError'], modelingData['Imagepath']))
-                    self.main.solvedPointsQueue.put(copy.copy(modelingData))
+                    self.main.solvedPointsQueue.put(modelingData)
                 else:
                     if 'Message' in modelingData:
                         self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message']))
@@ -477,9 +477,9 @@ class ModelingBuild:
         self.workerPlatesolve.stop()
         self.modelRun = False
         while not self.solvedPointsQueue.empty():
-            modelingData = self.solvedPointsQueue.get()
+            modelingData = copy.copy(self.solvedPointsQueue.get())
             # clean up intermediate data
-            results.append(copy.copy(modelingData))
+            results.append(modelingData)
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)

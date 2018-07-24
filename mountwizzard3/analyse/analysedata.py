@@ -37,6 +37,19 @@ class Analyse:
         self.filepath = '/analysedata'
         self.app = app
 
+        self.app.ui.btn_split.clicked.connect(self.splitData)
+
+    def splitData(self):
+        mainFilename = self.app.ui.le_analyseFileName.text()
+        data = self.loadDataRaw(mainFilename)
+        lengthData = len(data['Index'])
+        for i in range(3, lengthData):
+            dataSplit = {}
+            for key in data:
+                dataSplit[key] = data[key][:i]
+            splitFilename = mainFilename + '_split_{0:02d}'.format(i)
+            self.saveData(dataSplit, splitFilename)
+
     def saveData(self, dataProcess, name):
         filenameData = os.getcwd() + self.filepath + '/' + name + '.dat'
         try:

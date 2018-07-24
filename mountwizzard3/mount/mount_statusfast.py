@@ -188,12 +188,13 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         if self.messageString.count('#') < 2:
             return
         if self.messageString.count(',') != 7 or self.messageString.count('#') != 2:
+            self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
-            self.logger.error('Receiving fast is out of sync')
+            messageToProcess = ''
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        # Try and parse the message. In Fast we ask for GS and Ginfo so we expect 2
+        # Try and parse the message. In fast we ask for GS and Ginfo so we expect 2
         try:
             if len(messageToProcess) == 0:
                 return

@@ -194,22 +194,26 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
-        # todo: change it to the way i made it for fast
+        # we have a firmware dependency
+        self.app.sharedMountDataLock.lockForRead()
+        if self.data['FW'] < 21500:
+            numberResults = 3
+        else:
+            numberResults = 4
+        self.app.sharedMountDataLock.unlock()
+
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.data['FW'] < 21500:
-            if len(self.messageString) < 18:
-                return
-            else:
-                messageToProcess = self.messageString[:18]
-                self.messageString = self.messageString[18:]
+        if self.messageString.count('#') < numberResults:
+            return
+        if self.messageString.count('#') != numberResults:
+            self.logger.error('Receiving data got error:{0}'.format(self.messageString))
+            self.messageString = ''
+            messageToProcess = ''
         else:
-            if len(self.messageString) < 31:
-                return
-            else:
-                messageToProcess = self.messageString[:31]
-                self.messageString = self.messageString[31:]
-        # Try and parse the message.
+            messageToProcess = self.messageString
+            self.messageString = ''
+        # Try and parse the message. In medium we expect 3 or 4 depending on FW
         try:
             if len(messageToProcess) == 0:
                 return

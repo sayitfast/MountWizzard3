@@ -5,6 +5,11 @@ MountWizzard. If you have problems, the right spot where to post messages is the
 developer forum on: http://www.10micron.eu/forum/viewforum.php?f=18. Please take into account that I'm
 doing the software as a hobby and you can't expect the support you will have on paid software :-)
 
+### New installation method on MAC for testing !
+
+All you need is to download the mountwizzard3.app.zip file and extract it. Than you have a MAC APP,
+which you could place to your working directory like the windows version. That's all.
+
 ### Installation of python on mac
 
 You need to install python 3.6.5. You can download it from:
@@ -52,7 +57,7 @@ What happens in this file ?
   working directory. Mine is /mw (is my user name) and /mountwizzard (is the directory)
 - Third line: Calls python3 with the path, where the installer put the MountWizzard3 package and starts the main routine mountwizzard3.py
 
-After that done correctly, a double click on the scriptfile start_mw.sh will open a terminal window and start MoutnWizzard3.
+After that done correctly, a double click on the script file start_mw.sh will open a terminal window and start MoutnWizzard3.
 
 If you would like to close the terminal application automatically after finishing MountWizzard3, you can
 configure on Mac the terminal app like:
