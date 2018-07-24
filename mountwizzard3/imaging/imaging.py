@@ -239,10 +239,14 @@ class Imaging(PyQt5.QtCore.QObject):
         # if we got an image, than we work with it
         if os.path.isfile(imageParams['Imagepath']):
             # add the coordinates to the image of the telescope if not present
+            # problem is the viarity of definitions and fields, which could be used
+            # find e.g. https://heasarc.gsfc.nasa.gov/docs/fcg/common_dict.html
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
-            newRA = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
-            newDEC = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
+            newRA = copy.copy(imageParams['RaJ2000'])
+            newDEC = copy.copy(imageParams['DecJ2000'])
+            newRAhms = self.transform.decimalToDegree(imageParams['RaJ2000'], False, True, ' ')
+            newDEChms = self.transform.decimalToDegree(imageParams['DecJ2000'], True, True, ' ')
             # if we are missing coordinates, we are replacing them with actual data from mount
             if 'OBJCTRA' not in fitsHeader:
                 self.logger.warning('No OBJCTRA in FITS Header, writing now: {0}'.format(newRA))
@@ -253,8 +257,13 @@ class Imaging(PyQt5.QtCore.QObject):
             else:
                 self.logger.info('OBJCTDEC in header was: {0}, writing now: {1}'.format(fitsHeader['OBJCTDEC'], newDEC))
             # setting coordinates explicit, because MW does slewing after imaging and MW does not know, when imaging application takes coordinates from mount driver
-            fitsHeader['OBJCTRA'] = newRA
-            fitsHeader['OBJCTDEC'] = newDEC
+            fitsHeader['OBJCTRA'] = newRAhms
+            fitsHeader['OBJCTDEC'] = newDEChms
+            # other used header entries by SGPro
+            fitsHeader['RA'] = newRA
+            fitsHeader['DEC'] = newDEC
+            fitsHeader['CRVAL1'] = newRA
+            fitsHeader['CRVAL2'] = newDEC
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
