@@ -448,7 +448,7 @@ class ModelingBuild:
             modelingData['Azimuth'] = p_az
             modelingData['Altitude'] = p_alt
             modelingData['NumberPoints'] = len(runPoints)
-            # has to be a copy, otherwise we have always the same content
+            # has to be a copy, otherwise we have always the same content because it will be overwritten
             self.workerSlewpoint.queuePoint.put(copy.copy(modelingData))
         # start process
         self.modelingHasFinished = False
