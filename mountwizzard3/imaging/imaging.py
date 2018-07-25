@@ -251,11 +251,11 @@ class Imaging(PyQt5.QtCore.QObject):
             if 'OBJCTRA' not in fitsHeader:
                 self.logger.warning('No OBJCTRA in FITS Header, writing now: {0}'.format(newRA))
             else:
-                self.logger.info('OBJCTRA in header was: {0}, writing now: {1}'.format(fitsHeader['OBJCTRA'], newRA))
+                self.logger.info('OBJCTRA in header was: {0}, writing now: {1}'.format(fitsHeader['OBJCTRA'], newRAhms))
             if 'OBJCTDEC' not in fitsHeader:
                 self.logger.warning('No OBJCTDEC in FITS Header, writing now {0}'.format(newDEC))
             else:
-                self.logger.info('OBJCTDEC in header was: {0}, writing now: {1}'.format(fitsHeader['OBJCTDEC'], newDEC))
+                self.logger.info('OBJCTDEC in header was: {0}, writing now: {1}'.format(fitsHeader['OBJCTDEC'], newDEChms))
             # setting coordinates explicit, because MW does slewing after imaging and MW does not know, when imaging application takes coordinates from mount driver
             fitsHeader['OBJCTRA'] = newRAhms
             fitsHeader['OBJCTDEC'] = newDEChms
