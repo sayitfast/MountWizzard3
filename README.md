@@ -8,7 +8,7 @@ you have a blind solver as well on board.
 
 (C) Michael Würtenberger 2018
 
-#### Version release: new, test version actual 3.0 beta 10
+#### Version release: new, test version actual 3.0 beta 11dev0
 
 [Link to the extended documentation and handbook of MountWizzard3](./docu/home.md)
 
