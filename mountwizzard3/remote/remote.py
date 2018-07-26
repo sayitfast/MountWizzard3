@@ -178,5 +178,6 @@ class Remote(PyQt5.QtCore.QObject):
         self.clientConnection.close()
         self.logger.info('Connection to MountWizzard from {0} removed'.format(self.clientConnection.peerAddress().toString()))
 
-    def socketError(self, socketError):
-        self.logger.error('Connection to MountWizzard from {0} failed'.format(self.clientConnection.peerAddress().toString()))
+    @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
+    def handleError(self, socketError):
+        self.logger.warning('Connection to MountWizzard from {0} failed'.format(socketError))
