@@ -260,10 +260,14 @@ class Imaging(PyQt5.QtCore.QObject):
             fitsHeader['OBJCTRA'] = newRAhms
             fitsHeader['OBJCTDEC'] = newDEChms
             # other used header entries by SGPro
-            fitsHeader['RA'] = newRA
-            fitsHeader['DEC'] = newDEC
-            fitsHeader['CRVAL1'] = newRA
-            fitsHeader['CRVAL2'] = newDEC
+            if 'RA' in fitsHeader:
+                del fitsHeader['RA']
+            if 'DEC' in fitsHeader:
+                del fitsHeader['DEC']
+            if 'CRVAL1' in fitsHeader:
+                del fitsHeader['CRVAL1']
+            if 'CRVAL2' in fitsHeader:
+                del fitsHeader['CRVAL2']
             # if optical system data is missing in header, we replace them with data from GUI of mountwizzard
             if 'FOCALLEN' not in fitsHeader:
                 fitsHeader['FOCALLEN'] = self.app.ui.focalLength.value()
