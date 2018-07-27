@@ -216,9 +216,9 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 7:
+        if self.messageString.count('#') < 6:
             return
-        if self.messageString.count('#') != 7:
+        if self.messageString.count('#') != 6:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
