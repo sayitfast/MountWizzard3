@@ -72,9 +72,10 @@ app = BUNDLE(exe,
              bundle_identifier=None)
 
 # rename the file to version number
-# import build.build
-# BUILD_NO = build.build.BUILD().BUILD_NO_FILE
+import build.build
+BUILD_NO = build.build.BUILD().BUILD_NO_FILE
+print(BUILD_NO, os.getcwd())
 # if file present, delete it
-#if os.path.isfile(os.getcwd() + '\dist\mountwizzard3-console-' + BUILD_NO + '.exe'):
-#    os.remove(os.getcwd() + '\dist\mountwizzard3-console-' + BUILD_NO + '.exe')
-#os.rename(os.getcwd() + '\dist\mountwizzard3-console.exe', os.getcwd() + '\dist\mountwizzard3-console-' + BUILD_NO + '.exe')
+if os.path.isfile(os.getcwd() + '/dist/mountwizzard3-' + BUILD_NO + '.app'):
+    os.remove(os.getcwd() + '/dist/mountwizzard3-' + BUILD_NO + '.app')
+os.rename(os.getcwd() + '/dist/mountwizzard3.app', os.getcwd() + '/dist/mountwizzard3-' + BUILD_NO + '.app')
