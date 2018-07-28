@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -1267,7 +1267,7 @@
       <string>Solar</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_setTrackingSideral">
+    <widget class="QPushButton" name="btn_setTrackingSidereal">
      <property name="geometry">
       <rect>
        <x>670</x>
@@ -1285,7 +1285,7 @@
       <string>Set tracking speed to sideral</string>
      </property>
      <property name="text">
-      <string>Sideral</string>
+      <string>Sidereal</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_34">
@@ -1854,7 +1854,7 @@
     <zorder>btn_flipMount</zorder>
     <zorder>btn_setTrackingLunar</zorder>
     <zorder>btn_setTrackingSolar</zorder>
-    <zorder>btn_setTrackingSideral</zorder>
+    <zorder>btn_setTrackingSidereal</zorder>
     <zorder>label_34</zorder>
     <zorder>label_65</zorder>
     <zorder>le_meridianLimitSlew</zorder>
@@ -15451,7 +15451,7 @@ manually</string>
   <tabstop>btn_stopTracking</tabstop>
   <tabstop>btn_setTrackingLunar</tabstop>
   <tabstop>btn_setTrackingSolar</tabstop>
-  <tabstop>btn_setTrackingSideral</tabstop>
+  <tabstop>btn_setTrackingSidereal</tabstop>
   <tabstop>btn_mountPark</tabstop>
   <tabstop>btn_mountUnpark</tabstop>
   <tabstop>btn_stop</tabstop>

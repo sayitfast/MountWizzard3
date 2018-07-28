@@ -233,7 +233,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put(':RT9#'))
         self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.mountCommandQueue.put(':RT0#'))
         self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.mountCommandQueue.put(':RT1#'))
-        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.mountCommandQueue.put(':RT2#'))
+        self.ui.btn_setTrackingSidereal.clicked.connect(lambda: self.mountCommandQueue.put(':RT2#'))
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_stop.clicked.connect(lambda: self.mountCommandQueue.put(':STOP#'))
         self.ui.btn_mountPos1.clicked.connect(self.mountPosition1)
@@ -1165,6 +1165,16 @@ class MountWizzardApp(widget.MwWidget):
                     self.ui.le_UTCDataValid.setText('INVALID')
             if valueName == 'UTCDataExpirationDate':
                 self.ui.le_UTCDataExpirationDate.setText(str(self.workerMountDispatcher.data[valueName]))
+            if valueName == 'TrackingRate':
+                self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSidereal, 'running', False)
+                self.signalChangeStylesheet.emit(self.ui.btn_setTrackingLunar, 'running', False)
+                self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSolar, 'running', False)
+                if self.workerMountDispatcher.data[valueName] == '60.2':
+                    self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSidereal, 'running', True)
+                elif self.workerMountDispatcher.data[valueName] == '62.4':
+                    self.signalChangeStylesheet.emit(self.ui.btn_setTrackingLunar, 'running', True)
+                elif self.workerMountDispatcher.data[valueName] == '60.3':
+                    self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSolar, 'running', True)
 
     def setDomeStatus(self, status):
         if status == 0:
