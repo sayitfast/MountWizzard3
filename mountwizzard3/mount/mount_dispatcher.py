@@ -317,8 +317,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.sharedMountDataLock.unlock()
             # and restarting for using new parameters
             self.threadMountCommandRunner.start()
-            self.threadMountGetModelNames.start()
             self.threadMountSetAlignmentModel.start()
+            self.threadMountGetModelNames.start()
             self.threadMountGetAlignmentModel.start()
             self.threadMountStatusRunnerOnce.start()
             self.threadMountStatusRunnerSlow.start()
@@ -376,8 +376,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountStatusRunnerOnce.stop()
         self.workerMountGetAlignmentModel.stop()
         self.workerMountSetAlignmentModel.stop()
-        self.workerMountGetModelNames.stop()
         self.workerMountCommandRunner.stop()
+        self.workerMountGetModelNames.stop()
         self.signalDestruct.disconnect(self.destruct)
         self.app.ui.le_mountIP.editingFinished.disconnect(self.changedSettings)
 

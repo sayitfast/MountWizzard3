@@ -91,8 +91,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.disconnectFromHost()
         self.cycleTimer.stop()
         self.dataTimer.stop()
         self.socket.hostFound.disconnect(self.handleHostFound)

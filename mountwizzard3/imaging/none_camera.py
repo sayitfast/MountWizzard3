@@ -19,6 +19,7 @@
 ###########################################################
 import PyQt5
 
+
 class NoneCamera:
 
     def __init__(self, main, app, data):
