@@ -4902,105 +4902,6 @@ manually</string>
       <string>Save</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_99">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>310</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Analyse File</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_29">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>330</y>
-       <width>336</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_analyseFileName">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>340</y>
-       <width>226</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Analysis file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_loadAnalyseData">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>370</y>
-       <width>71</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads the modeling data from file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_166">
      <property name="geometry">
       <rect>
@@ -9537,12 +9438,12 @@ manually</string>
     </widget>
     <widget class="QPushButton" name="btn_split">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>40</y>
+       <y>400</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -9552,6 +9453,105 @@ manually</string>
      </property>
      <property name="text">
       <string>Split</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_loadAnalyseData">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>80</y>
+       <width>71</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads the modeling data from file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_99">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>20</y>
+       <width>191</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Analyse File</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_29">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>40</y>
+       <width>336</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_analyseFileName">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>50</y>
+       <width>226</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Analysis file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
      </property>
     </widget>
     <zorder>line_33</zorder>
@@ -9592,6 +9592,10 @@ manually</string>
     <zorder>label_186</zorder>
     <zorder>label_187</zorder>
     <zorder>btn_split</zorder>
+    <zorder>btn_loadAnalyseData</zorder>
+    <zorder>label_99</zorder>
+    <zorder>line_29</zorder>
+    <zorder>le_analyseFileName</zorder>
    </widget>
    <widget class="QWidget" name="Relay">
     <attribute name="title">
@@ -15562,7 +15566,6 @@ manually</string>
   <tabstop>altitudeMinimumHorizon</tabstop>
   <tabstop>checkDeletePointsHorizonMask</tabstop>
   <tabstop>checkSortPoints</tabstop>
-  <tabstop>btn_loadAnalyseData</tabstop>
   <tabstop>btn_showInitialModelPoints</tabstop>
   <tabstop>btn_loadInitialModelPoints</tabstop>
   <tabstop>btn_saveInitialModelPoints</tabstop>
@@ -15715,7 +15718,6 @@ manually</string>
   <tabstop>settingsTabWidget</tabstop>
   <tabstop>btn_domeConnected</tabstop>
   <tabstop>le_horizonPointsFileName</tabstop>
-  <tabstop>le_analyseFileName</tabstop>
   <tabstop>le_ascomDomeDriverName</tabstop>
   <tabstop>mainTabWidget</tabstop>
  </tabstops>
