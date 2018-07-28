@@ -209,16 +209,16 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                         self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
                     else:
                         self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
-            self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
+            self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#')
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 6:
+        if self.messageString.count('#') < 7:
             return
-        if self.messageString.count('#') != 6:
+        if self.messageString.count('#') != 7:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
@@ -247,6 +247,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     self.data['RefractionTemperature'] = valueList[4]
                 if len(valueList[5]) > 0:
                     self.data['RefractionPressure'] = valueList[5]
+                if len(valueList[6]) > 0:
+                    self.data['TrackingRate'] = valueList[6]
                 self.app.workerMountDispatcher.signalMountLimits.emit()
             else:
                 self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))

@@ -20,3 +20,5 @@ Features fine tuning:
 
 Problems:
 - check for needed copy.copy when reusing parameters
+- refactor getting right IP address from computer for WOL, logging and remote. it is the same implementation, but many times
+
