@@ -35,6 +35,7 @@ from queue import Queue
 import PyQt5
 import PyQt5.QtMultimedia
 import numpy
+import copy
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot
@@ -54,6 +55,7 @@ from indi import indi_client
 from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
+from astrometry import transform
 from analyse import analysedata
 from audio import audio
 if platform.system() == 'Windows':
@@ -122,6 +124,8 @@ class MountWizzardApp(widget.MwWidget):
 
         # access methods for saving model
         self.analyse = analysedata.Analyse(self)
+        # coordinate transformations
+        self.transform = transform.Transform(self)
 
         # instantiating all subclasses and connecting thread signals
         # mount class
@@ -596,6 +600,10 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.loglevelError.setChecked(self.config['CheckLoglevelError'])
             if 'CheckShowErrorValues' in self.config:
                 self.ui.checkShowErrorValues.setChecked(self.config['CheckShowErrorValues'])
+            if 'CheckCoordinatesJ2000' in self.config:
+                self.ui.checkCoordinatesJ2000.setChecked(self.config['CheckCoordinatesJ2000'])
+            if 'CheckCoordinatesJNow' in self.config:
+                self.ui.checkCoordinatesJNow.setChecked(self.config['CheckCoordinatesJNow'])
 
         except Exception as e:
             self.logger.error('Item in config.cfg for main window could not be initialized, error:{0}'.format(e))
@@ -680,6 +688,8 @@ class MountWizzardApp(widget.MwWidget):
         self.config['CheckLoglevelWarning'] = self.ui.loglevelWarning.isChecked()
         self.config['CheckLoglevelError'] = self.ui.loglevelError.isChecked()
         self.config['CheckShowErrorValues'] = self.ui.checkShowErrorValues.isChecked()
+        self.config['CheckCoordinatesJ2000'] = self.ui.checkCoordinatesJ2000.isChecked()
+        self.config['CheckCoordinatesJNow'] = self.ui.checkCoordinatesJNow.isChecked()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()
@@ -1059,121 +1069,136 @@ class MountWizzardApp(widget.MwWidget):
         elif status == 2:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
-    def fillMountData(self):
-        for valueName in self.workerMountDispatcher.data:
+    def fillMountData(self, data):
+        for valueName in data:
             if valueName == 'Reply':
                 pass
             if valueName == 'DualAxisTracking':
-                if self.workerMountDispatcher.data[valueName] == '1':
+                if data[valueName] == '1':
                     self.ui.le_telescopeDualTrack.setText('ON')
                 else:
                     self.ui.le_telescopeDualTrack.setText('OFF')
             if valueName == 'NumberAlignmentStars':
-                self.ui.le_alignNumberStars.setText(str(self.workerMountDispatcher.data[valueName]))
-                self.ui.le_alignNumberStars2.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignNumberStars.setText(str(data[valueName]))
+                self.ui.le_alignNumberStars2.setText(str(data[valueName]))
             if valueName == 'ModelRMSError':
-                self.ui.le_alignErrorRMS.setText(str(self.workerMountDispatcher.data[valueName]))
-                self.ui.le_alignErrorRMS2.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignErrorRMS.setText(str(data[valueName]))
+                self.ui.le_alignErrorRMS2.setText(str(data[valueName]))
             if valueName == 'ModelErrorPosAngle':
-                self.ui.le_alignErrorPosAngle.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignErrorPosAngle.setText(str(data[valueName]))
             if valueName == 'ModelPolarError':
-                self.ui.le_alignErrorPolar.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignErrorPolar.setText(str(data[valueName]))
             if valueName == 'ModelOrthoError':
-                self.ui.le_alignErrorOrtho.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignErrorOrtho.setText(str(data[valueName]))
             if valueName == 'ModelTerms':
-                self.ui.le_alignNumberTerms.setText(str(self.workerMountDispatcher.data[valueName]))
-                self.ui.le_alignNumberTerms2.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignNumberTerms.setText(str(data[valueName]))
+                self.ui.le_alignNumberTerms2.setText(str(data[valueName]))
             if valueName == 'ModelKnobTurnAz':
-                self.ui.le_alignKnobTurnAz.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignKnobTurnAz.setText(str(data[valueName]))
             if valueName == 'ModelKnobTurnAlt':
-                self.ui.le_alignKnobTurnAlt.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignKnobTurnAlt.setText(str(data[valueName]))
             if valueName == 'ModelErrorAz':
-                self.ui.le_alignErrorAz.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignErrorAz.setText(str(data[valueName]))
             if valueName == 'ModelErrorAlt':
-                self.ui.le_alignErrorAlt.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignErrorAlt.setText(str(data[valueName]))
             if valueName == 'CurrentHorizonLimitLow':
                 if not self.ui.le_horizonLimitLow.hasFocus():
-                    self.ui.le_horizonLimitLow.setText(str(self.workerMountDispatcher.data[valueName]))
+                    self.ui.le_horizonLimitLow.setText(str(data[valueName]))
             if valueName == 'CurrentHorizonLimitHigh':
                 if not self.ui.le_horizonLimitLow.hasFocus():
-                    self.ui.le_horizonLimitHigh.setText(str(self.workerMountDispatcher.data[valueName]))
+                    self.ui.le_horizonLimitHigh.setText(str(data[valueName]))
             if valueName == 'SiteLongitude':
-                self.ui.le_siteLongitude.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_siteLongitude.setText(str(data[valueName]))
             if valueName == 'SiteLatitude':
-                self.ui.le_siteLatitude.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_siteLatitude.setText(str(data[valueName]))
             if valueName == 'SiteHeight':
-                self.ui.le_siteElevation.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_siteElevation.setText(str(data[valueName]))
             if valueName == 'JulianDate':
-                self.ui.le_JulianDate.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_JulianDate.setText(str(data[valueName]))
             if valueName == 'LocalSiderealTime':
-                self.ui.le_localSiderealTime.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_localSiderealTime.setText(str(data[valueName]))
             if valueName == 'TelescopeTempDEC':
-                self.ui.le_telescopeTempDECMotor.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_telescopeTempDECMotor.setText(str(data[valueName]))
             if valueName == 'RefractionTemperature':
-                self.ui.le_refractionTemperature.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_refractionTemperature.setText(str(data[valueName]))
             if valueName == 'RefractionPressure':
-                self.ui.le_refractionPressure.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_refractionPressure.setText(str(data[valueName]))
             if valueName == 'RefractionStatus':
-                if self.workerMountDispatcher.data[valueName] == '1':
+                if data[valueName] == '1':
                     self.ui.le_refractionStatus.setText('ON')
                 else:
                     self.ui.le_refractionStatus.setText('OFF')
             if valueName == 'MountStatus':
-                self.ui.le_mountStatus.setText(str(self.workerMountDispatcher.statusReference[self.workerMountDispatcher.data[valueName]]))
-            if valueName == 'TelescopeDEC':
-                self.ui.le_telescopeDEC.setText(self.workerMountDispatcher.data[valueName])
-            if valueName == 'TelescopeRA':
-                self.ui.le_telescopeRA.setText(str(self.workerMountDispatcher.data[valueName]))
-            if valueName == 'TelescopeAltitude':
-                self.ui.le_telescopeAltitude.setText(str(self.workerMountDispatcher.data[valueName]))
-            if valueName == 'TelescopeAzimuth':
-                self.ui.le_telescopeAzimut.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_mountStatus.setText(str(self.workerMountDispatcher.statusReference[data[valueName]]))
+
+            # checking which coordinate system
+            if self.ui.checkCoordinatesJ2000.isChecked():
+                if valueName == 'RaJ2000':
+                    telescopeRA = '{0}'.format(self.transform.decimalToDegree(data['RaJ2000'], False, False))
+                    self.ui.le_telescopeRA.setText(telescopeRA)
+                if valueName == 'DecJ2000':
+                    telescopeDEC = '{0}'.format(self.transform.decimalToDegree(data['DecJ2000'], True, False))
+                    self.ui.le_telescopeDEC.setText(telescopeDEC)
+            else:
+                if valueName == 'RaJNow':
+                    telescopeRA = '{0}'.format(self.transform.decimalToDegree(data['RaJNow'], False, False))
+                    self.ui.le_telescopeRA.setText(telescopeRA)
+                if valueName == 'DecJNow':
+                    telescopeDEC = '{0}'.format(self.transform.decimalToDegree(data['DecJNow'], True, False))
+                    self.ui.le_telescopeDEC.setText(telescopeDEC)
+
+            if valueName == 'Alt':
+                telescopeAltitude = '{0:03.2f}'.format(data['Alt'])
+                self.ui.le_telescopeAltitude.setText(telescopeAltitude)
+            if valueName == 'Az':
+                telescopeAzimuth = '{0:03.2f}'.format(data['Az'])
+                self.ui.le_telescopeAzimut.setText(telescopeAzimuth)
             if valueName == 'SlewRate':
                 if not self.ui.le_horizonLimitLow.hasFocus():
-                    self.ui.le_slewRate.setText(str(self.workerMountDispatcher.data[valueName]))
+                    self.ui.le_slewRate.setText(str(data[valueName]))
             if valueName == 'MeridianLimitGuide':
-                self.ui.le_meridianLimitGuide.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_meridianLimitGuide.setText(str(data[valueName]))
             if valueName == 'MeridianLimitSlew':
-                self.ui.le_meridianLimitSlew.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_meridianLimitSlew.setText(str(data[valueName]))
             if valueName == 'UnattendedFlip':
-                if self.workerMountDispatcher.data[valueName] == '1':
+                if data[valueName] == '1':
                     self.ui.le_telescopeUnattendedFlip.setText('ON')
                 else:
                     self.ui.le_telescopeUnattendedFlip.setText('OFF')
             if valueName == 'TimeToFlip':
-                self.ui.le_timeToFlip.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_timeToFlip.setText(str(data[valueName]))
             if valueName == 'TimeToMeridian':
-                self.ui.le_timeToMeridian.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_timeToMeridian.setText(str(data[valueName]))
             if valueName == 'FirmwareProductName':
-                self.ui.le_firmwareProductName.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_firmwareProductName.setText(str(data[valueName]))
             if valueName == 'FirmwareNumber':
-                self.ui.le_firmwareNumber.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_firmwareNumber.setText(str(data[valueName]))
             if valueName == 'FirmwareDate':
-                self.ui.le_firmwareDate.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_firmwareDate.setText(str(data[valueName]))
             if valueName == 'FirmwareTime':
-                self.ui.le_firmwareTime.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_firmwareTime.setText(str(data[valueName]))
             if valueName == 'HardwareVersion':
-                self.ui.le_hardwareVersion.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_hardwareVersion.setText(str(data[valueName]))
             if valueName == 'TelescopePierSide':
-                self.ui.le_telescopePierSide.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_telescopePierSide.setText(str(data[valueName]))
             if valueName == 'UTCDataValid':
-                if self.workerMountDispatcher.data[valueName] == 'V':
+                if data[valueName] == 'V':
                     self.ui.le_UTCDataValid.setText('VALID')
-                elif self.workerMountDispatcher.data[valueName] == 'E':
+                elif data[valueName] == 'E':
                     self.ui.le_UTCDataValid.setText('EXPIRED')
                 else:
                     self.ui.le_UTCDataValid.setText('INVALID')
             if valueName == 'UTCDataExpirationDate':
-                self.ui.le_UTCDataExpirationDate.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_UTCDataExpirationDate.setText(str(data[valueName]))
             if valueName == 'TrackingRate':
                 self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSidereal, 'running', False)
                 self.signalChangeStylesheet.emit(self.ui.btn_setTrackingLunar, 'running', False)
                 self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSolar, 'running', False)
-                if self.workerMountDispatcher.data[valueName] == '60.2':
+                if data[valueName] == '60.2':
                     self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSidereal, 'running', True)
-                elif self.workerMountDispatcher.data[valueName] == '62.4':
+                elif data[valueName] == '62.4':
                     self.signalChangeStylesheet.emit(self.ui.btn_setTrackingLunar, 'running', True)
-                elif self.workerMountDispatcher.data[valueName] == '60.3':
+                elif data[valueName] == '60.3':
                     self.signalChangeStylesheet.emit(self.ui.btn_setTrackingSolar, 'running', True)
 
     def setDomeStatus(self, status):
@@ -1221,7 +1246,9 @@ class MountWizzardApp(widget.MwWidget):
 
     @PyQt5.QtCore.pyqtSlot()
     def mainLoop(self):
-        self.fillMountData()
+        self.sharedMountDataLock.lockForRead()
+        self.fillMountData(copy.copy(self.workerMountDispatcher.data))
+        self.sharedMountDataLock.unlock()
         self.fillEnvironmentData()
         self.ui.le_modelingTimeActual.setText(datetime.datetime.now().strftime('%H:%M:%S'))
         while not self.INDIStatusQueue.empty():

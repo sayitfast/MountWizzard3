@@ -235,10 +235,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                                     self.app.audioCommandQueue.put('MountSlew')
                             self.data['Slewing'] = (value[7] == '1')
                             self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
-                            self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
-                            self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))
-                            self.data['TelescopeAltitude'] = '{0:03.2f}'.format(self.data['Alt'])
-                            self.data['TelescopeAzimuth'] = '{0:03.2f}'.format(self.data['Az'])
                             self.data['MountStatus'] = '{0}'.format(self.data['Status'])
                             if self.data['Pierside'] == str('W'):
                                 self.data['TelescopePierSide'] = 'WEST'
