@@ -157,7 +157,10 @@ class MountWizzardApp(widget.MwWidget):
         self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
+        # defining the remote commands
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
+        self.workerRemote.signalRemoteShutdownMount.connect(self.workerMountDispatcher.mountShutdown)
+        self.workerRemote.signalRemoteBootMount.connect(self.mountBoot)
         # threading for audio playing
         self.threadAudio = PyQt5.QtCore.QThread()
         self.workerAudio = audio.Audio(self, self.threadAudio)

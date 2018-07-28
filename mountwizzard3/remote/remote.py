@@ -20,6 +20,7 @@
 import logging
 import PyQt5
 import time
+import socket
 from baseclasses import checkIP
 
 
@@ -27,8 +28,11 @@ class Remote(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     signalRemoteConnected = PyQt5.QtCore.pyqtSignal(bool, name='RemoteConnected')
-    signalRemoteShutdown = PyQt5.QtCore.pyqtSignal(bool, name='RemoteShutdown')
-    TCP_IP = '127.0.0.1'
+
+    signalRemoteShutdown = PyQt5.QtCore.pyqtSignal()
+    signalRemoteShutdownMount = PyQt5.QtCore.pyqtSignal()
+    signalRemoteBootMount = PyQt5.QtCore.pyqtSignal()
+
     SIZEOF_UINT16 = 2
 
     CYCLE = 500
@@ -47,7 +51,8 @@ class Remote(PyQt5.QtCore.QObject):
         self.cycleTimer = None
         self.data = dict()
         self.data['RemotePort'] = 0
-        self.data['RemoteIP'] = '127.0.0.1'
+        host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
+        self.data['RemoteIP'] = host[0]
         self.tcpServer = None
         self.clientConnection = None
         # signal slot
@@ -86,7 +91,7 @@ class Remote(PyQt5.QtCore.QObject):
                     self.data['RemotePort'] = value
                 self.app.threadRemote.start()
                 self.mutexIPChanged.unlock()
-                self.app.messageQueue.put('Setting IP address/port for remote access: {0}\n'.format(self.data['RemotePort']))
+                self.app.messageQueue.put('Setting remote access to : {0}:{1}\n'.format(self.data['RemoteIP'], self.data['RemotePort']))
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)
@@ -121,7 +126,7 @@ class Remote(PyQt5.QtCore.QObject):
             self.isRunning = False
             self.mutexIsRunning.unlock()
         else:
-            self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
+            self.logger.info('MountWizzard started listening on {0}:{1}'.format(self.data['RemoteIP'], self.data['RemotePort']))
             self.tcpServer.newConnection.connect(self.addConnection)
 
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
@@ -145,11 +150,11 @@ class Remote(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
         self.cycleTimer.stop()
-        self.signalDestruct.disconnect(self.destruct)
         self.tcpServer.newConnection.disconnect(self.addConnection)
-        self.tcpServer.close()
         if self.clientConnection:
             self.clientConnection.close()
+        self.tcpServer.close()
+        self.signalDestruct.disconnect(self.destruct)
         self.tcpServer = None
         self.clientConnection = None
 
@@ -159,11 +164,14 @@ class Remote(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def addConnection(self):
         self.clientConnection = self.tcpServer.nextPendingConnection()
-        self.clientConnection.nextBlockSize = 0
-        self.clientConnection.readyRead.connect(self.receiveMessage)
-        self.clientConnection.disconnected.connect(self.removeConnection)
-        self.clientConnection.error.connect(self.socketError)
-        self.logger.info('Connection to MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
+        if self.clientConnection != 0:
+            self.clientConnection.nextBlockSize = 0
+            self.clientConnection.readyRead.connect(self.receiveMessage)
+            self.clientConnection.disconnected.connect(self.removeConnection)
+            self.clientConnection.error.connect(self.handleError)
+            self.logger.info('Connection to MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
+        else:
+            self.logger.error('Can not establish incoming connection')
 
     @PyQt5.QtCore.pyqtSlot()
     def receiveMessage(self):
@@ -171,7 +179,13 @@ class Remote(PyQt5.QtCore.QObject):
             message = str(self.clientConnection.read(100), "ascii")
             if message == 'shutdown\r\n':
                 self.logger.info('Shutdown MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
-                self.signalRemoteShutdown.emit(True)
+                self.signalRemoteShutdown.emit()
+            elif message == 'shutdown mount\r\n':
+                self.logger.info('Shutdown mount from {0}'.format(self.clientConnection.peerAddress().toString()))
+                self.signalRemoteShutdownMount.emit()
+            elif message == 'boot mount\r\n':
+                self.logger.info('Boot mount from {0}'.format(self.clientConnection.peerAddress().toString()))
+                self.signalRemoteBootMount.emit()
 
     @PyQt5.QtCore.pyqtSlot()
     def removeConnection(self):
@@ -180,4 +194,4 @@ class Remote(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        self.logger.warning('Connection to MountWizzard from {0} failed'.format(socketError))
+        self.logger.warning('Connection to MountWizzard from {0} failed, error: {1}'.format(self.clientConnection.peerAddress().toString(), socketError))
