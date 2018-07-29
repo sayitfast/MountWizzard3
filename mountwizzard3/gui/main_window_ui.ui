@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>5</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -8060,9 +8060,9 @@ manually</string>
     <widget class="QDoubleSpinBox" name="targetRMS">
      <property name="geometry">
       <rect>
-       <x>705</x>
+       <x>700</x>
        <y>85</y>
-       <width>51</width>
+       <width>56</width>
        <height>26</height>
       </rect>
      </property>
@@ -8240,9 +8240,9 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>705</x>
+       <x>700</x>
        <y>120</y>
-       <width>36</width>
+       <width>41</width>
        <height>26</height>
       </rect>
      </property>

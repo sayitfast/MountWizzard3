@@ -282,6 +282,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
+        self.ui.btn_runBatchCombineModel.clicked.connect(self.runBatchCombineModel)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
         self.signalSetMountStatus.connect(self.setMountStatus)
@@ -978,13 +979,32 @@ class MountWizzardApp(widget.MwWidget):
         self.threadDome.start()
 
     def runBatchModel(self):
-        value, ext = self.selectFile(self, 'Open analyse file for model programming', '/analysedata', 'Analyse files (*.dat)', True)
+        value, ext = self.selectFile(self, 'Open model file for programming', '/analysedata', 'Analyse files (*.dat)', True)
         if value == '':
             self.logger.warning('No file selected')
             return
         nameDataFile = os.path.basename(value)
         self.logger.info('Modeling from {0}'.format(nameDataFile))
         data = self.analyse.loadData(nameDataFile)
+        self.workerMountDispatcher.programBatchData(data)
+
+    def runBatchCombineModel(self):
+        value_1, ext_1 = self.selectFile(self, 'Open first model file for programming', '/analysedata', 'Analyse files (*.dat)', True)
+        if value_1 == '':
+            self.logger.warning('No first file selected')
+            return
+        value_2, ext_2 = self.selectFile(self, 'Open second model file for programming', '/analysedata', 'Analyse files (*.dat)', True)
+        if value_2 == '':
+            self.logger.warning('No second file selected')
+            return
+        nameDataFile_1 = os.path.basename(value_1)
+        nameDataFile_2 = os.path.basename(value_2)
+        self.logger.info('Combining model from {0} and {1}'.format(nameDataFile_1, nameDataFile_2))
+        data = self.analyse.loadData(nameDataFile_1)
+        data_2 = self.analyse.loadData(nameDataFile_2)
+        # combining the two dicts
+        for key in data_2:
+            data[key] += data_2[key]
         self.workerMountDispatcher.programBatchData(data)
 
     def cancelFullModel(self):
