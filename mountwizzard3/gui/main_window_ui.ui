@@ -8439,7 +8439,7 @@ manually</string>
       <string>Terms</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_reloadAlignmentModel">
+    <widget class="QPushButton" name="btn_refreshAlignmentModel">
      <property name="geometry">
       <rect>
        <x>610</x>
@@ -8452,7 +8452,7 @@ manually</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reloads the refinement model from mount. Needed if you change things manually with handcontroller or other software&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Reload Mount Model</string>
+      <string>Refresh Mount Model</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_saveModel">
@@ -8537,7 +8537,7 @@ manually</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_refreshModel">
+    <widget class="QPushButton" name="btn_refreshModelNames">
      <property name="geometry">
       <rect>
        <x>675</x>
@@ -8571,13 +8571,13 @@ manually</string>
     <zorder>label_76</zorder>
     <zorder>le_alignNumberTerms2</zorder>
     <zorder>label_209</zorder>
-    <zorder>btn_reloadAlignmentModel</zorder>
+    <zorder>btn_refreshAlignmentModel</zorder>
     <zorder>btn_saveModel</zorder>
     <zorder>listModelName</zorder>
     <zorder>btn_loadModel</zorder>
     <zorder>btn_deleteModel</zorder>
     <zorder>checkShowErrorValues</zorder>
-    <zorder>btn_refreshModel</zorder>
+    <zorder>btn_refreshModelNames</zorder>
    </widget>
    <widget class="QWidget" name="Analyse">
     <attribute name="title">
@@ -15633,7 +15633,7 @@ manually</string>
   <tabstop>btn_runFullModel</tabstop>
   <tabstop>btn_cancelFullModel</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
-  <tabstop>btn_reloadAlignmentModel</tabstop>
+  <tabstop>btn_refreshAlignmentModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>targetRMS</tabstop>
   <tabstop>btn_cancelRunTargetRMSAlignment</tabstop>

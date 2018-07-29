@@ -195,5 +195,5 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.app.sharedMountDataLock.lockForWrite()
         self.data['ModelNames'] = copy.copy(valueList)
         self.app.sharedMountDataLock.unlock()
-        self.app.workerMountDispatcher.signalMountShowModelNames.emit()
+        self.app.workerMountDispatcher.signalRefreshModelNamesList.emit()
         self.sendLock = False

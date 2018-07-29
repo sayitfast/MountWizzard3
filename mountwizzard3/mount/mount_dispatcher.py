@@ -48,7 +48,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountLimits = PyQt5.QtCore.pyqtSignal()
     signalAlignmentStars = PyQt5.QtCore.pyqtSignal()
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
-    signalMountShowModelNames = PyQt5.QtCore.pyqtSignal()
+    signalRefreshModelNames = PyQt5.QtCore.pyqtSignal()
+    signalRefreshModelNamesList = PyQt5.QtCore.pyqtSignal()
+    signalRefreshAlignmentModel = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
     CYCLE = 200
@@ -186,11 +188,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'ReloadAlignmentModel':
+            'RefreshAlignmentModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_reloadAlignmentModel,
+                            'Button': self.app.ui.btn_refreshAlignmentModel,
                             'Method': self.reloadAlignmentModel,
                         }
                     ]
@@ -221,6 +223,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Method': self.mountShutdown,
                         }
                     ]
+                },
+            'RefreshModelNames':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_refreshModelNames,
+                            'Method': self.refreshModelNames,
+                        }
+                    ]
                 }
         }
         # signal slot
@@ -228,17 +239,19 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
         self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcherQueue.put('FLIP'))
-        self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ReloadAlignmentModel'))
+        self.app.ui.btn_refreshAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RefreshAlignmentModel'))
+        self.signalRefreshAlignmentModel.connect(lambda: self.commandDispatcherQueue.put('RefreshAlignmentModel'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
         self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
+        self.app.ui.btn_refreshModelNames.clicked.connect(lambda: self.commandDispatcherQueue.put('RefreshModelNames'))
+        self.signalRefreshModelNames.connect(lambda: self.commandDispatcherQueue.put('RefreshModelNames'))
+        self.signalRefreshModelNamesList.connect(self.setModelNamesList)
 
         self.signalCancelRunTargetRMS.connect(self.setCancelRunTargetRMS)
         self.app.ui.btn_saveModel.clicked.connect(self.saveSelectedModel)
         self.app.ui.btn_loadModel.clicked.connect(self.loadSelectedModel)
         self.app.ui.btn_deleteModel.clicked.connect(self.deleteSelectedModel)
-        self.app.ui.btn_refreshModel.clicked.connect(self.refreshModelNames)
         self.app.ui.listModelName.itemDoubleClicked.connect(self.getListAction)
-        self.signalMountShowModelNames.connect(self.setModelNamesList)
         self.signalMountConnected.connect(self.setMountConnectionStatus)
 
     def initConfig(self):
@@ -437,6 +450,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             # otherwise yellow
             self.app.signalSetMountStatus.emit(1)
 
+    def refreshModelNames(self):
+        self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
+
     def setModelNamesList(self):
         self.app.ui.listModelName.clear()
         for name in self.data['ModelNames']:
@@ -524,24 +540,13 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             action = {
                 'Worker': [
                     {
-                        'Button': self.app.ui.btn_refreshModel,
+                        'Button': self.app.ui.btn_refreshModelNames,
                         'Parameter': [name],
                         'Method': self.mountModelHandling.deleteModel,
                     }
                 ]
             }
             self.commandDispatcherQueue.put(action)
-
-    def refreshModelNames(self):
-        action = {
-            'Worker': [
-                {
-                    'Button': self.app.ui.btn_refreshModel,
-                    'Method': self.mountModelHandling.refreshModel,
-                }
-            ]
-        }
-        self.commandDispatcherQueue.put(action)
 
     def mountShutdown(self):
         # mount has to run

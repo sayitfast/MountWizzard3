@@ -237,8 +237,14 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 if len(valueList[9]) > 0:
                     self.data['CurrentHorizonLimitLow'] = valueList[2]
                 if len(valueList[10]) > 0:
+                    if self.data['NumberModelNames'] != int(valueList[10]):
+                        # make Model list reload
+                        self.app.workerMountDispatcher.signalRefreshModelNames.emit()
                     self.data['NumberModelNames'] = int(valueList[10])
                 if len(valueList[11]) > 0:
+                    if self.data['NumberAlignmentStars'] != int(valueList[11]):
+                        # make alignment model reload
+                        self.app.workerMountDispatcher.signalRefreshAlignmentModel.emit()
                     self.data['NumberAlignmentStars'] = int(valueList[11])
                 if self.data['FW'] > 21500 and len(valueList[12]) > 0:
                     valid, expirationDate = valueList[12].split(',')
