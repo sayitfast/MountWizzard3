@@ -993,7 +993,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Defined Positions</string>
+      <string>Defined positions</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_84">
@@ -1759,7 +1759,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Pointing Coordinates</string>
+      <string>Pointing coordinates</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_104">
@@ -2224,7 +2224,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Coordinates from Mount</string>
+      <string>Coordinates from mount</string>
      </property>
     </widget>
     <widget class="Line" name="line_8">
@@ -2328,7 +2328,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Temperature Motor Driver Circuit</string>
+      <string>Temperature motor driver circuit</string>
      </property>
     </widget>
     <widget class="Line" name="line_5">
@@ -3102,7 +3102,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Environment Conditions</string>
+      <string>Environment conditions</string>
      </property>
     </widget>
     <widget class="Line" name="line_10">
@@ -3471,7 +3471,7 @@ manually</string>
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Refraction Correction in Mount</string>
+      <string>Refraction correction in mount</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_setRefractionCorrection">
@@ -3909,7 +3909,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Actuality of Time Data in Mount Computer</string>
+      <string>Actuality of time data in mount computer</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_135">
@@ -4329,7 +4329,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Horizon Mask File</string>
+      <string>Horizon mask file</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
@@ -4521,7 +4521,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Imaging Configuration for Modeling</string>
+      <string>Imaging configuration for modeling</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_38">
@@ -5263,7 +5263,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Generate Initial Points</string>
+      <string>Generate initial points</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_171">
@@ -5920,7 +5920,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Alignment Info from Mount Computer</string>
+      <string>Alignment info from mount computer</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignErrorOrtho">
@@ -6290,7 +6290,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Align Model</string>
+      <string>Align model</string>
      </property>
     </widget>
     <widget class="Line" name="line_65">
@@ -6326,7 +6326,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Adjust Polar Alignment</string>
+      <string>Adjust polar alignment</string>
      </property>
     </widget>
     <widget class="QLabel" name="picALT">
@@ -6384,7 +6384,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Fast Align</string>
+      <string>Fast align</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_showInitialModelPoints">
@@ -6521,7 +6521,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Load Initial Model Points File</string>
+      <string>Load initial model points file</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadInitialModelPoints">
@@ -9533,7 +9533,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Analyse File</string>
+      <string>Analyse file</string>
      </property>
     </widget>
     <widget class="Line" name="line_29">
@@ -9919,7 +9919,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Environment Connection</string>
+        <string>Environment connection</string>
        </property>
       </widget>
       <widget class="Line" name="line_23">
@@ -9973,7 +9973,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Dome Connection</string>
+        <string>Dome connection</string>
        </property>
       </widget>
       <widget class="Line" name="line_60">
@@ -10040,7 +10040,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Imaging Connection</string>
+        <string>Imaging connection</string>
        </property>
       </widget>
       <widget class="Line" name="line_50">
@@ -10115,7 +10115,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Astrometry Connection</string>
+        <string>Astrometry connection</string>
        </property>
       </widget>
      </widget>
@@ -10183,7 +10183,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>ASCOM Observing Conditions Hub</string>
+        <string>ASCOM observing conditions hub</string>
        </property>
       </widget>
       <widget class="QPushButton" name="btn_setupAscomEnvironmentDriver">
@@ -10224,7 +10224,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>ASCOM Dome Driver Setup</string>
+        <string>ASCOM dome driver setup</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_ascomDomeDriverName">
@@ -10406,7 +10406,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>PinPoint Settings</string>
+        <string>PinPoint settings</string>
        </property>
       </widget>
       <widget class="Line" name="line_85">
@@ -10701,7 +10701,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Remote Access</string>
+        <string>Remote access</string>
        </property>
       </widget>
       <widget class="Line" name="line_49">
@@ -10789,7 +10789,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Mount IP Direct Connection</string>
+        <string>Mount connection</string>
        </property>
       </widget>
       <widget class="Line" name="line_61">
@@ -11106,7 +11106,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Configuration of INDI Subsystem</string>
+        <string>Configuration of INDI cubsystem</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_INDICCD">
@@ -11557,7 +11557,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Configuration of Relay Box (KMTronics Switch)</string>
+        <string>Configuration of relay box (KMTronics Switch)</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_AstrometryAPIKey">
@@ -12243,7 +12243,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Mount Uploads</string>
+        <string>Mount uploads</string>
        </property>
       </widget>
       <widget class="Line" name="line_19">
@@ -12581,7 +12581,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Configuration of Fixed Park Positions </string>
+        <string>Configuration of fixed park positions </string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_azParkPos3">
@@ -14143,7 +14143,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Relay Button Text Setup</string>
+        <string>Relay button text setup</string>
        </property>
       </widget>
       <zorder>label_103</zorder>
@@ -14542,7 +14542,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Product Versions</string>
+        <string>Product versions</string>
        </property>
       </widget>
       <widget class="QLabel" name="le_hardwareVersion">
@@ -14828,7 +14828,7 @@ manually</string>
         </font>
        </property>
        <property name="text">
-        <string>Misc Settings</string>
+        <string>Misc settings</string>
        </property>
       </widget>
       <widget class="QPushButton" name="btn_resetWindowSizes">
