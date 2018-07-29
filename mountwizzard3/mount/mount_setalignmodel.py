@@ -194,7 +194,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         # now we got all information about the model write run
         valueList = messageToProcess.strip('#').split('#')
         # quick check:
-        if len(valueList) != self.numberAlignmentPoints + 2:
+        if len(valueList) != self.numberAlignmentPoints + 3:
             # error happened
             self.logger.error('Parsing SetAlignmentModel wrong numbers: value:{0}, points:{1}, values:{2}'.format(len(valueList), self.numberAlignmentPoints, valueList))
         # now parsing the result
