@@ -177,9 +177,9 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.app.sharedMountDataLock.lockForRead()
             if self.data['FW'] < 21500:
-                self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
+                self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#')
             else:
-                self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+                self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#:GDUTV#')
             self.app.sharedMountDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
@@ -187,9 +187,9 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         # we have a firmware dependency
         self.app.sharedMountDataLock.lockForRead()
         if self.data['FW'] < 21500:
-            numberResults = 10
+            numberResults = 12
         else:
-            numberResults = 11
+            numberResults = 13
         self.app.sharedMountDataLock.unlock()
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
@@ -236,8 +236,12 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     self.data['CurrentHorizonLimitHigh'] = valueList[8][3:]
                 if len(valueList[9]) > 0:
                     self.data['CurrentHorizonLimitLow'] = valueList[2]
-                if self.data['FW'] > 21500 and len(valueList[10]) > 0:
-                    valid, expirationDate = valueList[10].split(',')
+                if len(valueList[10]) > 0:
+                    self.data['NumberModelNames'] = int(valueList[10])
+                if len(valueList[11]) > 0:
+                    self.data['NumberAlignmentStars'] = int(valueList[11])
+                if self.data['FW'] > 21500 and len(valueList[12]) > 0:
+                    valid, expirationDate = valueList[12].split(',')
                     self.data['UTCDataValid'] = valid
                     self.data['UTCDataExpirationDate'] = expirationDate
 
