@@ -14,6 +14,11 @@ you have a blind solver as well on board.
 
 [Link to FAQ and how to make a problem report](./docu/FAQ.md)
 
+## Where to find the downloads ?
+The downloadable files are now under "releases" on top of this page!
+
+<img src="docu/pics/releases.png"/>
+
 ## Features:
 - Runs multi platform (Windows 7 / 10, Linux Ubuntu 16.04 / 18.04 LTS, Mac OSx High Sierra tested)
 - Imaging Software: Sequence Generator Pro, INDI are supported. Please refer to their homepages for use.
