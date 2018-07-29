@@ -203,7 +203,9 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
             if valueList[0] != 'V':
                 self.logger.error('Programming alignment model failed')
             if len(valueList[self.numberAlignmentPoints + 2]) > 0:
+                self.app.sharedMountDataLock.lockForWrite()
                 self.data['NumberAlignmentStars'] = int(valueList[self.numberAlignmentPoints + 2])
+                self.app.sharedMountDataLock.unlock()
         except Exception as e:
             self.logger.error('Parsing SetAlignmentModel got error:{0}, values:{1}'.format(e, valueList))
         finally:
