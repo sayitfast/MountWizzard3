@@ -81,8 +81,13 @@ class MountModelHandling:
 
     def clearAlign(self):
         self.app.mountCommandQueue.put(':delalig#')
+        self.app.sharedMountDataLock.lockForWrite()
+        self.data['NumberAlignmentStars'] = 0
+        self.app.sharedMountDataLock.unlock()
         time.sleep(1)
         self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
         while self.data['ModelLoading']:
             time.sleep(0.2)
         self.app.messageQueue.put('Mount Model cleared\n')
+
+

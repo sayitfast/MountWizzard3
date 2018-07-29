@@ -169,7 +169,9 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         if 'NumberAlignmentStars' in self.data:
             command = ''
             self.numberRequestedAlignmentStars = copy.copy(self.data['NumberAlignmentStars'])
+            self.app.sharedMountDataLock.lockForWrite()
             self.data['ModelLoading'] = True
+            self.app.sharedMountDataLock.unlock()
             # asking for all points data
             for i in range(1, self.numberRequestedAlignmentStars + 1):
                 command += (':getalp{0:d}#'.format(i))

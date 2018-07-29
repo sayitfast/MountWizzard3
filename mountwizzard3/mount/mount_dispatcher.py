@@ -650,6 +650,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 if self.data['ModelError'][i] > maxError:
                     worstPointIndex = i
                     maxError = self.data['ModelError'][i]
+            # noinspection PyStringFormat
             self.app.messageQueue.put('Deleting worst point  {0:02d} with AZ:  {1:05.1f}  ALT:  {2:04.1f}  and error of:  {3:05.1f}\n'
                                       .format(worstPointIndex + 1,
                                               self.data['ModelAzimuth'][worstPointIndex],
