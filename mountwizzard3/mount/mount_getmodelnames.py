@@ -43,6 +43,7 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.connectCounter = 0
+        self.numberRequestedModelNames = 0
         self.socket = None
         self.sendLock = False
         self.cycleTimer = None
@@ -163,11 +164,13 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket GetModelNames not connected')
 
     def getModelNames(self):
-        # asking for 50 model names
-        command = ''
-        for i in range(1, 51):
-            command += (':modelnam{0:d}#'.format(i))
-        self.sendCommandQueue.put(command)
+        # asking for all model names
+        if 'NumberModelNames' in self.data:
+            self.numberRequestedModelNames = int(self.data['NumberModelNames'])
+            command = ''
+            for i in range(1, self.numberRequestedModelNames + 1):
+                command += (':modelnam{0:d}#'.format(i))
+            self.sendCommandQueue.put(command)
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
@@ -175,8 +178,8 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(4000).decode()
 
-        if self.messageString.count('#') != 50:
-            if self.messageString.count('#') > 50:
+        if self.messageString.count('#') != self.numberRequestedModelNames:
+            if self.messageString.count('#') > self.numberRequestedModelNames:
                 self.logger.error('Receiving data got error:{0}'.format(self.messageString))
                 messageToProcess = self.messageString
                 self.messageString = ''
