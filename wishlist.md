@@ -13,7 +13,6 @@ System tuning:
 Features fine tuning:
 - setting site parameters
 - more set buttons for config in gui
-- double click for managing window size
 
 Problems:
 - refactor getting right IP address from computer for WOL, logging and remote. it is the same implementation, but many times
