@@ -71,11 +71,11 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.dataTimer.setSingleShot(False)
         self.dataTimer.timeout.connect(self.getStatusMedium)
         self.dataTimer.start(self.CYCLE_STATUS_MEDIUM)
-        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
         self.cycleTimer.start(self.CYCLE)
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -109,8 +109,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        # to get order in connections, we wait for first connecting the once type
-        if self.mountStatus['Once'] and self.data['FW'] > 0:
+        # to get order in connections, we wait for first connecting the Slow type
+        if self.mountStatus['Slow'] and self.data['FW'] > 0:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
                 if self.connectCounter == 0:
                     self.app.sharedMountDataLock.lockForRead()
@@ -175,55 +175,35 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def getStatusMedium(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            doRefractionUpdate = False
-            pressure = 950
-            temperature = 10
-            if self.app.ui.checkAutoRefractionNone.isChecked():
-                doRefractionUpdate = False
-            if self.app.ui.checkAutoRefractionContinous.isChecked():
-                doRefractionUpdate = True
-                self.app.sharedEnvironmentDataLock.lockForRead()
-                if 'MovingAverageTemperature' in self.app.workerEnvironment.data and 'MovingAveragePressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
-                    pressure = self.app.workerEnvironment.data['MovingAveragePressure']
-                    temperature = self.app.workerEnvironment.data['MovingAverageTemperature']
-                self.app.sharedEnvironmentDataLock.unlock()
-            if self.app.ui.checkAutoRefractionNotTracking.isChecked():
-                # if there is no tracking, than updating is good
-                self.app.sharedMountDataLock.lockForRead()
-                if 'Status' in self.data:
-                    # status 0 means tracking, and in tracking mode we do not want to update
-                    if self.data['Status'] != '0':
-                        doRefractionUpdate = True
-                self.app.sharedMountDataLock.unlock()
-                self.app.sharedEnvironmentDataLock.lockForRead()
-                if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
-                    pressure = self.app.workerEnvironment.data['Pressure']
-                    temperature = self.app.workerEnvironment.data['Temperature']
-                self.app.sharedEnvironmentDataLock.unlock()
-            if doRefractionUpdate:
-                if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
-                    self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
-                    if temperature > 0:
-                        self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
-                    else:
-                        self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
-            self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#')
+            self.app.sharedMountDataLock.lockForRead()
+            if self.data['FW'] < 21500:
+                self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
+            else:
+                self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+            self.app.sharedMountDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
+        # we have a firmware dependency
+        self.app.sharedMountDataLock.lockForRead()
+        if self.data['FW'] < 21500:
+            numberResults = 10
+        else:
+            numberResults = 11
+        self.app.sharedMountDataLock.unlock()
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 7:
+        if self.messageString.count('#') < numberResults:
             return
-        if self.messageString.count('#') != 7:
+        if self.messageString.count('#') != numberResults:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        # Try and parse the message. In medium we expect 6
+        # Try and parse the message. In medium we expect 10 or 11
         try:
             if len(messageToProcess) == 0:
                 return
@@ -247,6 +227,20 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     self.data['RefractionPressure'] = valueList[5]
                 if len(valueList[6]) > 0:
                     self.data['TrackingRate'] = valueList[6]
+                if len(valueList[7]) > 0:
+                    self.data['TelescopeTempDEC'] = valueList[7]
+                if len(valueList[8]) > 0:
+                    self.data['RefractionStatus'] = valueList[8][0]
+                    self.data['UnattendedFlip'] = valueList[8][1]
+                    self.data['DualAxisTracking'] = valueList[8][2]
+                    self.data['CurrentHorizonLimitHigh'] = valueList[8][3:]
+                if len(valueList[9]) > 0:
+                    self.data['CurrentHorizonLimitLow'] = valueList[2]
+                if self.data['FW'] > 21500 and len(valueList[10]) > 0:
+                    valid, expirationDate = valueList[10].split(',')
+                    self.data['UTCDataValid'] = valid
+                    self.data['UTCDataExpirationDate'] = expirationDate
+
                 self.app.workerMountDispatcher.signalMountLimits.emit()
             else:
                 self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))

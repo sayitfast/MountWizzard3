@@ -28,9 +28,10 @@ from mount import align_stars
 class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_STATUS_SLOW = 10000
-    CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
+    CYCLE = 250
+    CYCLE_STATUS_SLOW = 10000
+    CONNECTION_TIMEOUT = 2000
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
@@ -44,13 +45,14 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.dataTimer = None
         self.cycleTimer = None
         self.isRunning = False
+        self.connectCounter = 0
         self.socket = None
         self.sendLock = False
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
-        self.alignmentStars = align_stars.AlignStars(self.app)
 
+        self.alignmentStars = align_stars.AlignStars(self.app)
         self.app.sharedMountDataLock.lockForWrite()
         self.data['starsTopo'] = list()
         self.data['starsNames'] = list()
@@ -82,13 +84,12 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
         self.dataTimer.timeout.connect(self.getStatusSlow)
-        time.sleep(1)
         self.dataTimer.start(self.CYCLE_STATUS_SLOW)
-        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
         self.cycleTimer.start(self.CYCLE)
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -122,13 +123,30 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        # to get order in connections, we wait for first connecting the once type
-        if self.mountStatus['Once'] and self.data['FW'] > 0:
-            if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
+            if self.connectCounter == 0:
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.app.sharedMountDataLock.unlock()
                 self.sendCommandQueue.queue.clear()
+            else:
+                # connection build up is ongoing
+                pass
+            if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                self.socket.abort()
+                self.connectCounter = 0
+            else:
+                self.connectCounter += 1
+        else:
+            if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                    self.socket.abort()
+                    self.connectCounter = 0
+                else:
+                    self.connectCounter += 1
+            else:
+                # connected
+                pass
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
@@ -138,15 +156,16 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
-        self.signalConnected.emit({'Slow': True})
-        self.getStatusSlow()
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerSlow connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
+        self.signalConnected.emit({'Slow': True})
+        self.getStatusSlow()
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        self.logger.warning('Mount RunnerSlow connection fault: {0}'.format(socketError))
+        if self.socket.error() > 0:
+            self.logger.warning('Mount RunnerSlow connection fault: {0}'.format(socketError))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
@@ -165,17 +184,39 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('Socket RunnerSlow not connected')
 
-    @PyQt5.QtCore.pyqtSlot()
-    def getStatusSlow(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+    def doRefractionUpdate(self):
+        doRefractionUpdate = False
+        pressure = 950
+        temperature = 10
+        if self.app.ui.checkAutoRefractionNone.isChecked():
+            doRefractionUpdate = False
+        if self.app.ui.checkAutoRefractionContinous.isChecked():
+            doRefractionUpdate = True
+            self.app.sharedEnvironmentDataLock.lockForRead()
+            if 'MovingAverageTemperature' in self.app.workerEnvironment.data and 'MovingAveragePressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
+                pressure = self.app.workerEnvironment.data['MovingAveragePressure']
+                temperature = self.app.workerEnvironment.data['MovingAverageTemperature']
+            self.app.sharedEnvironmentDataLock.unlock()
+        if self.app.ui.checkAutoRefractionNotTracking.isChecked():
+            # if there is no tracking, than updating is good
             self.app.sharedMountDataLock.lockForRead()
-            if self.data['FW'] < 21500:
-                self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
-            else:
-                self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+            if 'Status' in self.data:
+                # status 0 means tracking, and in tracking mode we do not want to update
+                if self.data['Status'] != '0':
+                    doRefractionUpdate = True
             self.app.sharedMountDataLock.unlock()
-        self.updateAlignmentStarPositions()
-        self.app.workerMountDispatcher.signalAlignmentStars.emit()
+            self.app.sharedEnvironmentDataLock.lockForRead()
+            if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
+                pressure = self.app.workerEnvironment.data['Pressure']
+                temperature = self.app.workerEnvironment.data['Temperature']
+            self.app.sharedEnvironmentDataLock.unlock()
+        if doRefractionUpdate:
+            if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
+                self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
+                if temperature > 0:
+                    self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
+                else:
+                    self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
 
     def updateAlignmentStarPositions(self):
         # update topo data for alignment stars
@@ -189,50 +230,71 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
             self.app.sharedMountDataLock.unlock()
 
+    def getStatusSlow(self):
+        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
+            # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
+            self.sendCommandQueue.put(command)
+            self.doRefractionUpdate()
+            self.updateAlignmentStarPositions()
+            self.app.workerMountDispatcher.signalAlignmentStars.emit()
+
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
-        # we have a firmware dependency
-        self.app.sharedMountDataLock.lockForRead()
-        if self.data['FW'] < 21500:
-            numberResults = 3
-        else:
-            numberResults = 4
-        self.app.sharedMountDataLock.unlock()
-
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < numberResults:
+        if self.messageString.count('#') < 10:
             return
-        if self.messageString.count('#') != numberResults:
+        if self.messageString.count('#') != 10:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        # Try and parse the message. In medium we expect 3 or 4 depending on FW
+        # Try and parse the message. In Slow we expect 6
         try:
             if len(messageToProcess) == 0:
                 return
             self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
-            #  +029.8# 1 0 1 +90# +00# V,2018-03-24#
+            # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
-            if 2 < len(valueList) < 5:
+            self.logger.info('Slow raw: {0}'.format(messageToProcess))
+            self.logger.info('Slow processed: {0}'.format(valueList))
+            if len(valueList) >= 8:
                 if len(valueList[0]) > 0:
-                    self.data['TelescopeTempDEC'] = valueList[0]
+                    self.data['SiteHeight'] = valueList[0]
                 if len(valueList[1]) > 0:
-                    self.data['RefractionStatus'] = valueList[1][0]
-                    self.data['UnattendedFlip'] = valueList[1][1]
-                    self.data['DualAxisTracking'] = valueList[1][2]
-                    self.data['CurrentHorizonLimitHigh'] = valueList[1][3:]
+                    lon1 = valueList[1]
+                    # due to compatibility to LX200 protocol east is negative
+                    if lon1[0] == '-':
+                        self.data['SiteLongitude'] = lon1.replace('-', '+')
+                    else:
+                        self.data['SiteLongitude'] = lon1.replace('+', '-')
                 if len(valueList[2]) > 0:
-                    self.data['CurrentHorizonLimitLow'] = valueList[2]
-                if self.data['FW'] > 21500 and len(valueList[3]) > 0:
-                    valid, expirationDate = valueList[3].split(',')
-                    self.data['UTCDataValid'] = valid
-                    self.data['UTCDataExpirationDate'] = expirationDate
+                    self.data['SiteLatitude'] = valueList[2]
+                if len(valueList[3]) > 0:
+                    self.data['FirmwareDate'] = valueList[3]
+                if len(valueList[4]) > 0:
+                    self.data['FirmwareNumber'] = valueList[4]
+                    fw = self.data['FirmwareNumber'].split('.')
+                    if len(fw) == 3:
+                        self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
+                    else:
+                        self.data['FW'] = 0
+                if len(valueList[5]) > 0:
+                    self.data['FirmwareProductName'] = valueList[5]
+                if len(valueList[6]) > 0:
+                    self.data['FirmwareTime'] = valueList[6]
+                if len(valueList[7]) > 0:
+                    self.data['HardwareVersion'] = valueList[7]
+                self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
+                self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
+                self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
+                self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
+                self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
             else:
                 self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:

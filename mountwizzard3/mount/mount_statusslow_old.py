@@ -22,15 +22,15 @@ import PyQt5
 import time
 from queue import Queue
 from astrometry import transform
+from mount import align_stars
 
 
-class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
+class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    signalDestruct = PyQt5.QtCore.pyqtSignal()
+    CYCLE_STATUS_SLOW = 10000
     CYCLE = 250
-    CYCLE_STATUS_ONCE = 500
-    CONNECTION_TIMEOUT = 2000
+    signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
@@ -44,15 +44,27 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.dataTimer = None
         self.cycleTimer = None
         self.isRunning = False
-        self.connectCounter = 0
         self.socket = None
         self.sendLock = False
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
+        self.alignmentStars = align_stars.AlignStars(self.app)
+
+        self.app.sharedMountDataLock.lockForWrite()
+        self.data['starsTopo'] = list()
+        self.data['starsNames'] = list()
+        self.data['starsICRS'] = list()
+        self.app.sharedMountDataLock.unlock()
+        for name in self.alignmentStars.stars:
+            self.app.sharedMountDataLock.lockForWrite()
+            self.data['starsNames'].append(name)
+            self.data['starsICRS'].append(self.alignmentStars.stars[name])
+            self.app.sharedMountDataLock.unlock()
+        self.updateAlignmentStarPositions()
 
     def run(self):
-        self.logger.info('mount once started')
+        self.logger.info('mount slow started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -69,8 +81,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         # timers
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatusOnce)
-        self.dataTimer.start(self.CYCLE_STATUS_ONCE)
+        self.dataTimer.timeout.connect(self.getStatusSlow)
+        self.dataTimer.start(self.CYCLE_STATUS_SLOW)
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
@@ -82,11 +94,11 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         if self.isRunning:
             self.isRunning = False
             self.signalDestruct.emit()
-            self.signalConnected.emit({'Once': False})
+            self.signalConnected.emit({'Slow': False})
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('mount once stopped')
+        self.logger.info('mount slow stopped')
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
@@ -109,57 +121,40 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
-            if self.connectCounter == 0:
+        # to get order in connections, we wait for first connecting the once type
+        if self.mountStatus['Once'] and self.data['FW'] > 0:
+            if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.app.sharedMountDataLock.unlock()
                 self.sendCommandQueue.queue.clear()
-            else:
-                # connection build up is ongoing
-                pass
-            if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
-                self.socket.abort()
-                self.connectCounter = 0
-            else:
-                self.connectCounter += 1
-        else:
-            if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
-                    self.socket.abort()
-                    self.connectCounter = 0
-                else:
-                    self.connectCounter += 1
-            else:
-                # connected
-                pass
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
         self.app.sharedMountDataLock.lockForRead()
-        self.logger.debug('Mount RunnerOnce found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.debug('Mount RunnerSlow found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
+        self.signalConnected.emit({'Slow': True})
+        self.getStatusSlow()
         self.app.sharedMountDataLock.lockForRead()
-        self.logger.info('Mount RunnerOnce connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount RunnerSlow connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
-        self.signalConnected.emit({'Once': True})
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        if self.socket.error() > 0:
-            self.logger.warning('Mount RunnerOnce connection fault: {0}'.format(socketError))
+        self.logger.warning('Mount RunnerSlow connection fault: {0}'.format(socketError))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
-        self.logger.debug('Mount RunnerOnce connection has state: {0}'.format(self.socket.state()))
+        self.logger.debug('Mount RunnerSlow connection has state: {0}'.format(self.socket.state()))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
-        self.logger.info('Mount RunnerOnce connection is disconnected from host')
-        self.signalConnected.emit({'Once': False})
+        self.logger.info('Mount RunnerSlow connection is disconnected from host')
+        self.signalConnected.emit({'Slow': False})
 
     def sendCommand(self, command):
         if self.isRunning:
@@ -167,73 +162,78 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
-                self.logger.warning('Socket RunnerOnce not connected')
+                self.logger.warning('Socket RunnerSlow not connected')
 
-    def getStatusOnce(self):
+    @PyQt5.QtCore.pyqtSlot()
+    def getStatusSlow(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
-            # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-            self.sendCommandQueue.put(command)
-            self.dataTimer.stop()
+            self.app.sharedMountDataLock.lockForRead()
+            if self.data['FW'] < 21500:
+                self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
+            else:
+                self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+            self.app.sharedMountDataLock.unlock()
+        self.updateAlignmentStarPositions()
+        self.app.workerMountDispatcher.signalAlignmentStars.emit()
+
+    def updateAlignmentStarPositions(self):
+        # update topo data for alignment stars
+        self.app.sharedMountDataLock.lockForWrite()
+        self.data['starsTopo'] = list()
+        self.app.sharedMountDataLock.unlock()
+        for name in self.alignmentStars.stars:
+            self.app.sharedMountDataLock.lockForWrite()
+            ra = self.transform.degStringToDecimal(self.alignmentStars.stars[name][0], ' ')
+            dec = self.transform.degStringToDecimal(self.alignmentStars.stars[name][1], ' ')
+            self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
+            self.app.sharedMountDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
+        # we have a firmware dependency
+        self.app.sharedMountDataLock.lockForRead()
+        if self.data['FW'] < 21500:
+            numberResults = 3
+        else:
+            numberResults = 4
+        self.app.sharedMountDataLock.unlock()
+
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 10:
+        if self.messageString.count('#') < numberResults:
             return
-        if self.messageString.count('#') != 10:
+        if self.messageString.count('#') != numberResults:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        # Try and parse the message. In once we expect 6
+        # Try and parse the message. In medium we expect 3 or 4 depending on FW
         try:
             if len(messageToProcess) == 0:
                 return
             self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
-            # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
+            #  +029.8# 1 0 1 +90# +00# V,2018-03-24#
             # all parameters are delivered
-            self.logger.info('Once raw: {0}'.format(messageToProcess))
-            self.logger.info('Once processed: {0}'.format(valueList))
-            if len(valueList) >= 8:
+            if 2 < len(valueList) < 5:
                 if len(valueList[0]) > 0:
-                    self.data['SiteHeight'] = valueList[0]
+                    self.data['TelescopeTempDEC'] = valueList[0]
                 if len(valueList[1]) > 0:
-                    lon1 = valueList[1]
-                    # due to compatibility to LX200 protocol east is negative
-                    if lon1[0] == '-':
-                        self.data['SiteLongitude'] = lon1.replace('-', '+')
-                    else:
-                        self.data['SiteLongitude'] = lon1.replace('+', '-')
+                    self.data['RefractionStatus'] = valueList[1][0]
+                    self.data['UnattendedFlip'] = valueList[1][1]
+                    self.data['DualAxisTracking'] = valueList[1][2]
+                    self.data['CurrentHorizonLimitHigh'] = valueList[1][3:]
                 if len(valueList[2]) > 0:
-                    self.data['SiteLatitude'] = valueList[2]
-                if len(valueList[3]) > 0:
-                    self.data['FirmwareDate'] = valueList[3]
-                if len(valueList[4]) > 0:
-                    self.data['FirmwareNumber'] = valueList[4]
-                    fw = self.data['FirmwareNumber'].split('.')
-                    if len(fw) == 3:
-                        self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
-                    else:
-                        self.data['FW'] = 0
-                if len(valueList[5]) > 0:
-                    self.data['FirmwareProductName'] = valueList[5]
-                if len(valueList[6]) > 0:
-                    self.data['FirmwareTime'] = valueList[6]
-                if len(valueList[7]) > 0:
-                    self.data['HardwareVersion'] = valueList[7]
-                self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
-                self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
-                self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
-                self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
-                self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
+                    self.data['CurrentHorizonLimitLow'] = valueList[2]
+                if self.data['FW'] > 21500 and len(valueList[3]) > 0:
+                    valid, expirationDate = valueList[3].split(',')
+                    self.data['UTCDataValid'] = valid
+                    self.data['UTCDataExpirationDate'] = expirationDate
             else:
-                self.logger.warning('Parsing Status Once combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
+                self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
             self.logger.error('Problem parsing response, error: {0}, message:{1}'.format(e, messageToProcess))
         finally:

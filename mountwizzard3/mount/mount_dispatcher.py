@@ -27,7 +27,6 @@ from mount import mount_command
 from mount import mount_statusfast
 from mount import mount_statusmedium
 from mount import mount_statusslow
-from mount import mount_statusonce
 from mount import mount_getalignmodel
 from mount import mount_setalignmodel
 from mount import mount_getmodelnames
@@ -90,7 +89,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             'Fast': False,
             'Medium': False,
             'Slow': False,
-            'Once': False,
             'GetAlign': False,
             'SetAlign': False,
             'GetName': False,
@@ -137,12 +135,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
-        # once status thread
-        self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnected, self.mountStatus)
-        self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
-        self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
-        self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
         self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
@@ -288,7 +280,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
         # if we had a connection to the mount, the site data should be there.
-        if self.mountStatus['Once']:
+        if self.mountStatus['Slow']:
             self.app.config['SiteLongitude'] = copy.copy(self.data['SiteLongitude'])
             self.app.config['SiteLatitude'] = copy.copy(self.data['SiteLatitude'])
             self.app.config['SiteHeight'] = copy.copy(self.data['SiteHeight'])
@@ -305,7 +297,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.workerMountStatusRunnerFast.stop()
             self.workerMountStatusRunnerMedium.stop()
             self.workerMountStatusRunnerSlow.stop()
-            self.workerMountStatusRunnerOnce.stop()
             self.workerMountGetAlignmentModel.stop()
             self.workerMountSetAlignmentModel.stop()
             self.workerMountCommandRunner.stop()
@@ -320,7 +311,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.threadMountSetAlignmentModel.start()
             self.threadMountGetModelNames.start()
             self.threadMountGetAlignmentModel.start()
-            self.threadMountStatusRunnerOnce.start()
             self.threadMountStatusRunnerSlow.start()
             self.threadMountStatusRunnerMedium.start()
             self.threadMountStatusRunnerFast.start()
@@ -346,7 +336,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountSetAlignmentModel.start()
         self.threadMountGetModelNames.start()
         self.threadMountGetAlignmentModel.start()
-        self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
@@ -373,7 +362,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountStatusRunnerFast.stop()
         self.workerMountStatusRunnerMedium.stop()
         self.workerMountStatusRunnerSlow.stop()
-        self.workerMountStatusRunnerOnce.stop()
         self.workerMountGetAlignmentModel.stop()
         self.workerMountSetAlignmentModel.stop()
         self.workerMountCommandRunner.stop()

@@ -64,12 +64,12 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-
-        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
+        # timers
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
         self.cycleTimer.start(self.CYCLE)
+        self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -102,8 +102,8 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
                 self.sendCommand(command)
 
     def doReconnect(self):
-        # to get order in connections, we wait for first connecting the once type
-        if self.mountStatus['Once'] and self.data['FW'] > 0:
+        # to get order in connections, we wait for first connecting the Slow type
+        if self.mountStatus['Slow'] and self.data['FW'] > 0:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
                 if self.connectCounter == 0:
                     self.app.sharedMountDataLock.lockForRead()
