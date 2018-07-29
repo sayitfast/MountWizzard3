@@ -265,7 +265,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             valueList = messageToProcess.strip('#').split('#')
             # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
-            self.logger.info('Slow raw: {0}'.format(messageToProcess))
+            self.logger.debug('Slow raw: {0}'.format(messageToProcess))
             if len(valueList) >= 8:
                 if len(valueList[0]) > 0:
                     self.data['SiteHeight'] = valueList[0]
@@ -303,6 +303,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('Problem parsing response, error: {0}, message:{1}'.format(e, messageToProcess))
         finally:
-            self.logger.info('Slow processed: {0}'.format(self.data))
+            self.logger.debug('Slow processed: {0}'.format(self.data))
             self.app.sharedMountDataLock.unlock()
         self.sendLock = False
