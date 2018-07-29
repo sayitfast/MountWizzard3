@@ -180,14 +180,14 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(4000).decode()
 
-        if self.messageString.count('#') != (self.numberAlignmentPoints + 2):
-            if self.messageString.count('#') > (self.numberAlignmentPoints + 2):
-                self.logger.error('Receiving data got error:{0}'.format(self.messageString))
-                messageToProcess = self.messageString
-                self.messageString = ''
-            else:
-                # go on receiving data
-                return
+        while self.socket.bytesAvailable() and self.isRunning:
+            self.messageString += self.socket.read(1024).decode()
+        if self.messageString.count('#') < self.numberAlignmentPoints + 3:
+            return
+        if self.messageString.count('#') != self.numberAlignmentPoints + 3:
+            self.logger.error('Receiving data got error: {0}'.format(self.messageString))
+            self.messageString = ''
+            messageToProcess = ''
         else:
             messageToProcess = self.messageString
             self.messageString = ''
@@ -200,14 +200,15 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         # now parsing the result
         try:
             self.result = (valueList[0] == 'V')
-            if valueList[0] != 'V':
+            if valueList[self.numberAlignmentPoints + 1] != 'V':
                 self.logger.error('Programming alignment model failed')
             if len(valueList[self.numberAlignmentPoints + 2]) > 0:
                 self.app.sharedMountDataLock.lockForWrite()
                 self.data['NumberAlignmentStars'] = int(valueList[self.numberAlignmentPoints + 2])
                 self.app.sharedMountDataLock.unlock()
+                self.logger.info('Parsing SetAlignmentModel values: {0}'.format(valueList))
         except Exception as e:
-            self.logger.error('Parsing SetAlignmentModel got error:{0}, values:{1}'.format(e, valueList))
+            self.logger.error('Parsing SetAlignmentModel got error: {0}, values: {1}'.format(e, valueList))
         finally:
             pass
         self.sendLock = False
