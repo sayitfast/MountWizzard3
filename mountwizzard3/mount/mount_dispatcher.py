@@ -606,7 +606,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.cancelRunTargetRMS = False
         self.app.messageQueue.put('#BWTarget RMS Run started\n')
         self.app.sharedMountDataLock.lockForRead()
-        condition = ('Number' not in self.data or self.data['Number'] < 4)
+        condition = ('NumberAlignmentStars' not in self.data or self.data['NumberAlignmentStars'] < 4)
         self.app.sharedMountDataLock.unlock()
         if condition:
             self.runTargetRMS = False
@@ -641,12 +641,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
         self.app.sharedMountDataLock.lockForRead()
-        if self.data['Number'] < 4:
+        if self.data['NumberAlignmentStars'] < 4:
             return True
         # find worst point
         maxError = 0
         worstPointIndex = 0
-        for i in range(0, self.data['Number']):
+        for i in range(0, self.data['NumberAlignmentStars']):
             if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]

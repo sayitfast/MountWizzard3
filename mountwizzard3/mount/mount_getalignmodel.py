@@ -42,6 +42,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.connectCounter = 0
+        self.numberRequestedAlignmentStars = 0
         self.socket = None
         self.sendLock = False
         self.cycleTimer = None
@@ -163,31 +164,41 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket GetAlignmentModel not connected')
 
     def getAlignmentModel(self):
-        self.data['ModelLoading'] = True
-        if self.data['FW'] < 21500:
-            command = ':getalst#'
-        else:
-            command = ':getalst#:getain#'
-        # asking for 100 points data
-        for i in range(1, 102):
-            command += (':getalp{0:d}#'.format(i))
-        self.sendCommandQueue.put(command)
+        # asking for all model names
+        if 'NumberAlignmentStars' in self.data:
+            command = ''
+            self.numberRequestedAlignmentStars = int(self.data['NumberAlignmentStars'])
+            self.data['ModelLoading'] = True
+            # asking for all points data
+            for i in range(1, self.numberRequestedAlignmentStars + 1):
+                command += (':getalp{0:d}#'.format(i))
+            if self.data['FW'] >= 21500:
+                command += ':getain#'
+            self.sendCommandQueue.put(command)
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
+        # we have a firmware dependency
+        self.app.sharedMountDataLock.lockForRead()
+        if self.data['FW'] < 21500:
+            numberResults = self.numberRequestedAlignmentStars
+        else:
+            numberResults = self.numberRequestedAlignmentStars + 1
+        self.app.sharedMountDataLock.unlock()
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(4000).decode()
-        # if the last characters are not E#, there are more points to receive
-        if not self.messageString.endswith('E#'):
-            return
+        if self.messageString.count('#') != numberResults:
+            if self.messageString.count('#') > numberResults:
+                self.logger.error('Receiving data got error:{0}'.format(self.messageString))
+                messageToProcess = self.messageString
+                self.messageString = ''
+            else:
+                # go on receiving data
+                return
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        while messageToProcess.endswith('E#'):
-            messageToProcess = messageToProcess.rstrip('E#')
-        while messageToProcess.startswith('E#'):
-            messageToProcess = messageToProcess.lstrip('E#')
         # now transfer the model data
         try:
             if len(messageToProcess) == 0:
@@ -196,21 +207,36 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.logger.info('Raw data from Mount: {0}'.format(messageToProcess))
             valueList = messageToProcess.strip('#').split('#')
             # now the first part of the command cluster
-            numberStars = int(valueList[0])
-            self.logger.info('Align info number stars: {0}'.format(numberStars))
-            self.data['NumberAlignmentStars'] = numberStars
-            self.data['Number'] = numberStars
-            del valueList[0]
-            if numberStars < 3:
-                valueList = ['E,E,E,E,E,E,E,E,E']
-            self.logger.info('Align info data: {0}'.format(valueList[0]))
-            # now the second part of the command cluster. it is related to firmware feature
+            self.data['ModelIndex'] = list()
+            self.data['ModelAzimuth'] = list()
+            self.data['ModelAltitude'] = list()
+            self.data['ModelError'] = list()
+            self.data['ModelErrorAngle'] = list()
+            # we start every time with index 0, because if the first parsing took place, the first list element will be deleted
+            self.logger.info('Align info points data: {0}'.format(valueList))
+            for i in range(0, len(valueList)):
+                values = valueList[i].split(',')
+                ha = values[0]
+                dec = values[1]
+                ErrorRMS = float(values[2])
+                ErrorAngle = float(values[3])
+                dec = dec.replace('*', ':')
+                RaJNow = self.transform.degStringToDecimal(ha)
+                DecJNow = self.transform.degStringToDecimal(dec)
+                az, alt = self.transform.topocentricToAzAlt(RaJNow, DecJNow)
+                # index should start with 0, but numbering in mount starts with 1
+                self.data['ModelIndex'].append(i)
+                self.data['ModelAzimuth'].append(az)
+                self.data['ModelAltitude'].append(alt)
+                self.data['ModelError'].append(ErrorRMS)
+                self.data['ModelErrorAngle'].append(ErrorAngle)
+
+            # now the second part of the command cluster
             if self.data['FW'] > 21500:
-                if numberStars < 3:
-                    valueList = ['E,E,E,E,E,E,E,E,E']
+                self.logger.info('Align info data: {0}'.format(valueList[numberResults - 1]))
                 # here we have more data in
-                if len(valueList[0]) > 3:
-                    a1, a2, a3, a4, a5, a6, a7, a8, a9 = valueList[0].split(',')
+                if len(valueList[numberResults - 1]) > 0:
+                    a1, a2, a3, a4, a5, a6, a7, a8, a9 = valueList[numberResults - 1].split(',')
                     # 'E' could be sent if not calculable or no value available
                     if a1 != 'E':
                         self.data['ModelErrorAzimuth'] = float(a1)
@@ -267,32 +293,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                     self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
                 else:
                     self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
-                # remove the first remaining element in list if it was there
-                del valueList[0]
-            # now the third part of the command cluster
-            self.data['ModelIndex'] = list()
-            self.data['ModelAzimuth'] = list()
-            self.data['ModelAltitude'] = list()
-            self.data['ModelError'] = list()
-            self.data['ModelErrorAngle'] = list()
-            # we start every time with index 0, because if the first parsing took place, the first list element will be deleted
-            self.logger.info('Align info points data: {0}'.format(valueList))
-            for i in range(0, len(valueList)):
-                values = valueList[i].split(',')
-                ha = values[0]
-                dec = values[1]
-                ErrorRMS = float(values[2])
-                ErrorAngle = float(values[3])
-                dec = dec.replace('*', ':')
-                RaJNow = self.transform.degStringToDecimal(ha)
-                DecJNow = self.transform.degStringToDecimal(dec)
-                az, alt = self.transform.topocentricToAzAlt(RaJNow, DecJNow)
-                # index should start with 0, but numbering in mount starts with 1
-                self.data['ModelIndex'].append(i)
-                self.data['ModelAzimuth'].append(az)
-                self.data['ModelAltitude'].append(alt)
-                self.data['ModelError'].append(ErrorRMS)
-                self.data['ModelErrorAngle'].append(ErrorAngle)
+
         except Exception as e:
             self.logger.error('Parsing GetAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
