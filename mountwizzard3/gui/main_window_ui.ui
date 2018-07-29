@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -6608,7 +6608,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>155</y>
+       <y>145</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6624,7 +6624,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>125</y>
+       <y>120</y>
        <width>171</width>
        <height>21</height>
       </rect>
@@ -6637,14 +6637,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Generate Model Points</string>
+      <string>Generate model points</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_179">
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>195</y>
+       <y>180</y>
        <width>101</width>
        <height>26</height>
       </rect>
@@ -6662,7 +6662,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>195</y>
+       <y>180</y>
        <width>91</width>
        <height>26</height>
       </rect>
@@ -6680,7 +6680,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>135</x>
-       <y>310</y>
+       <y>285</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6696,7 +6696,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>310</y>
+       <y>285</y>
        <width>116</width>
        <height>31</height>
       </rect>
@@ -6712,7 +6712,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>195</y>
+       <y>180</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6766,7 +6766,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>195</y>
+       <y>180</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6804,7 +6804,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>175</y>
+       <y>50</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6819,8 +6819,8 @@ manually</string>
     <widget class="Line" name="line_26">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>40</y>
+       <x>10</x>
+       <y>360</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6836,7 +6836,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>215</y>
+       <y>90</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6855,7 +6855,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>145</y>
+       <y>140</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6870,8 +6870,8 @@ manually</string>
     <widget class="QPushButton" name="btn_generateDSOPoints">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>50</y>
+       <x>10</x>
+       <y>365</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6909,7 +6909,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>300</y>
+       <y>280</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6924,8 +6924,8 @@ manually</string>
     <widget class="QDoubleSpinBox" name="numberHoursDSO">
      <property name="geometry">
       <rect>
-       <x>450</x>
-       <y>90</y>
+       <x>60</x>
+       <y>400</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6962,8 +6962,8 @@ manually</string>
     <widget class="QLabel" name="label_181">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>90</y>
+       <x>20</x>
+       <y>400</y>
        <width>41</width>
        <height>26</height>
       </rect>
@@ -6980,8 +6980,8 @@ manually</string>
     <widget class="QLabel" name="label_188">
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>90</y>
+       <x>130</x>
+       <y>400</y>
        <width>41</width>
        <height>26</height>
       </rect>
@@ -6998,8 +6998,8 @@ manually</string>
     <widget class="QDoubleSpinBox" name="numberPointsDSO">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>90</y>
+       <x>170</x>
+       <y>400</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7036,8 +7036,8 @@ manually</string>
     <widget class="QLabel" name="label_189">
      <property name="geometry">
       <rect>
-       <x>630</x>
-       <y>90</y>
+       <x>240</x>
+       <y>400</y>
        <width>61</width>
        <height>26</height>
       </rect>
@@ -7054,8 +7054,8 @@ manually</string>
     <widget class="QDoubleSpinBox" name="numberHoursPreview">
      <property name="geometry">
       <rect>
-       <x>690</x>
-       <y>90</y>
+       <x>300</x>
+       <y>400</y>
        <width>41</width>
        <height>26</height>
       </rect>
@@ -7093,7 +7093,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>225</y>
+       <y>210</y>
        <width>101</width>
        <height>26</height>
       </rect>
@@ -7111,7 +7111,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>225</y>
+       <y>210</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7149,7 +7149,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>225</y>
+       <y>210</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7187,7 +7187,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>225</y>
+       <y>210</y>
        <width>91</width>
        <height>26</height>
       </rect>
@@ -7205,7 +7205,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>195</y>
+       <y>180</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7229,7 +7229,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>230</y>
+       <y>215</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7253,7 +7253,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>195</y>
+       <y>180</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7277,7 +7277,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>230</y>
+       <y>215</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7301,7 +7301,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>310</y>
+       <y>285</y>
        <width>106</width>
        <height>31</height>
       </rect>
@@ -7316,8 +7316,8 @@ manually</string>
     <widget class="QLabel" name="label_204">
      <property name="geometry">
       <rect>
-       <x>740</x>
-       <y>90</y>
+       <x>350</x>
+       <y>400</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -7335,7 +7335,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>165</y>
+       <y>40</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7351,7 +7351,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>145</y>
+       <y>20</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -7364,14 +7364,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Full Model</string>
+      <string>Model build</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_113">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>260</y>
        <width>311</width>
        <height>21</height>
       </rect>
@@ -7384,14 +7384,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Generate Model Points based on greater circles</string>
+      <string>Generate model points based on greater circles</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_136">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>20</y>
+       <x>10</x>
+       <y>340</y>
        <width>311</width>
        <height>21</height>
       </rect>
@@ -7404,7 +7404,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Generate Model Points based on tracks</string>
+      <string>Generate model points based on tracks</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_213">
@@ -7424,7 +7424,7 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Load Full Model Points File</string>
+      <string>Load full model points file</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_modelFullPointsFileName">
@@ -7470,7 +7470,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>75</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -7497,7 +7497,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>80</y>
+       <y>75</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -7524,7 +7524,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>280</x>
-       <y>80</y>
+       <y>75</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -7548,7 +7548,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>80</y>
+       <y>75</y>
        <width>81</width>
        <height>26</height>
       </rect>
@@ -7572,7 +7572,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>345</y>
+       <y>165</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -7614,7 +7614,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>345</y>
+       <y>165</y>
        <width>116</width>
        <height>21</height>
       </rect>
@@ -7635,7 +7635,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>400</y>
+       <y>220</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -7666,7 +7666,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>410</x>
-       <y>345</y>
+       <y>165</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -7687,7 +7687,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>315</y>
+       <y>135</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -7700,14 +7700,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Modeling Progress</string>
+      <string>Modeling progress</string>
      </property>
     </widget>
     <widget class="Line" name="line_45">
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>335</y>
+       <y>155</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7725,8 +7725,8 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>400</y>
+       <x>400</x>
+       <y>305</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -7735,14 +7735,14 @@ manually</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run model making from a data file stored as analyse file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Choose file and program model</string>
+      <string>Choose model from file and program</string>
      </property>
     </widget>
     <widget class="Line" name="line_39">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>390</y>
+       <x>400</x>
+       <y>295</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7757,8 +7757,8 @@ manually</string>
     <widget class="QLabel" name="label_205">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>370</y>
+       <x>400</x>
+       <y>275</y>
        <width>151</width>
        <height>21</height>
       </rect>
@@ -7778,7 +7778,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>345</y>
+       <y>165</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -7820,7 +7820,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>580</x>
-       <y>370</y>
+       <y>190</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -7841,7 +7841,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>680</x>
-       <y>370</y>
+       <y>190</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -7883,7 +7883,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>500</x>
-       <y>370</y>
+       <y>190</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -7925,7 +7925,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>410</x>
-       <y>370</y>
+       <y>190</y>
        <width>76</width>
        <height>21</height>
       </rect>
@@ -7940,6 +7940,25 @@ manually</string>
      </property>
      <property name="text">
       <string>Actual Time:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_runBatchCombineModel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>345</y>
+       <width>351</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Combining two models e.g. full model and DSO path or Initial model and something else and program it to mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Combine two models and program</string>
      </property>
     </widget>
     <zorder>line_42</zorder>
@@ -7998,6 +8017,7 @@ manually</string>
     <zorder>le_modelingTimeFinished</zorder>
     <zorder>le_modelingTimeActual</zorder>
     <zorder>label_60</zorder>
+    <zorder>btn_runBatchCombineModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
