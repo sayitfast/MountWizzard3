@@ -236,6 +236,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_saveModel.clicked.connect(self.saveSelectedModel)
         self.app.ui.btn_loadModel.clicked.connect(self.loadSelectedModel)
         self.app.ui.btn_deleteModel.clicked.connect(self.deleteSelectedModel)
+        self.app.ui.btn_refreshModel.clicked.connect(self.refreshModelNames)
         self.app.ui.listModelName.itemDoubleClicked.connect(self.getListAction)
         self.signalMountShowModelNames.connect(self.setModelNamesList)
         self.signalMountConnected.connect(self.setMountConnectionStatus)
@@ -523,13 +524,24 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             action = {
                 'Worker': [
                     {
-                        'Button': self.app.ui.btn_deleteModel,
+                        'Button': self.app.ui.btn_refreshModel,
                         'Parameter': [name],
                         'Method': self.mountModelHandling.deleteModel,
                     }
                 ]
             }
             self.commandDispatcherQueue.put(action)
+
+    def refreshModelNames(self):
+        action = {
+            'Worker': [
+                {
+                    'Button': self.app.ui.btn_refreshModel,
+                    'Method': self.mountModelHandling.refreshModel,
+                }
+            ]
+        }
+        self.commandDispatcherQueue.put(action)
 
     def mountShutdown(self):
         # mount has to run

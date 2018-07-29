@@ -28,6 +28,9 @@ class MountModelHandling:
         self.app = app
         self.data = data
 
+    def refreshModel(self):
+        self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
+
     def saveModel(self, target):
         self.app.mountCommandQueue.put(':modeldel0{0}#'.format(target))
         commandSet = {'command': ':modelsv0{0}#'.format(target), 'reply': ''}

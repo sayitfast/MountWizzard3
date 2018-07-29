@@ -319,6 +319,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_loadModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DirOpenIcon))
         self.widgetIcon(self.ui.btn_saveModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
         self.widgetIcon(self.ui.btn_deleteModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_TrashIcon))
+        self.widgetIcon(self.ui.btn_refreshModel, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_BrowserReload))
 
         # PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward)
         # the icon picture in gui

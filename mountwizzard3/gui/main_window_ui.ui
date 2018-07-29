@@ -8537,6 +8537,22 @@ manually</string>
       <bool>false</bool>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_refreshModel">
+     <property name="geometry">
+      <rect>
+       <x>675</x>
+       <y>340</y>
+       <width>81</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes the actual selected alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Refresh</string>
+     </property>
+    </widget>
     <zorder>line_18</zorder>
     <zorder>line_44</zorder>
     <zorder>label_37</zorder>
@@ -8561,6 +8577,7 @@ manually</string>
     <zorder>btn_loadModel</zorder>
     <zorder>btn_deleteModel</zorder>
     <zorder>checkShowErrorValues</zorder>
+    <zorder>btn_refreshModel</zorder>
    </widget>
    <widget class="QWidget" name="Analyse">
     <attribute name="title">
