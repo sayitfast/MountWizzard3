@@ -204,8 +204,8 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
 
         # gui for additional windows
-        self.imageWindow = image_window.ImagesWindow(self)
         self.messageWindow = message_window.MessageWindow(self)
+        self.imageWindow = image_window.ImagesWindow(self)
         self.analyseWindow = analyse_window.AnalyseWindow(self)
         self.hemisphereWindow = hemisphere_window.HemisphereWindow(self)
 
@@ -283,6 +283,7 @@ class MountWizzardApp(widget.MwWidget):
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
         self.ui.btn_runBatchCombineModel.clicked.connect(self.runBatchCombineModel)
+        self.ui.btn_resetWindowSizes.clicked.connect(self.resetWindowsSizes)
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
         self.signalSetMountStatus.connect(self.setMountStatus)
@@ -779,6 +780,29 @@ class MountWizzardApp(widget.MwWidget):
             self.saveConfigData(value + '.cfg')
         else:
             self.logger.warning('No config file selected')
+
+    def resetWindowsSizes(self):
+        x = self.pos().x()
+        y = self.pos().y()
+        # now align all windows to the middle an align them
+        self.messageWindow.showWindow()
+        self.messageWindow.resize(791, 641)
+        self.messageWindow.move(x + 30, y + 30)
+        self.imageWindow.showWindow()
+        self.imageWindow.resize(791, 641)
+        self.imageWindow.move(x + 60, y + 60)
+        self.analyseWindow.showWindow()
+        self.analyseWindow.resize(791, 641)
+        self.analyseWindow.move(x + 90, y + 90)
+        self.hemisphereWindow.showWindow()
+        self.hemisphereWindow.resize(791, 641)
+        self.hemisphereWindow.move(x + 120, y + 120)
+        self.move(x, y)
+        self.hemisphereWindow.activateWindow()
+        self.analyseWindow.activateWindow()
+        self.imageWindow.activateWindow()
+        self.messageWindow.activateWindow()
+        self.activateWindow()
 
     def checkASCOM(self):
         if platform.system() != 'Windows':
