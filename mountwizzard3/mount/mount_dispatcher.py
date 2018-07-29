@@ -599,6 +599,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         else:
             self.logger.warning('Model could not be calculated with current data!')
             self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
+        time.sleep(1)
         self.commandDispatcherQueue.put('ReloadAlignmentModel')
 
     def runTargetRMSAlignment(self):

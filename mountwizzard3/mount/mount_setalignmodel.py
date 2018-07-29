@@ -171,7 +171,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
                                                                  self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
                                                                  self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
                                                                  self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
-        command += ':endalig#'
+        command += ':endalig#:getalst#'
         self.sendCommandQueue.put(command)
 
     @PyQt5.QtCore.pyqtSlot()
@@ -180,8 +180,8 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(4000).decode()
 
-        if self.messageString.count('#') != (self.numberAlignmentPoints + 1):
-            if self.messageString.count('#') > (self.numberAlignmentPoints + 1):
+        if self.messageString.count('#') != (self.numberAlignmentPoints + 2):
+            if self.messageString.count('#') > (self.numberAlignmentPoints + 2):
                 self.logger.error('Receiving data got error:{0}'.format(self.messageString))
                 messageToProcess = self.messageString
                 self.messageString = ''
@@ -194,7 +194,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         # now we got all information about the model write run
         valueList = messageToProcess.strip('#').split('#')
         # quick check:
-        if len(valueList) != self.numberAlignmentPoints + 1:
+        if len(valueList) != self.numberAlignmentPoints + 2:
             # error happened
             self.logger.error('Parsing SetAlignmentModel wrong numbers: value:{0}, points:{1}, values:{2}'.format(len(valueList), self.numberAlignmentPoints, valueList))
         # now parsing the result
@@ -202,6 +202,8 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
             self.result = (valueList[0] == 'V')
             if valueList[0] != 'V':
                 self.logger.error('Programming alignment model failed')
+            if len(valueList[self.numberAlignmentPoints + 2]) > 0:
+                self.data['NumberAlignmentStars'] = valueList[self.numberAlignmentPoints + 2]
         except Exception as e:
             self.logger.error('Parsing SetAlignmentModel got error:{0}, values:{1}'.format(e, valueList))
         finally:
