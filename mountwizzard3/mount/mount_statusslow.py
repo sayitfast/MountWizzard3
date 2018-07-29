@@ -175,6 +175,10 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     def handleDisconnect(self):
         self.logger.info('Mount RunnerSlow connection is disconnected from host')
         self.signalConnected.emit({'Slow': False})
+        self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
+        self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
+        self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
+        self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
 
     def sendCommand(self, command):
         if self.isRunning:
@@ -293,10 +297,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                     self.data['NumberModelNames'] = int(valueList[8])
                 if len(valueList[9]) > 0:
                     self.data['NumberAlignmentStars'] = int(valueList[9])
-                self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
-                self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
-                self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
-                self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
                 self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
             else:
                 self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
