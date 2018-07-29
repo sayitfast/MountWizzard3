@@ -1493,7 +1493,7 @@ if __name__ == "__main__":
     splash_pix = PyQt5.QtGui.QPixmap(':/mw.ico')
     splash = SplashScreen(splash_pix, app)
     splash.showMessage('Start initialising')
-    splash.setValue(20)
+    splash.setValue(10)
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -1503,7 +1503,7 @@ if __name__ == "__main__":
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
     splash.showMessage('Checking work directories')
-    splash.setValue(30)
+    splash.setValue(20)
 
     # population the working directory with necessary subdir
     if not os.path.isdir(os.getcwd() + '/analysedata'):
@@ -1514,7 +1514,7 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/config')
 
     splash.showMessage('Starting logging')
-    splash.setValue(40)
+    splash.setValue(30)
 
     # start logging with basic system data for information
     hostSummary = socket.gethostbyname_ex(socket.gethostname())
@@ -1550,7 +1550,7 @@ if __name__ == "__main__":
     logging.info('')
 
     splash.showMessage('Checking work directories')
-    splash.setValue(50)
+    splash.setValue(40)
 
     # checking if writable
     if not os.access(os.getcwd(), os.W_OK):
@@ -1563,7 +1563,7 @@ if __name__ == "__main__":
         logging.error('no write access to /analysedata')
 
     splash.showMessage('Preparing application')
-    splash.setValue(60)
+    splash.setValue(50)
 
     # and finally starting the application
     sys.excepthook = except_hook
