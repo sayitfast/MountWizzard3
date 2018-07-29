@@ -20,6 +20,7 @@
 import logging
 import PyQt5
 import time
+import copy
 from queue import Queue
 from astrometry import transform
 
@@ -167,7 +168,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         # asking for all model names
         if 'NumberAlignmentStars' in self.data:
             command = ''
-            self.numberRequestedAlignmentStars = int(self.data['NumberAlignmentStars'])
+            self.numberRequestedAlignmentStars = copy.copy(self.data['NumberAlignmentStars'])
             self.data['ModelLoading'] = True
             # asking for all points data
             for i in range(1, self.numberRequestedAlignmentStars + 1):

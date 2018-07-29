@@ -290,9 +290,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 if len(valueList[7]) > 0:
                     self.data['HardwareVersion'] = valueList[7]
                 if len(valueList[8]) > 0:
-                    self.data['NumberModelNames'] = valueList[8]
+                    self.data['NumberModelNames'] = int(valueList[8])
                 if len(valueList[9]) > 0:
-                    self.data['NumberAlignmentStars'] = valueList[9]
+                    self.data['NumberAlignmentStars'] = int(valueList[9])
                 self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
                 self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
                 self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))

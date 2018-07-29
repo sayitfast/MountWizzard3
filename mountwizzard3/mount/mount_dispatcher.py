@@ -641,35 +641,37 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
-        self.app.sharedMountDataLock.lockForRead()
-        if self.data['NumberAlignmentStars'] < 4:
-            return True
-        # find worst point
-        maxError = 0
-        worstPointIndex = 0
-        for i in range(0, self.data['NumberAlignmentStars']):
-            if self.data['ModelError'][i] > maxError:
-                worstPointIndex = i
-                maxError = self.data['ModelError'][i]
-        self.app.messageQueue.put('Deleting worst point  {0:02d} with AZ:  {1:05.1f}  ALT:  {2:04.1f}  and error of:  {3:05.1f}\n'
-                                  .format(worstPointIndex + 1,
-                                          self.data['ModelAzimuth'][worstPointIndex],
-                                          self.data['ModelAltitude'][worstPointIndex],
-                                          maxError))
-        self.app.sharedMountDataLock.unlock()
-        commandSet = {'command': ':delalst{0:d}#'.format(worstPointIndex + 1), 'reply': ''}
-        self.app.mountCommandQueue.put(commandSet)
-        while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
-        time.sleep(0.2)
-        if commandSet['reply'] == '1':
-            # point could be deleted, feedback from mount ok
-            self.logger.info('Deleting worst point {0} with error of:  {1}'.format(worstPointIndex+1, maxError))
-            # get new calculated alignment model from mount
-            self.app.messageQueue.put('\tPoint deleted\n')
-        else:
-            self.app.messageQueue.put('#BR\tPoint could not be deleted \n')
-            self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
+
+        if self.data['NumberAlignmentStars'] > 3:
+            # find worst point
+            maxError = 0
+            worstPointIndex = 0
+            for i in range(0, self.data['NumberAlignmentStars']):
+                if self.data['ModelError'][i] > maxError:
+                    worstPointIndex = i
+                    maxError = self.data['ModelError'][i]
+            self.app.messageQueue.put('Deleting worst point  {0:02d} with AZ:  {1:05.1f}  ALT:  {2:04.1f}  and error of:  {3:05.1f}\n'
+                                      .format(worstPointIndex + 1,
+                                              self.data['ModelAzimuth'][worstPointIndex],
+                                              self.data['ModelAltitude'][worstPointIndex],
+                                              maxError))
+            commandSet = {'command': ':delalst{0:d}#'.format(worstPointIndex + 1), 'reply': ''}
+            self.app.mountCommandQueue.put(commandSet)
+            while len(commandSet['reply']) == 0:
+                time.sleep(0.1)
+            time.sleep(0.2)
+            if commandSet['reply'] == '1':
+                # point could be deleted, feedback from mount ok
+                self.logger.info('Deleting worst point {0} with error of:  {1}'.format(worstPointIndex+1, maxError))
+                # get new calculated alignment model from mount
+                self.app.messageQueue.put('\tPoint deleted\n')
+                self.app.sharedMountDataLock.lockForWrite()
+                self.data['NumberAlignmentStars'] -= 1
+                self.app.sharedMountDataLock.unlock()
+            else:
+                self.app.messageQueue.put('#BR\tPoint could not be deleted \n')
+                self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
+
         self.workerMountGetAlignmentModel.getAlignmentModel()
         # wait form alignment model to be downloaded
         while True:
