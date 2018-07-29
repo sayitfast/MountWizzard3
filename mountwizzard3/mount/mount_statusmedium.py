@@ -244,7 +244,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     valid, expirationDate = valueList[12].split(',')
                     self.data['UTCDataValid'] = valid
                     self.data['UTCDataExpirationDate'] = expirationDate
-
                 self.app.workerMountDispatcher.signalMountLimits.emit()
             else:
                 self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
