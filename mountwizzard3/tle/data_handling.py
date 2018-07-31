@@ -32,6 +32,7 @@ class TLEDataHandling:
         self.app = app
 
         self.app.ui.btn_loadSatelliteData.clicked.connect(self.selectSatellitesDataFileName)
+        self.app.ui.listSatelliteName.itemDoubleClicked.connect(self.getListAction)
 
     def initConfig(self):
         try:
@@ -93,3 +94,6 @@ class TLEDataHandling:
             satelliteList.addItem(name)
         satelliteList.sortItems()
         satelliteList.update()
+
+    def getListAction(self):
+        print(self.app.ui.listSatelliteName.currentItem().text())

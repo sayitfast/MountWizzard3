@@ -8641,7 +8641,7 @@ manually</string>
        <x>20</x>
        <y>105</y>
        <width>276</width>
-       <height>266</height>
+       <height>331</height>
       </rect>
      </property>
     </widget>
@@ -8769,92 +8769,6 @@ manually</string>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_filterSatelliteData">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>410</y>
-       <width>331</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="Line" name="line_21">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>405</y>
-       <width>331</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_127">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>385</y>
-       <width>226</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Selection filter for satellite data</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_224">
