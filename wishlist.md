@@ -12,5 +12,5 @@ Features fine tuning:
 - more set buttons for config in gui
 
 Problems:
-- refactor getting right IP address from computer for WOL, logging and remote. it is the same implementation, but many times
+
 
