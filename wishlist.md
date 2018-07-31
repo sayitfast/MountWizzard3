@@ -7,9 +7,6 @@ Features new:
 - TLE data load / filter / show / start / stop
 - moon
 
-System tuning:
-- reduce number of threads (model names and align model)
-
 Features fine tuning:
 - setting site parameters
 - more set buttons for config in gui

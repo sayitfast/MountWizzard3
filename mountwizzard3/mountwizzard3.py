@@ -1525,7 +1525,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
                         format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
-
     splash.showMessage('Checking work directories')
     splash.setValue(20)
 
