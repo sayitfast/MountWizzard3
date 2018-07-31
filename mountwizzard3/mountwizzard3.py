@@ -57,6 +57,7 @@ from imaging import imaging
 from astrometry import astrometry
 from astrometry import transform
 from analyse import analysedata
+from tle import data_handling
 from audio import audio
 if platform.system() == 'Windows':
     from automation import automation
@@ -126,6 +127,8 @@ class MountWizzardApp(widget.MwWidget):
         self.analyse = analysedata.Analyse(self)
         # coordinate transformations
         self.transform = transform.Transform(self)
+        # satellites elements handling
+        self.satellite = data_handling.TLEDataHandling(self)
 
         # instantiating all subclasses and connecting thread signals
         # mount class
