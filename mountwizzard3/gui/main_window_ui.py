@@ -3204,6 +3204,7 @@ class Ui_MainWindow(object):
         self.le_satelliteName.setAcceptDrops(False)
         self.le_satelliteName.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.le_satelliteName.setText("")
+        self.le_satelliteName.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.le_satelliteName.setReadOnly(False)
         self.le_satelliteName.setObjectName("le_satelliteName")
         self.label_225 = QtWidgets.QLabel(self.tab_5)

@@ -39,7 +39,7 @@ class TLEDataHandling:
             if 'SatelliteDataFileName' in self.app.config:
                 self.app.ui.le_satelliteDataFileName.setText(self.app.config['SatelliteDataFileName'])
                 if self.app.config['SatelliteDataFileName'] != '':
-                    self.loadSatelliteData(os.getcwd() + '/config/' + self.app.config['SatelliteDataFileName'] + '.tle', self.satelliteData)
+                    self.loadSatelliteData(os.getcwd() + '/config/' + self.app.config['SatelliteDataFileName'] + '.tle')
         except Exception as e:
             self.logger.error('item in config.cfg could not be initialize, error:{0}'.format(e))
         finally:
@@ -53,9 +53,9 @@ class TLEDataHandling:
         if value != '':
             self.app.ui.le_satelliteDataFileName.setText(os.path.basename(value))
             # next is to load and populate the data dictionary
-            self.loadSatelliteData(value + ext, self.satelliteData)
+            self.loadSatelliteData(value + ext)
 
-    def loadSatelliteData(self, filename, data):
+    def loadSatelliteData(self, filename):
         if not os.path.isfile(filename):
             self.logger.error('Data file {0} is not existent'.format(filename))
         try:
@@ -82,18 +82,22 @@ class TLEDataHandling:
         # Line0 holds the name for the selection list
         # Line1 and Line2 hold the data
         for i in range(0, len(lines), 3):
-            data['Line0'].append(lines[i])
-            data['Line1'].append(lines[i+1])
-            data['Line2'].append(lines[i+2])
-        self.setSatelliteNameList(data['Line0'], self.app.ui.listSatelliteName)
+            self.satelliteData['Line0'].append(lines[i])
+            self.satelliteData['Line1'].append(lines[i+1])
+            self.satelliteData['Line2'].append(lines[i+2])
+        self.setSatelliteNameList()
 
-    @staticmethod
-    def setSatelliteNameList(data, satelliteList):
-        satelliteList.clear()
-        for name in data:
-            satelliteList.addItem(name)
-        satelliteList.sortItems()
-        satelliteList.update()
+    def setSatelliteNameList(self):
+        self.app.ui.listSatelliteName.clear()
+        for name in self.satelliteData['Line0']:
+            self.app.ui.listSatelliteName.addItem(name)
+        self.app.ui.listSatelliteName.sortItems()
+        self.app.ui.listSatelliteName.update()
+
+    def parseSatelliteData(self, index, name):
+        self.app.ui.le_satelliteName.setText(name)
 
     def getListAction(self):
-        print(self.app.ui.listSatelliteName.currentItem().text())
+        name = self.app.ui.listSatelliteName.currentItem().text()
+        index = self.satelliteData['Line0'].index(name)
+        self.parseSatelliteData(index, name)
