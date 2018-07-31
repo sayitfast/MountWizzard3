@@ -8635,7 +8635,7 @@ manually</string>
       <string>List of available satellites</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="listModelName_2">
+    <widget class="QListWidget" name="listSatellitesName">
      <property name="geometry">
       <rect>
        <x>20</x>
