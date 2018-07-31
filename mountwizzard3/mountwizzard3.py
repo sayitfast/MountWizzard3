@@ -451,6 +451,7 @@ class MountWizzardApp(widget.MwWidget):
         self.messageWindow.initConfig()
         self.workerRelay.initConfig()
         self.workerAudio.initConfig()
+        self.satellite.initConfig()
 
         if not self.workerAudio.isRunning:
             self.threadAudio.start()
@@ -714,6 +715,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRelay.storeConfig()
         self.workerINDI.storeConfig()
         self.workerAudio.storeConfig()
+        self.satellite.storeConfig()
 
     def loadConfigData(self, filepath='config/config.cfg'):
         if os.path.isfile(filepath):

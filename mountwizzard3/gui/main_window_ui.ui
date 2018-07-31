@@ -8635,7 +8635,7 @@ manually</string>
       <string>List of available satellites</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="listSatellitesName">
+    <widget class="QListWidget" name="listSatelliteName">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -8773,7 +8773,7 @@ manually</string>
     </widget>
     <widget class="QLineEdit" name="le_filterSatelliteData">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -8811,6 +8811,9 @@ manually</string>
      </property>
     </widget>
     <widget class="Line" name="line_21">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -8832,6 +8835,9 @@ manually</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_127">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>20</x>
