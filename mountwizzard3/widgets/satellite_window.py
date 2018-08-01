@@ -66,6 +66,8 @@ class SatelliteWindow(widget.MwWidget):
 
     logger = logging.getLogger(__name__)
 
+    signalRedrawAll = PyQt5.QtCore.pyqtSignal()
+
     satelliteData = {
         'Line0': list(),
         'Line1': list(),
@@ -77,6 +79,10 @@ class SatelliteWindow(widget.MwWidget):
         self.app = app
         self.showStatus = False
         self.cancel = False
+        self.maskPlotFill = None
+        self.maskPlotMarker = None
+        self.mutexDrawCanvas = PyQt5.QtCore.QMutex()
+        self.mutexDrawCanvasMoving = PyQt5.QtCore.QMutex()
         self.transform = transform.Transform(self.app)
         self.ui = satellite_window_ui.Ui_SatelliteDialog()
         self.ui.setupUi(self)
@@ -110,6 +116,9 @@ class SatelliteWindow(widget.MwWidget):
         self.app.ui.btn_selectSatellite.clicked.connect(self.getListAction)
         self.app.ui.listSatelliteName.itemDoubleClicked.connect(self.getListAction)
         self.app.ui.btn_clearSatellite.clicked.connect(self.clearListAction)
+
+        # slots for functions
+        self.signalRedrawAll.connect(self.drawCanvas)
 
     def resizeEvent(self, QResizeEvent):
         # allow message window to be resized in height
@@ -164,6 +173,7 @@ class SatelliteWindow(widget.MwWidget):
         self.showStatus = True
         self.app.signalChangeStylesheet.emit(self.app.ui.btn_openSatelliteWindow, 'running', 'true')
         self.setVisible(True)
+        self.drawSatellite()
 
     def closeEvent(self, closeEvent):
         super().closeEvent(closeEvent)
@@ -304,3 +314,57 @@ class SatelliteWindow(widget.MwWidget):
         else:
             return
     '''
+    def drawCanvas(self):
+        # if window is open, we process the data
+        if self.showStatus:
+            # make a mutex in case not double execute the routing and detect performance issues
+            if not self.mutexDrawCanvas.tryLock():
+                self.logger.warning('Performance issue in drawing')
+                return
+            # i have to redraw the whole story because of the horizon
+            self.drawSatellite()
+            self.satelliteMatplotlib.fig.canvas.draw()
+            self.mutexDrawCanvas.unlock()
+            # PyQt5.QtWidgets.QApplication.processEvents()
+
+    def drawSatellite(self):
+        # moving widget plane
+        self.satelliteMatplotlibMoving.axes.cla()
+        # self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
+        self.satelliteMatplotlibMoving.axes.set_facecolor((0, 0, 0, 0))
+        self.satelliteMatplotlibMoving.axes.set_xlim(0, 360)
+        self.satelliteMatplotlibMoving.axes.set_ylim(0, 90)
+        self.satelliteMatplotlibMoving.axes.set_axis_off()
+
+        # fixed points and horizon plane
+        self.satelliteMatplotlib.axes.cla()
+        # self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
+        self.satelliteMatplotlib.axes.spines['bottom'].set_color('#2090C0')
+        self.satelliteMatplotlib.axes.spines['top'].set_color('#2090C0')
+        self.satelliteMatplotlib.axes.spines['left'].set_color('#2090C0')
+        self.satelliteMatplotlib.axes.spines['right'].set_color('#2090C0')
+        self.satelliteMatplotlib.axes.grid(True, color='#404040')
+        self.satelliteMatplotlib.axes.set_facecolor((0, 0, 0, 0))
+        self.satelliteMatplotlib.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
+        self.satelliteMatplotlib.axes.set_xlim(0, 360)
+        self.satelliteMatplotlib.axes.set_xticks(numpy.arange(0, 361, 30))
+        self.satelliteMatplotlib.axes.set_ylim(0, 90)
+        self.satelliteMatplotlib.axes.tick_params(axis='y', colors='#2090C0', which='both', labelleft='on', labelright='on', labelsize=12)
+        self.satelliteMatplotlib.axes.set_xlabel('Azimuth in degrees', color='#2090C0', fontweight='bold', fontsize=12)
+        self.satelliteMatplotlib.axes.set_ylabel('Altitude in degrees', color='#2090C0', fontweight='bold', fontsize=12)
+        # horizon
+        horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
+        if len(horizon) < 2:
+            del(horizon[:])
+            horizon.append((0, 0))
+            horizon.append((360, 0))
+        x = [i[0] for i in horizon]
+        x.insert(0, 0)
+        x.append(360)
+        y = [i[1] for i in horizon]
+        y.insert(0, 0)
+        y.append(0)
+        self.maskPlotFill,  = self.satelliteMatplotlib.axes.fill(x, y, color='#002000', zorder=-20)
+        self.maskPlotMarker,  = self.satelliteMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
+        # drawing the whole stuff
+        self.resizeEvent(0)

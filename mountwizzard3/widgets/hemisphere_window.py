@@ -214,7 +214,7 @@ class HemisphereWindow(widget.MwWidget):
         if self.ui.checkShowAlignmentStars.isChecked():
             self.hemisphereMatplotlibStar.fig.canvas.draw()
         self.mutexDrawCanvas.unlock()
-        PyQt5.QtWidgets.QApplication.processEvents()
+        # PyQt5.QtWidgets.QApplication.processEvents()
 
     def drawCanvasMoving(self):
         if not self.mutexDrawCanvasMoving.tryLock():
@@ -222,7 +222,7 @@ class HemisphereWindow(widget.MwWidget):
             return
         self.hemisphereMatplotlibMoving.fig.canvas.draw()
         self.mutexDrawCanvasMoving.unlock()
-        PyQt5.QtWidgets.QApplication.processEvents()
+        # PyQt5.QtWidgets.QApplication.processEvents()
 
     def updateModelPoints(self):
         if self.showStatus:
@@ -443,6 +443,7 @@ class HemisphereWindow(widget.MwWidget):
 
         # finally redraw
         self.drawCanvas()
+        self.app.satelliteWindow.signalRedrawAll.emit()
 
     @staticmethod
     def get_ind_under_point(event, epsilon, xy):
