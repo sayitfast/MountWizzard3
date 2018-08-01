@@ -677,7 +677,10 @@ class ModelingBuild:
             else:
                 self.logger.warning('Solve key in imageParams missing')
         else:
-            self.app.messageQueue.put('\tSolving error: {0}\n'.format(mes))
+            if 'Message' in imageParams:
+                self.app.messageQueue.put('\tSolving error: {0}\n'.format(imageParams['Message']))
+            else:
+                self.app.messageQueue.put('\tSolving error\n')
         if not self.app.ui.checkKeepImages.isChecked():
             shutil.rmtree(imageParams['BaseDirImages'], ignore_errors=True)
         self.app.messageQueue.put('#BWSync Mount Model finished !\n')
