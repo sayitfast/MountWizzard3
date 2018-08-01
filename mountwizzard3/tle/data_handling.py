@@ -95,11 +95,11 @@ class TLEDataHandling:
         self.app.ui.listSatelliteName.sortItems()
         self.app.ui.listSatelliteName.update()
 
-    def parseSatelliteData(self, index):
+    def parseData(self, index):
         # parsing of the data is accordingly to https://www.celestrak.com/NORAD/documentation/tle-fmt.php
-        print(self.satelliteData['Line0'][index])
-        print(self.satelliteData['Line1'][index])
-        print(self.satelliteData['Line2'][index])
+        # print(self.satelliteData['Line0'][index])
+        # print(self.satelliteData['Line1'][index])
+        # print(self.satelliteData['Line2'][index])
 
         # doing that just for information in the gui. The mount computer itself parses the data
         self.app.ui.le_satelliteName.setText(self.satelliteData['Line0'][index].strip())
@@ -117,7 +117,7 @@ class TLEDataHandling:
         self.app.ui.le_satelliteAnomaly.setText(self.satelliteData['Line2'][index][43:51])
         self.app.ui.le_satelliteMotion.setText(self.satelliteData['Line2'][index][52:63])
 
-    def pushSatelliteDataToMount(self, data, name):
+    def pushDataToMount(self, data, name):
         commandSet = {'command': ':TLEL0{0}#'.format(data), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
@@ -135,9 +135,10 @@ class TLEDataHandling:
     def getListAction(self):
         name = self.app.ui.listSatelliteName.currentItem().text()
         index = self.satelliteData['Line0'].index(name)
-        self.parseSatelliteData(index)
-        data = self.satelliteData['Line0'][index] + '\r' + self.satelliteData['Line1'][index] + '\r' + self.satelliteData['Line2'][index]
-        if self.pushSatelliteDataToMount(data, name.strip()):
+        self.parseData(index)
+        # please think of the escaped characters for mount computer. Hex 0A (CR) goes for $0A
+        data = self.satelliteData['Line0'][index] + '$0A' + self.satelliteData['Line1'][index] + '$0A' + self.satelliteData['Line2'][index]
+        if self.pushDataToMount(data, name.strip()):
             pass
             # now calculation transits etc.
         else:

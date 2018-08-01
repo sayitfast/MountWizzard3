@@ -241,7 +241,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             # the last item is empty due to split command
             self.commandSet['reply'] = self.commandSet['reply'][:-1]
 
-        self.logger.info('Receiving reply of command {0}, type: {1}'.format(self.commandSet['reply'], type(self.commandSet['reply'])))
+        self.logger.info('Receiving reply of command {0}'.format(self.commandSet['reply']))
         self.sendLock = False
 
     def sendCommand(self, command):
