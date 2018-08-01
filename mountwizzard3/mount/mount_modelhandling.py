@@ -34,7 +34,7 @@ class MountModelHandling:
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'].endswith('1'):
+        if commandSet['reply'][0] == '1':
             self.app.messageQueue.put('Mount Model {0} saved\n'.format(target))
             self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
             returnValue = True
@@ -48,7 +48,7 @@ class MountModelHandling:
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'].endswith('1'):
+        if commandSet['reply'][0] == '1':
             self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
             while self.data['ModelLoading']:
                 time.sleep(0.2)
@@ -66,7 +66,7 @@ class MountModelHandling:
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'].endswith('1'):
+        if commandSet['reply'][0] == '1':
             self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
             while self.data['ModelLoading']:
                 time.sleep(0.2)

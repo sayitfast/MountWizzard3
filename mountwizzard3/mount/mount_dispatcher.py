@@ -556,7 +556,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'] == '1':
+        if commandSet['reply'][0] == '1':
             self.workerMountCommandRunner.connected = False
             time.sleep(1)
             self.logger.info('Shutdown mount manually')
@@ -570,7 +570,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'] == '0':
+        if commandSet['reply'][0] == '0':
             self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
             self.logger.error('error: {0}'.format(commandSet['reply']))
 
@@ -584,7 +584,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'][:5] == 'Coord':
+        if commandSet['reply'][0][:5] == 'Coord':
             self.logger.info('Mount modeling synced')
             return True
         else:
@@ -678,7 +678,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
             time.sleep(0.2)
-            if commandSet['reply'] == '1':
+            if commandSet['reply'][0] == '1':
                 # point could be deleted, feedback from mount ok
                 self.logger.info('Deleting worst point {0} with error of:  {1}'.format(worstPointIndex+1, maxError))
                 # get new calculated alignment model from mount

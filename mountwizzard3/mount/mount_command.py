@@ -123,6 +123,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 # determine how many messages to receive
                 # first we have to count how many commands are sent and split them
                 commandList = command.split('#')
+                # the last item is empty due to split command
                 commandList = commandList[:-1]
                 # now we have to parse how many of them will give a reply
                 self.numberReplyToReceive = 0
@@ -237,6 +238,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             self.commandSet['reply'] = messageToProcess
         else:
             self.commandSet['reply'] = messageToProcess.split('#')
+            # the last item is empty due to split command
+            self.commandSet['reply'] = self.commandSet['reply'][:-1]
+
         self.logger.info('Receiving reply of command {0}, type: {1}'.format(self.commandSet['reply'], type(self.commandSet['reply'])))
         self.sendLock = False
 

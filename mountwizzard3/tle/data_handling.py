@@ -14,6 +14,7 @@
 import json
 import math
 import os
+import time
 import PyQt5
 from logging import getLogger
 
@@ -96,9 +97,9 @@ class TLEDataHandling:
 
     def parseSatelliteData(self, index):
         # parsing of the data is accordingly to https://www.celestrak.com/NORAD/documentation/tle-fmt.php
-        print(self.satelliteData['Line0'][index])
-        print(self.satelliteData['Line1'][index])
-        print(self.satelliteData['Line2'][index])
+        #print(self.satelliteData['Line0'][index])
+        #print(self.satelliteData['Line1'][index])
+        #print(self.satelliteData['Line2'][index])
 
         # doing that just for information in the gui. The mount computer itself parses the data
         self.app.ui.le_satelliteName.setText(self.satelliteData['Line0'][index].strip())
@@ -116,21 +117,18 @@ class TLEDataHandling:
         self.app.ui.le_satelliteAnomaly.setText(self.satelliteData['Line2'][index][43:51])
         self.app.ui.le_satelliteMotion.setText(self.satelliteData['Line2'][index][52:63])
 
-    def pushSatelliteDataToMount(self, data):
+    def pushSatelliteDataToMount(self, data, name):
         commandSet = {'command': ':TLEL0{0}#'.format(data), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
-        if commandSet['reply'].endswith('1'):
-            self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
-            while self.data['ModelLoading']:
-                time.sleep(0.2)
-            self.app.messageQueue.put('Mount Model {0} loaded\n'.format(target))
+        if commandSet['reply'][0] == 'V':
+            self.app.messageQueue.put('TLE data for {0} loaded\n'.format(name))
             self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
             returnValue = True
         else:
-            self.app.messageQueue.put('#BRMount Model {0} could not be loaded\n'.format(target))
-            self.logger.warning('Mount Model {0} could not be loaded. Error code: {1}'.format(target, commandSet['reply']))
+            self.app.messageQueue.put('#BRTLE data for {0} loaded could not be loaded\n'.format(name))
+            self.logger.warning('TLE data for {0} loaded could not be loaded. Error code: {1}'.format(name, commandSet['reply']))
             returnValue = False
         return returnValue
 
@@ -138,3 +136,9 @@ class TLEDataHandling:
         name = self.app.ui.listSatelliteName.currentItem().text()
         index = self.satelliteData['Line0'].index(name)
         self.parseSatelliteData(index)
+        data = self.satelliteData['Line0'][index] + self.satelliteData['Line1'][index] + self.satelliteData['Line2'][index]
+        if self.pushSatelliteDataToMount(data, name.strip()):
+            pass
+            # now calculation transits etc.
+        else:
+            return
