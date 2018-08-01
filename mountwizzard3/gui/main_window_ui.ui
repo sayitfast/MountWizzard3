@@ -8641,7 +8641,7 @@ manually</string>
        <x>20</x>
        <y>105</y>
        <width>276</width>
-       <height>281</height>
+       <height>331</height>
       </rect>
      </property>
     </widget>
@@ -9767,246 +9767,6 @@ manually</string>
      </property>
      <property name="text">
       <string>Status</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_satelliteAz">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>75</x>
-       <y>420</y>
-       <width>66</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_242">
-     <property name="geometry">
-      <rect>
-       <x>25</x>
-       <y>395</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Alt now</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_243">
-     <property name="geometry">
-      <rect>
-       <x>25</x>
-       <y>420</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Az now</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_satelliteAlt">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>75</x>
-       <y>395</y>
-       <width>66</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_satellitePassStart">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>235</x>
-       <y>395</y>
-       <width>66</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_244">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>395</y>
-       <width>71</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Pass Start</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_245">
-     <property name="geometry">
-      <rect>
-       <x>160</x>
-       <y>420</y>
-       <width>71</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Pass End</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_satellitePassEnd">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>235</x>
-       <y>420</y>
-       <width>66</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_clearSatellite">
@@ -16310,9 +16070,9 @@ manually</string>
   <widget class="QPushButton" name="btn_saveConfigQuit">
    <property name="geometry">
     <rect>
-     <x>680</x>
+     <x>690</x>
      <y>65</y>
-     <width>91</width>
+     <width>81</width>
      <height>26</height>
     </rect>
    </property>
@@ -16328,15 +16088,15 @@ manually</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Save/Quit</string>
+    <string>S./Quit</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_saveConfig">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>610</x>
      <y>95</y>
-     <width>86</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -16361,9 +16121,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>325</x>
+     <x>330</x>
      <y>65</y>
-     <width>81</width>
+     <width>86</width>
      <height>26</height>
     </rect>
    </property>
@@ -16387,7 +16147,7 @@ manually</string>
     <rect>
      <x>245</x>
      <y>65</y>
-     <width>76</width>
+     <width>81</width>
      <height>26</height>
     </rect>
    </property>
@@ -16459,7 +16219,7 @@ manually</string>
     <rect>
      <x>20</x>
      <y>95</y>
-     <width>86</width>
+     <width>71</width>
      <height>26</height>
     </rect>
    </property>
@@ -16475,7 +16235,7 @@ manually</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Message</string>
+    <string>Mess</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_astrometryConnected">
@@ -16484,9 +16244,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>420</x>
      <y>65</y>
-     <width>81</width>
+     <width>86</width>
      <height>26</height>
     </rect>
    </property>
@@ -16505,9 +16265,9 @@ manually</string>
   <widget class="QPushButton" name="btn_loadFrom">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>610</x>
      <y>65</y>
-     <width>86</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -16529,9 +16289,9 @@ manually</string>
   <widget class="QPushButton" name="btn_saveConfigAs">
    <property name="geometry">
     <rect>
-     <x>680</x>
+     <x>690</x>
      <y>95</y>
-     <width>91</width>
+     <width>81</width>
      <height>26</height>
     </rect>
    </property>
@@ -16556,9 +16316,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>610</x>
      <y>40</y>
-     <width>181</width>
+     <width>161</width>
      <height>21</height>
     </rect>
    </property>
@@ -16595,7 +16355,7 @@ manually</string>
   <widget class="QLabel" name="mainicon">
    <property name="geometry">
     <rect>
-     <x>495</x>
+     <x>515</x>
      <y>30</y>
      <width>91</width>
      <height>91</height>
@@ -16611,7 +16371,7 @@ manually</string>
   <widget class="QLabel" name="label_102">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>610</x>
      <y>15</y>
      <width>51</width>
      <height>21</height>
@@ -16631,7 +16391,7 @@ manually</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>435</x>
+     <x>450</x>
      <y>95</y>
      <width>56</width>
      <height>26</height>
@@ -16652,7 +16412,7 @@ manually</string>
   <widget class="QPushButton" name="btn_mountBoot">
    <property name="geometry">
     <rect>
-     <x>380</x>
+     <x>395</x>
      <y>95</y>
      <width>51</width>
      <height>26</height>
@@ -16716,9 +16476,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>325</x>
+     <x>330</x>
      <y>40</y>
-     <width>81</width>
+     <width>86</width>
      <height>21</height>
     </rect>
    </property>
@@ -16758,9 +16518,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>420</x>
      <y>40</y>
-     <width>81</width>
+     <width>86</width>
      <height>21</height>
     </rect>
    </property>
@@ -16802,7 +16562,7 @@ manually</string>
     <rect>
      <x>245</x>
      <y>40</y>
-     <width>76</width>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -16839,9 +16599,9 @@ manually</string>
   <widget class="Line" name="line_30">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>610</x>
      <y>35</y>
-     <width>181</width>
+     <width>161</width>
      <height>1</height>
     </rect>
    </property>
@@ -16877,7 +16637,7 @@ manually</string>
     <rect>
      <x>20</x>
      <y>35</y>
-     <width>471</width>
+     <width>486</width>
      <height>1</height>
     </rect>
    </property>
@@ -16891,9 +16651,9 @@ manually</string>
   <widget class="QPushButton" name="btn_openHemisphereWindow">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>95</x>
      <y>95</y>
-     <width>86</width>
+     <width>71</width>
      <height>26</height>
     </rect>
    </property>
@@ -16910,15 +16670,15 @@ manually</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Hemisph.</string>
+    <string>Hemis</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_openImageWindow">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>170</x>
      <y>95</y>
-     <width>86</width>
+     <width>71</width>
      <height>26</height>
     </rect>
    </property>
@@ -16938,12 +16698,36 @@ manually</string>
     <string>Image</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_openSatelliteWindow">
+   <property name="geometry">
+    <rect>
+     <x>325</x>
+     <y>95</y>
+     <width>66</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the analyse window for checking measurements and modlelling data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Sat</string>
+   </property>
+  </widget>
   <widget class="QPushButton" name="btn_openAnalyseWindow">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>245</x>
      <y>95</y>
-     <width>86</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -16989,6 +16773,7 @@ manually</string>
   <zorder>line_32</zorder>
   <zorder>btn_openHemisphereWindow</zorder>
   <zorder>btn_openImageWindow</zorder>
+  <zorder>btn_openSatelliteWindow</zorder>
   <zorder>btn_openAnalyseWindow</zorder>
  </widget>
  <tabstops>
@@ -17041,7 +16826,6 @@ manually</string>
   <tabstop>pixelSize</tabstop>
   <tabstop>focalLength</tabstop>
   <tabstop>astrometryDownsampling</tabstop>
-  <tabstop>btn_openAnalyseWindow</tabstop>
   <tabstop>btn_loadHorizonMask</tabstop>
   <tabstop>btn_saveHorizonMask</tabstop>
   <tabstop>btn_saveHorizonMaskAs</tabstop>

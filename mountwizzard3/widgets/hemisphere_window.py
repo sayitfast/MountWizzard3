@@ -75,7 +75,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
         # using tight layout because of the axis titles and labels
         self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.95, bottom=0.1, top=0.975)
-        #self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
+        # self.hemisphereMatplotlib.fig.set_tight_layout((0.075, 0.075, 0.925, 0.925))
 
         # for the fast moving parts
         self.hemisphereMatplotlibMoving = widget.IntegrateMatplotlib(self.ui.hemisphereMoving)

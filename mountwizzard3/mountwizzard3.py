@@ -44,6 +44,7 @@ from widgets import hemisphere_window
 from widgets import image_window
 from widgets import analyse_window
 from widgets import message_window
+from widgets import satellite_window
 from gui import main_window_ui
 from modeling import model_dispatcher
 from mount import mount_dispatcher
@@ -57,7 +58,6 @@ from imaging import imaging
 from astrometry import astrometry
 from astrometry import transform
 from analyse import analysedata
-from tle import data_handling
 from audio import audio
 if platform.system() == 'Windows':
     from automation import automation
@@ -127,8 +127,6 @@ class MountWizzardApp(widget.MwWidget):
         self.analyse = analysedata.Analyse(self)
         # coordinate transformations
         self.transform = transform.Transform(self)
-        # satellites elements handling
-        self.satellite = data_handling.TLEDataHandling(self)
 
         # instantiating all subclasses and connecting thread signals
         # mount class
@@ -211,6 +209,7 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow = image_window.ImagesWindow(self)
         self.analyseWindow = analyse_window.AnalyseWindow(self)
         self.hemisphereWindow = hemisphere_window.HemisphereWindow(self)
+        self.satelliteWindow = satellite_window.SatelliteWindow(self)
 
         # map all the button to functions for gui
         self.mappingFunctions()
@@ -274,6 +273,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.toggleWindow)
         self.ui.btn_openHemisphereWindow.clicked.connect(self.hemisphereWindow.toggleWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.toggleWindow)
+        self.ui.btn_openSatelliteWindow.clicked.connect(self.satelliteWindow.toggleWindow)
         self.workerDome.domeStatusText.connect(self.setDomeStatusText)
         self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
@@ -297,6 +297,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_openAnalyseWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
         self.widgetIcon(self.ui.btn_openImageWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
         self.widgetIcon(self.ui.btn_openHemisphereWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
+        self.widgetIcon(self.ui.btn_openSatelliteWindow, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ComputerIcon))
         self.widgetIcon(self.ui.btn_saveConfigAs, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
         self.widgetIcon(self.ui.btn_loadFrom, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DirOpenIcon))
         self.widgetIcon(self.ui.btn_saveConfig, PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_DialogSaveButton))
@@ -449,9 +450,9 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
+        self.satelliteWindow.initConfig()
         self.workerRelay.initConfig()
         self.workerAudio.initConfig()
-        self.satellite.initConfig()
 
         if not self.workerAudio.isRunning:
             self.threadAudio.start()
@@ -493,6 +494,10 @@ class MountWizzardApp(widget.MwWidget):
             self.analyseWindow.showWindow()
         else:
             self.analyseWindow.close()
+        if self.satelliteWindow.showStatus:
+            self.satelliteWindow.showWindow()
+        else:
+            self.satelliteWindow.close()
 
     def initConfig(self):
         # now try to set the right values in class
@@ -712,10 +717,10 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
         self.messageWindow.storeConfig()
+        self.satelliteWindow.storeConfig()
         self.workerRelay.storeConfig()
         self.workerINDI.storeConfig()
         self.workerAudio.storeConfig()
-        self.satellite.storeConfig()
 
     def loadConfigData(self, filepath='config/config.cfg'):
         if os.path.isfile(filepath):
@@ -802,11 +807,14 @@ class MountWizzardApp(widget.MwWidget):
         self.hemisphereWindow.showWindow()
         self.hemisphereWindow.resize(791, 641)
         self.hemisphereWindow.move(x + 120, y + 120)
+        self.satelliteWindow.resize(791, 641)
+        self.satelliteWindow.move(x + 150, y + 150)
         self.move(x, y)
         self.hemisphereWindow.activateWindow()
         self.analyseWindow.activateWindow()
         self.imageWindow.activateWindow()
         self.messageWindow.activateWindow()
+        self.satelliteWindow.activateWindow()
         self.activateWindow()
 
     def checkASCOM(self):
