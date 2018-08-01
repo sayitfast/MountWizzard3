@@ -94,10 +94,27 @@ class TLEDataHandling:
         self.app.ui.listSatelliteName.sortItems()
         self.app.ui.listSatelliteName.update()
 
-    def parseSatelliteData(self, index, name):
-        self.app.ui.le_satelliteName.setText(name)
+    def parseSatelliteData(self, index):
+        print(self.satelliteData['Line0'][index])
+        print(self.satelliteData['Line1'][index])
+        print(self.satelliteData['Line2'][index])
+
+        self.app.ui.le_satelliteName.setText(self.satelliteData['Line0'][index].strip())
+        self.app.ui.le_satelliteNumber.setText(self.satelliteData['Line1'][index][2:7])
+        self.app.ui.le_satelliteLaunchYear.setText(self.satelliteData['Line1'][index][9:11])
+        self.app.ui.le_satelliteEpochDay.setText(self.satelliteData['Line1'][index][20:32])
+        self.app.ui.le_satelliteEpochYear.setText(self.satelliteData['Line1'][index][18:20])
+        self.app.ui.le_satellite1derrMotion.setText(self.satelliteData['Line1'][index][32:43])
+        self.app.ui.le_satellite2derrMotion.setText(self.satelliteData['Line1'][index][44:52])
+        self.app.ui.le_satelliteBSTAR.setText(self.satelliteData['Line1'][index][53:61])
+        self.app.ui.le_satelliteInclination.setText(self.satelliteData['Line2'][index][8:16])
+        self.app.ui.le_satelliteRA.setText(self.satelliteData['Line2'][index][17:25])
+        self.app.ui.le_satelliteEccentricity.setText(self.satelliteData['Line2'][index][26:33])
+        self.app.ui.le_satellitePerigee.setText(self.satelliteData['Line2'][index][34:42])
+        self.app.ui.le_satelliteAnomaly.setText(self.satelliteData['Line2'][index][43:51])
+        self.app.ui.le_satelliteMotion.setText(self.satelliteData['Line2'][index][52:63])
 
     def getListAction(self):
         name = self.app.ui.listSatelliteName.currentItem().text()
         index = self.satelliteData['Line0'].index(name)
-        self.parseSatelliteData(index, name)
+        self.parseSatelliteData(index)

@@ -9028,7 +9028,7 @@ manually</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_horizonPointsFileName_7">
+    <widget class="QLineEdit" name="le_satelliteEpochDay">
      <property name="enabled">
       <bool>true</bool>
      </property>
