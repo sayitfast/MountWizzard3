@@ -32,19 +32,23 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     # this is needed, because the mount computer  doesn't support a transaction base like number of
     # bytes to be expected. it's just plain data and i have to find out myself how much it is.
     # due to the fact i'm doing multi threading with multi connections some of the commands run in parallel
-    COMMAND_RETURN = {':AP#': 0,
-                      ':hP#': 0,
-                      ':PO#': 0,
-                      ':RT0#': 0,
-                      ':RT1#': 0,
-                      ':RT2#': 0,
-                      ':RT9#': 0,
-                      ':STOP#': 0,
-                      ':U2#': 0,
-                      ':modelld0': 2,
-                      ':modelsv0': 2,
-                      ':modeldel0': 2,
-                      ':delalst': 2,
+    # there are three types of commands:
+    #       no reply
+    #       reply ended with '#'
+    #       reply without '#'
+    COMMAND_RETURN = {':AP': 0,
+                      ':hP': 0,
+                      ':PO': 0,
+                      ':RT0': 0,
+                      ':RT1': 0,
+                      ':RT2': 0,
+                      ':RT9': 0,
+                      ':STOP': 0,
+                      ':U2': 0,
+                      ':modelld0': 1,
+                      ':modelsv0': 1,
+                      ':modeldel0': 1,
+                      ':delalst': 1,
                       ':delalig': 1,
                       ':SRPRS': 1,
                       ':SRTMP': 1,
@@ -52,8 +56,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':Sa': 1,
                       ':Sr': 1,
                       ':Sd': 1,
-                      ':MA#': 1,
-                      ':MS#': 1,
+                      ':MA': 1,
+                      ':MS': 1,
                       ':shutdown': 1,
                       ':Sw': 1,
                       ':Sdat': 1,
@@ -62,14 +66,19 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':So': 1,
                       ':Sh': 1,
                       ':SREF': 1,
-                      ':CM#': 27,
-                      ':CMS#': 1,
-                      ':Gr#': 12,
-                      ':Gd#': 12,
-                      ':newalig#': 1,
-                      ':endalig#': 1,
+                      ':CM': 1,
+                      ':CMS': 1,
+                      ':Gr': 1,
+                      ':Gd': 1,
+                      ':newalig': 1,
+                      ':endalig': 1,
                       ':newalpt': 1,
-                      ':CMCFG': 1}
+                      ':TLEGAZ': 1,
+                      ':TLEGEQ': 1,
+                      ':TLEP': 1,
+                      ':TLESCK': 1,
+                      ':TLES': 1,
+                      ':TLEL0': 1}
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
@@ -86,7 +95,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.sendLock = False
         self.cycleTimer = None
         self.messageString = ''
-        self.numberBytesToReceive = -1
+        self.numberReplyToReceive = -1
         self.commandSet = dict()
 
     def run(self):
@@ -148,15 +157,21 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 command = ''
                 self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(rawCommand, type(rawCommand)))
             if len(command) > 0:
-                # determine how many bytes to receive
-                self.numberBytesToReceive = -1
-                for key in self.COMMAND_RETURN:
-                    if command.startswith(key):
-                        self.numberBytesToReceive = self.COMMAND_RETURN[key]
-                        break
-                if self.numberBytesToReceive == -1:
+                # determine how many messages to receive
+                # first we have to count how many commands are sent and split them
+                commandList = command.split('#')
+                # now we have to parse how many of them will give a reply
+                self.numberReplyToReceive = -1
+                # iterate through all commands
+                for commandKey in commandList:
+                    for key in self.COMMAND_RETURN:
+                        if commandKey.startswith(key):
+                            self.numberReplyToReceive += self.COMMAND_RETURN[key]
+                            break
+
+                if self.numberReplyToReceive == -1:
                     self.logger.error('Command >(0)< not known'.format(command))
-                elif self.numberBytesToReceive > 0:
+                elif self.numberReplyToReceive > 0:
                     self.sendLock = True
                     self.sendCommand(command)
                 else:
@@ -218,11 +233,19 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
-        while (len(self.messageString) < self.numberBytesToReceive) and self.isRunning:
+        while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        messageToProcess = self.messageString
-        self.messageString = ''
-        self.commandSet['reply'] = messageToProcess.rstrip('#')
+        if self.messageString.count('#') < self.numberReplyToReceive:
+            return
+        if self.messageString.count('#') != self.numberReplyToReceive:
+            self.logger.error('Receiving data got error:{0}'.format(self.messageString))
+            self.messageString = ''
+            messageToProcess = ''
+        else:
+            messageToProcess = self.messageString
+            self.messageString = ''
+
+        self.commandSet['reply'] = messageToProcess.split('#')
         self.sendLock = False
 
     def sendCommand(self, command):

@@ -95,10 +95,12 @@ class TLEDataHandling:
         self.app.ui.listSatelliteName.update()
 
     def parseSatelliteData(self, index):
+        # parsing of the data is accordingly to https://www.celestrak.com/NORAD/documentation/tle-fmt.php
         print(self.satelliteData['Line0'][index])
         print(self.satelliteData['Line1'][index])
         print(self.satelliteData['Line2'][index])
 
+        # doing that just for information in the gui. The mount computer itself parses the data
         self.app.ui.le_satelliteName.setText(self.satelliteData['Line0'][index].strip())
         self.app.ui.le_satelliteNumber.setText(self.satelliteData['Line1'][index][2:7])
         self.app.ui.le_satelliteLaunchYear.setText(self.satelliteData['Line1'][index][9:11])
@@ -113,6 +115,24 @@ class TLEDataHandling:
         self.app.ui.le_satellitePerigee.setText(self.satelliteData['Line2'][index][34:42])
         self.app.ui.le_satelliteAnomaly.setText(self.satelliteData['Line2'][index][43:51])
         self.app.ui.le_satelliteMotion.setText(self.satelliteData['Line2'][index][52:63])
+
+    def pushSatelliteDataToMount(self, data):
+        commandSet = {'command': ':TLEL0{0}#'.format(data), 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'].endswith('1'):
+            self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
+            while self.data['ModelLoading']:
+                time.sleep(0.2)
+            self.app.messageQueue.put('Mount Model {0} loaded\n'.format(target))
+            self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
+            returnValue = True
+        else:
+            self.app.messageQueue.put('#BRMount Model {0} could not be loaded\n'.format(target))
+            self.logger.warning('Mount Model {0} could not be loaded. Error code: {1}'.format(target, commandSet['reply']))
+            returnValue = False
+        return returnValue
 
     def getListAction(self):
         name = self.app.ui.listSatelliteName.currentItem().text()
