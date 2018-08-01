@@ -22,6 +22,7 @@ from logging import getLogger
 class TLEDataHandling:
     logger = getLogger(__name__)
     signalUpdateSatelliteList = PyQt5.QtCore.pyqtSignal()
+    CYCLE_UPDATE_LOOP = 2000
 
     satelliteData = {
         'Line0': list(),
@@ -31,9 +32,17 @@ class TLEDataHandling:
 
     def __init__(self, app):
         self.app = app
+        self.satelliteUpdating = False
+
+        # starting loop for cyclic data queues to gui from threads
+        self.mainUpdateTimer = PyQt5.QtCore.QTimer(self.app)
+        self.mainUpdateTimer.setSingleShot(False)
+        self.mainUpdateTimer.timeout.connect(self.doDataUpdateCalculations)
 
         self.app.ui.btn_loadSatelliteData.clicked.connect(self.selectSatellitesDataFileName)
+        self.app.ui.btn_selectSatellite.clicked.connect(self.getListAction)
         self.app.ui.listSatelliteName.itemDoubleClicked.connect(self.getListAction)
+        self.app.ui.btn_clearSatellite.clicked.connect(self.clearListAction)
 
     def initConfig(self):
         try:
@@ -95,6 +104,22 @@ class TLEDataHandling:
         self.app.ui.listSatelliteName.sortItems()
         self.app.ui.listSatelliteName.update()
 
+    def clearData(self):
+        self.app.ui.le_satelliteName.setText('')
+        self.app.ui.le_satelliteNumber.setText('')
+        self.app.ui.le_satelliteLaunchYear.setText('')
+        self.app.ui.le_satelliteEpochDay.setText('')
+        self.app.ui.le_satelliteEpochYear.setText('')
+        self.app.ui.le_satellite1derrMotion.setText('')
+        self.app.ui.le_satellite2derrMotion.setText('')
+        self.app.ui.le_satelliteBSTAR.setText('')
+        self.app.ui.le_satelliteInclination.setText('')
+        self.app.ui.le_satelliteRA.setText('')
+        self.app.ui.le_satelliteEccentricity.setText('')
+        self.app.ui.le_satellitePerigee.setText('')
+        self.app.ui.le_satelliteAnomaly.setText('')
+        self.app.ui.le_satelliteMotion.setText('')
+
     def parseData(self, index):
         # parsing of the data is accordingly to https://www.celestrak.com/NORAD/documentation/tle-fmt.php
         # print(self.satelliteData['Line0'][index])
@@ -124,13 +149,38 @@ class TLEDataHandling:
             time.sleep(0.1)
         if commandSet['reply'][0] == 'V':
             self.app.messageQueue.put('TLE data for {0} loaded\n'.format(name))
-            self.app.workerMountDispatcher.workerMountGetModelNames.getModelNames()
             returnValue = True
         else:
             self.app.messageQueue.put('#BRTLE data for {0} could not be loaded\n'.format(name))
             self.logger.warning('TLE data for {0} could not be loaded. Error code: {1}'.format(name, commandSet['reply']))
             returnValue = False
         return returnValue
+
+    def calculateValues(self):
+        self.app.sharedMountDataLock.lockForRead()
+        JD = self.app.workerMountDispatcher.data['JulianDate']
+        self.app.sharedMountDataLock.unlock()
+        commandSet = {'command': ':TLEGAZ{0}#:TLEP{0},{1}#'.format(JD, 1440), 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'][0] == 'E':
+            self.app.messageQueue.put('No TLE data loaded for {0}\n'.format(name))
+        else:
+            altaz = commandSet['reply'][0].split(',')
+            self.app.ui.le_satelliteAlt.setText(altaz[0])
+            self.app.ui.le_satelliteAz.setText(altaz[1])
+        if commandSet['reply'][1] == 'E':
+            self.app.messageQueue.put('No TLE data loaded for {0}\n'.format(name))
+        else:
+            transit = commandSet['reply'][1].split(',')
+            passStart = '{0:4.1f}'.format((float(transit[0]) - float(JD)) * 1440)
+            passEnd = '{0:4.1f}'.format((float(transit[1]) - float(JD)) * 1440)
+            self.app.ui.le_satellitePassStart.setText(passStart)
+            self.app.ui.le_satellitePassEnd.setText(passEnd)
+
+    def doDataUpdateCalculations(self):
+        self.calculateValues()
 
     def getListAction(self):
         name = self.app.ui.listSatelliteName.currentItem().text()
@@ -139,7 +189,14 @@ class TLEDataHandling:
         # please think of the escaped characters for mount computer. Hex 0A (CR) goes for $0A
         data = self.satelliteData['Line0'][index] + '$0A' + self.satelliteData['Line1'][index] + '$0A' + self.satelliteData['Line2'][index]
         if self.pushDataToMount(data, name.strip()):
-            pass
             # now calculation transits etc.
+            self.satelliteUpdating = True
+            self.mainUpdateTimer.start(self.CYCLE_UPDATE_LOOP)
         else:
-            return
+            self.satelliteUpdating = False
+            self.mainUpdateTimer.stop()
+
+    def clearListAction(self):
+        self.satelliteUpdating = False
+        self.clearData()
+        self.mainUpdateTimer.stop()
