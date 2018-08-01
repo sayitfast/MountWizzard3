@@ -33,52 +33,13 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     # bytes to be expected. it's just plain data and i have to find out myself how much it is.
     # due to the fact i'm doing multi threading with multi connections some of the commands run in parallel
     # there are three types of commands:
-    #       no reply
-    #       reply ended with '#'
-    #       reply without '#'
-    COMMAND_RETURN = {':AP': 0,
-                      ':hP': 0,
-                      ':PO': 0,
-                      ':RT0': 0,
-                      ':RT1': 0,
-                      ':RT2': 0,
-                      ':RT9': 0,
-                      ':STOP': 0,
-                      ':U2': 0,
-                      ':modelld0': 1,
-                      ':modelsv0': 1,
-                      ':modeldel0': 1,
-                      ':delalst': 1,
-                      ':delalig': 1,
-                      ':SRPRS': 1,
-                      ':SRTMP': 1,
-                      ':Sz': 1,
-                      ':Sa': 1,
-                      ':Sr': 1,
-                      ':Sd': 1,
-                      ':MA': 1,
-                      ':MS': 1,
-                      ':shutdown': 1,
-                      ':Sw': 1,
-                      ':Sdat': 1,
-                      ':Suaf': 1,
-                      ':FLIP': 1,
-                      ':So': 1,
-                      ':Sh': 1,
-                      ':SREF': 1,
-                      ':CM': 1,
-                      ':CMS': 1,
-                      ':Gr': 1,
-                      ':Gd': 1,
-                      ':newalig': 1,
-                      ':endalig': 1,
-                      ':newalpt': 1,
-                      ':TLEGAZ': 1,
-                      ':TLEGEQ': 1,
-                      ':TLEP': 1,
-                      ':TLESCK': 1,
-                      ':TLES': 1,
-                      ':TLEL0': 1}
+    #       a) no reply                     this is ok
+    #       b) reply without '#'            this is the bad part, don't like it
+    #       c) reply ended with '#'         this is normal feedback -> no special treatment
+    COMMAND_RETURN_A = [':AP', ':AL', ':hP', ':PO', ':RT0', ':RT1', ':RT2', ':RT9', ':STOP', ':U2', ':hS', ':hF', ':hP',
+                        ':KA', ':Me', ':Mn', ':Ms', ':Mw', ':EW', ':NS', ':Q', 'Suaf', ':TSOLAR', ':TQ']
+    COMMAND_RETURN_B = [':FLIP', ':shutdown', ':GREF', ':GSC', ':Guaf', ':GTMPLT', ':GTRK', ':GTTRK', ':GTsid', ':MA', ':MS',
+                        ':Sa', ':Sev', ':Sr', ':SREF', ':SRPRS', ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
         super().__init__()
@@ -95,7 +56,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.sendLock = False
         self.cycleTimer = None
         self.messageString = ''
-        self.numberReplyToReceive = -1
+        self.numberReplyToReceive = 0
+        self.flagBadReply = False
         self.commandSet = dict()
 
     def run(self):
@@ -150,6 +112,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             if isinstance(rawCommand, str):
                 # only a single command without return needed
                 command = rawCommand
+                self.commandSet = dict()
             elif isinstance(rawCommand, dict):
                 self.commandSet = rawCommand
                 command = rawCommand['command']
@@ -160,23 +123,31 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 # determine how many messages to receive
                 # first we have to count how many commands are sent and split them
                 commandList = command.split('#')
+                commandList = commandList[:-1]
                 # now we have to parse how many of them will give a reply
-                self.numberReplyToReceive = -1
-                # iterate through all commands
+                self.numberReplyToReceive = 0
+                self.flagBadReply = False
+                foundReplyTypeA = False
+                # iterate through all commands in commandList
                 for commandKey in commandList:
-                    for key in self.COMMAND_RETURN:
+                    # if it's in type A, no response expected
+                    for key in self.COMMAND_RETURN_A:
                         if commandKey.startswith(key):
-                            self.numberReplyToReceive += self.COMMAND_RETURN[key]
+                            foundReplyTypeA = True
                             break
-
-                if self.numberReplyToReceive == -1:
-                    self.logger.error('Command >(0)< not known'.format(command))
-                elif self.numberReplyToReceive > 0:
+                    if not foundReplyTypeA:
+                        self.numberReplyToReceive += 1
+                        for keyBad in self.COMMAND_RETURN_B:
+                            if commandKey.startswith(keyBad):
+                                self.flagBadReply = True
+                                break
+                if self.numberReplyToReceive > 0:
                     self.sendLock = True
                     self.sendCommand(command)
                 else:
                     self.sendLock = False
                     self.sendCommand(command)
+                self.logger.info('Sending command {0}, with number of replies : {1} and flagBadReply set : {2}'.format(command, self.numberReplyToReceive, self.flagBadReply))
 
     def doReconnect(self):
         # to get order in connections, we wait for first connecting the Slow type
@@ -235,17 +206,38 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     def handleReadyRead(self):
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < self.numberReplyToReceive:
-            return
-        if self.messageString.count('#') != self.numberReplyToReceive:
-            self.logger.error('Receiving data got error:{0}'.format(self.messageString))
-            self.messageString = ''
-            messageToProcess = ''
+        # test weather is good feedback (with delimiting '#')
+        if self.flagBadReply:
+            # if not, we are go for length of string
+            if len(self.messageString) < self.numberReplyToReceive:
+                return
         else:
-            messageToProcess = self.messageString
-            self.messageString = ''
+            # if so we are counting '#'
+            if self.messageString.count('#') < self.numberReplyToReceive:
+                return
 
-        self.commandSet['reply'] = messageToProcess.split('#')
+        if self.flagBadReply:
+            if len(self.messageString) != self.numberReplyToReceive:
+                self.logger.error('Receiving data with flagBadReply set got error: {0}'.format(self.messageString))
+                self.messageString = ''
+                messageToProcess = ''
+            else:
+                messageToProcess = self.messageString
+                self.messageString = ''
+        else:
+            if self.messageString.count('#') != self.numberReplyToReceive:
+                self.logger.error('Receiving data with flagBadReply set got error: {0}'.format(self.messageString))
+                self.messageString = ''
+                messageToProcess = ''
+            else:
+                messageToProcess = self.messageString
+                self.messageString = ''
+
+        if self.flagBadReply:
+            self.commandSet['reply'] = messageToProcess
+        else:
+            self.commandSet['reply'] = messageToProcess.split('#')
+        self.logger.info('Receiving reply of command {0}, type: {1}'.format(self.commandSet['reply'], type(self.commandSet['reply'])))
         self.sendLock = False
 
     def sendCommand(self, command):
