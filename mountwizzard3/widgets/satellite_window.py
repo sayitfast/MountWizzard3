@@ -23,6 +23,7 @@ import time
 import numpy
 import copy
 import PyQt5
+# import pyorbital
 import astropy.io.fits as pyfits
 from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPercentileInterval, PowerStretch
 from matplotlib import use
