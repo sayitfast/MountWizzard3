@@ -19,6 +19,16 @@ Features fine tuning:
 - tests for hystersis and time flexure should be run only with 3 star model or better non model. therfore blind solving 
   is necessary
 - more possible tests for flexures and misalignements, or pictures for explaining.
+- using the skyfield framework for satellites 
+- moving the regular tasks like pressure updates, temp updates, alt az for pointer from mount medium to separate timer
+- establishing separate timer for satellite updates in satellite widget and make them run only when visible
+- make download of TLE data through skyfield and manage update process
+- show epoch of tle data and show if its outdated or reload it automatically. manual update should be possible as well.
+- update of data updates all charts immediately
+- give some hints for used software in diclaimer 
+- parsing tle data now moves to skyfield. technical data should be hidden now.
+- using skyfield as well for twilight, moon in hemisphere window
+- 
 
 
 Problems:
