@@ -28,7 +28,8 @@ Features fine tuning:
 - give some hints for used software in diclaimer 
 - parsing tle data now moves to skyfield. technical data should be hidden now.
 - using skyfield as well for twilight, moon in hemisphere window
-- 
+- draw earth with http://milesbarnhart.com/portfolio/python/python-3d-satellite-orbital-trajectory-simulation/
+- orbits zeichnen mit https://github.com/Elucidation/OrbitalElements/blob/master/orbit.py
 
 
 Problems:
