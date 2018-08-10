@@ -39,7 +39,7 @@ Features fine tuning:
 - coding: no test if key in dict exists, but use a single .get with default for it. shoudl be applied in init_config
 - coding: make setter and getter in class instead of direct access. this applies to data dict in mount and elswere
 - coding: put gui topics to gui thread and the widgets, other stuff out of the threads.
-- coding: 
+- coding: for block in iter(fread.... raymond hettinger
 
 
 Problems:
