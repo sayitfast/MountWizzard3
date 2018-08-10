@@ -30,6 +30,9 @@ Features fine tuning:
 - using skyfield as well for twilight, moon in hemisphere window
 - draw earth with http://milesbarnhart.com/portfolio/python/python-3d-satellite-orbital-trajectory-simulation/
 - orbits zeichnen mit https://github.com/Elucidation/OrbitalElements/blob/master/graphics.py
+- make mount threads depending on a single class and replace the standard methods in it.
+- make the code more readable with pep-8
+
 
 Problems:
 
