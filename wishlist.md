@@ -32,6 +32,14 @@ Features fine tuning:
 - orbits zeichnen mit https://github.com/Elucidation/OrbitalElements/blob/master/graphics.py
 - make mount threads depending on a single class and replace the standard methods in it.
 - make the code more readable with pep-8
+- move align stars in hemisphere and their updated to a matplotlib animation
+- move calculation of alignment stars from mout to align stars
+- coding: use continue mor often in iterators and for steps.
+- coding: no filenames in calls, but the file handle
+- coding: no test if key in dict exists, but use a single .get with default for it. shoudl be applied in init_config
+- coding: make setter and getter in class instead of direct access. this applies to data dict in mount and elswere
+- coding: put gui topics to gui thread and the widgets, other stuff out of the threads.
+- coding: 
 
 
 Problems:
