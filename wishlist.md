@@ -41,6 +41,15 @@ Features fine tuning:
 - coding: put gui topics to gui thread and the widgets, other stuff out of the threads.
 - coding: for block in iter(fread.... raymond hettinger
 - GUI: make the main screen nicer: smaller load save, move icon to the left, extend save quit for full text again
+- make from mount separate module. no gui or link to app be present. move thread bulding to module itself, 
+- replace message queue wirh defined signal.
+- define dedicated api how to work with mount, model and widgets.
+- go to max length of 79 characters.
+- use else statement in for, while
+- else statement in try will be executed when no exception occurs.
+- finally will be called in any case also when return an other statements are made.
+- make a central class for qthreads and on derivative from it for threads with networking. pyqt->thread->threadplusnetwork.
+
 
 
 Problems:
