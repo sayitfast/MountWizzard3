@@ -28,7 +28,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CONNECTION_TIMEOUT = 2000
-    CYCLE_STATUS_MEDIUM = 3000
+    CYCLE_STATUS = 3000
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
@@ -69,8 +69,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         # timer
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatusMedium)
-        self.dataTimer.start(self.CYCLE_STATUS_MEDIUM)
+        self.dataTimer.timeout.connect(self.getStatus)
+        self.dataTimer.start(self.CYCLE_STATUS)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
@@ -173,7 +173,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket RunnerMedium not connected')
 
     @PyQt5.QtCore.pyqtSlot()
-    def getStatusMedium(self):
+    def getStatus(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.app.sharedMountDataLock.lockForRead()
             if self.data['FW'] < 21500:

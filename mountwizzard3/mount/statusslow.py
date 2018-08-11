@@ -30,7 +30,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     signalDestruct = PyQt5.QtCore.pyqtSignal()
     CYCLE = 250
-    CYCLE_STATUS_SLOW = 10000
+    CYCLE_STATUS = 10000
     CONNECTION_TIMEOUT = 2000
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
@@ -66,7 +66,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.updateAlignmentStarPositions()
 
     def run(self):
-        self.logger.info('mount slow started')
+        self.logger.info('{0} started'.format(__name__))
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -83,8 +83,8 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         # timers
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatusSlow)
-        self.dataTimer.start(self.CYCLE_STATUS_SLOW)
+        self.dataTimer.timeout.connect(self.getStatus)
+        self.dataTimer.start(self.CYCLE_STATUS)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
@@ -100,7 +100,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('mount slow stopped')
+        self.logger.info('{0} stopped'.format(__name__))
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
@@ -186,7 +186,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
-                self.logger.warning('Socket RunnerSlow not connected')
+                self.logger.warning('Socket {0} not connected'.format(__name__))
 
     def doRefractionUpdate(self):
         doRefractionUpdate = False
@@ -234,7 +234,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
             self.app.sharedMountDataLock.unlock()
 
-    def getStatusSlow(self):
+    def getStatus(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:modelcnt#:getalst#:newalig#:endalig#'
             # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'

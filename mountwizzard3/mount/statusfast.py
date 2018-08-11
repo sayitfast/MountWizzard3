@@ -28,7 +28,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CONNECTION_TIMEOUT = 2000
-    CYCLE_STATUS_FAST = 750
+    CYCLE_STATUS = 750
     CYCLE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
@@ -70,8 +70,8 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         # timers
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatusFast)
-        self.dataTimer.start(self.CYCLE_STATUS_FAST)
+        self.dataTimer.timeout.connect(self.getStatus)
+        self.dataTimer.start(self.CYCLE_STATUS)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
@@ -174,7 +174,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket RunnerFast not connected')
 
     @PyQt5.QtCore.pyqtSlot()
-    def getStatusFast(self):
+    def getStatus(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
 

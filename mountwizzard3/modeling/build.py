@@ -26,7 +26,7 @@ import math
 import PyQt5
 import indi.indi_xml as indiXML
 from analyse import analysedata
-from modeling import model_points
+from modeling import points
 from queue import Queue
 from astrometry import transform
 import astropy.io.fits as pyfits
@@ -314,7 +314,7 @@ class ModelingBuild:
         # assign support classes
         self.analyseData = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
-        self.modelPoints = model_points.ModelPoints(self.app)
+        self.modelPoints = points.ModelPoints(self.app)
 
         # initialize the parallel thread modeling parts
         self.threadSlewpoint = PyQt5.QtCore.QThread()

@@ -46,8 +46,8 @@ from widgets import analyse_window
 from widgets import message_window
 from widgets import satellite_window
 from gui import main_window_ui
-from modeling import model_dispatcher
-from mount import mount_dispatcher
+from modeling import dispatcher as model_disp
+from mount import dispatcher as mount_disp
 from relays import relays
 from remote import remote
 from dome import dome
@@ -131,7 +131,7 @@ class MountWizzardApp(widget.MwWidget):
         # instantiating all subclasses and connecting thread signals
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
-        self.workerMountDispatcher = mount_dispatcher.MountDispatcher(self, self.threadMountDispatcher)
+        self.workerMountDispatcher = mount_disp.MountDispatcher(self, self.threadMountDispatcher)
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
@@ -199,7 +199,7 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAutomation.started.connect(self.workerAutomation.run)
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
-        self.workerModelingDispatcher = model_dispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
+        self.workerModelingDispatcher = model_disp.ModelingDispatcher(self, self.threadModelingDispatcher)
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)

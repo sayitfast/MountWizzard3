@@ -21,7 +21,7 @@ import logging
 import time
 import PyQt5
 import queue
-from modeling import model_build
+from modeling import build
 
 
 class ModelingDispatcher(PyQt5.QtCore.QObject):
@@ -42,7 +42,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.thread = thread
         self.cycleTimer = None
         self.commandDispatcherQueue = queue.Queue()
-        self.modelingRunner = model_build.ModelingBuild(self.app)
+        self.modelingRunner = build.ModelingBuild(self.app)
         # signal for stopping modeling
         self.signalCancel.connect(self.modelingRunner.setCancel)
 

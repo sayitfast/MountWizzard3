@@ -23,14 +23,14 @@ import PyQt5
 import queue
 import math
 import copy
-from mount import mount_command
-from mount import mount_statusfast
-from mount import mount_statusmedium
-from mount import mount_statusslow
-from mount import mount_getalignmodel
-from mount import mount_setalignmodel
-from mount import mount_getmodelnames
-from mount import mount_modelhandling
+from mount import command
+from mount import statusfast
+from mount import statusmedium
+from mount import statusslow
+from mount import getalignmodel
+from mount import setalignmodel
+from mount import getmodelnames
+from mount import modelhandling
 from analyse import analysedata
 from baseclasses import checkIP
 from astrometry import transform
@@ -107,7 +107,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.commandDispatcherQueue = queue.Queue()
         self.cycleTimer = None
         # getting all supporting classes assigned
-        self.mountModelHandling = mount_modelhandling.MountModelHandling(self.app, self.data)
+        self.mountModelHandling = modelhandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.checkIP = checkIP.CheckIP()
@@ -115,43 +115,43 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # getting all threads setup
         # commands sending thread
         self.threadMountCommandRunner = PyQt5.QtCore.QThread()
-        self.workerMountCommandRunner = mount_command.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountCommandRunner = command.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
         # fast status thread
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountStatusRunnerFast = statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
         # medium status thread
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountStatusRunnerMedium = statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
         self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
         # slow status thread
         self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountStatusRunnerSlow = statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountGetAlignmentModel = getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
         # set alignment model
         self.threadMountSetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountSetAlignmentModel = mount_setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountSetAlignmentModel = setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountSetAlignmentModel.setObjectName("MountSetAlignmentModel")
         self.workerMountSetAlignmentModel.moveToThread(self.threadMountSetAlignmentModel)
         self.threadMountSetAlignmentModel.started.connect(self.workerMountSetAlignmentModel.run)
         # get model names
         self.threadMountGetModelNames = PyQt5.QtCore.QThread()
-        self.workerMountGetModelNames = mount_getmodelnames.MountGetModelNames(self.app, self.threadMountGetModelNames, self.data, self.signalMountConnected, self.mountStatus)
+        self.workerMountGetModelNames = getmodelnames.MountGetModelNames(self.app, self.threadMountGetModelNames, self.data, self.signalMountConnected, self.mountStatus)
         self.threadMountGetModelNames.setObjectName("MountGetModelNames")
         self.workerMountGetModelNames.moveToThread(self.threadMountGetModelNames)
         self.threadMountGetModelNames.started.connect(self.workerMountGetModelNames.run)
@@ -202,7 +202,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_setRefractionParameters,
-                            'Method': self.workerMountStatusRunnerMedium.getStatusMedium,
+                            'Method': self.workerMountStatusRunnerMedium.getStatus,
                         }
                     ]
                 },

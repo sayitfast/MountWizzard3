@@ -156,7 +156,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
-                self.logger.warning('Socket SetAlignmentModel not connected')
+                self.logger.warning('Socket {0} not connected'.format(__name__))
 
     def setAlignmentModel(self, data):
         if self.data['FW'] < 20815:
