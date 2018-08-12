@@ -46,14 +46,13 @@ from widgets import analyse_window
 from widgets import message_window
 from widgets import satellite_window
 from gui import main_window_ui
-from modeling import dispatcher as model_disp
-from mount import dispatcher as mount_disp
+import modeling.dispatcher
+import mount.dispatcher
 from relays import relays
 from remote import remote
 from dome import dome
 from environment import environment
 from indi import indi_client
-from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
 from astrometry import transform
@@ -78,6 +77,7 @@ class MountWizzardApp(widget.MwWidget):
     # Locks for accessing shared  data
     sharedAstrometryDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedImagingDataLock = PyQt5.QtCore.QReadWriteLock()
+    # todo: move this lock to the module inside -> dispatcher, accessing data from mount through methods.
     sharedMountDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedModelingDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedEnvironmentDataLock = PyQt5.QtCore.QReadWriteLock()
@@ -131,7 +131,7 @@ class MountWizzardApp(widget.MwWidget):
         # instantiating all subclasses and connecting thread signals
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
-        self.workerMountDispatcher = mount_disp.MountDispatcher(self, self.threadMountDispatcher)
+        self.workerMountDispatcher = mount.dispatcher.MountDispatcher(self, self.threadMountDispatcher)
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
@@ -199,7 +199,7 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAutomation.started.connect(self.workerAutomation.run)
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
-        self.workerModelingDispatcher = model_disp.ModelingDispatcher(self, self.threadModelingDispatcher)
+        self.workerModelingDispatcher = modeling.dispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
