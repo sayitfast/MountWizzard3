@@ -128,21 +128,23 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
-        self.logger.debug('Mount SetAlignmentModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.lockForRead()
+        self.logger.info('{0} found at {1}:{2}'.format(__name__, self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.connected = True
         self.signalConnected.emit({__name__: True})
-        self.logger.info('Mount SetAlignmentModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('{0} connected at {1}:{2}'.format(__name__, self.data['MountIP'], self.data['MountPort']))
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
-        self.logger.warning('Mount SetAlignmentModel connection fault: {0}'.format(socketError))
+        self.logger.warning('{0} connection fault: {1}'.format(__name__, socketError))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
-        self.logger.debug('Mount SetAlignmentModel connection has state: {0}'.format(self.socket.state()))
+        self.logger.debug('{0} has state: {1}'.format(__name__, self.socket.state()))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
