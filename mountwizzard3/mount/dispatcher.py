@@ -70,7 +70,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         '10': 'Following Satellite',
         '11': 'User OK Needed',
         '98': 'Unknown Status',
-        '99': 'Error'
+        '99': 'Error',
     }
 
     data = {
@@ -84,17 +84,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         'LocalSiderealTime': '',
         # date of 01.05.2018
         'JulianDate': '2458240',
-        'FW': 0
+        'FW': 0,
     }
 
     mountStatus = {
-            'Fast': False,
-            'Medium': False,
-            'Slow': False,
-            'GetAlign': False,
-            'SetAlign': False,
-            'GetName': False,
-            'Command': False
     }
 
     def __init__(self, app, thread):
@@ -232,7 +225,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Method': self.refreshModelNames,
                         }
                     ]
-                }
+                },
         }
         # signal slot
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))

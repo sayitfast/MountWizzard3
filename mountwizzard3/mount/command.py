@@ -200,7 +200,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
-        self.logger.info('Mount RunnerCommand connection is disconnected from host')
+        self.logger.info('{0} is disconnected from host'.format(__name__))
         self.signalConnected.emit({__name__: False})
 
     @PyQt5.QtCore.pyqtSlot()

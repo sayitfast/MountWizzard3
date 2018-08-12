@@ -148,7 +148,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
-        self.logger.info('Mount SetAlignmentModel connection is disconnected from host')
+        self.logger.info('{0} is disconnected from host'.format(__name__))
         self.signalConnected.emit({__name__: False})
         self.connected = False
 

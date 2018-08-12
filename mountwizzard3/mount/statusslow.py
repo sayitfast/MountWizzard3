@@ -174,7 +174,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
-        self.logger.info('Mount RunnerSlow connection is disconnected from host')
+        self.logger.info('{0} is disconnected from host'.format(__name__))
         self.signalConnected.emit({__name__: False})
         # todo: does not fit here anymore !
         self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
