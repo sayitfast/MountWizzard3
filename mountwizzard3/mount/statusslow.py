@@ -29,8 +29,8 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     signalDestruct = PyQt5.QtCore.pyqtSignal()
-    CYCLE = 250
-    CYCLE_STATUS = 10000
+    CYCLE_QUEUE = 250
+    CYCLE_COMMAND = 10000
     CONNECTION_TIMEOUT = 2000
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
@@ -83,12 +83,12 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         # timers
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatus)
-        self.dataTimer.start(self.CYCLE_STATUS)
+        self.dataTimer.timeout.connect(self.startCommand)
+        self.dataTimer.start(self.CYCLE_COMMAND)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
-        self.cycleTimer.start(self.CYCLE)
+        self.cycleTimer.start(self.CYCLE_QUEUE)
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
 
     def stop(self):
@@ -96,7 +96,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         if self.isRunning:
             self.isRunning = False
             self.signalDestruct.emit()
-            self.signalConnected.emit({'Slow': False})
+            self.signalConnected.emit({__name__: False})
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
@@ -132,14 +132,14 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 # connection build up is ongoing
                 pass
-            if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+            if self.connectCounter * self.CYCLE_QUEUE > self.CONNECTION_TIMEOUT:
                 self.socket.abort()
                 self.connectCounter = 0
             else:
                 self.connectCounter += 1
         else:
             if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                if self.connectCounter * self.CYCLE_QUEUE > self.CONNECTION_TIMEOUT:
                     self.socket.abort()
                     self.connectCounter = 0
                 else:
@@ -159,7 +159,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerSlow connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
-        self.signalConnected.emit({'Slow': True})
+        self.signalConnected.emit({__name__: True})
         self.getStatusSlow()
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
@@ -174,7 +174,8 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('Mount RunnerSlow connection is disconnected from host')
-        self.signalConnected.emit({'Slow': False})
+        self.signalConnected.emit({__name__: False})
+        # todo: does not fit here anymore !
         self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
         self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
         self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
@@ -234,7 +235,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
             self.app.sharedMountDataLock.unlock()
 
-    def getStatus(self):
+    def startCommand(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:modelcnt#:getalst#:newalig#:endalig#'
             # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'

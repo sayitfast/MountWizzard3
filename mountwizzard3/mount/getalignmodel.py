@@ -29,7 +29,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CONNECTION_TIMEOUT = 2000
-    CYCLE = 250
+    CYCLE_QUEUE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
@@ -52,7 +52,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
 
     def run(self):
-        self.logger.info('mount get align started')
+        self.logger.info('{0} started'.format(__name__))
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -70,7 +70,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
-        self.cycleTimer.start(self.CYCLE)
+        self.cycleTimer.start(self.CYCLE_QUEUE)
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
 
     def stop(self):
@@ -78,11 +78,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         if self.isRunning:
             self.isRunning = False
             self.signalDestruct.emit()
-            self.signalConnected.emit({'GetAlign': False})
+            self.signalConnected.emit({__name__: False})
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('mount get align stopped')
+        self.logger.info('{0} stopped'.format(__name__))
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
@@ -115,14 +115,14 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 else:
                     # connection build up is ongoing
                     pass
-                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                if self.connectCounter * self.CYCLE_QUEUE > self.CONNECTION_TIMEOUT:
                     self.socket.abort()
                     self.connectCounter = 0
                 else:
                     self.connectCounter += 1
             else:
                 if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                    if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                    if self.connectCounter * self.CYCLE_QUEUE > self.CONNECTION_TIMEOUT:
                         self.socket.abort()
                         self.connectCounter = 0
                     else:
@@ -137,7 +137,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
-        self.signalConnected.emit({'GetAlign': True})
+        self.signalConnected.emit({__name__: True})
         self.logger.info('Mount GetAlignmentModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.getAlignmentModel()
 
@@ -152,7 +152,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('Mount GetAlignmentModel connection is disconnected from host')
-        self.signalConnected.emit({'GetAlign': False})
+        self.signalConnected.emit({__name__: False})
 
     def sendCommand(self, command):
         if self.isRunning:

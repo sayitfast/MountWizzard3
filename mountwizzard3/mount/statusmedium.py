@@ -28,8 +28,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CONNECTION_TIMEOUT = 2000
-    CYCLE_STATUS = 3000
-    CYCLE = 250
+    CYCLE_COMMAND = 3000
+    CYCLE_QUEUE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
@@ -52,7 +52,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
 
     def run(self):
-        self.logger.info('mount medium started')
+        self.logger.info('{0} started'.format(__name__))
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -69,12 +69,12 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         # timer
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatus)
-        self.dataTimer.start(self.CYCLE_STATUS)
+        self.dataTimer.timeout.connect(self.startCommand)
+        self.dataTimer.start(self.CYCLE_COMMAND)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
-        self.cycleTimer.start(self.CYCLE)
+        self.cycleTimer.start(self.CYCLE_QUEUE)
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
 
     def stop(self):
@@ -82,11 +82,11 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         if self.isRunning:
             self.isRunning = False
             self.signalDestruct.emit()
-            self.signalConnected.emit({'Medium': False})
+            self.signalConnected.emit({__name__: False})
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('mount medium stopped')
+        self.logger.info('{0} stopped'.format(__name__))
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
@@ -120,14 +120,14 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 else:
                     # connection build up is ongoing
                     pass
-                if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                if self.connectCounter * self.CYCLE_QUEUE > self.CONNECTION_TIMEOUT:
                     self.socket.abort()
                     self.connectCounter = 0
                 else:
                     self.connectCounter += 1
             else:
                 if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                    if self.connectCounter * self.CYCLE > self.CONNECTION_TIMEOUT:
+                    if self.connectCounter * self.CYCLE_QUEUE > self.CONNECTION_TIMEOUT:
                         self.socket.abort()
                         self.connectCounter = 0
                     else:
@@ -144,7 +144,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
-        self.signalConnected.emit({'Medium': True})
+        self.signalConnected.emit({__name__: True})
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerMedium connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
@@ -160,7 +160,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('Mount RunnerMedium connection is disconnected from host')
-        self.signalConnected.emit({'Medium': False})
+        self.signalConnected.emit({__name__: False})
 
     def sendCommand(self, command):
         if self.isRunning:
@@ -173,7 +173,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket RunnerMedium not connected')
 
     @PyQt5.QtCore.pyqtSlot()
-    def getStatus(self):
+    def startCommand(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.app.sharedMountDataLock.lockForRead()
             if self.data['FW'] < 21500:

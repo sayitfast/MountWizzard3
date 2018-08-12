@@ -53,7 +53,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalRefreshAlignmentModel = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE = 200
+    CYCLE_QUEUE = 250
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     statusReference = {
@@ -202,7 +202,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_setRefractionParameters,
-                            'Method': self.workerMountStatusRunnerMedium.getStatus,
+                            'Method': self.workerMountStatusRunnerMedium.startCommand,
                         }
                     ]
                 },
@@ -339,7 +339,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def run(self):
         self.app.ui.le_mountIP.editingFinished.connect(self.changedSettings, type=PyQt5.QtCore.Qt.QueuedConnection)
-        self.logger.info('mount dispatcher started')
+        self.logger.info('{0} started'.format(__name__))
         # sending default status to gui in red
         self.app.signalSetMountStatus.emit(0)
         self.mutexIsRunning.lock()
@@ -357,7 +357,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
         self.cycleTimer.setSingleShot(False)
         self.cycleTimer.timeout.connect(self.doCommand)
-        self.cycleTimer.start(self.CYCLE)
+        self.cycleTimer.start(self.CYCLE_QUEUE)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -368,7 +368,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.thread.wait()
         self.mutexIsRunning.unlock()
         # stopping all interaction
-        self.logger.info('mount dispatcher stopped')
+        self.logger.info('{0} stopped'.format(__name__))
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
