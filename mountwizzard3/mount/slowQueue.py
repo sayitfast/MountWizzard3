@@ -22,7 +22,7 @@ import PyQt5
 import time
 from queue import Queue
 from astrometry import transform
-from mount import align_stars
+from mount import alignStars
 
 
 class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
@@ -53,7 +53,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         # todo: new form of using transformations
         self.transform = transform.Transform(self.app)
 
-        self.alignmentStars = align_stars.AlignStars(self.app)
+        self.alignmentStars = alignStars.AlignStars(self.app)
+        # todo: alignment stars should be not of the data dict !
+        # todo: all functions have to be moved outside this thread !
         self.app.sharedMountDataLock.lockForWrite()
         self.data['starsTopo'] = list()
         self.data['starsNames'] = list()
@@ -191,6 +193,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('Socket {0} not connected'.format(__name__))
 
+    # todo: the refraction update has to be moved elsewhere, mostly dispatcher (= general interface)
     def doRefractionUpdate(self):
         doRefractionUpdate = False
         pressure = 950
