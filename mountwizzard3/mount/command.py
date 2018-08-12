@@ -152,7 +152,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     def doReconnect(self):
         # to get order in connections, we wait for first connecting the Slow type
-        if self.mountStatus['Slow'] and self.data['FW'] > 0:
+        if self.data['FW'] > 0:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
                 if self.connectCounter == 0:
                     self.app.sharedMountDataLock.lockForRead()

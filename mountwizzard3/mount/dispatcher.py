@@ -287,7 +287,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
         # if we had a connection to the mount, the site data should be there.
-        if self.mountStatus['Slow']:
+        # todo: find another solution for when we got realistic site data from mount
+        if self.data['FW'] > 0:
             self.app.config['SiteLongitude'] = copy.copy(self.data['SiteLongitude'])
             self.app.config['SiteLatitude'] = copy.copy(self.data['SiteLatitude'])
             self.app.config['SiteHeight'] = copy.copy(self.data['SiteHeight'])
