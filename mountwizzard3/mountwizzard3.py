@@ -34,6 +34,7 @@ import numpy
 import copy
 import PyQt5
 import PyQt5.QtMultimedia
+# todo: fix matplotlib import when removing PyQt5.QT multimedia import
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot
