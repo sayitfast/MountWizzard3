@@ -21,7 +21,6 @@ import logging
 import PyQt5
 from base import widget
 from astrometry import transform
-import astropy
 import copy
 import numpy
 import matplotlib

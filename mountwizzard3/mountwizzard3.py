@@ -27,15 +27,13 @@ import logging
 import logging.handlers
 import time
 import math
-import numpy
-import socket
 if platform.system() == 'Windows':
     from winreg import *
 from queue import Queue
-import PyQt5
-import PyQt5.QtMultimedia
 import numpy
 import copy
+import PyQt5
+import PyQt5.QtMultimedia
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot
