@@ -81,7 +81,7 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('mount get model names stopped')
+        self.logger.info('{0} stopped'.format(__name__))
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
