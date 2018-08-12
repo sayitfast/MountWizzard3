@@ -50,6 +50,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.sendLock = False
         self.messageString = ''
         self.sendCommandQueue = Queue()
+        # todo: new form of using transformations
         self.transform = transform.Transform(self.app)
 
         self.alignmentStars = align_stars.AlignStars(self.app)
