@@ -39,7 +39,7 @@ import copy
 import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot
-from baseclasses import widget
+from base import widget
 from widgets import hemisphere_window
 from widgets import image_window
 from widgets import analyse_window

@@ -22,7 +22,7 @@ import time
 import PyQt5
 import requests
 from requests_toolbelt.multipart import encoder
-from baseclasses import checkIP
+from base import checkIP
 import json
 import collections
 import copy

@@ -19,7 +19,7 @@
 ###########################################################
 import logging
 import PyQt5
-from baseclasses import widget
+from base import widget
 from gui import message_window_ui
 
 

@@ -14,7 +14,7 @@ setup(
         'mountwizzard3.audio',
         'mountwizzard3.build',
         'mountwizzard3.automation',
-        'mountwizzard3.baseclasses',
+        'mountwizzard3.base',
         'mountwizzard3.imaging',
         'mountwizzard3.dome',
         'mountwizzard3.environment',

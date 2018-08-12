@@ -20,7 +20,7 @@
 import logging
 import PyQt5
 import time
-from baseclasses import checkIP
+from base import checkIP
 
 
 class Audio(PyQt5.QtCore.QObject):

@@ -32,7 +32,7 @@ from mount import setalign
 from mount import getnames
 from mount import model
 from analyse import analysedata
-from baseclasses import checkIP
+from base import checkIP
 from astrometry import transform
 
 

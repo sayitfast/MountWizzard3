@@ -23,7 +23,7 @@ import platform
 import time
 import PyQt5
 import requests
-from baseclasses import checkIP
+from base import checkIP
 
 
 class SGPro:

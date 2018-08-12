@@ -27,7 +27,7 @@ import PyQt5
 import astropy.io.fits as pyfits
 from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPercentileInterval, PowerStretch
 from matplotlib import use
-from baseclasses import widget
+from base import widget
 from astrometry import transform
 from gui import satellite_window_ui
 use('Qt5Agg')

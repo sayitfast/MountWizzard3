@@ -22,7 +22,7 @@ import math
 import numpy
 import PyQt5
 from analyse import analysedata
-from baseclasses import widget
+from base import widget
 from gui import analyse_window_ui
 import matplotlib
 matplotlib.use('Qt5Agg')

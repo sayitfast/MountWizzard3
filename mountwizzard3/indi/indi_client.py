@@ -26,7 +26,7 @@ from xml.etree import ElementTree
 import PyQt5
 import indi.indi_xml as indiXML
 import astropy.io.fits as pyfits
-from baseclasses import checkIP
+from base import checkIP
 
 
 class INDIClient(PyQt5.QtCore.QObject):

@@ -22,7 +22,7 @@ import time
 import PyQt5
 import queue
 import requests
-from baseclasses import checkIP
+from base import checkIP
 
 
 class Relays(PyQt5.QtCore.QObject):
