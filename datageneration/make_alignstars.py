@@ -1,5 +1,53 @@
 import skyfield.named_stars
 
+HEADER = """
+############################################################
+# -*- coding: utf-8 -*-
+#
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
+# Python-based Tool for interaction with the 10micron mounts
+# GUI with PyQT5 for python
+# Python  v3.6.5
+#
+# Michael Würtenberger
+# (c) 2016, 2017, 2018
+#
+# Licence APL2.0
+#
+###########################################################
+
+# this file is auto generated
+
+import skyfield.starlib
+
+
+class AlignStar:
+
+    # alignment star from hipparcos catatlogue, selection is equivalent to skyfield
+
+    alignStar = dict()
+
+    # now the stars
+    
+"""
+
+FOOTER = """
+    def __init__(self):
+        pass
+        
+        
+if __name__ == "__main__":
+
+    star = AlignStar().alignStar
+    for name in star:
+        print(name, star[name].ra.hours, star[name].dec.degrees)
+
+"""
 
 named_star_dict = {
     'Achernar': 7588,
@@ -123,7 +171,8 @@ named_star_dict = {
     'Wezen': 34444,
 }
 
-with open('alignStarsData.txt', 'w') as f:
+with open('alignStar.py', 'w') as f:
+    f.write(HEADER)
     for name in named_star_dict:
         starH = skyfield.named_stars.NamedStar(name)
         ra_hours = starH.ra.hours
@@ -132,13 +181,14 @@ with open('alignStarsData.txt', 'w') as f:
         dec_mas_per_year = starH.dec_mas_per_year
         parallax_mas = starH.parallax_mas
         radial_km_per_s = starH.radial_km_per_s
-        lineA = '"{0}" : skyfield.starlib.Star(ra_hours={1}, dec_degrees={2}, ra_mas_per_year={3}'.format(
+        lineA = 'alignStar["{0}"] = skyfield.starlib.Star(ra_hours={1}, dec_degrees={2}, ra_mas_per_year={3}'.format(
             name, ra_hours, dec_degrees, ra_mas_per_year
         )
-        lineB = ', dec_mas_per_year={0}, parallax_mas={1}, radial_km_per_s={2}),\n'.format(
+        lineB = ', dec_mas_per_year={0}, parallax_mas={1}, radial_km_per_s={2})\n'.format(
             dec_mas_per_year, parallax_mas, radial_km_per_s
         )
         print(lineA + lineB)
-        f.write(lineA + lineB)
+        f.write('    ' + lineA + lineB)
+    f.write(FOOTER)
 
 
