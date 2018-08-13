@@ -49,7 +49,22 @@ Features fine tuning:
 - else statement in try will be executed when no exception occurs.
 - finally will be called in any case also when return an other statements are made.
 - make a central class for qthreads and on derivative from it for threads with networking. pyqt->thread->threadplusnetwork.
-
+- Loader from skyfield (make a gui entry fro reloading the data or not. verbose = false always, store in config.):
+    But users can also create a `Loader` of their own, if there is
+    another directory they want data files saved to, or if they want to
+    specify different options.  The directory is created automatically
+    if it does not yet exist::
+        from skyfield.api import Loader
+        load = Loader('~/skyfield-data')
+    The options are:
+    ``verbose``
+      If set to ``False``, then the loader will not print a progress bar
+      to the screen each time it downloads a file.  (If the standard
+      output is not a TTY, then no progress bar is printed anyway.)
+    ``expire``
+      If set to ``False``, then Skyfield will always use an existing
+      file on disk, instead of expiring files that are out of date and
+      replacing them with newly downloaded copies.
 
 
 Problems:
