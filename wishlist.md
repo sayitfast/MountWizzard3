@@ -66,12 +66,6 @@ Features fine tuning:
       file on disk, instead of expiring files that are out of date and
       replacing them with newly downloaded copies.
 
-- time scale: make it global at package level for mount: https://stackoverflow.com/questions/1977362/how-to-create-module-wide-variables-in-python
-    in dispatcher: ts = skyfield.api.load.timescale() 
-    using it locally with global statement
-    global variables in separate module for all.
-    has to be imported from all.
-
 Problems:
 
 
