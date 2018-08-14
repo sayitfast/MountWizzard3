@@ -39,14 +39,32 @@ class AlignStar:
 FOOTER = """
     def __init__(self):
         pass
-        
-        
+
+    def __getitem__(self, item):
+        if item in self.star:
+            return self.star[item]
+
+    def __missing__(self, key):
+        return None
+
+    def __iter__(self):
+        return iter(self.star)
+
+    def keys(self):
+        return self.star.keys()
+
+    def items(self):
+        return self.star.items()
+
+    def values(self):
+        return self.star.values()
+
+
 if __name__ == "__main__":
 
-    star = AlignStar().alignStar
-    for name in star:
-        print(name, star[name].ra.hours, star[name].dec.degrees)
-
+    star = AlignStar()
+    for name, value in star.items():
+        print(name, value.ra.hours, value.dec.degrees)
 """
 
 named_star_dict = {
