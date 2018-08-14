@@ -247,7 +247,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                     finally:
                         pass
             else:
-                self.logger.warning('Parsing GS-Ginfo combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
+                self.logger.warning('Parsing list error: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
             self.logger.error('Problem parsing response, error: {0}, message:{1}'.format(e, messageToProcess))
         finally:

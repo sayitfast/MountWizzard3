@@ -305,6 +305,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('Problem parsing response, error: {0}, message:{1}'.format(e, messageToProcess))
         finally:
-            self.logger.debug('Slow processed: {0}'.format(self.data))
+            self.logger.debug('{0} processed: {1}'.format(__name__, self.data))
             self.app.sharedMountDataLock.unlock()
         self.sendLock = False
