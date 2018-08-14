@@ -65,6 +65,12 @@ Features fine tuning:
       If set to ``False``, then Skyfield will always use an existing
       file on disk, instead of expiring files that are out of date and
       replacing them with newly downloaded copies.
+- what is the minimum requirement of mw3.1 ? -> omit FW dependencies
+- move Command String out of commandStart to variables
+- move parsing return string out of handle ready read and make the rest commodity
+- make the FW check and the capabilities once when started. 
+- this might be also the right time to check weather to mount could communicate. so command would be the first one 
+   and the special one, too 
 
 Problems:
 

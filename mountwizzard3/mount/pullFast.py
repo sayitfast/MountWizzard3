@@ -30,6 +30,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     CONNECTION_TIMEOUT = 2000
     CYCLE_COMMAND = 750
     CYCLE_QUEUE = 250
+    COMMAND_STRING = ':U2#:GS#:Ginfo#:'
     signalDestruct = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app, thread, data, signalConnected, mountStatus):
@@ -176,7 +177,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def startCommand(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
+            self.sendCommandQueue.put(self.COMMAND_STRING)
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
