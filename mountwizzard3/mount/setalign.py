@@ -180,9 +180,6 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
     def handleReadyRead(self):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
-            self.messageString += self.socket.read(4000).decode()
-
-        while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
         if self.messageString.count('#') < self.numberAlignmentPoints + 3:
             return
