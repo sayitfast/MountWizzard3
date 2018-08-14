@@ -71,6 +71,7 @@ Features fine tuning:
 - make the FW check and the capabilities once when started. 
 - this might be also the right time to check weather to mount could communicate. so command would be the first one 
    and the special one, too 
+- locks, do that using with lock...
 
 Problems:
 
