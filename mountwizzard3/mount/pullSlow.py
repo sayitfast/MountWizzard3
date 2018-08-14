@@ -242,7 +242,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     def startCommand(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:modelcnt#:getalst#:newalig#:endalig#'
+            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
             # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
             self.sendCommandQueue.put(command)
             self.doRefractionUpdate()
@@ -254,9 +254,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 12:
+        if self.messageString.count('#') < 10:
             return
-        if self.messageString.count('#') != 12:
+        if self.messageString.count('#') != 10:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
@@ -299,10 +299,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                     self.data['FirmwareTime'] = valueList[6]
                 if len(valueList[7]) > 0:
                     self.data['HardwareVersion'] = valueList[7]
-                if len(valueList[8]) > 0:
-                    self.data['NumberModelNames'] = int(valueList[8])
-                if len(valueList[9]) > 0:
-                    self.data['NumberAlignmentStars'] = int(valueList[9])
                 self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
             else:
                 self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
