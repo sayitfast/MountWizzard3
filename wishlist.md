@@ -72,6 +72,8 @@ Features fine tuning:
 - this might be also the right time to check weather to mount could communicate. so command would be the first one 
    and the special one, too 
 - locks, do that using with lock...
+- persistent data stored with pickle. should be dicts with the data for plotting. saving them on a regular base.
+
 
 Problems:
 
