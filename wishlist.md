@@ -6,6 +6,9 @@ Features new:
 - show directions how to turn know for polar alignment
 - moon
 
+BUF FIXES:
+- feedback matthias about 2.6 and 3.0 log included.
+
 Features fine tuning:
 - setting site parameters
 - more set buttons for config in gui
