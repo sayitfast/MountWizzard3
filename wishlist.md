@@ -8,6 +8,7 @@ Features new:
 
 BUF FIXES:
 - feedback matthias about 2.6 and 3.0 log included.
+- hans schaeffler kontaktieren wegen email
 
 Features fine tuning:
 - setting site parameters
