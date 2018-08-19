@@ -1,4 +1,4 @@
-comtypes==1.1.1
+pyqt5- pyqt5comtypes==1.1.1
 pywinauto==0.6.4
 pypiwin32==220
 PyQt5>=5.11.2

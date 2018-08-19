@@ -9,7 +9,6 @@ Features new:
 Features fine tuning:
 - setting site parameters
 - more set buttons for config in gui
-- GUI: make the main screen nicer: smaller load save, move icon to the left, extend save quit for full text again
 
 - TLE features with full test coverage. Make I/O to top to be testable. write mocks.
 - TLE widget should have two pictures. one ist the world with own origin as center, one alt/az for local visibility
@@ -18,6 +17,7 @@ Features fine tuning:
 - show epoch of tle data and show if its outdated or reload it automatically. manual update should be possible as well.
 - update of data updates all charts immediately
 - establishing separate timer for satellite updates in satellite widget and make them run only when visible
+- parsing tle data now moves to skyfield. technical data should be hidden now.
 - using skyfield as well for twilight, moon in hemisphere window
 - draw earth with http://milesbarnhart.com/portfolio/python/python-3d-satellite-orbital-trajectory-simulation/
 - draw orbits with https://github.com/Elucidation/OrbitalElements/blob/master/graphics.py
@@ -32,8 +32,6 @@ Features fine tuning:
 - using the skyfield framework for satellites
 - moving the regular tasks like pressure updates, temp updates, alt az for pointer from mount medium to separate timer
 
-- give some hints for used software in disclaimer
-- parsing tle data now moves to skyfield. technical data should be hidden now.
 
 - make mount threads depending on a single class and replace the standard methods in it.
 - make the code more readable with pep-8
