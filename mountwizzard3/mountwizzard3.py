@@ -874,7 +874,7 @@ class MountWizzardApp(widget.MwWidget):
         self.logger.info('Got following hosts: {0}'.format(hostSummary[2]))
         host = [ip for ip in hostSummary[2] if not ip.startswith('127.')]
         if len(host) == 0:
-            self.messageQueue.put('Probably cannot send WOL because check subnet configuration\n')
+            self.messageQueue.put('Cannot send WOL because check subnet configuration\n')
         else:
             addressMount = socket.gethostbyname(self.ui.le_mountIP.text()).split('.')
             for hostAddress in host:
@@ -882,8 +882,9 @@ class MountWizzardApp(widget.MwWidget):
                 if addressComputer[0] == addressMount[0] and addressComputer[1] == addressMount[1] and addressComputer[2] == addressMount[2]:
                     canWOL = True
         if not canWOL:
-            self.messageQueue.put('Probably cannot send WOL because computer and mount are not in the same subnet\n')
-            self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
+            message = 'Cannot send WOL because computer and mount are not in the same subnet'
+            self.messageQueue.put(message + '\n')
+            self.logger.debug(message)
 
         self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
         PyQt5.QtWidgets.QApplication.processEvents()
@@ -1382,7 +1383,8 @@ class SplashScreen(PyQt5.QtCore.QObject):
         super().__init__()
         self._qapp = qapp
         self._pxm = pix
-        self._qss = PyQt5.QtWidgets.QSplashScreen(self._pxm, (PyQt5.QtCore.Qt.WindowStaysOnTopHint | PyQt5.QtCore.Qt.X11BypassWindowManagerHint))
+        self._qss = PyQt5.QtWidgets.QSplashScreen(self._pxm,
+                                                  (PyQt5.QtCore.Qt.WindowStaysOnTopHint | PyQt5.QtCore.Qt.X11BypassWindowManagerHint))
 
         self._msg = ''
         self._maxv = 100.0
@@ -1511,6 +1513,7 @@ if __name__ == "__main__":
     # checking workdir and if the system is started from frozen app
     if getattr(sys, 'frozen', False):
         # we are running in a bundle
+        # noinspection PyProtectedMember
         bundle_dir = sys._MEIPASS
         # on mac we have to change path of working directory
         if platform.system() == 'Darwin':
@@ -1536,7 +1539,8 @@ if __name__ == "__main__":
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.INFO,
                         format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
-                        handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
+                        handlers=[handler],
+                        datefmt='%Y-%m-%d %H:%M:%S',)
     splash.showMessage('Checking work directories')
     splash.setValue(20)
 
@@ -1553,11 +1557,11 @@ if __name__ == "__main__":
 
     # start logging with basic system data for information
     hostSummary = socket.gethostbyname_ex(socket.gethostname())
-    logging.info('----------------------------------------------------------------------------------')
+    logging.info('------------------------------------------------------------------------')
     logging.info('')
     logging.info('MountWizzard ' + BUILD_NO + ' started !')
     logging.info('')
-    logging.info('----------------------------------------------------------------------------------')
+    logging.info('------------------------------------------------------------------------')
     logging.info('Platform        : ' + platform.system())
     logging.info('Release         : ' + platform.release())
     logging.info('Version         : ' + platform.version())
@@ -1581,7 +1585,7 @@ if __name__ == "__main__":
     logging.info('sys.executable  : {0}'.format(sys.executable))
     logging.info('os.path.basename: {0}'.format(os.path.basename(sys.argv[0])))
 
-    logging.info('----------------------------------------------------------------------------------')
+    logging.info('------------------------------------------------------------------------')
     logging.info('')
 
     splash.showMessage('Checking work directories')
