@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -11075,7 +11075,7 @@ manually</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -15697,8 +15697,8 @@ manually</string>
       <widget class="QLabel" name="le_firmwareProductName_2">
        <property name="geometry">
         <rect>
-         <x>460</x>
-         <y>370</y>
+         <x>405</x>
+         <y>295</y>
          <width>271</width>
          <height>21</height>
         </rect>
@@ -16061,6 +16061,63 @@ manually</string>
        </property>
        <property name="text">
         <string>Collect Windows</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareProductName_3">
+       <property name="geometry">
+        <rect>
+         <x>405</x>
+         <y>320</y>
+         <width>271</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>open source software used: </string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareProductName_4">
+       <property name="geometry">
+        <rect>
+         <x>405</x>
+         <y>335</y>
+         <width>321</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>pyqt5, pywinauto, matplotlib, wakeonlan,</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareProductName_5">
+       <property name="geometry">
+        <rect>
+         <x>405</x>
+         <y>350</y>
+         <width>321</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>numpy, requests, astropy, skyfield</string>
        </property>
       </widget>
      </widget>

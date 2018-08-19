@@ -498,6 +498,7 @@ class MWStyles:
         border-style: outset;
     }
     QTextBrowser {
+        color: rgb(32, 144, 192);
         background-color: #101010;
         border-radius: 3px;
         border-width: 2px;
