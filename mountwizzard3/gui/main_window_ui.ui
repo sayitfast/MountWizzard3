@@ -16070,9 +16070,9 @@ manually</string>
   <widget class="QPushButton" name="btn_saveConfigQuit">
    <property name="geometry">
     <rect>
-     <x>690</x>
+     <x>680</x>
      <y>65</y>
-     <width>81</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -16088,15 +16088,15 @@ manually</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>S./Quit</string>
+    <string>Save/Quit</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_saveConfig">
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>605</x>
      <y>95</y>
-     <width>76</width>
+     <width>71</width>
      <height>26</height>
     </rect>
    </property>
@@ -16265,9 +16265,9 @@ manually</string>
   <widget class="QPushButton" name="btn_loadFrom">
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>605</x>
      <y>65</y>
-     <width>76</width>
+     <width>71</width>
      <height>26</height>
     </rect>
    </property>
@@ -16289,9 +16289,9 @@ manually</string>
   <widget class="QPushButton" name="btn_saveConfigAs">
    <property name="geometry">
     <rect>
-     <x>690</x>
+     <x>680</x>
      <y>95</y>
-     <width>81</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -16316,9 +16316,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>605</x>
      <y>40</y>
-     <width>161</width>
+     <width>166</width>
      <height>21</height>
     </rect>
    </property>
@@ -16355,7 +16355,7 @@ manually</string>
   <widget class="QLabel" name="mainicon">
    <property name="geometry">
     <rect>
-     <x>515</x>
+     <x>510</x>
      <y>30</y>
      <width>91</width>
      <height>91</height>
@@ -16371,7 +16371,7 @@ manually</string>
   <widget class="QLabel" name="label_102">
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>605</x>
      <y>15</y>
      <width>51</width>
      <height>21</height>
@@ -16599,9 +16599,9 @@ manually</string>
   <widget class="Line" name="line_30">
    <property name="geometry">
     <rect>
-     <x>610</x>
+     <x>605</x>
      <y>35</y>
-     <width>161</width>
+     <width>171</width>
      <height>1</height>
     </rect>
    </property>
