@@ -23,6 +23,9 @@ import sys
 import PyQt5.QtCore
 import skyfield.api
 
+from .configData import Setting
+from .configData import Firmware
+
 
 class MountCommand:
 
@@ -30,6 +33,8 @@ class MountCommand:
     observerLock = PyQt5.QtCore.QReadWriteLock()
     mountTimeLock = PyQt5.QtCore.QReadWriteLock()
     settingsLock = PyQt5.QtCore.QReadWriteLock()
+
+    SOCKET_TIMEOUT = 1.5
 
     # define the number of chunks for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like
@@ -47,13 +52,13 @@ class MountCommand:
                  ':GTTRK', ':GTsid', ':MA', ':MS', ':Sa', ':Sev', ':Sr', ':SREF', ':SRPRS',
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
-    version = {}
+    firmware = Firmware(0)
 
     observer = None
 
     mountTime = {}
 
-    settings = {}
+    settings = Setting()
 
     def __init__(self, host='192.168.2.15', port=3492):
         self.host = host
@@ -79,7 +84,7 @@ class MountCommand:
     def commandSend(self, command):
         numberOfChunks = self.analyseCommand(command)
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.settimeout(1.5)
+        client.settimeout(self.SOCKET_TIMEOUT)
         response = ''
         message = 'ok'
 
@@ -127,7 +132,7 @@ class MountCommand:
     @staticmethod
     def parseWorkaroundAlign(response):
         message = 'ok'
-        value = response.split('#')
+        value = response.split('#')[:-1]
         if value[0] == 'V' and value[1] == 'E':
             return True, message
         else:
@@ -147,17 +152,6 @@ class MountCommand:
         else:
             message = mes
             return False, message
-
-    def pullFast(self):
-        message = 'ok'
-        commandString = ':U2#:GS#:Ginfo#:'
-        return True, message
-
-    def pullMed(self):
-        message = 'ok'
-        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#'
-        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#:GDUTV#'
-        return True, message
 
     def parseSlow(self, response):
         message = 'ok'
@@ -222,4 +216,15 @@ class MountCommand:
         if not suc:
             message = mes
             return False, message
+        return True, message
+
+    def pullMed(self):
+        message = 'ok'
+        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#'
+        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#:GDUTV#'
+        return True, message
+
+    def pullFast(self):
+        message = 'ok'
+        commandString = ':U2#:GS#:Ginfo#:'
         return True, message
