@@ -70,10 +70,11 @@ class Command:
                     foundCOMMAND_A = True
                     break
             if not foundCOMMAND_A:
-                chunksToReceive += 1
                 for keyBad in self.COMMAND_B:
                     if command.startswith(keyBad):
                         break
+                else:
+                    chunksToReceive += 1
         return chunksToReceive
 
     def transfer(self, command):
@@ -207,13 +208,13 @@ class Command:
         self._statusRefraction = (response[8][0] == '')
         self._statusUnattendedFlip = (response[8][1] == '')
         self._statusDualAxisTracking = (response[8][2] == '')
-        self._currentHorizonLimitHigh = float(response[8][3:])
-        self._currentHorizonLimitLow = float(response[2])
+        self._currentHorizonLimitHigh = float(response[8][3:6])
+        self._currentHorizonLimitLow = float(response[9][0:3])
         self._numberModelNames = int(response[10])
         self._numberAlignmentStars = int(response[11])
         if fw > 21500:
             valid, expirationDate = response[12].split(',')
-            self._UTCDataValid = valid
+            self._UTCDataValid = (valid == 'V')
             self._UTCDataExpirationDate = expirationDate
         self.setting.settingLock.unlock()
 
@@ -228,9 +229,7 @@ class Command:
             commandString = ''.join((cs1, cs2, cs3))
         else:
             commandString = ''.join((cs1, cs2))
-        print(commandString)
         suc, mes, response = self.transfer(commandString)
-        print(suc, mes, response)
         if not suc:
             message = mes
             return False, message
