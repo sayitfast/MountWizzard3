@@ -49,7 +49,6 @@ class TestMount(unittest.TestCase):
         ok, mes = mount.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-    """
 
     def test_pull_slow(self):
         mount = command.MountCommand(host='192.168.2.15', port=3492)
@@ -62,9 +61,7 @@ class TestMount(unittest.TestCase):
         self.assertEqual('Q-TYPE2012', mount.firmware.hwVersion)
         self.assertEqual('Mar 19 2018', mount.firmware.fwDate)
         self.assertEqual('15:56:53', mount.firmware.fwTime)
-        print(mount.firmware.__dict__)
 
-    """
     def test_workaroundAlign(self):
         mount = command.MountCommand(host='192.168.2.15', port=3492)
         ok, mes = mount.workaroundAlign()

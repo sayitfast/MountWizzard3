@@ -102,14 +102,6 @@ class Firmware(object):
                                      )
         return value
 
-    def __repr__(self):
-        # how to print it
-        pass
-
-    def hms(self, warn=True):
-        """Convert to a tuple (hours, minutes, seconds).
-        """
-        pass
 
 
 class Setting(object):
