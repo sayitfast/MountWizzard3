@@ -62,7 +62,6 @@ class Command:
     def _analyseCommand(self, commandString):
         chunksToReceive = 0
         commandSet = commandString.split('#')[:-1]
-
         for command in commandSet:
             foundCOMMAND_A = False
             for key in self.COMMAND_A:
@@ -83,7 +82,6 @@ class Command:
         client.settimeout(self.SOCKET_TIMEOUT)
         response = ''
         message = 'ok'
-
         try:
             client.connect((self.host, self.port))
         except socket.timeout:
@@ -153,7 +151,6 @@ class Command:
 
     def _parseSlow(self, response):
         message = 'ok'
-
         # doing observer settings update
         self.site.siteLock.lockForWrite()
         # conversion
@@ -164,11 +161,9 @@ class Command:
         else:
             lon = response[1].replace('+', '-')
         lat = response[2]
-
         # storing it to the skyfield Topos unit
         self.site.location = (lat, lon, elev)
         self.site.siteLock.unlock()
-
         # doing version settings update
         self.firmware.firmwareLock.lockForWrite()
         self.firmware.fwDate = response[3]
@@ -177,7 +172,6 @@ class Command:
         self.firmware.fwTime = response[6]
         self.firmware.hwVersion = response[7]
         self.firmware.firmwareLock.unlock()
-
         return True, message
 
     def pollSlow(self):
@@ -195,7 +189,6 @@ class Command:
 
     def _parseMed(self, response, fw):
         message = 'ok'
-
         self.setting.settingLock.lockForWrite()
         self._slewRate = int(response[0])
         self._timeToFlip = int(response[1])
@@ -217,7 +210,6 @@ class Command:
             self._UTCDataValid = (valid == 'V')
             self._UTCDataExpirationDate = expirationDate
         self.setting.settingLock.unlock()
-
         return True, message
 
     def pollMed(self, fw):
@@ -241,7 +233,6 @@ class Command:
 
     def _parseFast(self, response):
         message = 'ok'
-
         self.site.siteLock.lockForWrite()
         self.site.timeSidereal = response[0]
         responseSplit = response[1].split(',')
@@ -254,12 +245,10 @@ class Command:
         self.site.status = int(responseSplit[6])
         self.site.statusSlew = (responseSplit[7] == '1')
         self.site.siteLock.unlock()
-
         return True, message
 
     def pollFast(self):
         message = 'ok'
-
         commandString = ':U2#:GS#:Ginfo#:'
         suc, mes, response = self.transfer(commandString)
         if not suc:
