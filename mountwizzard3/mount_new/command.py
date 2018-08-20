@@ -29,7 +29,7 @@ from .configData import Firmware
 
 class MountCommand:
 
-    versionLock = PyQt5.QtCore.QReadWriteLock()
+    fwLock = PyQt5.QtCore.QReadWriteLock()
     observerLock = PyQt5.QtCore.QReadWriteLock()
     mountTimeLock = PyQt5.QtCore.QReadWriteLock()
     settingsLock = PyQt5.QtCore.QReadWriteLock()
@@ -184,24 +184,13 @@ class MountCommand:
         self.observerLock.unlock()
 
         # doing version settings update
-        self.versionLock.lockForWrite()
-        if len(value[3]) > 0:
-            self.version['FirmwareDate'] = value[3]
-        if len(value[4]) > 0:
-            self.version['FirmwareNumber'] = value[4]
-            fw = self.version['FirmwareNumber'].split('.')
-            if len(fw) == 3:
-                self.version['FW'] = int(
-                    float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
-            else:
-                self.version['FW'] = 0
-        if len(value[5]) > 0:
-            self.version['FirmwareProductName'] = value[5]
-        if len(value[6]) > 0:
-            self.version['FirmwareTime'] = value[6]
-        if len(value[7]) > 0:
-            self.version['HardwareVersion'] = value[7]
-        self.versionLock.unlock()
+        self.fwLock.lockForWrite()
+        self.firmware.fwDate = value[3]
+        self.firmware.fwNumber = value[4]
+        self.firmware.productName = value[5]
+        self.firmware.fwTime = value[6]
+        self.firmware.hwVersion = value[7]
+        self.fwLock.unlock()
 
         return True, message
 

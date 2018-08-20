@@ -36,54 +36,71 @@ class Firmware(object):
                  fw=0,
                  hwVersion='',
                  fwDate='',
-                 fwTime='',):
+                 fwTime='',
+                 ):
 
-        self.productName = productName
-        self.fwNumber = fwNumber
-        self.fw = fw
-        self.hwVersion = hwVersion
-        self.fwDate = fwDate
-        self.fwTime = fwTime
+        self._productName = productName
+        self._fwNumber = fwNumber
+        self._fw = fw
+        self._hwVersion = hwVersion
+        self._fwDate = fwDate
+        self._fwTime = fwTime
 
-    def __getattr__(self, name):
-        if name == 'productName':
-            self.productName = self._productName
-            return self.productName
-        if name == 'fwNumber':
-            self.fwNumber = self._fwNumber
-            return self.fwNumber
-        if name == 'fw':
-            self.fw = self._fw
-            return self.fw
-        if name == 'hwVersion':
-            self.hwVersion = self._hwVersion
-            return self.hwVersion
-        if name == 'fwDate':
-            self.fwDate = self._fwDate
-            return self.fwDate
-        if name == 'fwTime':
-            self.fwTime = self._productName
-            return self.fwTime
+    @property
+    def productName(self):
+        return self._productName
 
-    def __setattr__(self, name, value):
-        if name == 'productName':
-            self._productName = value
-        if name == 'fwNumber':
-            self._fwNumber = value
-            if value.count('.') == 2:
-                _number = value.split('.')
-                self._fw = _number[0] * 10000 + _number[1] * 100 + _number[2]
-        if name == 'hwVersion':
-            self._hwVersion = value
-        if name == 'fwDate':
-            self._fwDate = value
-        if name == 'fwTime':
-            self._fwTime = value
+    @productName.setter
+    def productName(self, value):
+        self._productName = value
+
+    @property
+    def fwNumber(self):
+        return self._fwNumber
+
+    @property
+    def fw(self):
+        return self._fw
+
+    @fwNumber.setter
+    def fwNumber(self, value):
+        self._fwNumber = value
+        if value.count('.') == 2:
+            _number = value.split('.')
+            self._fw = int(_number[0]) * 10000 + int(_number[1]) * 100 + int(_number[2])
+        else:
+            self._fw = 0
+
+    @property
+    def hwVersion(self):
+        return self._productName
+
+    @hwVersion.setter
+    def hwVersion(self, value):
+        self._hwVersion = value
+
+    @property
+    def fwDate(self):
+        return self._fwDate
+
+    @fwDate.setter
+    def fwDate(self, value):
+        self._fwDate = value
+
+    @property
+    def fwTime(self):
+        return self._fwTime
+
+    @fwTime.setter
+    def fwTime(self, value):
+        self._fwTime = value
 
     def __str__(self):
-        if self.radians.size == 0:
-            return 'Angle []'
-        return self.dstr() if self.preference == 'degrees' else self.hstr()
+        value = '{0} {1} {2}'.format(self._productName,
+                                     self._fwNumber,
+                                     self._hwVersion,
+                                     )
+        return value
 
     def __repr__(self):
         # how to print it

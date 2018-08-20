@@ -49,10 +49,20 @@ class TestMount(unittest.TestCase):
         ok, mes = mount.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
+    """
 
     def test_pull_slow(self):
         mount = command.MountCommand(host='192.168.2.15', port=3492)
         ok, mes = mount.pullSlow()
+        self.assertEqual(True, ok)
+        self.assertEqual('ok', mes)
+        print(mount.firmware)
+        print(mount.firmware.fwNumber, mount.firmware.fw)
+
+    """
+    def test_workaroundAlign(self):
+        mount = command.MountCommand(host='192.168.2.15', port=3492)
+        ok, mes = mount.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
@@ -62,11 +72,6 @@ class TestMount(unittest.TestCase):
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
     """
-    def test_workaroundAlign(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
-        ok, mes = mount.workaroundAlign()
-        self.assertEqual(True, ok)
-        self.assertEqual('ok', mes)
 
 
 if __name__ == '__main__':
