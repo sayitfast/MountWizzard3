@@ -20,8 +20,16 @@
 import socket
 import sys
 
+import PyQt5.QtCore
+import skyfield.api
+
 
 class MountCommand:
+
+    versionLock = PyQt5.QtCore.QReadWriteLock()
+    observerLock = PyQt5.QtCore.QReadWriteLock()
+    mountTimeLock = PyQt5.QtCore.QReadWriteLock()
+    settingsLock = PyQt5.QtCore.QReadWriteLock()
 
     # define the number of chunks for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like
@@ -39,16 +47,21 @@ class MountCommand:
                  ':GTTRK', ':GTsid', ':MA', ':MS', ':Sa', ':Sev', ':Sr', ':SREF', ':SRPRS',
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
-    def __init__(self, host='192.168.2.15', port=3492):
+    version = {}
 
+    observer = None
+
+    mountTime = {}
+
+    settings = {}
+
+    def __init__(self, host='192.168.2.15', port=3492):
         self.host = host
         self.port = port
 
     def analyseCommand(self, commandString):
         chunksToReceive = 0
-        commandSet = commandString.split('#')
-        # the last item is empty due to split command
-        commandSet = commandSet[:-1]
+        commandSet = commandString.split('#')[:-1]
 
         for command in commandSet:
             foundCOMMAND_A = False
@@ -66,7 +79,7 @@ class MountCommand:
     def commandSend(self, command):
         numberOfChunks = self.analyseCommand(command)
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.settimeout(1)
+        client.settimeout(1.5)
         response = ''
         message = 'ok'
 
@@ -111,77 +124,102 @@ class MountCommand:
         finally:
             client.close()
 
-    def commandParse(self, response):
-        pass
-
-
-"""
-    def startCommand(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
-            # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-            self.sendCommandQueue.put(command)
-            self.doRefractionUpdate()
-            self.updateAlignmentStarPositions()
-            self.app.workerMountDispatcher.signalAlignmentStars.emit()
-
-    @PyQt5.QtCore.pyqtSlot()
-    def handleReadyRead(self):
-        # Get message from socket.
-        while self.socket.bytesAvailable() and self.isRunning:
-            self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 10:
-            return
-        if self.messageString.count('#') != 10:
-            self.logger.error('Receiving data got error:{0}'.format(self.messageString))
-            self.messageString = ''
-            messageToProcess = ''
+    @staticmethod
+    def parseWorkaroundAlign(response):
+        message = 'ok'
+        value = response.split('#')
+        if value[0] == 'V' and value[1] == 'E':
+            return True, message
         else:
-            messageToProcess = self.messageString
-            self.messageString = ''
-        # Try and parse the message. In Slow we expect 6
-        try:
-            if len(messageToProcess) == 0:
-                return
-            self.app.sharedMountDataLock.lockForWrite()
-            valueList = messageToProcess.strip('#').split('#')
-            # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
-            # all parameters are delivered
-            self.logger.debug('Slow raw: {0}'.format(messageToProcess))
-            if len(valueList) >= 8:
-                if len(valueList[0]) > 0:
-                    self.data['SiteHeight'] = valueList[0]
-                if len(valueList[1]) > 0:
-                    lon1 = valueList[1]
-                    # due to compatibility to LX200 protocol east is negative
-                    if lon1[0] == '-':
-                        self.data['SiteLongitude'] = lon1.replace('-', '+')
-                    else:
-                        self.data['SiteLongitude'] = lon1.replace('+', '-')
-                if len(valueList[2]) > 0:
-                    self.data['SiteLatitude'] = valueList[2]
-                if len(valueList[3]) > 0:
-                    self.data['FirmwareDate'] = valueList[3]
-                if len(valueList[4]) > 0:
-                    self.data['FirmwareNumber'] = valueList[4]
-                    fw = self.data['FirmwareNumber'].split('.')
-                    if len(fw) == 3:
-                        self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
-                    else:
-                        self.data['FW'] = 0
-                if len(valueList[5]) > 0:
-                    self.data['FirmwareProductName'] = valueList[5]
-                if len(valueList[6]) > 0:
-                    self.data['FirmwareTime'] = valueList[6]
-                if len(valueList[7]) > 0:
-                    self.data['HardwareVersion'] = valueList[7]
-                self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
+            message = 'workaround failed'
+            return False, message
+
+    def workaroundAlign(self):
+        message = 'ok'
+        commandString = ':newalig#:endalig#'
+        suc, mes, response = self.commandSend(commandString)
+        if not suc:
+            message = mes
+            return False, message
+        suc, mes = self.parseWorkaroundAlign(response)
+        if suc:
+            return True, message
+        else:
+            message = mes
+            return False, message
+
+    def pullFast(self):
+        message = 'ok'
+        commandString = ':U2#:GS#:Ginfo#:'
+        return True, message
+
+    def pullMed(self):
+        message = 'ok'
+        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#'
+        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#:GDUTV#'
+        return True, message
+
+    def parseSlow(self, response):
+        message = 'ok'
+        value = response.split('#')[:-1]
+
+        if len(value) != 8:
+            message = 'wrong number of parameters'
+            return False, message
+
+        # doing observer settings update
+        self.observerLock.lockForWrite()
+
+        # due to compatibility to LX200 protocol east is negative, so we change that
+        if value[1] == '-':
+            lon = value[1].replace('-', '+')
+        else:
+            lon = value[1].replace('+', '-')
+        lon = [float(x) for x in lon.split(':')]
+        lon = lon[0] + lon[1] / 60 + lon[2] / 3600
+        lon = skyfield.api.Angle(degrees=lon)
+        lat = [float(x) for x in value[2].split(':')]
+        lat = lat[0] + lat[1] / 60 + lat[2] / 3600
+        lat = skyfield.api.Angle(degrees=lat)
+        elev = float(value[0])
+
+        # storing it to the skyfield Topos unit
+        self.observer = skyfield.api.Topos(longitude=lon,
+                                           latitude=lat,
+                                           elevation_m=elev)
+        self.observerLock.unlock()
+
+        # doing version settings update
+        self.versionLock.lockForWrite()
+        if len(value[3]) > 0:
+            self.version['FirmwareDate'] = value[3]
+        if len(value[4]) > 0:
+            self.version['FirmwareNumber'] = value[4]
+            fw = self.version['FirmwareNumber'].split('.')
+            if len(fw) == 3:
+                self.version['FW'] = int(
+                    float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
             else:
-                self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
-        except Exception as e:
-            self.logger.error('Problem parsing response, error: {0}, message:{1}'.format(e, messageToProcess))
-        finally:
-            self.logger.debug('{0} processed: {1}'.format(__name__, self.data))
-            self.app.sharedMountDataLock.unlock()
-        self.sendLock = False
-"""
+                self.version['FW'] = 0
+        if len(value[5]) > 0:
+            self.version['FirmwareProductName'] = value[5]
+        if len(value[6]) > 0:
+            self.version['FirmwareTime'] = value[6]
+        if len(value[7]) > 0:
+            self.version['HardwareVersion'] = value[7]
+        self.versionLock.unlock()
+
+        return True, message
+
+    def pullSlow(self):
+        message = 'ok'
+        commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
+        suc, mes, response = self.commandSend(commandString)
+        if not suc:
+            message = mes
+            return False, message
+        suc, mes = self.parseSlow(response)
+        if not suc:
+            message = mes
+            return False, message
+        return True, message
