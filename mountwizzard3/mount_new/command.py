@@ -239,7 +239,21 @@ class Command:
             return False, message
         return True, message
 
+    def _parseFast(self, response):
+        message = 'ok'
+
+        return True, message
+
     def pollFast(self):
         message = 'ok'
+
         commandString = ':U2#:GS#:Ginfo#:'
+        suc, mes, response = self.transfer(commandString)
+        if not suc:
+            message = mes
+            return False, message
+        suc, mes = self._parseFast(response)
+        if not suc:
+            message = mes
+            return False, message
         return True, message

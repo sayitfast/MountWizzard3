@@ -67,8 +67,7 @@ class TestMount(unittest.TestCase):
         self.assertEqual('Q-TYPE2012', mount.firmware.hwVersion)
         self.assertEqual('Mar 19 2018', mount.firmware.fwDate)
         self.assertEqual('15:56:53', mount.firmware.fwTime)
-    """
-
+ 
     def test_pollMed(self):
         mount = Command(host='192.168.2.15',
                         port=3492,
@@ -77,8 +76,19 @@ class TestMount(unittest.TestCase):
                         setting=self.setting,
                         )
         ok, mes = mount.pollMed(21514)
-        # self.assertEqual(False, ok)
-        # self.assertEqual('ok', mes)
+        self.assertEqual(True, ok)
+        self.assertEqual('ok', mes)
+   """
+    def test_pollFast(self):
+        mount = Command(host='192.168.2.15',
+                        port=3492,
+                        firmware=self.firmware,
+                        site=self.site,
+                        setting=self.setting,
+                        )
+        ok, mes = mount.pollFast()
+        self.assertEqual(True, ok)
+        self.assertEqual('ok', mes)
 
 
 if __name__ == '__main__':
