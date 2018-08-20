@@ -153,10 +153,6 @@ class Command:
     def _parseSlow(self, response):
         message = 'ok'
 
-        if len(response) != 8:
-            message = 'wrong number of parameters'
-            return False, message
-
         # doing observer settings update
         self.site.siteLock.lockForWrite()
         # conversion
@@ -196,10 +192,52 @@ class Command:
             return False, message
         return True, message
 
-    def pollMed(self):
+    def _parseMed(self, response, fw):
         message = 'ok'
-        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#'
-        commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#:GDUTV#'
+
+        self.setting.settingLock.lockForWrite()
+        self._slewRate = int(response[0])
+        self._timeToFlip = int(response[1])
+        self._meridianLimitGuide = int(response[2])
+        self._meridianLimitSlew = int(response[3])
+        self._refractionTemperature = float(response[4])
+        self._refractionPressure = float(response[5])
+        self._TrackingRate = float(response[6])
+        self._TelescopeTempDEC = float(response[7])
+        self._statusRefraction = (response[8][0] == '')
+        self._statusUnattendedFlip = (response[8][1] == '')
+        self._statusDualAxisTracking = (response[8][2] == '')
+        self._currentHorizonLimitHigh = float(response[8][3:])
+        self._currentHorizonLimitLow = float(response[2])
+        self._numberModelNames = int(response[10])
+        self._numberAlignmentStars = int(response[11])
+        if fw > 21500:
+            valid, expirationDate = response[12].split(',')
+            self._UTCDataValid = valid
+            self._UTCDataExpirationDate = expirationDate
+        self.setting.settingLock.unlock()
+
+        return True, message
+
+    def pollMed(self, fw):
+        message = 'ok'
+        cs1 = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:GTMP1#:GREF#:Guaf#'
+        cs2 = ':Gdat#:Gh#:Go#:modelcnt#:getalst#'
+        cs3 = ':GDUTV#'
+        if fw > 21500:
+            commandString = ''.join((cs1, cs2, cs3))
+        else:
+            commandString = ''.join((cs1, cs2))
+        print(commandString)
+        suc, mes, response = self.transfer(commandString)
+        print(suc, mes, response)
+        if not suc:
+            message = mes
+            return False, message
+        suc, mes = self._parseMed(response, fw)
+        if not suc:
+            message = mes
+            return False, message
         return True, message
 
     def pollFast(self):

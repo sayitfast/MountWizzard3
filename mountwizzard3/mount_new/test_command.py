@@ -21,6 +21,7 @@ class TestMount(unittest.TestCase):
         self.setting = Setting()
         self.site = Site(self.timeScale)
 
+    """
     def test_no_host(self):
         mount = Command(host='192.168.2.250', port=3492)
         commandSet = ':U2#:Gev#:'
@@ -66,9 +67,17 @@ class TestMount(unittest.TestCase):
         self.assertEqual('Q-TYPE2012', mount.firmware.hwVersion)
         self.assertEqual('Mar 19 2018', mount.firmware.fwDate)
         self.assertEqual('15:56:53', mount.firmware.fwTime)
+    """
 
-        print(self.firmware)
-        print(self.site)
+    def test_pollMed(self):
+        mount = Command(host='192.168.2.15',
+                        port=3492,
+                        firmware=self.firmware,
+                        site=self.site,
+                        )
+        ok, mes = mount.pollMed(21514)
+        self.assertEqual(False, ok)
+        self.assertEqual('ok', mes)
 
 
 if __name__ == '__main__':
