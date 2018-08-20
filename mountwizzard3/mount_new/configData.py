@@ -112,7 +112,6 @@ class Site(object):
         self._status = 0
         self._statusSlew = False
 
-
     @staticmethod
     def _stringToDegree(value, splitter=':'):
         value = [float(x) for x in value.split(splitter)]
@@ -308,11 +307,11 @@ class Setting(object):
 
     @property
     def refractionStatus(self):
-        return self._refractionStatus
+        return self._statusRefraction
 
-    @slewRate.setter
+    @refractionStatus.setter
     def refractionStatus(self, value):
-        self._refractionStatus = value
+        self._statusRefraction = value
 
     @property
     def statusUnattendedFlip(self):
@@ -334,7 +333,7 @@ class Setting(object):
     def currentHorizonLimitHigh(self):
         return self._currentHorizonLimitHigh
 
-    @slewRate.setter
+    @currentHorizonLimitHigh.setter
     def currentHorizonLimitHigh(self, value):
         self._currentHorizonLimitHigh = value
 
@@ -377,4 +376,3 @@ class Setting(object):
     @UTCDataExpirationDate.setter
     def UTCDataExpirationDate(self, value):
         self._UTCDataExpirationDate = value
-

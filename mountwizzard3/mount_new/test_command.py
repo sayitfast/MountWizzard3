@@ -89,7 +89,6 @@ class TestMount(unittest.TestCase):
         ok, mes = mount.pollFast()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-        print(self.site.location)
 
 
 if __name__ == '__main__':
