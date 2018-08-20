@@ -21,7 +21,6 @@ class TestMount(unittest.TestCase):
         self.setting = Setting()
         self.site = Site(self.timeScale)
 
-    # """
     def test_no_host(self):
         mount = Command(host='192.168.2.250', port=3492)
         commandSet = ':U2#:Gev#:'
@@ -78,7 +77,7 @@ class TestMount(unittest.TestCase):
         ok, mes = mount.pollMed(21514)
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-    # """
+
     def test_pollFast(self):
         mount = Command(host='192.168.2.15',
                         port=3492,
@@ -89,6 +88,24 @@ class TestMount(unittest.TestCase):
         ok, mes = mount.pollFast()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
+
+    def test_responses_typeA_analyseCommand(self):
+        mount = Command()
+        number, response = mount._analyseCommand(':AP#:AL#')
+        self.assertEqual(True, response)
+        self.assertEqual(0, number)
+
+    def test_responses_typeAB_analyseCommand(self):
+        mount = Command()
+        number, response = mount._analyseCommand(':AP#:AL#:FLIP#')
+        self.assertEqual(True, response)
+        self.assertEqual(0, number)
+
+    def test_responses_typeABC_analyseCommand(self):
+        mount = Command()
+        number, response = mount._analyseCommand(':AP#:AL#:FLIP#')
+        self.assertEqual(True, response)
+        self.assertEqual(0, number)
 
 
 if __name__ == '__main__':
