@@ -101,8 +101,17 @@ class Site(object):
 
     def __init__(self, timeScale):
         self._location = None
-        self._mountTime = None
+        self._timeJD = None
+        self._timeSidereal = None
         self._timeScale = timeScale
+        self._raJNow = 0
+        self._decJNow = 0
+        self._pierside = ''
+        self._apparentAlt = 0
+        self._apparentAz = 0
+        self._status = 0
+        self._statusSlew = False
+
 
     @staticmethod
     def _stringToDegree(value, splitter=':'):
@@ -122,6 +131,78 @@ class Site(object):
         self._location = skyfield.api.Topos(longitude=lon,
                                             latitude=lat,
                                             elevation_m=elev)
+
+    @property
+    def timeJD(self):
+        return self._timeJD
+
+    @timeJD.setter
+    def timeJD(self, value):
+        self._timeJD = self._timeScale.tt_jd(value)
+
+    @property
+    def timeSidereal(self):
+        return self._timeJD
+
+    @timeSidereal.setter
+    def timeSidereal(self, value):
+        self._timeSidereal = value
+
+    @property
+    def raJNow(self):
+        return self._raJNow
+
+    @raJNow.setter
+    def raJNow(self, value):
+        self._raJNow = value
+
+    @property
+    def decJNow(self):
+        return self._decJNow
+
+    @decJNow.setter
+    def decJNow(self, value):
+        self._decJNow = value
+
+    @property
+    def pierside(self):
+        return self._pierside
+
+    @pierside.setter
+    def pierside(self, value):
+        self._pierside = value
+
+    @property
+    def apparentAlt(self):
+        return self._apparentAlt
+
+    @apparentAlt.setter
+    def apparentAlt(self, value):
+        self._apparentAlt = value
+
+    @property
+    def apparentAz(self):
+        return self._apparentAz
+
+    @apparentAz.setter
+    def apparentAz(self, value):
+        self._apparentAz = value
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        self._status = value
+
+    @property
+    def statusSlew(self):
+        return self._statusSlew
+
+    @statusSlew.setter
+    def statusSlew(self, value):
+        self._statusSlew = value
 
     def __str__(self):
         output = '<Lat: {0}>   <Lon: {1}>   <Elev: {2}>'

@@ -242,6 +242,19 @@ class Command:
     def _parseFast(self, response):
         message = 'ok'
 
+        self.site.siteLock.lockForWrite()
+        self.site.timeSidereal = response[0]
+        responseSplit = response[1].split(',')
+        self.site.raJNow = float(responseSplit[0])
+        self.site.decJNow = float(responseSplit[1])
+        self.site.pierside = responseSplit[2]
+        self.site.apparentAz = float(responseSplit[3])
+        self.site.apparentAlt = float(responseSplit[4])
+        self.site.timeJD = float(responseSplit[5])
+        self.site.status = int(responseSplit[6])
+        self.site.statusSlew = (responseSplit[7] == '1')
+        self.site.siteLock.unlock()
+
         return True, message
 
     def pollFast(self):
