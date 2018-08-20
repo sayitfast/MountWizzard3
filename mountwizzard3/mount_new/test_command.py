@@ -1,58 +1,63 @@
-import time
 import unittest
-from mount_new import command
+import os
+
+import skyfield.api
+
+from mount_new.command import Command
+from mount_new.configData import Firmware
+from mount_new.configData import Setting
+from mount_new.configData import Site
 
 
 class TestMount(unittest.TestCase):
 
     def setUp(self):
-        pass
+        load = skyfield.api.Loader('~/PycharmProjects/Mountwizzard3/config',
+                                   verbose=False,
+                                   expire=False,
+                                   )
+        self.timeScale = load.timescale()
+        self.firmware = Firmware()
+        self.setting = Setting()
+        self.site = Site(self.timeScale)
 
-    """
     def test_no_host(self):
-        mount = command.MountCommand(host='192.168.2.250', port=3492)
+        mount = Command(host='192.168.2.250', port=3492)
         commandSet = ':U2#:Gev#:'
-        ok, mes, response = mount.commandSend(commandSet)
+        ok, mes, response = mount.transfer(commandSet)
         self.assertEqual(False, ok)
         self.assertEqual('socket timeout connect', mes)
-        self.assertEqual(None, response)
-
-    def test_no_server(self):
-        mount = command.MountCommand(host='192.168.2.15', port=22)
-        commandSet = ':U2#:Gev#:'
-        ok, mes, response = mount.commandSend(commandSet)
-        self.assertEqual(True, ok)
-        self.assertEqual('ok', mes)
-        self.assertEqual('SSH-2.0-OpenSSH_5.4', response)
+        self.assertEqual('', response)
 
     def test_speed(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
+        mount = Command(host='192.168.2.15', port=3492)
         commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        timeStart = time.time()
-        ok, mes, response = mount.commandSend(commandSet)
+        ok, mes, response = mount.transfer(commandSet)
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-        self.assertEqual('10micron GM1000HPS', response.split('#')[5])
-        timeEnd = time.time()
-        print(timeEnd - timeStart)
+        self.assertEqual('10micron GM1000HPS', response[5])
 
     def test_unknown_command(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
+        mount = Command(host='192.168.2.15', port=3492)
         commandSet = ':U2#:NotKnown#'
-        ok, mes, response = mount.commandSend(commandSet)
+        ok, mes, response = mount.transfer(commandSet)
         self.assertEqual(False, ok)
         self.assertEqual('socket timeout response', mes)
         self.assertEqual('', response)
 
     def test_workaroundAlign(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
+        mount = Command(host='192.168.2.15', port=3492)
         ok, mes = mount.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
-    def test_pull_slow(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
-        ok, mes = mount.pullSlow()
+    def test_pollSlow(self):
+        mount = Command(host='192.168.2.15',
+                        port=3492,
+                        firmware=self.firmware,
+                        site=self.site,
+                        )
+        ok, mes = mount.pollSlow()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
         self.assertEqual(21514, mount.firmware.fw)
@@ -62,18 +67,8 @@ class TestMount(unittest.TestCase):
         self.assertEqual('Mar 19 2018', mount.firmware.fwDate)
         self.assertEqual('15:56:53', mount.firmware.fwTime)
 
-    def test_workaroundAlign(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
-        ok, mes = mount.workaroundAlign()
-        self.assertEqual(True, ok)
-        self.assertEqual('ok', mes)
-
-    def test_workaroundAlign(self):
-        mount = command.MountCommand(host='192.168.2.15', port=3492)
-        ok, mes = mount.workaroundAlign()
-        self.assertEqual(True, ok)
-        self.assertEqual('ok', mes)
-    """
+        print(self.firmware)
+        print(self.site)
 
 
 if __name__ == '__main__':

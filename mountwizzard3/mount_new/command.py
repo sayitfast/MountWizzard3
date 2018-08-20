@@ -21,18 +21,12 @@ import socket
 import sys
 
 import PyQt5.QtCore
-import skyfield.api
 
 from .configData import Setting
 from .configData import Firmware
 
 
-class MountCommand:
-
-    fwLock = PyQt5.QtCore.QReadWriteLock()
-    observerLock = PyQt5.QtCore.QReadWriteLock()
-    mountTimeLock = PyQt5.QtCore.QReadWriteLock()
-    settingsLock = PyQt5.QtCore.QReadWriteLock()
+class Command:
 
     SOCKET_TIMEOUT = 1.5
 
@@ -52,19 +46,20 @@ class MountCommand:
                  ':GTTRK', ':GTsid', ':MA', ':MS', ':Sa', ':Sev', ':Sr', ':SREF', ':SRPRS',
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
-    firmware = Firmware(0)
-
-    observer = None
-
-    mountTime = {}
-
-    settings = Setting()
-
-    def __init__(self, host='192.168.2.15', port=3492):
+    def __init__(self,
+                 host='192.168.2.15',
+                 port=3492,
+                 firmware=None,
+                 setting=None,
+                 site=None,
+                 ):
         self.host = host
         self.port = port
+        self.firmware = firmware
+        self.setting = setting
+        self.site = site
 
-    def analyseCommand(self, commandString):
+    def _analyseCommand(self, commandString):
         chunksToReceive = 0
         commandSet = commandString.split('#')[:-1]
 
@@ -81,8 +76,8 @@ class MountCommand:
                         break
         return chunksToReceive
 
-    def commandSend(self, command):
-        numberOfChunks = self.analyseCommand(command)
+    def transfer(self, command):
+        numberOfChunks = self._analyseCommand(command)
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.settimeout(self.SOCKET_TIMEOUT)
         response = ''
@@ -120,20 +115,22 @@ class MountCommand:
                     break
         except socket.timeout:
             message = 'socket timeout response'
+            response = ''
             return False, message, response
         except socket.error:
             message = 'socket error response'
+            response = ''
             return False, message, response
         else:
+            response = response.split('#')[:-1]
             return True, message, response
         finally:
             client.close()
 
     @staticmethod
-    def parseWorkaroundAlign(response):
+    def _parseWorkaroundAlign(response):
         message = 'ok'
-        value = response.split('#')[:-1]
-        if value[0] == 'V' and value[1] == 'E':
+        if response[0] == 'V' and response[1] == 'E':
             return True, message
         else:
             message = 'workaround failed'
@@ -142,78 +139,70 @@ class MountCommand:
     def workaroundAlign(self):
         message = 'ok'
         commandString = ':newalig#:endalig#'
-        suc, mes, response = self.commandSend(commandString)
+        suc, mes, response = self.transfer(commandString)
         if not suc:
             message = mes
             return False, message
-        suc, mes = self.parseWorkaroundAlign(response)
+        suc, mes = self._parseWorkaroundAlign(response)
         if suc:
             return True, message
         else:
             message = mes
             return False, message
 
-    def parseSlow(self, response):
+    def _parseSlow(self, response):
         message = 'ok'
-        value = response.split('#')[:-1]
 
-        if len(value) != 8:
+        if len(response) != 8:
             message = 'wrong number of parameters'
             return False, message
 
         # doing observer settings update
-        self.observerLock.lockForWrite()
-
+        self.site.siteLock.lockForWrite()
+        # conversion
+        elev = float(response[0])
         # due to compatibility to LX200 protocol east is negative, so we change that
-        if value[1] == '-':
-            lon = value[1].replace('-', '+')
+        if response[1] == '-':
+            lon = response[1].replace('-', '+')
         else:
-            lon = value[1].replace('+', '-')
-        lon = [float(x) for x in lon.split(':')]
-        lon = lon[0] + lon[1] / 60 + lon[2] / 3600
-        lon = skyfield.api.Angle(degrees=lon)
-        lat = [float(x) for x in value[2].split(':')]
-        lat = lat[0] + lat[1] / 60 + lat[2] / 3600
-        lat = skyfield.api.Angle(degrees=lat)
-        elev = float(value[0])
+            lon = response[1].replace('+', '-')
+        lat = response[2]
 
         # storing it to the skyfield Topos unit
-        self.observer = skyfield.api.Topos(longitude=lon,
-                                           latitude=lat,
-                                           elevation_m=elev)
-        self.observerLock.unlock()
+        self.site.location = (lat, lon, elev)
+        self.site.siteLock.unlock()
 
         # doing version settings update
-        self.fwLock.lockForWrite()
-        self.firmware.fwDate = value[3]
-        self.firmware.fwNumber = value[4]
-        self.firmware.productName = value[5]
-        self.firmware.fwTime = value[6]
-        self.firmware.hwVersion = value[7]
-        self.fwLock.unlock()
+        self.firmware.firmwareLock.lockForWrite()
+        self.firmware.fwDate = response[3]
+        self.firmware.fwNumber = response[4]
+        self.firmware.productName = response[5]
+        self.firmware.fwTime = response[6]
+        self.firmware.hwVersion = response[7]
+        self.firmware.firmwareLock.unlock()
 
         return True, message
 
-    def pullSlow(self):
+    def pollSlow(self):
         message = 'ok'
         commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        suc, mes, response = self.commandSend(commandString)
+        suc, mes, response = self.transfer(commandString)
         if not suc:
             message = mes
             return False, message
-        suc, mes = self.parseSlow(response)
+        suc, mes = self._parseSlow(response)
         if not suc:
             message = mes
             return False, message
         return True, message
 
-    def pullMed(self):
+    def pollMed(self):
         message = 'ok'
         commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#'
         commandString = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:modelcnt#:getalst#:GDUTV#'
         return True, message
 
-    def pullFast(self):
+    def pollFast(self):
         message = 'ok'
         commandString = ':U2#:GS#:Ginfo#:'
         return True, message
