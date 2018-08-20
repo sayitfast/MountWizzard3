@@ -61,6 +61,7 @@ class Command:
 
     def _analyseCommand(self, commandString):
         chunksToReceive = 0
+        noResponse = True
         commandSet = commandString.split('#')[:-1]
         for command in commandSet:
             foundCOMMAND_A = False
@@ -69,19 +70,21 @@ class Command:
                     foundCOMMAND_A = True
                     break
             if not foundCOMMAND_A:
+                noResponse = False
                 for keyBad in self.COMMAND_B:
                     if command.startswith(keyBad):
                         break
                 else:
                     chunksToReceive += 1
-        return chunksToReceive
+        return chunksToReceive, noResponse
 
     def transfer(self, command):
-        numberOfChunks = self._analyseCommand(command)
+        numberOfChunks, noResponse = self._analyseCommand(command)
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.settimeout(self.SOCKET_TIMEOUT)
         response = ''
         message = 'ok'
+        # build client
         try:
             client.connect((self.host, self.port))
         except socket.timeout:
@@ -92,7 +95,7 @@ class Command:
             message = 'socket error connect'
             client.close()
             return False, message, response
-
+        # send data
         try:
             client.sendall(command.encode())
         except socket.timeout:
@@ -103,9 +106,11 @@ class Command:
             message = 'socket error send'
             client.close()
             return False, message, response
-
+        # receive data
         try:
             while True:
+                if noResponse:
+                    break
                 chunk = client.recv(4096).decode().strip()
                 if not chunk:
                     break
