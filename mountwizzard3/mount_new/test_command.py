@@ -56,8 +56,13 @@ class TestMount(unittest.TestCase):
         ok, mes = mount.pullSlow()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-        print(mount.firmware)
-        print(mount.firmware.fwNumber, mount.firmware.fw)
+        self.assertEqual(21514, mount.firmware.fw)
+        self.assertEqual('2.15.14', mount.firmware.fwNumber)
+        self.assertEqual('10micron GM1000HPS', mount.firmware.productName)
+        self.assertEqual('Q-TYPE2012', mount.firmware.hwVersion)
+        self.assertEqual('Mar 19 2018', mount.firmware.fwDate)
+        self.assertEqual('15:56:53', mount.firmware.fwTime)
+        print(mount.firmware.__dict__)
 
     """
     def test_workaroundAlign(self):

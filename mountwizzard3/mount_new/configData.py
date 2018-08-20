@@ -73,7 +73,7 @@ class Firmware(object):
 
     @property
     def hwVersion(self):
-        return self._productName
+        return self._hwVersion
 
     @hwVersion.setter
     def hwVersion(self, value):
