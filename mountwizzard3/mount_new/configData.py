@@ -270,7 +270,7 @@ class Setting(object):
 
     @property
     def timeToMeridian(self):
-        self._timeToMeridian = int(self._timeToFlip - self._meridianLimitGuide / 360 * 24 * 60)
+        self._timeToMeridian = int(self._timeToFlip - self._meridianLimitGuide/360*24*60)
         return self._timeToMeridian
 
     @property
