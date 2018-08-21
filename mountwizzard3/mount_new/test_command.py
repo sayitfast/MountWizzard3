@@ -3,10 +3,10 @@ import os
 
 import skyfield.api
 
-from mount_new.command import Command
-from mount_new.configData import Firmware
-from mount_new.configData import Setting
-from mount_new.configData import Site
+from .command import Command
+from .configData import Firmware
+from .configData import Setting
+from .configData import Site
 
 
 class TestMount(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestMount(unittest.TestCase):
     def setUp(self):
         load = skyfield.api.Loader('~/PycharmProjects/Mountwizzard3/config',
                                    verbose=False,
-                                   expire=False,
+                                   expire=True,
                                    )
         self.timeScale = load.timescale()
         self.firmware = Firmware()
@@ -89,6 +89,7 @@ class TestMount(unittest.TestCase):
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
+    """
     def test_responses_typeA_analyseCommand(self):
         mount = Command()
         number, response = mount._analyseCommand(':AP#:AL#')
@@ -106,7 +107,7 @@ class TestMount(unittest.TestCase):
         number, response = mount._analyseCommand(':AP#:AL#:FLIP#')
         self.assertEqual(True, response)
         self.assertEqual(0, number)
-
+    """
 
 if __name__ == '__main__':
     unittest.main()
