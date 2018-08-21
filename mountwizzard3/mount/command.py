@@ -209,17 +209,13 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
         # test weather is good feedback (with delimiting '#')
-        if self.flagBadReply:
-            # if not, we are go for length of string
-            if len(self.messageString) < self.numberReplyToReceive:
-                return
-        else:
+        if not self.flagBadReply:
             # if so we are counting '#'
             if self.messageString.count('#') < self.numberReplyToReceive:
                 return
 
         if self.flagBadReply:
-            if len(self.messageString) != self.numberReplyToReceive:
+            if len(self.messageString) == 0:
                 self.logger.error('Receiving data with flagBadReply set got error: {0}'.format(self.messageString))
                 self.messageString = ''
                 messageToProcess = ''
