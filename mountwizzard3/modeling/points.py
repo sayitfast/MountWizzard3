@@ -200,7 +200,23 @@ class ModelPoints:
         finally:
             return p, msg
 
-    def sortPoints(self):
+    def sortPointsEW(self):
+        if len(self.modelPoints) == 0:
+            self.logger.warning('There are no points to sort')
+            return
+        westSide = []
+        eastSide = []
+        a = sorted(self.modelPoints, key=operator.itemgetter(0))
+        for i in range(0, len(a)):
+            if a[i][0] >= 180:
+                westSide.append((a[i][0], a[i][1]))
+            else:
+                eastSide.append((a[i][0], a[i][1]))
+        westSide = sorted(westSide, key=operator.itemgetter(1))
+        eastSide = sorted(eastSide, key=operator.itemgetter(1))
+        self.modelPoints = westSide + eastSide
+
+    def sortPointsHL(self):
         if len(self.modelPoints) == 0:
             self.logger.warning('There are no points to sort')
             return
@@ -302,12 +318,14 @@ class ModelPoints:
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def showFullPoints(self, filename, limitByHorizonMask, doSortingPoints):
+    def showFullPoints(self, filename, limitByHorizonMask, doSortingPointsEW, doSortingPointHL):
         self.modelPoints, msg = self.loadModelPoints(filename, 'Full')
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if doSortingPoints:
-            self.sortPoints()
+        if doSortingPointsEW:
+            self.sortPointsEW()
+        if doSortingPointsHL:
+            self.sortPointsHL()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
@@ -328,7 +346,7 @@ class ModelPoints:
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def generateMaxPoints(self, limitByHorizonMask, doSortingPoints):
+    def generateMaxPoints(self, limitByHorizonMask, doSortingPointsEW, doSortingPointsHL):
         west = []
         east = []
         off = -5
@@ -360,12 +378,14 @@ class ModelPoints:
         self.modelPoints = west + east
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if doSortingPoints:
-            self.sortPoints()
+        if doSortingPointsEW:
+            self.sortPointsEW()
+        if doSortingPointsHL:
+            self.sortPointsHL()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def generateNormalPoints(self, limitByHorizonMask, doSortingPoints):
+    def generateNormalPoints(self, limitByHorizonMask, doSortingPointsEW, doSortingPointsHL):
         west = []
         east = []
         off = -5
@@ -395,12 +415,14 @@ class ModelPoints:
         self.modelPoints = west + east
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if doSortingPoints:
-            self.sortPoints()
+        if doSortingPointsEW:
+            self.sortPointsEW()
+        if doSortingPointsHL:
+            self.sortPointsHL()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def generateMinPoints(self, limitByHorizonMask, doSortingPoints):
+    def generateMinPoints(self, limitByHorizonMask, doSortingPointsEW, doSortingPointsHL):
         west = list()
         east = list()
         off = -5
@@ -430,12 +452,14 @@ class ModelPoints:
         self.modelPoints = west + east
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if doSortingPoints:
-            self.sortPoints()
+        if doSortingPointsEW:
+            self.sortPointsEW()
+        if doSortingPointsHL:
+            self.sortPointsHL()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def generateGridPoints(self, limitByHorizonMask, doSortingPoints, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
+    def generateGridPoints(self, limitByHorizonMask, doSortingPointsEW, doSortingPointsHL, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
         west = list()
         east = list()
         i = 0
@@ -458,8 +482,10 @@ class ModelPoints:
         self.modelPoints = west + east
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if doSortingPoints:
-            self.sortPoints()
+        if doSortingPointsEW:
+            self.sortPointsEW()
+        if doSortingPointsHL:
+            self.sortPointsHL()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 

@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -4120,7 +4120,7 @@ manually</string>
     <attribute name="title">
      <string>Config Build</string>
     </attribute>
-    <widget class="QCheckBox" name="checkSortPoints">
+    <widget class="QCheckBox" name="checkSortPointsEW">
      <property name="geometry">
       <rect>
        <x>420</x>
@@ -5239,6 +5239,27 @@ manually</string>
      </property>
      <property name="checked">
       <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkSortPointsHL">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>285</y>
+       <width>211</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sorts the modeling points EAST / WEST side of pier.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Auto sort points High / Low</string>
      </property>
     </widget>
    </widget>
@@ -16890,7 +16911,7 @@ manually</string>
   <tabstop>checkUseMinimumHorizonLine</tabstop>
   <tabstop>altitudeMinimumHorizon</tabstop>
   <tabstop>checkDeletePointsHorizonMask</tabstop>
-  <tabstop>checkSortPoints</tabstop>
+  <tabstop>checkSortPointsEW</tabstop>
   <tabstop>btn_showInitialModelPoints</tabstop>
   <tabstop>btn_loadInitialModelPoints</tabstop>
   <tabstop>btn_saveInitialModelPoints</tabstop>

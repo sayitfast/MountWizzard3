@@ -103,10 +103,10 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_generateDSOPoints,
                             'Method': self.modelingRunner.modelPoints.generateDSOPoints,
-                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                            'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'int(self.app.ui.numberHoursDSO.value())',
                                           'int(self.app.ui.numberPointsDSO.value())',
-                                          'int(self.app.ui.numberHoursPreview.value())'
+                                          'int(self.app.ui.numberHoursPreview.value())',
                                           ]
                         }
                     ]
@@ -118,7 +118,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_generateMaxPoints,
                             'Method': self.modelingRunner.modelPoints.generateMaxPoints,
                             'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
-                                          'self.app.ui.checkSortPoints.isChecked()'
+                                          'self.app.ui.checkSortPointsEW.isChecked()',
+                                          'self.app.ui.checkSortPointsHL.isChecked()',
                                           ]
                         }
                     ]
@@ -130,7 +131,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_generateNormalPoints,
                             'Method': self.modelingRunner.modelPoints.generateNormalPoints,
                             'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
-                                          'self.app.ui.checkSortPoints.isChecked()'
+                                          'self.app.ui.checkSortPointsEW.isChecked()',
+                                          'self.app.ui.checkSortPointsHL.isChecked()',
                                           ]
                         }
                     ]
@@ -142,7 +144,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_generateMinPoints,
                             'Method': self.modelingRunner.modelPoints.generateMinPoints,
                             'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
-                                          'self.app.ui.checkSortPoints.isChecked()'
+                                          'self.app.ui.checkSortPointsEW.isChecked()',
+                                          'self.app.ui.checkSortPointsHL.isChecked()',
                                           ]
                         }
                     ]
@@ -165,7 +168,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Method': self.modelingRunner.modelPoints.showFullPoints,
                             'Parameter': ['self.app.ui.le_modelFullPointsFileName.text()',
                                           'self.app.ui.checkDeletePointsHorizonMask.isChecked()',
-                                          'self.app.ui.checkSortPoints.isChecked()']
+                                          'self.app.ui.checkSortPointsEW.isChecked()',
+                                          'self.app.ui.checkSortPointsHL.isChecked()',
+                                          ]
                         }
                     ]
                 },
@@ -176,7 +181,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_generateGridPoints,
                             'Method': self.modelingRunner.modelPoints.generateGridPoints,
                             'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
-                                          'self.app.ui.checkSortPoints.isChecked()',
+                                          'self.app.ui.checkSortPointsEW.isChecked()',
+                                          'self.app.ui.checkSortPointsHL.isChecked()',
                                           'int(self.app.ui.numberGridPointsRow.value())',
                                           'int(self.app.ui.numberGridPointsCol.value())',
                                           'int(self.app.ui.altitudeMin.value())',
@@ -243,8 +249,10 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.azimuthBase.valueChanged.disconnect()
         self.app.ui.numberBase.valueChanged.disconnect()
         try:
-            if 'CheckSortPoints' in self.app.config:
-                self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
+            if 'CheckSortPointsEW' in self.app.config:
+                self.app.ui.checkSortPointsEW.setChecked(self.app.config['CheckSortPointsEW'])
+            if 'CheckSortPointsHL' in self.app.config:
+                self.app.ui.checkSortPointsHL.setChecked(self.app.config['CheckSortPointsHL'])
             if 'CheckDeletePointsHorizonMask' in self.app.config:
                 self.app.ui.checkDeletePointsHorizonMask.setChecked(self.app.config['CheckDeletePointsHorizonMask'])
             if 'AltitudeBase' in self.app.config:
@@ -282,7 +290,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
 
     def storeConfig(self):
-        self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
+        self.app.config['CheckSortPointsEW'] = self.app.ui.checkSortPointsEW.isChecked()
+        self.app.config['CheckSortPointsHL'] = self.app.ui.checkSortPointsHL.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
         self.app.config['AltitudeBase'] = self.app.ui.altitudeBase.value()
         self.app.config['AzimuthBase'] = self.app.ui.azimuthBase.value()
