@@ -128,20 +128,21 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 # now we have to parse how many of them will give a reply
                 self.numberReplyToReceive = 0
                 self.flagBadReply = False
-                foundReplyTypeA = False
                 # iterate through all commands in commandList
                 for commandKey in commandList:
+                    foundReplyTypeA = False
                     # if it's in type A, no response expected
                     for key in self.COMMAND_RETURN_A:
                         if commandKey.startswith(key):
                             foundReplyTypeA = True
                             break
                     if not foundReplyTypeA:
-                        self.numberReplyToReceive += 1
                         for keyBad in self.COMMAND_RETURN_B:
                             if commandKey.startswith(keyBad):
                                 self.flagBadReply = True
                                 break
+                        else:
+                            self.numberReplyToReceive += 1
                 if self.numberReplyToReceive > 0:
                     self.sendLock = True
                     self.sendCommand(command)
