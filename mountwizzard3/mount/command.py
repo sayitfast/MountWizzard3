@@ -228,7 +228,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 self.messageString = ''
         else:
             if self.messageString.count('#') != self.numberReplyToReceive:
-                self.logger.error('Receiving data with flagBadReply set got error: {0}'.format(self.messageString))
+                self.logger.error('Receiving data got error: {0}'.format(self.messageString))
                 self.messageString = ''
                 messageToProcess = ''
             else:
