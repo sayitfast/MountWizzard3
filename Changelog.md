@@ -7,3 +7,4 @@
 - alignment model download speed improved for small models
 - model names are now synced with mount. if you delete or add manually with handcontroller, it updates
 - added collect windows functions to find an standard size them under settings versions
+- added second sorting for dome users -> altitude first.
