@@ -205,7 +205,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             messageToProcess = self.messageString
             self.messageString = ''
 
-
         # Try and parse the message. In medium we expect 10 or 11
         try:
             if len(messageToProcess) == 0:

@@ -163,7 +163,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.logger.info('{0} connected at {1}:{2}'.format(__name__, self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
         self.signalConnected.emit({__name__: True})
-        self.getStatusSlow()
+        self.startCommand()
 
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
@@ -242,8 +242,8 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     def startCommand(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:newalig#:endalig#'
-            # command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
+            # todo: if i remove model count I don't get the right numbers
+            command = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#:modelcnt#:getalst#:newalig#:endalig#'
             self.sendCommandQueue.put(command)
             self.doRefractionUpdate()
             self.updateAlignmentStarPositions()
@@ -254,9 +254,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable() and self.isRunning:
             self.messageString += self.socket.read(1024).decode()
-        if self.messageString.count('#') < 10:
+        if self.messageString.count('#') < 12:
             return
-        if self.messageString.count('#') != 10:
+        if self.messageString.count('#') != 12:
             self.logger.error('Receiving data got error:{0}'.format(self.messageString))
             self.messageString = ''
             messageToProcess = ''
@@ -299,6 +299,10 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                     self.data['FirmwareTime'] = valueList[6]
                 if len(valueList[7]) > 0:
                     self.data['HardwareVersion'] = valueList[7]
+                if len(valueList[8]) > 0:
+                    self.data['NumberModelNames'] = int(valueList[8])
+                if len(valueList[9]) > 0:
+                    self.data['NumberAlignmentStars'] = int(valueList[9])
                 self.app.signalMountSiteData.emit(self.data['SiteLatitude'], self.data['SiteLongitude'], self.data['SiteHeight'])
             else:
                 self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
