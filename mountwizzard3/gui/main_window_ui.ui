@@ -4120,31 +4120,10 @@ manually</string>
     <attribute name="title">
      <string>Config Build</string>
     </attribute>
-    <widget class="QCheckBox" name="checkSortPointsEW">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>260</y>
-       <width>211</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sorts the modeling points EAST / WEST side of pier.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Auto sort points East / West</string>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>415</x>
        <y>230</y>
        <width>211</width>
        <height>20</height>
@@ -4165,7 +4144,7 @@ manually</string>
     <widget class="QLabel" name="label_122">
      <property name="geometry">
       <rect>
-       <x>665</x>
+       <x>620</x>
        <y>180</y>
        <width>26</width>
        <height>26</height>
@@ -4189,7 +4168,7 @@ manually</string>
     <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>415</x>
        <y>155</y>
        <width>211</width>
        <height>21</height>
@@ -4213,7 +4192,7 @@ manually</string>
     <widget class="QCheckBox" name="checkUseFileHorizonLine">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>415</x>
        <y>125</y>
        <width>211</width>
        <height>21</height>
@@ -4297,7 +4276,7 @@ manually</string>
     <widget class="QLabel" name="label_201">
      <property name="geometry">
       <rect>
-       <x>470</x>
+       <x>435</x>
        <y>180</y>
        <width>146</width>
        <height>26</height>
@@ -4335,9 +4314,9 @@ manually</string>
     <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
      <property name="geometry">
       <rect>
-       <x>615</x>
+       <x>575</x>
        <y>180</y>
-       <width>51</width>
+       <width>46</width>
        <height>26</height>
       </rect>
      </property>
@@ -5241,26 +5220,60 @@ manually</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkSortPointsHL">
+    <widget class="QGroupBox" name="groupBoxCoordinateSystems_2">
      <property name="geometry">
       <rect>
-       <x>420</x>
-       <y>285</y>
-       <width>211</width>
-       <height>20</height>
+       <x>415</x>
+       <y>260</y>
+       <width>226</width>
+       <height>76</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
+     <property name="title">
+      <string>Auto sort</string>
      </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sorts the modeling points EAST / WEST side of pier.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Auto sort points High / Low</string>
-     </property>
+     <widget class="QRadioButton" name="checkSortPointsHL">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>50</y>
+        <width>111</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sorts the modeling points EAST / WEST side of pier.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>High / Low</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="checkSortPointsEW">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>25</y>
+        <width>106</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sorts the modeling points EAST / WEST side of pier.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>East / West</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_15">
@@ -16911,7 +16924,6 @@ manually</string>
   <tabstop>checkUseMinimumHorizonLine</tabstop>
   <tabstop>altitudeMinimumHorizon</tabstop>
   <tabstop>checkDeletePointsHorizonMask</tabstop>
-  <tabstop>checkSortPointsEW</tabstop>
   <tabstop>btn_showInitialModelPoints</tabstop>
   <tabstop>btn_loadInitialModelPoints</tabstop>
   <tabstop>btn_saveInitialModelPoints</tabstop>

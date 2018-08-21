@@ -222,14 +222,14 @@ class ModelPoints:
             return
         westSide = []
         eastSide = []
-        a = sorted(self.modelPoints, key=operator.itemgetter(0))
+        a = sorted(self.modelPoints, key=operator.itemgetter(1))
         for i in range(0, len(a)):
             if a[i][0] >= 180:
                 westSide.append((a[i][0], a[i][1]))
             else:
                 eastSide.append((a[i][0], a[i][1]))
-        westSide = sorted(westSide, key=operator.itemgetter(1))
-        eastSide = sorted(eastSide, key=operator.itemgetter(1))
+        westSide = sorted(westSide, key=operator.itemgetter(0))
+        eastSide = sorted(eastSide, key=operator.itemgetter(0))
         self.modelPoints = westSide + eastSide
 
     def loadHorizonPoints(self, horizonPointsFileName, horizonByFile, horizonByAltitude, altitudeMinimumHorizon):
