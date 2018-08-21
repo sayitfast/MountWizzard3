@@ -1,3 +1,8 @@
+3.2
+- problem with skyfield:
+https://stackoverflow.com/questions/41691327/ssl-sslerror-ssl-certificate-verify-failed-certificate-verify-failed-ssl-c
+/Applications/Python 3.6/Install Certificates.command
+
 3.1
 - added remote commands: shutdown mount, boot mount
 - buttons for tracking rate showing now actual tracking rate

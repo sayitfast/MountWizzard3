@@ -134,11 +134,13 @@ class Command:
     @staticmethod
     def _parseWorkaroundAlign(response):
         message = 'ok'
-        if response[0] == 'V' and response[1] == 'E':
-            return True, message
-        else:
+        if len(response) != 2:
             message = 'workaround failed'
             return False, message
+        if response[0] != 'V' or response[1] != 'E':
+            message = 'workaround failed'
+            return False, message
+        return True, message
 
     def workaroundAlign(self):
         message = 'ok'
@@ -156,27 +158,40 @@ class Command:
 
     def _parseSlow(self, response):
         message = 'ok'
+        if len(response) != 8:
+            message = 'wrong number of chunks from mount'
+            return False, message
         # doing observer settings update
         self.site.siteLock.lockForWrite()
         # conversion
-        elev = float(response[0])
-        # due to compatibility to LX200 protocol east is negative, so we change that
-        if response[1] == '-':
-            lon = response[1].replace('-', '+')
-        else:
-            lon = response[1].replace('+', '-')
-        lat = response[2]
-        # storing it to the skyfield Topos unit
-        self.site.location = (lat, lon, elev)
-        self.site.siteLock.unlock()
+        try:
+            elev = float(response[0])
+            # due to compatibility to LX200 protocol east is negative, so we change that
+            if response[1] == '-':
+                lon = response[1].replace('-', '+')
+            else:
+                lon = response[1].replace('+', '-')
+            lat = response[2]
+            # storing it to the skyfield Topos unit
+            self.site.location = (lat, lon, elev)
+        except Exception as e:
+            message = e
+            return False, message
+        finally:
+            self.site.siteLock.unlock()
         # doing version settings update
         self.firmware.firmwareLock.lockForWrite()
-        self.firmware.fwDate = response[3]
-        self.firmware.fwNumber = response[4]
-        self.firmware.productName = response[5]
-        self.firmware.fwTime = response[6]
-        self.firmware.hwVersion = response[7]
-        self.firmware.firmwareLock.unlock()
+        try:
+            self.firmware.fwDate = response[3]
+            self.firmware.fwNumber = response[4]
+            self.firmware.productName = response[5]
+            self.firmware.fwTime = response[6]
+            self.firmware.hwVersion = response[7]
+        except Exception as e:
+            message = e
+            return False, message
+        finally:
+            self.firmware.firmwareLock.unlock()
         return True, message
 
     def pollSlow(self):
