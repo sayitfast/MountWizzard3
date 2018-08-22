@@ -143,7 +143,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.status.emit(0)
 
     def run(self):
-        self.logger.info('indi started')
+        self.logger.info('{0} started'.format(__name__))
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -173,12 +173,10 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('indi client stopped')
+        self.logger.info('{0} stopped'.format(__name__))
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.disconnectFromHost()
         self.cycleTimer.stop()
         self.signalDestruct.disconnect(self.destruct)
         self.socket.hostFound.disconnect(self.handleHostFound)
@@ -226,13 +224,17 @@ class INDIClient(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
         self.app.sharedINDIDataLock.lockForRead()
-        self.logger.debug('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
+        self.logger.info('{0} found at {1}:{2}'.format(__name__,
+                                                       self.data['ServerIP'],
+                                                       self.data['ServerPort']))
         self.app.sharedINDIDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.app.sharedINDIDataLock.lockForRead()
-        self.logger.info('INDI Server connected at {0}:{1}'.format(self.data['ServerIP'], self.data['ServerPort']))
+        self.logger.info('{0} found at {1}:{2}'.format(__name__,
+                                                       self.data['ServerIP'],
+                                                       self.data['ServerPort']))
         self.app.sharedINDIDataLock.unlock()
         # get all informations about existing devices on the choosen indi server
         self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.7'}))
@@ -273,16 +275,16 @@ class INDIClient(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot(PyQt5.QtNetwork.QAbstractSocket.SocketError)
     def handleError(self, socketError):
         if self.socket.error() > 0:
-            self.logger.warning('INDI client connection fault, error: {0}'.format(socketError))
+            self.logger.warning('{0} connection fault: {1}'.format(__name__, socketError))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
         self.status.emit(self.socket.state())
-        self.logger.debug('INDI client connection has state: {0}'.format(self.socket.state()))
+        self.logger.debug('{0} has state: {1}'.format(__name__, self.socket.state()))
 
     @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
-        self.logger.info('INDI client connection is disconnected from host')
+        self.logger.info('{0} is disconnected from host'.format(__name__))
         self.app.sharedINDIDataLock.lockForWrite()
         self.data['Device'] = {}
         self.app.sharedINDIDataLock.unlock()
