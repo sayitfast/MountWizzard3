@@ -242,7 +242,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                         self.data['AltitudeKnobs'] = float(a7)
                     else:
                         self.data['AltitudeKnobs'] = 0
-                    if a8 != 'E':
+                    if a8 != 'E' and a8 != '':
                         self.data['Terms'] = int(a8)
                     else:
                         self.data['Terms'] = 0
