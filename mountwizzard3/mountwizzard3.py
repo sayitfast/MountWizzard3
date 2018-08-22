@@ -328,7 +328,7 @@ class MountWizzardApp(widget.MwWidget):
         # PyQt5.QtWidgets.qApp.style().standardIcon(PyQt5.QtWidgets.QStyle.SP_ArrowForward)
         # the icon picture in gui
         pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
-        pixmap = pixmap.scaled(90, 90)
+        pixmap = pixmap.scaled(64, 64)
         self.ui.mainicon.setPixmap(pixmap)
         pixmap = PyQt5.QtGui.QPixmap(':/azimuth1.png')
         self.ui.picAZ.setPixmap(pixmap)
@@ -806,6 +806,7 @@ class MountWizzardApp(widget.MwWidget):
         self.hemisphereWindow.showWindow()
         self.hemisphereWindow.resize(791, 641)
         self.hemisphereWindow.move(x + 120, y + 120)
+        self.satelliteWindow.showWindow()
         self.satelliteWindow.resize(791, 641)
         self.satelliteWindow.move(x + 150, y + 150)
         self.move(x, y)
