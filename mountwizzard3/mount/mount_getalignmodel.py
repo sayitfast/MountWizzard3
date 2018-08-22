@@ -246,7 +246,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                         self.data['Terms'] = int(a8)
                     else:
                         self.data['Terms'] = 0
-                    if a9 != 'E':
+                    if a9 != 'E' and a9 != '':
                         self.data['RMS'] = float(a9)
                     else:
                         self.data['RMS'] = 0
