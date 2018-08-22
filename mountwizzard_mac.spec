@@ -67,6 +67,10 @@ exe = EXE(pyz,
 #               upx=True,
 #               name='mountwizzard3')
 
+# if file present, delete it
+if os.path.isfile(os.getcwd() + '/dist/MountWizzard3.app'):
+    os.remove(os.getcwd() + '/dist/MountWizzard3.app')
+
 app = BUNDLE(exe,
              name='MountWizzard3.app',
              version=3,
