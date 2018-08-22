@@ -7,6 +7,7 @@ import sys
 sys.modules['FixTk'] = None
 DISTPATH = '../dist'
 WORKPATH = '../build'
+from PyInstaller.compat import modname_tkinter
 
 a = Analysis(['mountwizzard3\\mountwizzard3.py'],
              pathex=['C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard3'],
@@ -35,7 +36,7 @@ a = Analysis(['mountwizzard3\\mountwizzard3.py'],
              hiddenimports=['numpy.lib.recfunctions','xml.dom', 'shelve', 'PyQt5.sip'],    # shelve is for astropy
              hookspath=[],
              runtime_hooks=[],
-             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'astropy'],
+             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'astropy', modname_tkinter],
              win_no_prefer_redirects=True,
              win_private_assemblies=True,
              cipher=block_cipher)
