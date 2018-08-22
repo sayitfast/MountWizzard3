@@ -810,11 +810,11 @@ class MountWizzardApp(widget.MwWidget):
         self.satelliteWindow.resize(791, 641)
         self.satelliteWindow.move(x + 150, y + 150)
         self.move(x, y)
+        self.satelliteWindow.activateWindow()
         self.hemisphereWindow.activateWindow()
         self.analyseWindow.activateWindow()
         self.imageWindow.activateWindow()
         self.messageWindow.activateWindow()
-        self.satelliteWindow.activateWindow()
         self.activateWindow()
 
     def checkASCOM(self):
