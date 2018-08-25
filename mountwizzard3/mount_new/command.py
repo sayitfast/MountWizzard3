@@ -26,7 +26,7 @@ from .configData import Setting
 from .configData import Firmware
 
 
-class Command:
+class Command(object):
     """
     The class Command provides the command and reply interface to a 10 micron mount.
     There should be all commands and their return values be sent to the mount via

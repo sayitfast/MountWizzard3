@@ -131,25 +131,25 @@ class TestMount(unittest.TestCase):
         mount = Command()
         suc, message = mount._parseWorkaroundAlign(['E', 'V'])
         self.assertEqual(False, suc)
-        self.assertEqual('workaround failed', message)
+        self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad2(self):
         mount = Command()
         suc, message = mount._parseWorkaroundAlign(['V'])
         self.assertEqual(False, suc)
-        self.assertEqual('workaround failed', message)
+        self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad3(self):
         mount = Command()
         suc, message = mount._parseWorkaroundAlign(['E'])
         self.assertEqual(False, suc)
-        self.assertEqual('workaround failed', message)
+        self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad4(self):
         mount = Command()
         suc, message = mount._parseWorkaroundAlign([])
         self.assertEqual(False, suc)
-        self.assertEqual('workaround failed', message)
+        self.assertEqual('workaround command failed', message)
 
     def test_parseSlow_good(self):
         mount = Command(firmware=self.firmware,

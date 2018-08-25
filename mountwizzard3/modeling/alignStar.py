@@ -21,7 +21,7 @@
 import skyfield.starlib
 
 
-class AlignStars:
+class AlignStars(object):
     """
     The class AlignStars provides a list of selected stars from hipparcos catalogue
     dedicated for the polar alignment routine of 10 micron mounts. The format
