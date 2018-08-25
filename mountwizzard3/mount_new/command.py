@@ -27,21 +27,47 @@ from .configData import Firmware
 
 
 class Command:
+    """
+    The class Command provides the command and reply interface to a 10 micron mount.
+    There should be all commands and their return values be sent to the mount via
+    IP and the responses parsed accordingly.
 
-    SOCKET_TIMEOUT = 1.5
+    Define the number of chunks for the return bytes in case of not having them in
+    bulk mode this is needed, because the mount computer  doesn't support a
+    transaction base like number of chunks to be expected. It's just plain data and
+    I have to find out myself how much it is. there are three types of commands:
 
-    # define the number of chunks for the return bytes in case of not having them in bulk mode
-    # this is needed, because the mount computer  doesn't support a transaction base like
-    # number of chunks to be expected. it's just plain data and i have to find out myself how
-    # much it is. there are three types of commands:
-    #       a) no reply                     this is ok -> COMMAND_A
-    #       b) reply without '#'            this is the bad part, don't like it -> COMMAND_B
-    #       c) reply ended with '#'         this is normal feedback -> no special treatment
+          a) no reply               this is ok -> COMMAND_A
+          b) reply without '#'      this is the bad part, don't like it -> COMMAND_B
+          c) reply ended with '#'   this is normal feedback -> no special treatment
 
+    The class itself need parameters for the host and port to be able to interact
+    with the mount. In addition it needs classes, where the settings, firmware and
+    site parameters are handled.
+
+        >>> command = Command(
+        >>>                   host='mount.fritz.box',
+        >>>                   port=3492,
+        >>>                   firmware=firmware,
+        >>>                   setting=setting,
+        >>>                   site=site,
+        >>>                   )
+
+    """
+
+    version = '0.1'
+
+    # I don't want so wait to long for a response. In average I see values
+    # shorter than 0.5 sec, so 2 seconds should be good
+    SOCKET_TIMEOUT = 2
+
+    # Command list for commands which don't reply anything
     COMMAND_A = [':AP', ':AL', ':hP', ':PO', ':RT0', ':RT1', ':RT2', ':RT9', ':STOP', ':U2',
                  ':hS', ':hF', ':hP', ':KA', ':Me', ':Mn', ':Ms', ':Mw', ':EW', ':NS', ':Q',
                  'Suaf', ':TSOLAR', ':TQ']
 
+    # Command list for commands which have a response, but have no end mark
+    # mostly these commands response value of '0' or '1'
     COMMAND_B = [':FLIP', ':shutdown', ':GREF', ':GSC', ':Guaf', ':GTMPLT', ':GTRK',
                  ':GTTRK', ':GTsid', ':MA', ':MS', ':Sa', ':Sev', ':Sr', ':SREF', ':SRPRS',
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
@@ -53,6 +79,7 @@ class Command:
                  setting=None,
                  site=None,
                  ):
+
         self.host = host
         self.port = port
         self.firmware = firmware
@@ -60,6 +87,15 @@ class Command:
         self.site = site
 
     def _analyseCommand(self, commandString):
+        """
+        analyseCommand parses the provided commandString against the two command
+        type A and B to evaluate if a response is expected and how many chunks of
+        data show be received.
+
+        :param commandString:       string sent to the mount
+        :return: chunksToReceive:   counted chunks
+                 noResponse:        True, if we should not wait for receiving data
+        """
         chunksToReceive = 0
         noResponse = True
         commandSet = commandString.split('#')[:-1]
@@ -78,13 +114,26 @@ class Command:
                     chunksToReceive += 1
         return chunksToReceive, noResponse
 
-    def transfer(self, command):
-        numberOfChunks, noResponse = self._analyseCommand(command)
+    def _transfer(self, commandString):
+        """
+        transfer open a socket to the mount, takes the command string for the mount,
+        send it to the mount. If response expected, wait for the response and returns
+        the data.
+
+        :param commandString:
+        :return: success:       True or False for full transfer
+                 message:       resulting text message what happened
+                 response:      the data load
+        """
+
+        # analysing the command
+        numberOfChunks, noResponse = self._analyseCommand(commandString)
+
+        # build client
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.settimeout(self.SOCKET_TIMEOUT)
         response = ''
         message = 'ok'
-        # build client
         try:
             client.connect((self.host, self.port))
         except socket.timeout:
@@ -133,19 +182,36 @@ class Command:
 
     @staticmethod
     def _parseWorkaroundAlign(response):
+        """
+        Parsing the workaround command set defined by Filippo Riccio from 10micron
+        to be able to access the model before having interaction with the handcontroller
+
+        :param response:    data load from mount
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         if len(response) != 2:
-            message = 'workaround failed'
+            message = 'workaround command failed'
             return False, message
         if response[0] != 'V' or response[1] != 'E':
-            message = 'workaround failed'
+            message = 'workaround command failed'
             return False, message
         return True, message
 
     def workaroundAlign(self):
+        """
+        Sending the workaround command set defined by Filippo Riccio from 10micron
+        to be able to access the model before having interaction with the handcontroller
+
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         commandString = ':newalig#:endalig#'
-        suc, mes, response = self.transfer(commandString)
+        suc, mes, response = self._transfer(commandString)
         if not suc:
             message = mes
             return False, message
@@ -157,6 +223,14 @@ class Command:
             return False, message
 
     def _parseSlow(self, response):
+        """
+        Parsing the polling slow command.
+
+        :param response:    data load from mount
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         if len(response) != 8:
             message = 'wrong number of chunks from mount'
@@ -195,9 +269,17 @@ class Command:
         return True, message
 
     def pollSlow(self):
+        """
+        Sending the polling slow command. As the mount need polling the data, I send
+        a set of commands to get the data back to be able to process and store it.
+
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        suc, mes, response = self.transfer(commandString)
+        suc, mes, response = self._transfer(commandString)
         if not suc:
             message = mes
             return False, message
@@ -208,6 +290,14 @@ class Command:
         return True, message
 
     def _parseMed(self, response, fw):
+        """
+        Parsing the polling med command.
+
+        :param response:    data load from mount
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         self.setting.settingLock.lockForWrite()
         self._slewRate = int(response[0])
@@ -233,6 +323,14 @@ class Command:
         return True, message
 
     def pollMed(self, fw):
+        """
+        Sending the polling med command. As the mount need polling the data, I send
+        a set of commands to get the data back to be able to process and store it.
+
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         cs1 = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:GTMP1#:GREF#:Guaf#'
         cs2 = ':Gdat#:Gh#:Go#:modelcnt#:getalst#'
@@ -241,7 +339,7 @@ class Command:
             commandString = ''.join((cs1, cs2, cs3))
         else:
             commandString = ''.join((cs1, cs2))
-        suc, mes, response = self.transfer(commandString)
+        suc, mes, response = self._transfer(commandString)
         if not suc:
             message = mes
             return False, message
@@ -252,6 +350,14 @@ class Command:
         return True, message
 
     def _parseFast(self, response):
+        """
+        Parsing the polling fast command.
+
+        :param response:    data load from mount
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         self.site.siteLock.lockForWrite()
         self.site.timeSidereal = response[0]
@@ -268,9 +374,17 @@ class Command:
         return True, message
 
     def pollFast(self):
+        """
+        Sending the polling fast command. As the mount need polling the data, I send
+        a set of commands to get the data back to be able to process and store it.
+
+        :return: success:   True if ok, False if not
+                 message:   text message what happened
+        """
+
         message = 'ok'
         commandString = ':U2#:GS#:Ginfo#:'
-        suc, mes, response = self.transfer(commandString)
+        suc, mes, response = self._transfer(commandString)
         if not suc:
             message = mes
             return False, message

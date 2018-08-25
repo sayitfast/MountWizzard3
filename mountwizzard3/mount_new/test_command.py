@@ -24,7 +24,7 @@ class TestMount(unittest.TestCase):
     def test_no_host(self):
         mount = Command(host='192.168.2.250', port=3492)
         commandSet = ':U2#:Gev#:'
-        ok, mes, response = mount.transfer(commandSet)
+        ok, mes, response = mount._transfer(commandSet)
         self.assertEqual(False, ok)
         self.assertEqual('socket timeout connect', mes)
         self.assertEqual('', response)
@@ -32,7 +32,7 @@ class TestMount(unittest.TestCase):
     def test_speed(self):
         mount = Command(host='192.168.2.15', port=3492)
         commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        ok, mes, response = mount.transfer(commandSet)
+        ok, mes, response = mount._transfer(commandSet)
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
         self.assertEqual('10micron GM1000HPS', response[5])
@@ -40,7 +40,7 @@ class TestMount(unittest.TestCase):
     def test_unknown_command(self):
         mount = Command(host='192.168.2.15', port=3492)
         commandSet = ':U2#:NotKnown#'
-        ok, mes, response = mount.transfer(commandSet)
+        ok, mes, response = mount._transfer(commandSet)
         self.assertEqual(False, ok)
         self.assertEqual('socket timeout response', mes)
         self.assertEqual('', response)
