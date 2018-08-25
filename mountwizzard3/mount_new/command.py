@@ -137,22 +137,22 @@ class Command(object):
         try:
             client.connect((self.host, self.port))
         except socket.timeout:
-            message = 'socket timeout connect'
+            message = 'socket error timeout connect'
             client.close()
             return False, message, response
         except socket.error:
-            message = 'socket error connect'
+            message = 'socket error general connect'
             client.close()
             return False, message, response
         # send data
         try:
-            client.sendall(command.encode())
+            client.sendall(commandString.encode())
         except socket.timeout:
-            message = 'socket timeout send'
+            message = 'socket error timeout send'
             client.close()
             return False, message, response
         except socket.error:
-            message = 'socket error send'
+            message = 'socket error general send'
             client.close()
             return False, message, response
         # receive data
@@ -167,11 +167,11 @@ class Command(object):
                 if response.count('#') == numberOfChunks:
                     break
         except socket.timeout:
-            message = 'socket timeout response'
+            message = 'socket error timeout response'
             response = ''
             return False, message, response
         except socket.error:
-            message = 'socket error response'
+            message = 'socket error general response'
             response = ''
             return False, message, response
         else:

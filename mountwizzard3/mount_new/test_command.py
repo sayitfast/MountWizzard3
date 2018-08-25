@@ -26,7 +26,7 @@ class TestMount(unittest.TestCase):
         commandSet = ':U2#:Gev#:'
         ok, mes, response = mount._transfer(commandSet)
         self.assertEqual(False, ok)
-        self.assertEqual('socket timeout connect', mes)
+        self.assertIn('socket error', mes)
         self.assertEqual('', response)
 
     def test_speed(self):
@@ -42,7 +42,7 @@ class TestMount(unittest.TestCase):
         commandSet = ':U2#:NotKnown#'
         ok, mes, response = mount._transfer(commandSet)
         self.assertEqual(False, ok)
-        self.assertEqual('socket timeout response', mes)
+        self.assertIn('socket error', mes)
         self.assertEqual('', response)
 
     def test_workaroundAlign(self):
