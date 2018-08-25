@@ -320,6 +320,7 @@ class Command(object):
             self._UTCDataValid = (valid == 'V')
             self._UTCDataExpirationDate = expirationDate
         self.setting.settingLock.unlock()
+
         return True, message
 
     def pollMed(self, fw):
@@ -371,6 +372,7 @@ class Command(object):
         self.site.status = int(responseSplit[6])
         self.site.statusSlew = (responseSplit[7] == '1')
         self.site.siteLock.unlock()
+
         return True, message
 
     def pollFast(self):
