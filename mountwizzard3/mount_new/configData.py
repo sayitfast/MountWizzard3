@@ -184,8 +184,7 @@ class Site(object):
         self._status = 0
         self._statusSlew = False
 
-    @staticmethod
-    def _stringToDegree(value):
+    def _stringToDegree(self, value):
         value = value.split(':')
         if len(value) != 3:
             self.logger.error('malformed value: {0}'.format(value))
@@ -526,10 +525,12 @@ class ModelStar(object):
         >>> settings = ModelStar(
         >>>                     point=None,
         >>>                     errorRMS=0,
+        >>>                     errorAngle=0,
         >>>                     number=0,
         >>>                     )
 
-    point could be from type skyfield.api.Star or just a tuple of (ha, dec)
+    point could be from type skyfield.api.Star or just a tuple of (ha, dec) where
+    the format should be float or the 10micron string format.
     """
 
     __all__ = ['ModelStar',
@@ -540,15 +541,16 @@ class ModelStar(object):
     def __init__(self,
                  point=None,
                  errorRMS=0,
+                 errorAngle=0,
                  number=0
                  ):
 
         self.point = point
         self.errorRMS = errorRMS
+        self.errorAngle = errorAngle
         self.number = number
 
-    @staticmethod
-    def _stringToHourHA(value):
+    def _stringToHourHA(self, value):
         value = value.split(':')
         if len(value) != 3:
             self.logger.error('malformed value: {0}'.format(value))
@@ -557,8 +559,7 @@ class ModelStar(object):
         value = value[0] + value[1] / 60 + value[2] / 3600
         return value
 
-    @staticmethod
-    def _stringToDegreeDEC(value):
+    def _stringToDegreeDEC(self, value):
         if value.count('*') != 1:
             self.logger.error('malformed value: {0}'.format(value))
             return 0
@@ -584,16 +585,17 @@ class ModelStar(object):
 
     @point.setter
     def point(self, value):
-        if isinstance(value, skyfield.starlib.Star):
+        if isinstance(value, skyfield.api.Star):
             self._point = value
         elif not value:
             self.logger.error('malformed value: {0}'.format(value))
             self._point = skyfield.api.Star(ra_hours=0,
                                             dec_degrees=0)
-        else:
+        elif isinstance(value, tuple):
             _ha, _dec = value
-            _ha = self._stringToHourHA(_ha)
-            _dec = self._stringToDegreeDEC(_dec)
+            if isinstance(value[1], str):
+                _ha = self._stringToHourHA(_ha)
+                _dec = self._stringToDegreeDEC(_dec)
             self._point = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
 
@@ -616,6 +618,25 @@ class ModelStar(object):
     @property
     def errorAngle(self):
         return self._errorAngle
+
+    @errorAngle.setter
+    def errorAngle(self, value):
+        if isinstance(value, skyfield.api.Angle):
+            self._errorAngle = value
+        elif isinstance(value, str):
+            value = float(value)
+            self._errorAngle = skyfield.api.Angle(degrees=value)
+        else:
+            self.logger.error('malformed value: {0}'.format(value))
+            self._errorAngle = skyfield.api.Angle(degrees=0)
+
+    @property
+    def alt(self):
+        pass
+
+    @property
+    def az(self):
+        pass
 
 
 

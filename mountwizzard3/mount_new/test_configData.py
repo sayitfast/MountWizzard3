@@ -85,7 +85,8 @@ class TestConfigData(unittest.TestCase):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
         p3 = '1234.5'
-        modelStar = ModelStar(point=(p1, p2), errorRMS=p3, number=1)
+        p4 = '90'
+        modelStar = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
         self.assertAlmostEqual(modelStar.point.ra.hms()[0], 12, 6)
         self.assertAlmostEqual(modelStar.point.ra.hms()[1], 45, 6)
         self.assertAlmostEqual(modelStar.point.ra.hms()[2], 33.01, 6)
