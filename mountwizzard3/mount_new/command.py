@@ -17,7 +17,7 @@
 # Licence APL2.0
 #
 ############################################################
-import socket
+import logging
 import sys
 
 import PyQt5.QtCore
@@ -26,7 +26,7 @@ from .configData import Setting
 from .configData import Firmware
 
 
-class Connection(object):
+class Command(object):
     """
     The class Command provides the command and reply interface to a 10 micron mount.
     There should be all commands and their return values be sent to the mount via
@@ -45,7 +45,7 @@ class Connection(object):
     with the mount. In addition it needs classes, where the settings, firmware and
     site parameters are handled.
 
-        >>> command = Connection(
+        >>> command = Command(
         >>>                   host='mount.fritz.box',
         >>>                   port=3492,
         >>>                   firmware=firmware,
@@ -55,7 +55,24 @@ class Connection(object):
 
     """
 
-    version = '0.1'
+    __all__ = ['Command',
+               'workaroundAlign',
+               'pollSlow',
+               'pollMed',
+               'pollFast',
+               ]
+    version = '0.2'
+    logger = logging.getLogger(__name__)
+
+    def __init__(self,
+                 firmware=None,
+                 setting=None,
+                 site=None,
+                 ):
+
+        self.firmware = firmware
+        self.setting = setting
+        self.site = site
 
     @staticmethod
     def _parseWorkaroundAlign(response):
