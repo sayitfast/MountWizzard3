@@ -40,6 +40,11 @@ class Data(object):
     timescale data should be addressed
     """
 
+    __all__ = ['Data',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
+
     def __init__(self,
                  pathToTimescaleData=None,
                  verbose=False,
@@ -69,6 +74,11 @@ class Firmware(object):
 
         >>> fw = Firmware()
     """
+
+    __all__ = ['Firmware',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
 
@@ -150,6 +160,11 @@ class Site(object):
     be able to make all the necessary calculations about time from and to mount
     """
 
+    __all__ = ['Site',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
+
     def __init__(self, timeScale):
 
         self.timeScale = timeScale
@@ -190,7 +205,7 @@ class Site(object):
 
     @timeJD.setter
     def timeJD(self, value):
-        self._timeJD = self.__timeScale.tt_jd(value)
+        self._timeJD = self.timeScale.tt_jd(value)
 
     @property
     def timeSidereal(self):
@@ -273,6 +288,11 @@ class Setting(object):
 
         >>> settings = Settings()
     """
+
+    __all__ = ['Setting',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
         self._slewRate = 0
