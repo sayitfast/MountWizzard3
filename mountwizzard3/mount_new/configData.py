@@ -18,6 +18,7 @@
 #
 ############################################################
 import logging
+import math
 
 import skyfield.api
 
@@ -631,12 +632,9 @@ class ModelStar(object):
             self._errorAngle = skyfield.api.Angle(degrees=0)
 
     @property
-    def alt(self):
-        pass
+    def errorRA(self):
+        return self._errorRMS * math.sin(self.errorAngle.radians())
 
     @property
-    def az(self):
-        pass
-
-
-
+    def errorDec(self):
+        return self._errorRMS * math.cos(self.errorAngle.radians())
