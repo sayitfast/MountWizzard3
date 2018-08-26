@@ -22,6 +22,45 @@ import logging
 import skyfield.api
 
 
+class Data(object):
+    """
+    The class Data inherits all informations and handling of internal states an
+    their attributes of the connected mount and provides the abstracted interface
+    to a 10 micron mount.
+
+        >>> fw = Data(
+        >>>           pathToTimescaleData=pathToTimescaleData,
+        >>>           verbose=False,
+        >>>           expire=True,
+        >>>           )
+
+    The Data class generates the central timescale from skyfield.api which is
+    needed by all calculations related to time. As it build its own loader it
+    needs to know where to store the data and with which parameters the
+    timescale data should be addressed
+    """
+
+    def __init__(self,
+                 pathToTimescaleData=None,
+                 verbose=False,
+                 expire=True,
+                 ):
+
+        self.pathToTimescaleData = pathToTimescaleData
+        self.verbose = verbose
+        self.expire = expire
+
+        # generate timescale data
+        load = skyfield.api.Loader(self.pathToTimescaleData,
+                                   verbose=self.verbose,
+                                   expire=self.expire,
+                                   )
+        self.timeScale = load.timescale()
+        self.fw = Firmware()
+        self.setting = Setting()
+        self.site = Site(self.timeScale)
+
+
 class Firmware(object):
     """
     The class Firmware inherits all informations and handling of firmware
@@ -56,7 +95,7 @@ class Firmware(object):
     def number(self):
         return self._number
 
-    @fwNumber.setter
+    @numberString.setter
     def numberString(self, value):
         self._numberString = value
         if value.count('.') == 2:
@@ -78,7 +117,7 @@ class Firmware(object):
         return self._fwdate
 
     @fwdate.setter
-    def date(self, value):
+    def fwdate(self, value):
         self._fwdate = value
 
     @property
@@ -99,12 +138,25 @@ class Firmware(object):
 
 
 class Site(object):
+    """
+    The class Site inherits all informations and handling of site data
+    attributes of the connected mount and provides the abstracted interface
+    to a 10 micron mount.
+
+        >>> site = Site(
+        >>>             timescale=timescale)
+
+    The Site class needs as parameter a timescale object from skyfield.api to
+    be able to make all the necessary calculations about time from and to mount
+    """
 
     def __init__(self, timeScale):
+
+        self.timeScale = timeScale
+
         self._location = None
         self._timeJD = None
         self._timeSidereal = None
-        self._timeScale = timeScale
         self._raJNow = 0
         self._decJNow = 0
         self._pierside = ''
@@ -138,7 +190,7 @@ class Site(object):
 
     @timeJD.setter
     def timeJD(self, value):
-        self._timeJD = self._timeScale.tt_jd(value)
+        self._timeJD = self.__timeScale.tt_jd(value)
 
     @property
     def timeSidereal(self):
@@ -214,6 +266,13 @@ class Site(object):
 
 
 class Setting(object):
+    """
+    The class Setting inherits all informations and handling of settings
+    attributes of the connected mount and provides the abstracted interface
+    to a 10 micron mount.
+
+        >>> settings = Settings()
+    """
 
     def __init__(self):
         self._slewRate = 0

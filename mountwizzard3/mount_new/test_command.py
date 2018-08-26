@@ -10,12 +10,8 @@ from mount_new.configData import Data
 class TestCommand(unittest.TestCase):
 
     def setUp(self):
-        load = skyfield.api.Loader('~/PycharmProjects/Mountwizzard3/config',
-                                   verbose=True,
-                                   expire=True,
-                                   )
-        self.timeScale = load.timescale()
-        self.data = Data(self.timeScale)
+        pathToTimescaleData = '~/PycharmProjects/Mountwizzard3/config'
+        self.data = Data(pathToTimescaleData)
 
     def test_workaroundAlign(self):
         conn = Connection(host='192.168.2.15', port=3492)
