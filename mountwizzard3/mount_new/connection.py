@@ -27,7 +27,7 @@ class Connection(object):
     """
     The class Command provides the command and reply interface to a 10 micron mount.
     There should be all commands and their return values be sent to the mount via
-    IP and the responses parsed accordingly.
+    IP and the responses.
 
     Define the number of chunks for the return bytes in case of not having them in
     bulk mode this is needed, because the mount computer  doesn't support a
@@ -39,15 +39,11 @@ class Connection(object):
           c) reply ended with '#'   this is normal feedback -> no special treatment
 
     The class itself need parameters for the host and port to be able to interact
-    with the mount. In addition it needs classes, where the settings, firmware and
-    site parameters are handled.
+    with the mount.
 
         >>> command = Connection(
         >>>                   host='mount.fritz.box',
         >>>                   port=3492,
-        >>>                   firmware=firmware,
-        >>>                   setting=setting,
-        >>>                   site=site,
         >>>                   )
 
     """
@@ -72,16 +68,10 @@ class Connection(object):
     def __init__(self,
                  host='192.168.2.15',
                  port=3492,
-                 firmware=None,
-                 setting=None,
-                 site=None,
                  ):
 
         self.host = host
         self.port = port
-        self.firmware = firmware
-        self.setting = setting
-        self.site = site
 
     def _analyseCommand(self, commandString):
         """
