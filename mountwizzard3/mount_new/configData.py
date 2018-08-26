@@ -513,7 +513,11 @@ class ModelStar(object):
     abstracted interface to a 10 micron mount.
     The coordinates are in JNow topocentric
 
-        >>> settings = ModelStar()
+        >>> settings = ModelStar(
+        >>>                     point=None,
+        >>>                     errorRMS=0,
+        >>>                     number=0,
+        >>>                     )
     """
 
     __all__ = ['ModelStar',
@@ -521,14 +525,18 @@ class ModelStar(object):
     version = '0.1'
     logger = logging.getLogger(__name__)
 
-    def __init__(self):
-        self._star = None
-        self._errorRMS = 0
-        self._errorAngle = None
-        self._number = 0
+    def __init__(self,
+                 point=None,
+                 errorRMS=0,
+                 number=0
+                 ):
+
+        self.point = point
+        self.errorRMS = errorRMS
+        self.number = number
 
     @staticmethod
-    def _stringToDegreeHA(value):
+    def _stringToHourHA(value):
         value = [float(x) for x in value.split(':')]
         value = value[0] + value[1] / 60 + value[2] / 3600
         return value
@@ -548,19 +556,22 @@ class ModelStar(object):
         return value
 
     @property
-    def star(self):
-        return self._star
+    def point(self):
+        return self._point
 
-    @star.setter
-    def star(self, value):
+    @point.setter
+    def point(self, value):
         if isinstance(value, skyfield.starlib.Star):
-            self._star = value
+            self._point = value
+        elif not value:
+            self._point = skyfield.api.Star(ra_hours=0,
+                                            dec_degrees=0)
         else:
             _ha, _dec = value
-            _ha = Angle(degrees=self._stringToDegreeHA(_ha))
-            _dec = Angle(degrees=self._stringToDegreeDEC(_dec))
-            self._star = skyfield.api.Star(ra_hours=_ha,
-                                           dec_degrees=_dec)
+            _ha = self._stringToHourHA(_ha)
+            _dec = self._stringToDegreeDEC(_dec)
+            self._point = skyfield.api.Star(ra_hours=_ha,
+                                            dec_degrees=_dec)
 
     @property
     def number(self):
@@ -582,11 +593,5 @@ class ModelStar(object):
     def errorAngle(self):
         return self._errorAngle
 
-    @errorAngle.setter
-    def errorAngle(self, value):
-        if isinstance(value, skyfield.api.Angle):
-            self._errorAngle = value
-        else:
-            self._errorAngle = skyfield.api.Angle(degrees=float(value))
 
 
