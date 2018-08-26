@@ -59,16 +59,20 @@ class Command(object):
         self.host = host
         self.port = port
         self.data = data
+        self.connection = Connection(self.host,
+                                     self.port,
+                                     )
 
     @staticmethod
-    def _parseWorkaroundAlign(response):
+    def _parseWorkaroundAlign(response, numberOfChunks):
         """
         Parsing the workaround command set defined by Filippo Riccio from 10micron
         to be able to access the model before having interaction with the handcontroller
 
-        :param response:    data load from mount
-        :return: success:   True if ok, False if not
-                 message:   text message what happened
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+                 message:       text message what happened
         """
 
         message = 'ok'
@@ -91,24 +95,25 @@ class Command(object):
 
         message = 'ok'
         commandString = ':newalig#:endalig#'
-        suc, mes, response = self._communicate(commandString)
+        suc, mes, response, chunks= self.connection.communicate(commandString)
         if not suc:
             message = mes
             return False, message
-        suc, mes = self._parseWorkaroundAlign(response)
+        suc, mes = self._parseWorkaroundAlign(response, chunks)
         if suc:
             return True, message
         else:
             message = mes
             return False, message
 
-    def _parseSlow(self, response):
+    def _parseSlow(self, response, numberOfChunks):
         """
         Parsing the polling slow command.
 
-        :param response:    data load from mount
-        :return: success:   True if ok, False if not
-                 message:   text message what happened
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+                 message:       text message what happened
         """
 
         message = 'ok'
@@ -116,8 +121,6 @@ class Command(object):
             message = 'wrong number of chunks from mount'
             return False, message
         # doing observer settings update
-        self.site.siteLock.lockForWrite()
-        # conversion
         try:
             elev = float(response[0])
             # due to compatibility to LX200 protocol east is negative, so we change that
@@ -127,25 +130,25 @@ class Command(object):
                 lon = response[1].replace('+', '-')
             lat = response[2]
             # storing it to the skyfield Topos unit
-            self.site.location = (lat, lon, elev)
+            self.data.site.location = (lat, lon, elev)
         except Exception as e:
             message = e
             return False, message
         finally:
-            self.site.siteLock.unlock()
+            pass
+
         # doing version settings update
-        self.firmware.firmwareLock.lockForWrite()
         try:
-            self.firmware.fwDate = response[3]
-            self.firmware.fwNumber = response[4]
-            self.firmware.productName = response[5]
-            self.firmware.fwTime = response[6]
-            self.firmware.hwVersion = response[7]
+            self.data.fw.fwdate = response[3]
+            self.data.fw.numberString = response[4]
+            self.data.fw.productName = response[5]
+            self.data.fw.fwtime = response[6]
+            self.data.fw.hwVersion = response[7]
         except Exception as e:
             message = e
             return False, message
         finally:
-            self.firmware.firmwareLock.unlock()
+            pass
         return True, message
 
     def pollSlow(self):
@@ -159,51 +162,51 @@ class Command(object):
 
         message = 'ok'
         commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        suc, mes, response = self._communicate(commandString)
+        suc, mes, response, chunks = self.connection.communicate(commandString)
         if not suc:
             message = mes
             return False, message
-        suc, mes = self._parseSlow(response)
+        suc, mes = self._parseSlow(response, chunks)
         if not suc:
             message = mes
             return False, message
         return True, message
 
-    def _parseMed(self, response, fw):
+    def _parseMed(self, response, numberOfChunks):
         """
         Parsing the polling med command.
 
-        :param response:    data load from mount
-        :return: success:   True if ok, False if not
-                 message:   text message what happened
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+                 message:       text message what happened
         """
 
         message = 'ok'
-        self.setting.settingLock.lockForWrite()
-        self._slewRate = int(response[0])
-        self._timeToFlip = int(response[1])
-        self._meridianLimitGuide = int(response[2])
-        self._meridianLimitSlew = int(response[3])
-        self._refractionTemperature = float(response[4])
-        self._refractionPressure = float(response[5])
-        self._TrackingRate = float(response[6])
-        self._TelescopeTempDEC = float(response[7])
-        self._statusRefraction = (response[8][0] == '')
-        self._statusUnattendedFlip = (response[8][1] == '')
-        self._statusDualAxisTracking = (response[8][2] == '')
-        self._currentHorizonLimitHigh = float(response[8][3:6])
-        self._currentHorizonLimitLow = float(response[9][0:3])
-        self._numberModelNames = int(response[10])
-        self._numberAlignmentStars = int(response[11])
-        if fw > 21500:
+        self.data.setting.slewRate = int(response[0])
+        self.data.setting.timeToFlip = int(response[1])
+        self.data.setting.meridianLimitGuide = int(response[2])
+        self.data.setting.meridianLimitSlew = int(response[3])
+        self.data.setting.refractionTemperature = float(response[4])
+        self.data.setting.refractionPressure = float(response[5])
+        self.data.setting.TrackingRate = float(response[6])
+        self.data.setting.TelescopeTempDEC = float(response[7])
+        self.data.setting.statusRefraction = (response[8][0] == '')
+        self.data.setting.statusUnattendedFlip = (response[8][1] == '')
+        self.data.setting.statusDualAxisTracking = (response[8][2] == '')
+        self.data.setting.currentHorizonLimitHigh = float(response[8][3:6])
+        self.data.setting.currentHorizonLimitLow = float(response[9][0:3])
+        if self.data.fw.checkNewer(21500):
             valid, expirationDate = response[12].split(',')
-            self._UTCDataValid = (valid == 'V')
-            self._UTCDataExpirationDate = expirationDate
-        self.setting.settingLock.unlock()
+            self.data.setting.UTCDataValid = (valid == 'V')
+            self.data.setting.UTCDataExpirationDate = expirationDate
+
+        self.data.model.numberModelNames = int(response[10])
+        self.data.model.numberAlignmentStars = int(response[11])
 
         return True, message
 
-    def pollMed(self, fw):
+    def pollMed(self):
         """
         Sending the polling med command. As the mount need polling the data, I send
         a set of commands to get the data back to be able to process and store it.
@@ -216,42 +219,41 @@ class Command(object):
         cs1 = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:GTMP1#:GREF#:Guaf#'
         cs2 = ':Gdat#:Gh#:Go#:modelcnt#:getalst#'
         cs3 = ':GDUTV#'
-        if fw > 21500:
+        if self.data.fw.checkNewer(21500):
             commandString = ''.join((cs1, cs2, cs3))
         else:
             commandString = ''.join((cs1, cs2))
-        suc, mes, response = self._communicate(commandString)
+        suc, mes, response, chunks = self.connection.communicate(commandString)
         if not suc:
             message = mes
             return False, message
-        suc, mes = self._parseMed(response, fw)
+        suc, mes = self._parseMed(response, chunks)
         if not suc:
             message = mes
             return False, message
         return True, message
 
-    def _parseFast(self, response):
+    def _parseFast(self, response, numberOfChunks):
         """
         Parsing the polling fast command.
 
-        :param response:    data load from mount
-        :return: success:   True if ok, False if not
-                 message:   text message what happened
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+                 message:       text message what happened
         """
 
         message = 'ok'
-        self.site.siteLock.lockForWrite()
-        self.site.timeSidereal = response[0]
+        self.data.site.timeSidereal = response[0]
         responseSplit = response[1].split(',')
-        self.site.raJNow = float(responseSplit[0])
-        self.site.decJNow = float(responseSplit[1])
-        self.site.pierside = responseSplit[2]
-        self.site.apparentAz = float(responseSplit[3])
-        self.site.apparentAlt = float(responseSplit[4])
-        self.site.timeJD = float(responseSplit[5])
-        self.site.status = int(responseSplit[6])
-        self.site.statusSlew = (responseSplit[7] == '1')
-        self.site.siteLock.unlock()
+        self.data.site.raJNow = float(responseSplit[0])
+        self.data.site.decJNow = float(responseSplit[1])
+        self.data.site.pierside = responseSplit[2]
+        self.data.site.apparentAz = float(responseSplit[3])
+        self.data.site.apparentAlt = float(responseSplit[4])
+        self.data.site.timeJD = float(responseSplit[5])
+        self.data.site.status = int(responseSplit[6])
+        self.data.site.statusSlew = (responseSplit[7] == '1')
 
         return True, message
 
@@ -266,11 +268,11 @@ class Command(object):
 
         message = 'ok'
         commandString = ':U2#:GS#:Ginfo#:'
-        suc, mes, response = self._communicate(commandString)
+        suc, mes, response, chunks = self.connection.communicate(commandString)
         if not suc:
             message = mes
             return False, message
-        suc, mes = self._parseFast(response)
+        suc, mes = self._parseFast(response, chunks)
         if not suc:
             message = mes
             return False, message

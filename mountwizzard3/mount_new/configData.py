@@ -99,7 +99,7 @@ class Firmware(object):
 
     @property
     def numberString(self):
-        return self._numberStringr
+        return self._numberString
 
     @property
     def number(self):
@@ -137,6 +137,9 @@ class Firmware(object):
     @fwtime.setter
     def fwtime(self, value):
         self._fwtime = value
+
+    def checkNewer(self, number):
+        return number > self._number
 
     def __str__(self):
         output = '<Product: {0}>   <Firmware: {1}>   <Hardware: {2}>'

@@ -3,7 +3,7 @@ import os
 
 import skyfield.api
 
-from mount_new.connection import Connection
+from mount_new.command import Command
 from mount_new.configData import Data
 
 
@@ -14,138 +14,139 @@ class TestCommand(unittest.TestCase):
         self.data = Data(pathToTimescaleData)
 
     def test_workaroundAlign(self):
-        conn = Connection(host='192.168.2.15', port=3492)
-        ok, mes = conn.workaroundAlign()
+        comm = Command(host='192.168.2.15', port=3492)
+        ok, mes = comm.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
     def test_pollSlow(self):
-        conn = Connection(host='192.168.2.15',
-                          port=3492,
-                          data=self.data,
-                          )
-        ok, mes = conn.pollSlow()
+        comm = Command(host='192.168.2.15',
+                       port=3492,
+                       data=self.data,
+                       )
+        ok, mes = comm.pollSlow()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-        self.assertEqual(21514, mount.firmware.fw)
-        self.assertEqual('2.15.14', mount.firmware.fwNumber)
-        self.assertEqual('10micron GM1000HPS', mount.firmware.productName)
-        self.assertEqual('Q-TYPE2012', mount.firmware.hwVersion)
-        self.assertEqual('Mar 19 2018', mount.firmware.fwDate)
-        self.assertEqual('15:56:53', mount.firmware.fwTime)
+        self.assertEqual(21514, comm.data.fw.number)
+        self.assertEqual('2.15.14', comm.data.fw.numberString)
+        self.assertEqual('10micron GM1000HPS', comm.data.fw.productName)
+        self.assertEqual('Q-TYPE2012', comm.data.fw.hwVersion)
+        self.assertEqual('Mar 19 2018', comm.data.fw.fwdate)
+        self.assertEqual('15:56:53', comm.data.fw.fwtime)
 
     def test_pollMed(self):
-        conn = Connection(host='192.168.2.15',
-                          port=3492,
-                          data=self.data,
-                          )
-        ok, mes = conn.pollMed(21514)
+        comm = Command(host='192.168.2.15',
+                       port=3492,
+                       data=self.data,
+                       )
+        ok, mes = comm.pollMed()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
     def test_pollFast(self):
-        conn = Connection(host='192.168.2.15',
-                          port=3492,
-                          data=self.data,
-                          )
-        ok, mes = conn.pollFast()
+        comm = Command(host='192.168.2.15',
+                       port=3492,
+                       data=self.data,
+                       )
+        ok, mes = comm.pollFast()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
     # testing parsing against valid and invalid data
     def test_parseWorkaroundAlign_good(self):
-        conn = Connection()
-        suc, message = conn._parseWorkaroundAlign(['V', 'E'])
+        comm = Command()
+        suc, message = comm._parseWorkaroundAlign(['V', 'E'], 2)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseWorkaroundAlign_bad1(self):
-        conn = Connection()
-        suc, message = conn._parseWorkaroundAlign(['E', 'V'])
+        comm = Command()
+        suc, message = comm._parseWorkaroundAlign(['E', 'V'], 2)
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad2(self):
-        conn = Connection()
-        suc, message = conn._parseWorkaroundAlign(['V'])
+        comm = Command()
+        suc, message = comm._parseWorkaroundAlign(['V'], 2)
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad3(self):
-        conn = Connection()
-        suc, message = conn._parseWorkaroundAlign(['E'])
+        comm = Command()
+        suc, message = comm._parseWorkaroundAlign(['E'], 2)
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad4(self):
-        conn = Connection()
-        suc, message = conn._parseWorkaroundAlign([])
+        comm = Command()
+        suc, message = comm._parseWorkaroundAlign([], 2)
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
+    # testing parsing Slow
     def test_parseSlow_good(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseSlow_bad1(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53']
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(False, suc)
-        self.assertEqual('wrong number of chunks from conn', message)
+        self.assertIn('wrong number of chunks', message)
 
     def test_parseSlow_bad2(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = []
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(False, suc)
-        self.assertEqual('wrong number of chunks from conn', message)
+        self.assertIn('wrong number of chunks', message)
 
     def test_parseSlow_bad3(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = ['+EEEEE', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
     def test_parseSlow_bad4(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.1514',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseSlow_bad5(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = ['+0585.2', '-011:35:00.0', '+48:sdj.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
     def test_parseSlow_bad6(self):
-        conn = Connection(data=self.data,
-                          )
+        comm = Command(data=self.data,
+                       )
         response = ['+0585.2', '-011:EE:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = conn._parseSlow(response)
+        suc, message = comm._parseSlow(response, 7)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
