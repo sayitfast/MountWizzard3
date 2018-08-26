@@ -40,12 +40,16 @@ class TestConfigData(unittest.TestCase):
         self.assertAlmostEqual(value, 56.5, 6)
 
     def test_ModelStar_create(self):
-        p1 = '12:45:33:01'
-        p2 = '+56*30:00.0'
+        p1 = '12:45:33.01'
+        p2 = '+56*30:00.5'
         p3 = '1234.5'
         modelStar = ModelStar(point=(p1, p2), errorRMS=p3, number=1)
-
-        print(modelStar.point.ra.hms(), modelStar.point.dec.dms())
+        self.assertAlmostEqual(modelStar.point.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(modelStar.point.ra.hms()[1], 45, 6)
+        self.assertAlmostEqual(modelStar.point.ra.hms()[2], 33.01, 6)
+        self.assertAlmostEqual(modelStar.point.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(modelStar.point.dec.dms()[1], 30, 6)
+        self.assertAlmostEqual(modelStar.point.dec.dms()[2], 0.5, 6)
 
 
 if __name__ == '__main__':
