@@ -125,11 +125,11 @@ class Connection(object):
         response = ''
         message = 'ok'
         if not self.host:
-            message = 'no host given'
+            message = 'no host defined'
             self.logger.warning('{0}'.format(message))
             return False, message, response, numberOfChunks
         if not self.port:
-            message = 'no port given'
+            message = 'no port defined'
             self.logger.warning('{0}'.format(message))
             return False, message, response, numberOfChunks
 

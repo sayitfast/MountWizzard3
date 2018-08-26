@@ -28,6 +28,22 @@ class TestConnection(unittest.TestCase):
         pass
 
     def test_no_host(self):
+        mount = Connection(port=3492)
+        commandSet = ':U2#:Gev#:'
+        ok, mes, response, chunks = mount.communicate(commandSet)
+        self.assertEqual(False, ok)
+        self.assertIn('no host defined', mes)
+        self.assertEqual('', response)
+
+    def test_no_port(self):
+        mount = Connection(host='192.168.2.250', port=None)
+        commandSet = ':U2#:Gev#:'
+        ok, mes, response, chunks = mount.communicate(commandSet)
+        self.assertEqual(False, ok)
+        self.assertIn('no port defined', mes)
+        self.assertEqual('', response)
+
+    def test_no_host_up(self):
         mount = Connection(host='192.168.2.250', port=3492)
         commandSet = ':U2#:Gev#:'
         ok, mes, response, chunks = mount.communicate(commandSet)
