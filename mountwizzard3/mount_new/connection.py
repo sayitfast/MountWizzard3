@@ -18,7 +18,7 @@
 #
 ############################################################
 import socket
-import sys
+import logging
 
 import PyQt5.QtCore
 
@@ -48,7 +48,8 @@ class Connection(object):
 
     """
 
-    version = '0.1'
+    version = '0.2'
+    logger = logging.getLogger(__name__)
 
     # I don't want so wait to long for a response. In average I see values
     # shorter than 0.5 sec, so 2 seconds should be good
@@ -116,6 +117,9 @@ class Connection(object):
 
         # analysing the command
         numberOfChunks, noResponse = self._analyseCommand(commandString)
+        self.logger.debug('com: {0}, resp: {1}, chunks: {2}'.format(commandString,
+                                                                    noResponse,
+                                                                    numberOfChunks))
 
         # build client
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -127,10 +131,12 @@ class Connection(object):
         except socket.timeout:
             message = 'socket error timeout connect'
             client.close()
+            self.logger.error('{0}, detailed: {1}'.format(message, e))
             return False, message, response, numberOfChunks
         except socket.error:
             message = 'socket error general connect'
             client.close()
+            self.logger.error('{0}, detailed: {1}'.format(message, e))
             return False, message, response, numberOfChunks
         # send data
         try:
@@ -138,10 +144,12 @@ class Connection(object):
         except socket.timeout:
             message = 'socket error timeout send'
             client.close()
+            self.logger.error('{0}, detailed: {1}'.format(message, e))
             return False, message, response, numberOfChunks
         except socket.error:
             message = 'socket error general send'
             client.close()
+            self.logger.error('{0}, detailed: {1}'.format(message, e))
             return False, message, response, numberOfChunks
         # receive data
         try:
@@ -157,13 +165,16 @@ class Connection(object):
         except socket.timeout:
             message = 'socket error timeout response'
             response = ''
+            self.logger.error('{0}, detailed: {1}'.format(message, e))
             return False, message, response, numberOfChunks
         except socket.error:
             message = 'socket error general response'
             response = ''
+            self.logger.error('{0}, detailed: {1}, response: {2}'.format(message, e, response))
             return False, message, response, numberOfChunks
         else:
             response = response.split('#')[:-1]
+            self.logger.info('{0}, response: {1}'.format(message, response))
             return True, message, response, numberOfChunks
         finally:
             client.close()
