@@ -188,6 +188,7 @@ class Site(object):
     def _stringToDegree(value):
         value = value.split(':')
         if len(value) != 3:
+            self.logger.error('malformed value: {0}'.format(value))
             return 0
         value = [float(x) for x in value]
         value = value[0] + value[1] / 60 + value[2] / 3600
@@ -488,12 +489,18 @@ class Model(object):
     def addStar(self):
         if isinstance(value, ModelStar):
             self._starList.extend(value)
+        elif len(value) == 4:
+            _point, _err, _number = value
+            value = ModelStar(_point, _err, _number)
+            self._starList.extend(value)
         else:
-            # todo: better feedback
-            pass
+            self.logger.error('malformed value: {0}'.format(value))
 
-    def delStar(self):
-        # todo rand checking
+    def delStar(self, value):
+        value = int(value)
+        if value < 0 or value > len(self._starList):
+            self.logger.error('invalid value: {0}'.format(value))
+            return
         self._starList.pop(value)
 
     def checkStarListOK(self):
@@ -521,6 +528,8 @@ class ModelStar(object):
         >>>                     errorRMS=0,
         >>>                     number=0,
         >>>                     )
+
+    point could be from type skyfield.api.Star or just a tuple of (ha, dec)
     """
 
     __all__ = ['ModelStar',
@@ -542,6 +551,7 @@ class ModelStar(object):
     def _stringToHourHA(value):
         value = value.split(':')
         if len(value) != 3:
+            self.logger.error('malformed value: {0}'.format(value))
             return 0
         value = [float(x) for x in value]
         value = value[0] + value[1] / 60 + value[2] / 3600
@@ -550,6 +560,7 @@ class ModelStar(object):
     @staticmethod
     def _stringToDegreeDEC(value):
         if value.count('*') != 1:
+            self.logger.error('malformed value: {0}'.format(value))
             return 0
         value = value.replace('*', ':')
         _sign = value[0]
@@ -560,6 +571,7 @@ class ModelStar(object):
         value = value[1:]
         value = value.split(':')
         if len(value) != 3:
+            self.logger.error('malformed value: {0}'.format(value))
             return 0
         value = [float(x) for x in value]
         value = value[0] + value[1] / 60 + value[2] / 3600
@@ -575,6 +587,7 @@ class ModelStar(object):
         if isinstance(value, skyfield.starlib.Star):
             self._point = value
         elif not value:
+            self.logger.error('malformed value: {0}'.format(value))
             self._point = skyfield.api.Star(ra_hours=0,
                                             dec_degrees=0)
         else:
