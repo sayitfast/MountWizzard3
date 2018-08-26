@@ -4,9 +4,7 @@ import os
 import skyfield.api
 
 from mount_new.connection import Connection
-from mount_new.configData import Firmware
-from mount_new.configData import Setting
-from mount_new.configData import Site
+from mount_new.configData import Data
 
 
 class TestCommand(unittest.TestCase):
@@ -17,23 +15,20 @@ class TestCommand(unittest.TestCase):
                                    expire=True,
                                    )
         self.timeScale = load.timescale()
-        self.firmware = Firmware()
-        self.setting = Setting()
-        self.site = Site(self.timeScale)
+        self.data = Data(self.timeScale)
 
     def test_workaroundAlign(self):
-        mount = Connection(host='192.168.2.15', port=3492)
-        ok, mes = mount.workaroundAlign()
+        conn = Connection(host='192.168.2.15', port=3492)
+        ok, mes = conn.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
     def test_pollSlow(self):
-        mount = Connection(host='192.168.2.15',
-                           port=3492,
-                           firmware=self.firmware,
-                           site=self.site,
-                           )
-        ok, mes = mount.pollSlow()
+        conn = Connection(host='192.168.2.15',
+                          port=3492,
+                          data=self.data,
+                          )
+        ok, mes = conn.pollSlow()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
         self.assertEqual(21514, mount.firmware.fw)
@@ -44,128 +39,117 @@ class TestCommand(unittest.TestCase):
         self.assertEqual('15:56:53', mount.firmware.fwTime)
 
     def test_pollMed(self):
-        mount = Connection(host='192.168.2.15',
-                           port=3492,
-                           firmware=self.firmware,
-                           site=self.site,
-                           setting=self.setting,
-                           )
-        ok, mes = mount.pollMed(21514)
+        conn = Connection(host='192.168.2.15',
+                          port=3492,
+                          data=self.data,
+                          )
+        ok, mes = conn.pollMed(21514)
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
     def test_pollFast(self):
-        mount = Connection(host='192.168.2.15',
-                           port=3492,
-                           firmware=self.firmware,
-                           site=self.site,
-                           setting=self.setting,
-                           )
-        ok, mes = mount.pollFast()
+        conn = Connection(host='192.168.2.15',
+                          port=3492,
+                          data=self.data,
+                          )
+        ok, mes = conn.pollFast()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
     # testing parsing against valid and invalid data
     def test_parseWorkaroundAlign_good(self):
-        mount = Connection()
-        suc, message = mount._parseWorkaroundAlign(['V', 'E'])
+        conn = Connection()
+        suc, message = conn._parseWorkaroundAlign(['V', 'E'])
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseWorkaroundAlign_bad1(self):
-        mount = Connection()
-        suc, message = mount._parseWorkaroundAlign(['E', 'V'])
+        conn = Connection()
+        suc, message = conn._parseWorkaroundAlign(['E', 'V'])
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad2(self):
-        mount = Connection()
-        suc, message = mount._parseWorkaroundAlign(['V'])
+        conn = Connection()
+        suc, message = conn._parseWorkaroundAlign(['V'])
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad3(self):
-        mount = Connection()
-        suc, message = mount._parseWorkaroundAlign(['E'])
+        conn = Connection()
+        suc, message = conn._parseWorkaroundAlign(['E'])
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseWorkaroundAlign_bad4(self):
-        mount = Connection()
-        suc, message = mount._parseWorkaroundAlign([])
+        conn = Connection()
+        suc, message = conn._parseWorkaroundAlign([])
         self.assertEqual(False, suc)
         self.assertEqual('workaround command failed', message)
 
     def test_parseSlow_good(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseSlow_bad1(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53']
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(False, suc)
-        self.assertEqual('wrong number of chunks from mount', message)
+        self.assertEqual('wrong number of chunks from conn', message)
 
     def test_parseSlow_bad2(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = []
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(False, suc)
-        self.assertEqual('wrong number of chunks from mount', message)
+        self.assertEqual('wrong number of chunks from conn', message)
 
     def test_parseSlow_bad3(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = ['+EEEEE', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
     def test_parseSlow_bad4(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.1514',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseSlow_bad5(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = ['+0585.2', '-011:35:00.0', '+48:sdj.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
     def test_parseSlow_bad6(self):
-        mount = Connection(firmware=self.firmware,
-                           site=self.site,
-                           )
+        conn = Connection(data=self.data,
+                          )
         response = ['+0585.2', '-011:EE:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = mount._parseSlow(response)
+        suc, message = conn._parseSlow(response)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 

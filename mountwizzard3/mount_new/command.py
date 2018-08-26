@@ -18,13 +18,9 @@
 #
 ############################################################
 import logging
-import sys
-
-import PyQt5.QtCore
 
 from .connection import Connection
-from .configData import Setting
-from .configData import Firmware
+from .configData import Data
 
 
 class Command(object):
@@ -43,7 +39,6 @@ class Command(object):
         >>>                   port=3492,
         >>>                   data=data,
         >>>                   )
-
     """
 
     __all__ = ['Command',

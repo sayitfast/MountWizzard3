@@ -17,25 +17,28 @@
 # Licence APL2.0
 #
 ############################################################
-import socket
-import sys
+import logging
 
-import PyQt5.QtCore
 import skyfield.api
 
 
 class Firmware(object):
+    """
+    The class Firmware inherits all informations and handling of firmware
+    attributes of the connected mount and provides the abstracted interface
+    to a 10 micron mount.
 
-    firmwareLock = PyQt5.QtCore.QReadWriteLock()
+        >>> fw = Firmware()
+    """
 
     def __init__(self):
 
         self._productName = ''
-        self._fwNumber = ''
-        self._fw = 0
+        self._numberString = ''
+        self._number = 0
         self._hwVersion = ''
-        self._fwDate = ''
-        self._fwTime = ''
+        self._fwdate = ''
+        self._fwtime = ''
 
     @property
     def productName(self):
@@ -46,21 +49,21 @@ class Firmware(object):
         self._productName = value
 
     @property
-    def fwNumber(self):
-        return self._fwNumber
+    def numberString(self):
+        return self._numberStringr
 
     @property
-    def fw(self):
-        return self._fw
+    def number(self):
+        return self._number
 
     @fwNumber.setter
-    def fwNumber(self, value):
-        self._fwNumber = value
+    def numberString(self, value):
+        self._numberString = value
         if value.count('.') == 2:
-            _number = value.split('.')
-            self._fw = int(_number[0]) * 10000 + int(_number[1]) * 100 + int(_number[2])
+            _parts = value.split('.')
+            self._number = int(_parts[0]) * 10000 + int(_parts[1]) * 100 + int(_parts[2])
         else:
-            self._fw = 0
+            self._number = 0
 
     @property
     def hwVersion(self):
@@ -71,33 +74,31 @@ class Firmware(object):
         self._hwVersion = value
 
     @property
-    def fwDate(self):
-        return self._fwDate
+    def fwdate(self):
+        return self._fwdate
 
-    @fwDate.setter
-    def fwDate(self, value):
-        self._fwDate = value
+    @fwdate.setter
+    def date(self, value):
+        self._fwdate = value
 
     @property
-    def fwTime(self):
-        return self._fwTime
+    def fwtime(self):
+        return self._fwtime
 
-    @fwTime.setter
-    def fwTime(self, value):
-        self._fwTime = value
+    @fwtime.setter
+    def fwtime(self, value):
+        self._fwtime = value
 
     def __str__(self):
         output = '<Product: {0}>   <Firmware: {1}>   <Hardware: {2}>'
         value = output.format(self._productName,
-                              self._fwNumber,
+                              self._numberString,
                               self._hwVersion,
                               )
         return value
 
 
 class Site(object):
-
-    siteLock = PyQt5.QtCore.QReadWriteLock()
 
     def __init__(self, timeScale):
         self._location = None
@@ -213,8 +214,6 @@ class Site(object):
 
 
 class Setting(object):
-
-    settingLock = PyQt5.QtCore.QReadWriteLock()
 
     def __init__(self):
         self._slewRate = 0
