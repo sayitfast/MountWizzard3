@@ -507,7 +507,8 @@ class Model(object):
     def checkStarListOK(self):
         """
         Make a check if the actual alignment star count by polling gets the same
-        number than stored stars in the list. Otherwise something was changed.
+        number of stars compared to the number of stars in the list.
+        Otherwise something was changed.
 
         :return: output of check
         """
