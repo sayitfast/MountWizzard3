@@ -532,6 +532,15 @@ class ModelStar(object):
 
     point could be from type skyfield.api.Star or just a tuple of (ha, dec) where
     the format should be float or the 10micron string format.
+
+    Command protocol (from2.8.15 onwards):
+    "HH:MM:SS.SS,+dd*mm:ss.s,eeee.e,ppp#" where HH:MM:SS.SS is the hour angle of the
+    alignment star in hours, minutes, seconds and hundredths of second (from 0h to
+    23h59m59.99s), +dd*mm:ss.s is the declination of the alignment star in degrees,
+    arcminutes, arcseconds and tenths of arcsecond, eeee.e is the error between the star
+    and the alignment model in arcseconds, ppp is the polar angle of the measured star
+    with respect to the modeled star in the equatorial system in degrees from 0 to 359
+    (0 towards the north pole, 90 towards east).
     """
 
     __all__ = ['ModelStar',
@@ -588,10 +597,6 @@ class ModelStar(object):
     def point(self, value):
         if isinstance(value, skyfield.api.Star):
             self._point = value
-        elif not value:
-            self.logger.error('malformed value: {0}'.format(value))
-            self._point = skyfield.api.Star(ra_hours=0,
-                                            dec_degrees=0)
         elif isinstance(value, tuple):
             _ha, _dec = value
             if isinstance(value[1], str):
@@ -599,6 +604,10 @@ class ModelStar(object):
                 _dec = self._stringToDegreeDEC(_dec)
             self._point = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
+        else:
+            self.logger.error('malformed value: {0}'.format(value))
+            self._point = skyfield.api.Star(ra_hours=0,
+                                            dec_degrees=0)
 
     @property
     def number(self):
