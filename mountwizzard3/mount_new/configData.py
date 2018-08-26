@@ -186,7 +186,10 @@ class Site(object):
 
     @staticmethod
     def _stringToDegree(value):
-        value = [float(x) for x in value.split(':')]
+        value = value.split(':')
+        if len(value) != 3:
+            return 0
+        value = [float(x) for x in value]
         value = value[0] + value[1] / 60 + value[2] / 3600
         return value
 
@@ -537,12 +540,17 @@ class ModelStar(object):
 
     @staticmethod
     def _stringToHourHA(value):
-        value = [float(x) for x in value.split(':')]
+        value = value.split(':')
+        if len(value) != 3:
+            return 0
+        value = [float(x) for x in value]
         value = value[0] + value[1] / 60 + value[2] / 3600
         return value
 
     @staticmethod
     def _stringToDegreeDEC(value):
+        if value.count('*') != 1:
+            return 0
         value = value.replace('*', ':')
         _sign = value[0]
         if _sign == '-':
@@ -550,7 +558,10 @@ class ModelStar(object):
         else:
             _sign = 1.0
         value = value[1:]
-        value = [float(x) for x in value.split(':')]
+        value = value.split(':')
+        if len(value) != 3:
+            return 0
+        value = [float(x) for x in value]
         value = value[0] + value[1] / 60 + value[2] / 3600
         value = _sign * value
         return value

@@ -21,6 +21,24 @@ class TestConfigData(unittest.TestCase):
         value = modelStar._stringToHourHA(parameter)
         self.assertAlmostEqual(value, 12.759169444444444, 6)
 
+    def test_ModelStars_stringToHourHA_bad1(self):
+        modelStar = ModelStar()
+        parameter = '12:45'
+        value = modelStar._stringToHourHA(parameter)
+        self.assertAlmostEqual(value, 0, 6)
+
+    def test_ModelStars_stringToHourHA_bad2(self):
+        modelStar = ModelStar()
+        parameter = ''
+        value = modelStar._stringToHourHA(parameter)
+        self.assertAlmostEqual(value, 0, 6)
+
+    def test_ModelStars_stringToHourHA_bad3(self):
+        modelStar = ModelStar()
+        parameter = '12:45:33:01.01'
+        value = modelStar._stringToHourHA(parameter)
+        self.assertAlmostEqual(value, 0, 6)
+
     def test_ModelStars_stringToDegreeDEC_pos(self):
         modelStar = ModelStar()
         parameter = '+56*30:00.0'
@@ -38,6 +56,30 @@ class TestConfigData(unittest.TestCase):
         parameter = ' 56*30:00.0'
         value = modelStar._stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 56.5, 6)
+
+    def test_ModelStars_stringToDegreeDEC_bad1(self):
+        modelStar = ModelStar()
+        parameter = '++56*30:00.0'
+        value = modelStar._stringToDegreeDEC(parameter)
+        self.assertAlmostEqual(value, 56.5, 6)
+
+    def test_ModelStars_stringToDegreeDEC_bad2(self):
+        modelStar = ModelStar()
+        parameter = '+56*30*00.0'
+        value = modelStar._stringToDegreeDEC(parameter)
+        self.assertAlmostEqual(value, 0, 6)
+
+    def test_ModelStars_stringToDegreeDEC_bad3(self):
+        modelStar = ModelStar()
+        parameter = '+56:30:00.0'
+        value = modelStar._stringToDegreeDEC(parameter)
+        self.assertAlmostEqual(value, 0, 6)
+
+    def test_ModelStars_stringToDegreeDEC_bad4(self):
+        modelStar = ModelStar()
+        parameter = ''
+        value = modelStar._stringToDegreeDEC(parameter)
+        self.assertAlmostEqual(value, 0, 6)
 
     def test_ModelStar_create(self):
         p1 = '12:45:33.01'
