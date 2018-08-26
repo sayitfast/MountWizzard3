@@ -18,7 +18,7 @@
 #
 ############################################################
 import logging
-import math
+import numpy
 
 import skyfield.api
 
@@ -544,6 +544,12 @@ class ModelStar(object):
     """
 
     __all__ = ['ModelStar',
+               'point',
+               'errorRMS',
+               'errorAngle',
+               'errorRA',
+               'errorDEC',
+               'number',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
@@ -642,8 +648,8 @@ class ModelStar(object):
 
     @property
     def errorRA(self):
-        return self._errorRMS * math.sin(self.errorAngle.radians())
+        return self._errorRMS * numpy.sin(self._errorAngle.radians)
 
     @property
-    def errorDec(self):
-        return self._errorRMS * math.cos(self.errorAngle.radians())
+    def errorDEC(self):
+        return self._errorRMS * numpy.cos(self._errorAngle.radians)
