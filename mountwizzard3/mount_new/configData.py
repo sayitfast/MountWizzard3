@@ -64,6 +64,7 @@ class Data(object):
         self.fw = Firmware()
         self.setting = Setting()
         self.site = Site(self.timeScale)
+        self.model = Model()
 
 
 class Firmware(object):
@@ -427,22 +428,6 @@ class Setting(object):
         self._currentHorizonLimitLow = value
 
     @property
-    def numberModelNames(self):
-        return self._numberModelNames
-
-    @numberModelNames.setter
-    def numberModelNames(self, value):
-        self._numberModelNames = value
-
-    @property
-    def numberAlignmentStars(self):
-        return self._numberAlignmentStars
-
-    @numberAlignmentStars.setter
-    def numberAlignmentStars(self, value):
-        self._numberAlignmentStars = value
-
-    @property
     def UTCDataValid(self):
         return self._UTCDataValid
 
@@ -457,3 +442,38 @@ class Setting(object):
     @UTCDataExpirationDate.setter
     def UTCDataExpirationDate(self, value):
         self._UTCDataExpirationDate = value
+
+
+class Model(object):
+    """
+    The class Model inherits all informations and handling of the actual
+    alignment model used by the mount and the data, which models are stored
+    in the mount and provides the abstracted interface to a 10 micron mount.
+
+        >>> settings = Model()
+    """
+
+    __all__ = ['Model',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
+
+    def __init__(self):
+        self._numberModelNames = 0
+        self._numberAlignmentStars = 0
+
+    @property
+    def numberModelNames(self):
+        return self._numberModelNames
+
+    @numberModelNames.setter
+    def numberModelNames(self, value):
+        self._numberModelNames = value
+
+    @property
+    def numberAlignmentStars(self):
+        return self._numberAlignmentStars
+
+    @numberAlignmentStars.setter
+    def numberAlignmentStars(self, value):
+        self._numberAlignmentStars = value
