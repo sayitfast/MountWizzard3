@@ -46,7 +46,7 @@ class Connection(object):
 
     """
 
-    __all__ = ['communicate']
+    __all__ = ['Connection', 'communicate']
     version = '0.2'
     logger = logging.getLogger(__name__)
 
