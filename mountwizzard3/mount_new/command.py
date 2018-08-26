@@ -66,11 +66,15 @@ class Command(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
+                 host=None,
+                 port=3492,
                  firmware=None,
                  setting=None,
                  site=None,
                  ):
 
+        self.host = host
+        self.port = port
         self.firmware = firmware
         self.setting = setting
         self.site = site

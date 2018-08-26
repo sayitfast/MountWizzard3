@@ -66,7 +66,7 @@ class Connection(object):
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
     def __init__(self,
-                 host='192.168.2.15',
+                 host=None,
                  port=3492,
                  ):
 
@@ -121,11 +121,21 @@ class Connection(object):
                                                                     numberOfChunks))
         self.logger.info('host: {0}, port: {1}'.format(self.host, self.port))
 
+        # test if we have valid parameters
+        response = ''
+        message = 'ok'
+        if not self.host:
+            message = 'no host given'
+            self.logger.warning('{0}'.format(message))
+            return False, message, response, numberOfChunks
+        if not self.port:
+            message = 'no port given'
+            self.logger.warning('{0}'.format(message))
+            return False, message, response, numberOfChunks
+
         # build client
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.settimeout(self.SOCKET_TIMEOUT)
-        response = ''
-        message = 'ok'
         try:
             client.connect((self.host, self.port))
         except socket.timeout:
