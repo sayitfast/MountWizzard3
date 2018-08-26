@@ -115,6 +115,7 @@ class Firmware(object):
             self._number = int(_parts[0]) * 10000 + int(_parts[1]) * 100 + int(_parts[2])
         else:
             self._number = 0
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def hwVersion(self):
@@ -653,3 +654,12 @@ class ModelStar(object):
     @property
     def errorDEC(self):
         return self._errorRMS * numpy.cos(self._errorAngle.radians)
+
+    def __str__(self):
+        output = 'Star {0:2d}: HA: {1}, DEC: {2}, Error: {3}'
+        value = output.format(self._number,
+                              self._point.ra.hms,
+                              self._point.dec.dms,
+                              self.errorRMS,
+                              )
+        return value
