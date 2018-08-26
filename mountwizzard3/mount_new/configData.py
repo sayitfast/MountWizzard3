@@ -467,14 +467,11 @@ class Model(object):
         self._numberModelNames = 0
         self._numberAlignmentStars = 0
         self._starList = list()
+        self._modelNameList = list()
 
     @property
-    def numberModelNames(self):
-        return self._numberModelNames
-
-    @numberModelNames.setter
-    def numberModelNames(self, value):
-        self._numberModelNames = value
+    def starList(self):
+        return self._starList
 
     @property
     def numberAlignmentStars(self):
@@ -483,9 +480,6 @@ class Model(object):
     @numberAlignmentStars.setter
     def numberAlignmentStars(self, value):
         self._numberAlignmentStars = value
-
-    def __iter__(self):
-        return iter(self.starList)
 
     def addStar(self):
         if isinstance(value, ModelStar):
@@ -513,6 +507,44 @@ class Model(object):
         :return: output of check
         """
         if self._numberAlignmentStars == len(self._starList):
+            return True
+        else:
+            return False
+
+    @property
+    def modelNameList(self):
+        return self._modelNameList
+
+    @property
+    def numberModelNames(self):
+        return self._numberModelNames
+
+    @numberModelNames.setter
+    def numberModelNames(self, value):
+        self._numberModelNames = value
+
+    def addName(self):
+        if isinstance(value, str):
+            self._modelNameList.extend(value)
+        else:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    def delName(self, value):
+        value = int(value)
+        if value < 0 or value > len(self._modelNameList):
+            self.logger.error('invalid value: {0}'.format(value))
+            return
+        self._modelNameList.pop(value)
+
+    def checkModelNameListOK(self):
+        """
+        Make a check if the actual model name count by polling gets the same
+        number of names compared to the number of names in the list.
+        Otherwise something was changed.
+
+        :return: output of check
+        """
+        if self._numberModelNames == len(self._starList):
             return True
         else:
             return False
