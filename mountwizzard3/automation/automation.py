@@ -476,9 +476,9 @@ class Automation(PyQt5.QtCore.QObject):
             self.app.messageQueue.put('#BRError in choosing upload files, please check 10micron updater\n')
             os.chdir(actual_work_dir)
             return
-        if self.app.workerMountDispatcher.mountStatus['mount.pullSlow']:
+        if not self.app.workerMountDispatcher.mountStatus['mount.pullSlow']:
             self.app.messageQueue.put('Upload only possible with connected mount !\n')
-            uploadNecessary = True
+            uploadNecessary = False
         if uploadNecessary:
             try:
                 win['next'].click()
