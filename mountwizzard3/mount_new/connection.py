@@ -131,26 +131,38 @@ class Connection(object):
         except socket.timeout:
             message = 'socket error timeout connect'
             client.close()
-            self.logger.error('{0}, detailed: {1}'.format(message, e))
+            self.logger.error('{0}'.format(message))
             return False, message, response, numberOfChunks
         except socket.error:
             message = 'socket error general connect'
             client.close()
-            self.logger.error('{0}, detailed: {1}'.format(message, e))
+            self.logger.error('{0}'.format(message))
             return False, message, response, numberOfChunks
+        except Exception as e:
+            message = e
+            client.close()
+            self.logger.error('{0}'.format(message))
+            return False, message, response, numberOfChunks
+
         # send data
         try:
             client.sendall(commandString.encode())
         except socket.timeout:
             message = 'socket error timeout send'
             client.close()
-            self.logger.error('{0}, detailed: {1}'.format(message, e))
+            self.logger.error('{0}'.format(message))
             return False, message, response, numberOfChunks
         except socket.error:
             message = 'socket error general send'
             client.close()
-            self.logger.error('{0}, detailed: {1}'.format(message, e))
+            self.logger.error('{0}'.format(message))
             return False, message, response, numberOfChunks
+        except Exception as e:
+            message = e
+            client.close()
+            self.logger.error('{0}'.format(message))
+            return False, message, response, numberOfChunks
+
         # receive data
         try:
             while True:
@@ -165,12 +177,17 @@ class Connection(object):
         except socket.timeout:
             message = 'socket error timeout response'
             response = ''
-            self.logger.error('{0}, detailed: {1}'.format(message, e))
+            self.logger.error('{0}'.format(message))
             return False, message, response, numberOfChunks
         except socket.error:
             message = 'socket error general response'
             response = ''
-            self.logger.error('{0}, detailed: {1}, response: {2}'.format(message, e, response))
+            self.logger.error('{0}, response: {1}'.format(message, response))
+            return False, message, response, numberOfChunks
+        except Exception as e:
+            message = e
+            response = ''
+            self.logger.error('{0}, response: {1}'.format(message, response))
             return False, message, response, numberOfChunks
         else:
             response = response.split('#')[:-1]
