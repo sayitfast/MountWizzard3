@@ -29,29 +29,19 @@ from .configData import Firmware
 
 class Command(object):
     """
-    The class Command provides the command and reply interface to a 10 micron mount.
+    The class Command provides the abstracted command and reply interface to a 10 micron
+    mount.
     There should be all commands and their return values be sent to the mount via
     IP and the responses parsed accordingly.
 
-    Define the number of chunks for the return bytes in case of not having them in
-    bulk mode this is needed, because the mount computer  doesn't support a
-    transaction base like number of chunks to be expected. It's just plain data and
-    I have to find out myself how much it is. there are three types of commands:
-
-          a) no reply               this is ok -> COMMAND_A
-          b) reply without '#'      this is the bad part, don't like it -> COMMAND_B
-          c) reply ended with '#'   this is normal feedback -> no special treatment
-
     The class itself need parameters for the host and port to be able to interact
-    with the mount. In addition it needs classes, where the settings, firmware and
-    site parameters are handled.
+    with the mount. In addition it needs the storage classes, where the settings,
+    firmware and site parameters are handled.
 
         >>> command = Command(
         >>>                   host='mount.fritz.box',
         >>>                   port=3492,
-        >>>                   firmware=firmware,
-        >>>                   setting=setting,
-        >>>                   site=site,
+        >>>                   data=data,
         >>>                   )
 
     """
@@ -67,18 +57,13 @@ class Command(object):
 
     def __init__(self,
                  host=None,
-                 port=3492,
-                 firmware=None,
-                 setting=None,
-                 site=None,
+                 port=None,
+                 data=None
                  ):
 
         self.host = host
         self.port = port
-        self.firmware = firmware
-        self.setting = setting
-        self.site = site
-
+        self.data = data
 
     @staticmethod
     def _parseWorkaroundAlign(response):

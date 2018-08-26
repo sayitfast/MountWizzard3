@@ -36,11 +36,19 @@ class TestConnection(unittest.TestCase):
         self.assertEqual('', response)
 
     def test_no_port(self):
-        mount = Connection(host='192.168.2.250', port=None)
+        mount = Connection(host='192.168.2.250')
         commandSet = ':U2#:Gev#:'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
         self.assertIn('no port defined', mes)
+        self.assertEqual('', response)
+
+    def test_no_host_no_port(self):
+        mount = Connection()
+        commandSet = ':U2#:Gev#:'
+        ok, mes, response, chunks = mount.communicate(commandSet)
+        self.assertEqual(False, ok)
+        self.assertIn('no host defined', mes)
         self.assertEqual('', response)
 
     def test_no_host_up(self):

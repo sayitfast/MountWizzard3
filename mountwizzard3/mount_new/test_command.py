@@ -21,30 +21,6 @@ class TestCommand(unittest.TestCase):
         self.setting = Setting()
         self.site = Site(self.timeScale)
 
-    def test_no_host(self):
-        mount = Connection(host='192.168.2.250', port=3492)
-        commandSet = ':U2#:Gev#:'
-        ok, mes, response = mount._communicate(commandSet)
-        self.assertEqual(False, ok)
-        self.assertIn('socket error', mes)
-        self.assertEqual('', response)
-
-    def test_speed(self):
-        mount = Connection(host='192.168.2.15', port=3492)
-        commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        ok, mes, response = mount._communicate(commandSet)
-        self.assertEqual(True, ok)
-        self.assertEqual('ok', mes)
-        self.assertEqual('10micron GM1000HPS', response[5])
-
-    def test_unknown_command(self):
-        mount = Connection(host='192.168.2.15', port=3492)
-        commandSet = ':U2#:NotKnown#'
-        ok, mes, response = mount._communicate(commandSet)
-        self.assertEqual(False, ok)
-        self.assertIn('socket error', mes)
-        self.assertEqual('', response)
-
     def test_workaroundAlign(self):
         mount = Connection(host='192.168.2.15', port=3492)
         ok, mes = mount.workaroundAlign()
@@ -88,37 +64,6 @@ class TestCommand(unittest.TestCase):
         ok, mes = mount.pollFast()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
-
-    # testing the command analyses against structural faults
-    def test_responses_typeA_analyseCommand(self):
-        mount = Connection()
-        number, response = mount._analyseCommand(':AP#:AL#')
-        self.assertEqual(True, response)
-        self.assertEqual(0, number)
-
-    def test_responses_typeAB_analyseCommand(self):
-        mount = Connection()
-        number, response = mount._analyseCommand(':AP#:AL#:FLIP#')
-        self.assertEqual(False, response)
-        self.assertEqual(0, number)
-
-    def test_responses_typeABC_analyseCommand(self):
-        mount = Connection()
-        number, response = mount._analyseCommand(':AP#:AL#:FLIP#:GTMP1#')
-        self.assertEqual(False, response)
-        self.assertEqual(1, number)
-
-    def test_responses_typeAC_analyseCommand(self):
-        mount = Connection()
-        number, response = mount._analyseCommand(':AP#:AL#:GTMP1#')
-        self.assertEqual(False, response)
-        self.assertEqual(1, number)
-
-    def test_responses_typeBC_analyseCommand(self):
-        mount = Connection()
-        number, response = mount._analyseCommand(':FLIP#:GTMP1#')
-        self.assertEqual(False, response)
-        self.assertEqual(1, number)
 
     # testing parsing against valid and invalid data
     def test_parseWorkaroundAlign_good(self):

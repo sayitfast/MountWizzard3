@@ -67,7 +67,7 @@ class Connection(object):
 
     def __init__(self,
                  host=None,
-                 port=3492,
+                 port=None,
                  ):
 
         self.host = host
