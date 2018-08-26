@@ -536,8 +536,15 @@ class ModelStar(object):
     @staticmethod
     def _stringToDegreeDEC(value):
         value = value.replace('*', ':')
+        _sign = value[0]
+        if _sign == '-':
+            _sign = - 1.0
+        else:
+            _sign = 1.0
+        value = value[1:]
         value = [float(x) for x in value.split(':')]
         value = value[0] + value[1] / 60 + value[2] / 3600
+        value = _sign * value
         return value
 
     @property
