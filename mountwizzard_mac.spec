@@ -1,47 +1,87 @@
-# -*- mode: python -*-
+############################################################
+# -*- coding: utf-8 -*-
 #
-# to remember: import astropy.tests from __init__.py was removed manually
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
 #
-from PyInstaller.compat import modname_tkinter
-
-block_cipher = None
+# Python-based Tool for interaction with the 10micron mounts
+# GUI with PyQT5 for python
+# Python  v3.6.5
+#
+# Michael Würtenberger
+# (c) 2016, 2017, 2018
+#
+# Licence APL2.0
+#
+###########################################################
+#
+#
+# to remember:  import astropy.tests from __init__.py was removed manually
+#               hook for matplotlib was changed to use Qt5Agg only
+#
+import os
+import shutil
 DISTPATH = '../dist'
 WORKPATH = '../build'
 
+from PyInstaller.compat import modname_tkinter
+import mountwizzard3.build.build
+
+
+BUILD_NO = mountwizzard3.build.build.BUILD().BUILD_NO_FILE
+
+block_cipher = None
+pythonPath = '/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6'
+astropyLibPath = pythonPath + '/site-packages/astropy'
+distDir = '/Users/mw/PycharmProjects/MountWizzard3/dist'
+
 
 a = Analysis(['mountwizzard3/mountwizzard3.py'],
-             pathex=['/Users/mw/PycharmProjects/MountWizzard3/mountwizzard3'],
-             binaries=[],
-             datas=[
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/fits', './astropy/io/fits'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/__init__.py', './astropy/io'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/_erfa', './astropy/_erfa'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/utils', './astropy/utils'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/logger.py', './astropy'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/config', './astropy/config'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/units', './astropy/units'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/constants', './astropy/constants'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/visualization', './astropy/visualization'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/stats', './astropy/stats'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/extern', './astropy/extern'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/__init__.py', './astropy'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/astropy.cfg', './astropy'),
-             ],
-             hiddenimports=[
-             'numpy.lib.recfunctions',
-             'xml.dom',
-             'shelve',          # shelve is for astropy
-             'PyQt5.sip',       # not bundled for pyqt5 >5.11 anymore
-              ],
-             hookspath=[],
-             runtime_hooks=[],
-             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'astropy', modname_tkinter],
-             win_no_prefer_redirects=False,
-             win_private_assemblies=False,
-             cipher=block_cipher)
+    pathex=['/Users/mw/PycharmProjects/MountWizzard3/mountwizzard3'],
+    binaries=[],
+    datas=[
+        (astropyLibPath + '/io/fits', './astropy/io/fits'),
+        (astropyLibPath + '/io/__init__.py', './astropy/io'),
+        (astropyLibPath + '/_erfa', './astropy/_erfa'),
+        (astropyLibPath + '/utils', './astropy/utils'),
+        (astropyLibPath + '/logger.py', './astropy'),
+        (astropyLibPath + '/config', './astropy/config'),
+        (astropyLibPath + '/units', './astropy/units'),
+        (astropyLibPath + '/constants', './astropy/constants'),
+        (astropyLibPath + '/visualization', './astropy/visualization'),
+        (astropyLibPath + '/stats', './astropy/stats'),
+        (astropyLibPath + '/extern', './astropy/extern'),
+        (astropyLibPath + '/__init__.py', './astropy'),
+        (astropyLibPath + '/astropy.cfg', './astropy'),
+        ],
+    hiddenimports=[
+        'numpy.lib.recfunctions',
+        'xml.dom',
+        'shelve',          # shelve is for astropy
+        'PyQt5.sip',       # not bundled for pyqt5 >5.11 anymore
+        ],
+    hookspath=[],
+    runtime_hooks=[],
+    excludes=[
+        'FixTk',
+        'tcl',
+        'tk',
+        '_tkinter',
+        'tkinter',
+        'Tkinter',
+        modname_tkinter
+        ],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher)
 
-pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+pyz = PYZ(a.pure,
+        a.zipped_data,
+        cipher=block_cipher
+        )
 
 exe = EXE(pyz,
           a.scripts,
@@ -59,13 +99,19 @@ exe = EXE(pyz,
           # exclude_binaries=True,
           )
 
-#coll = COLLECT(exe,
-#               a.binaries,
-#               a.zipfiles,
-#               a.datas,
-#               strip=False,
-#               upx=True,
-#               name='mountwizzard3')
+#
+# we have to prepare the build as there is an error when overwriting it
+# if file present, we have to delete it
+#
+
+buildFile = distDir + '/MountWizzard3.app'
+buildFileNumber = distDir + '/mountwizzard3-' + BUILD_NO + '.app'
+
+print(BUILD_NO)
+
+if os.path.isfile(buildFile):
+    os.remove(buildFile)
+    print('removed existing app bundle')
 
 app = BUNDLE(exe,
              name='MountWizzard3.app',
@@ -73,11 +119,13 @@ app = BUNDLE(exe,
              icon='./mountwizzard3/icons/mw.icns',
              bundle_identifier=None)
 
-# rename the file to version number
-import build.build
-BUILD_NO = build.build.BUILD().BUILD_NO_FILE
-print(BUILD_NO, os.getcwd())
-# if file present, delete it
-if os.path.isfile(os.getcwd() + '/dist/mountwizzard3-' + BUILD_NO + '.app'):
-    os.remove(os.getcwd() + '/dist/mountwizzard3-' + BUILD_NO + '.app')
-os.rename(os.getcwd() + '/dist/mountwizzard3.app', os.getcwd() + '/dist/mountwizzard3-' + BUILD_NO + '.app')
+#
+# we have to prepare the build as there is an error when overwriting it
+# if file present, we have to delete it
+#
+
+if os.path.isdir(buildFileNumber):
+    shutil.rmtree(buildFileNumber)
+    print('removed existing app bundle with version number')
+
+os.rename(buildFile, buildFileNumber)
