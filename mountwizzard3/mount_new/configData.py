@@ -549,7 +549,7 @@ class ModelStar(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 point=None,
+                 point=(0, 0),
                  errorRMS=0,
                  errorAngle=0,
                  number=0
