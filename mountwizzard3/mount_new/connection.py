@@ -20,8 +20,6 @@
 import socket
 import logging
 
-import PyQt5.QtCore
-
 
 class Connection(object):
     """
@@ -48,6 +46,7 @@ class Connection(object):
 
     """
 
+    __all__ = ['communicate']
     version = '0.2'
     logger = logging.getLogger(__name__)
 
@@ -102,7 +101,7 @@ class Connection(object):
                     chunksToReceive += 1
         return chunksToReceive, noResponse
 
-    def _communicate(self, commandString):
+    def communicate(self, commandString):
         """
         transfer open a socket to the mount, takes the command string for the mount,
         send it to the mount. If response expected, wait for the response and returns

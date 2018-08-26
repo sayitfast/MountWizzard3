@@ -30,7 +30,7 @@ class TestConnection(unittest.TestCase):
     def test_no_host(self):
         mount = Connection(host='192.168.2.250', port=3492)
         commandSet = ':U2#:Gev#:'
-        ok, mes, response, chunks = mount._communicate(commandSet)
+        ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
         self.assertIn('socket error', mes)
         self.assertEqual('', response)
@@ -38,15 +38,15 @@ class TestConnection(unittest.TestCase):
     def test_speed(self):
         mount = Connection(host='192.168.2.15', port=3492)
         commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        ok, mes, response, chunks = mount._communicate(commandSet)
+        ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
         self.assertEqual('10micron GM1000HPS', response[5])
 
-    def test_unknown_command(self):
+    def test_unknowncommand(self):
         mount = Connection(host='192.168.2.15', port=3492)
         commandSet = ':U2#:NotKnown#'
-        ok, mes, response, chunks = mount._communicate(commandSet)
+        ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
         self.assertIn('socket error', mes)
         self.assertEqual('', response)
