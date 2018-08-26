@@ -185,8 +185,8 @@ class Site(object):
         self._statusSlew = False
 
     @staticmethod
-    def _stringToDegree(value, splitter=':'):
-        value = [float(x) for x in value.split(splitter)]
+    def _stringToDegree(value):
+        value = [float(x) for x in value.split(':')]
         value = value[0] + value[1] / 60 + value[2] / 3600
         return value
 
@@ -524,8 +524,21 @@ class ModelStar(object):
     def __init__(self):
         self._star = None
         self._errorRMS = 0
-        self._errorAngle = 0
+        self._errorAngle = None
         self._number = 0
+
+    @staticmethod
+    def _stringToDegreeHA(value):
+        value = [float(x) for x in value.split(':')]
+        value = value[0] + value[1] / 60 + value[2] / 3600
+        return value
+
+    @staticmethod
+    def _stringToDegreeDEC(value):
+        value = value.replace('*', ':')
+        value = [float(x) for x in value.split(':')]
+        value = value[0] + value[1] / 60 + value[2] / 3600
+        return value
 
     @property
     def star(self):
@@ -536,8 +549,11 @@ class ModelStar(object):
         if isinstance(value, skyfield.starlib.Star):
             self._star = value
         else:
-            # todo: better backup
-            self._star = None
+            _ha, _dec = value
+            _ha = Angle(degrees=self._stringToDegreeHA(_ha))
+            _dec = Angle(degrees=self._stringToDegreeDEC(_dec))
+            self._star = skyfield.api.Star(ra_hours=_ha,
+                                           dec_degrees=_dec)
 
     @property
     def number(self):
@@ -545,7 +561,7 @@ class ModelStar(object):
 
     @number.setter
     def number(self, value):
-        self._number = value
+        self._number = int(value)
 
     @property
     def errorRMS(self):
@@ -553,7 +569,7 @@ class ModelStar(object):
 
     @errorRMS.setter
     def errorRMS(self, value):
-        self._errorRMS = value
+        self._errorRMS = float(value)
 
     @property
     def errorAngle(self):
@@ -561,4 +577,9 @@ class ModelStar(object):
 
     @errorAngle.setter
     def errorAngle(self, value):
-        self._errorAngle = value
+        if isinstance(value, skyfield.api.Angle):
+            self._errorAngle = value
+        else:
+            self._errorAngle = skyfield.api.Angle(degrees=float(value))
+
+
