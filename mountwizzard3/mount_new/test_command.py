@@ -89,7 +89,7 @@ class TestCommand(unittest.TestCase):
                        )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
@@ -98,7 +98,7 @@ class TestCommand(unittest.TestCase):
                        )
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53']
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(False, suc)
         self.assertIn('wrong number of chunks', message)
 
@@ -106,17 +106,17 @@ class TestCommand(unittest.TestCase):
         comm = Command(data=self.data,
                        )
         response = []
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(False, suc)
         self.assertIn('wrong number of chunks', message)
 
     def test_parseSlow_bad3(self):
         comm = Command(data=self.data,
                        )
-        response = ['+EEEEE', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
+        response = ['+master', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
@@ -126,7 +126,7 @@ class TestCommand(unittest.TestCase):
         response = ['+0585.2', '-011:35:00.0', '+48:07:00.0', 'Mar 19 2018', '2.1514',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
@@ -136,7 +136,7 @@ class TestCommand(unittest.TestCase):
         response = ['+0585.2', '-011:35:00.0', '+48:sdj.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
@@ -146,7 +146,7 @@ class TestCommand(unittest.TestCase):
         response = ['+0585.2', '-011:EE:00.0', '+48:07:00.0', 'Mar 19 2018', '2.15.14',
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
-        suc, message = comm._parseSlow(response, 7)
+        suc, message = comm._parseSlow(response, 8)
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 

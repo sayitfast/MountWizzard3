@@ -76,7 +76,7 @@ class Command(object):
         """
 
         message = 'ok'
-        if len(response) != 2:
+        if len(response) != 2 or len(response) != numberOfChunks:
             message = 'workaround command failed'
             return False, message
         if response[0] != 'V' or response[1] != 'E':
@@ -95,7 +95,7 @@ class Command(object):
 
         message = 'ok'
         commandString = ':newalig#:endalig#'
-        suc, mes, response, chunks= self.connection.communicate(commandString)
+        suc, mes, response, chunks = self.connection.communicate(commandString)
         if not suc:
             message = mes
             return False, message
@@ -117,8 +117,8 @@ class Command(object):
         """
 
         message = 'ok'
-        if len(response) != 8:
-            message = 'wrong number of chunks from mount'
+        if len(response) != 8 or len(response) != numberOfChunks:
+            message = 'wrong number of chunks'
             return False, message
         # doing observer settings update
         try:
@@ -183,6 +183,10 @@ class Command(object):
         """
 
         message = 'ok'
+        if len(response) != 13 or len(response) != numberOfChunks:
+            message = 'wrong number of chunks'
+            return False, message
+
         self.data.setting.slewRate = int(response[0])
         self.data.setting.timeToFlip = int(response[1])
         self.data.setting.meridianLimitGuide = int(response[2])
@@ -244,6 +248,10 @@ class Command(object):
         """
 
         message = 'ok'
+        if len(response) != 2 or len(response) != numberOfChunks:
+            message = 'wrong number of chunks'
+            return False, message
+
         self.data.site.timeSidereal = response[0]
         responseSplit = response[1].split(',')
         self.data.site.raJNow = float(responseSplit[0])
