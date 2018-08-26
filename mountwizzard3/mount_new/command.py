@@ -22,6 +22,7 @@ import sys
 
 import PyQt5.QtCore
 
+from .connection import Connection
 from .configData import Setting
 from .configData import Firmware
 
@@ -73,6 +74,7 @@ class Command(object):
         self.firmware = firmware
         self.setting = setting
         self.site = site
+
 
     @staticmethod
     def _parseWorkaroundAlign(response):

@@ -119,6 +119,7 @@ class Connection(object):
         self.logger.debug('com: {0}, resp: {1}, chunks: {2}'.format(commandString,
                                                                     noResponse,
                                                                     numberOfChunks))
+        self.logger.info('host: {0}, port: {1}'.format(self.host, self.port))
 
         # build client
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
