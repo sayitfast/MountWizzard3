@@ -176,31 +176,56 @@ class Site(object):
     to a 10 micron mount.
 
         >>> site = Site(
-        >>>             timescale=timescale)
+        >>>             timescale=timescale,
+        >>>             location=None,
+        >>>             timeJD=None,
+        >>>             timeSidereal=None,
+        >>>             raJNow=None,
+        >>>             decJNow=None,
+        >>>             pierside=None,
+        >>>             Alt=None,
+        >>>             Az=None,
+        >>>             status=None,
+        >>>             statusSlew=None,
+        >>>             )
 
     The Site class needs as parameter a timescale object from skyfield.api to
     be able to make all the necessary calculations about time from and to mount
     """
 
     __all__ = ['Site',
+               'location',
+
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
 
-    def __init__(self, timeScale):
+    def __init__(self,
+                 timeScale,
+                 location,
+                 timeJD,
+                 timeSidereal,
+                 raJNow,
+                 decJNow,
+                 pierside,
+                 Alt,
+                 Az,
+                 status,
+                 statusSlew,
+                 ):
 
         self.timeScale = timeScale
 
-        self._location = None
-        self._timeJD = None
-        self._timeSidereal = None
-        self._raJNow = 0
-        self._decJNow = 0
-        self._pierside = ''
-        self._apparentAlt = 0
-        self._apparentAz = 0
-        self._status = 0
-        self._statusSlew = False
+        self.location = location
+        self.timeJD = timeJD
+        self.timeSidereal = timeSidereal
+        self.raJNow = raJNow#
+        self.decJNow = decJNow
+        self.pierside = pierside
+        self.Alt = Alt
+        self.Az = Az
+        self.status = status
+        self.statusSlew = statusSlew
 
     def _stringToDegree(self, value):
         value = value.split(':')
@@ -265,20 +290,20 @@ class Site(object):
         self._pierside = value
 
     @property
-    def apparentAlt(self):
-        return self._apparentAlt
+    def Alt(self):
+        return self._Alt
 
-    @apparentAlt.setter
-    def apparentAlt(self, value):
-        self._apparentAlt = value
+    @Alt.setter
+    def Alt(self, value):
+        self._Alt = value
 
     @property
-    def apparentAz(self):
-        return self._apparentAz
+    def Az(self):
+        return self._Az
 
-    @apparentAz.setter
-    def apparentAz(self, value):
-        self._apparentAz = value
+    @Az.setter
+    def Az(self, value):
+        self._Az = value
 
     @property
     def status(self):
@@ -297,7 +322,7 @@ class Site(object):
         self._statusSlew = value
 
     def __str__(self):
-        output = '<Lat: {0}>   <Lon: {1}>   <Elev: {2}>'
+        output = 'Lat: {0}, Lon: {1}, Elev: {2}'
         value = output.format(self._location.latitude,
                               self._location.longitude,
                               self._location.elevation.m,
