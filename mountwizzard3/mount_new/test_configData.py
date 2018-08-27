@@ -139,6 +139,37 @@ class TestConfigData(unittest.TestCase):
         model.delName(1)
         self.assertEqual(len(model.nameList), 2)
 
+    def test_StarList_iteration(self):
+        p1 = '12:45:33.01'
+        p2 = '+56*30:00.5'
+        p3 = '1234.5'
+        p4 = '90'
+
+        model = Model()
+
+        for i in range(0, 10):
+            model.addStar(ModelStar(point=(p1, p2),
+                                    errorRMS=i*i,
+                                    errorAngle=i*i,
+                                    number=i))
+
+        self.assertEqual(len(model.starList), 10)
+
+        for star in model.starList:
+            print(star)
+
+    def test_NameList_iteration(self):
+
+        model = Model()
+
+        for i in range(0, 10):
+            model.addName('this is the {0}.th name'.format(i))
+
+        self.assertEqual(len(model.nameList), 10)
+
+        for name in model.nameList:
+            print(name)
+
 
 if __name__ == '__main__':
     unittest.main()
