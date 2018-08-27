@@ -345,7 +345,24 @@ class Setting(object):
     attributes of the connected mount and provides the abstracted interface
     to a 10 micron mount.
 
-        >>> settings = Settings()
+        >>> settings = Settings(
+        >>>                     slewRate=0,
+        >>>                     timeToFlip=0,
+        >>>                     meridianLimitGuide=0,
+        >>>                     meridianLimitSlew=0,
+        >>>                     refractionTemperature=0,
+        >>>                     refractionPressure=0,
+        >>>                     trackingRate=0,
+        >>>                     telescopeTempDEC=0,
+        >>>                     statusRefraction=False,
+        >>>                     statusUnattendedFlip=False,
+        >>>                     statusDualAxisTracking=False,
+        >>>                     currentHorizonLimitHigh=90,
+        >>>                     currentHorizonLimitLow=0,
+        >>>                     UTCDataValid=False,
+        >>>                     UTCDataExpirationDate=None,
+        >>>                     )
+
     """
 
     __all__ = ['Setting',
@@ -358,7 +375,6 @@ class Setting(object):
                  timeToFlip=0,
                  meridianLimitGuide=0,
                  meridianLimitSlew=0,
-                 timeToMeridian=0,
                  refractionTemperature=0,
                  refractionPressure=0,
                  trackingRate=0,
@@ -376,7 +392,6 @@ class Setting(object):
         self.timeToFlip = timeToFlip
         self.meridianLimitGuide = meridianLimitGuide
         self.meridianLimitSlew = meridianLimitSlew
-        self.timeToMeridian = timeToMeridian
         self.refractionTemperature = refractionTemperature
         self.refractionPressure = refractionPressure
         self.trackingRate = trackingRate
@@ -388,6 +403,8 @@ class Setting(object):
         self.currentHorizonLimitLow = currentHorizonLimitLow
         self.UTCDataValid = UTCDataValid
         self.UTCDataExpirationDate = UTCDataExpirationDate
+
+        self._timeToMeridian = 0
 
     @property
     def slewRate(self):
@@ -443,27 +460,27 @@ class Setting(object):
         self._refractionPressure = value
 
     @property
-    def TrackingRate(self):
-        return self._TrackingRate
+    def trackingRate(self):
+        return self._trackingRate
 
-    @TrackingRate.setter
-    def TrackingRate(self, value):
-        self._TrackingRate = value
-
-    @property
-    def TelescopeTempDEC(self):
-        return self._TelescopeTempDEC
-
-    @TelescopeTempDEC.setter
-    def TelescopeTempDEC(self, value):
-        self._TelescopeTempDEC = value
+    @trackingRate.setter
+    def trackingRate(self, value):
+        self._trackingRate = value
 
     @property
-    def refractionStatus(self):
+    def telescopeTempDEC(self):
+        return self._telescopeTempDEC
+
+    @telescopeTempDEC.setter
+    def telescopeTempDEC(self, value):
+        self._telescopeTempDEC = value
+
+    @property
+    def statusRefraction(self):
         return self._statusRefraction
 
-    @refractionStatus.setter
-    def refractionStatus(self, value):
+    @statusRefraction.setter
+    def statusRefraction(self, value):
         self._statusRefraction = value
 
     @property
