@@ -195,7 +195,15 @@ class Site(object):
 
     __all__ = ['Site',
                'location',
-
+               'timeJD',
+               'timeSidereal',
+               'raJNow',
+               'decJNow',
+               'pierside',
+               'Alt',
+               'Az',
+               'status',
+               'statusSlew',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
@@ -228,6 +236,7 @@ class Site(object):
         self.statusSlew = statusSlew
 
     def _stringToDegree(self, value):
+
         value = value.split(':')
         if len(value) != 3:
             self.logger.error('malformed value: {0}'.format(value))
