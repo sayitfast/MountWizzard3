@@ -227,7 +227,7 @@ class Site(object):
         self.location = location
         self.timeJD = timeJD
         self.timeSidereal = timeSidereal
-        self.raJNow = raJNow#
+        self.raJNow = raJNow
         self.decJNow = decJNow
         self.pierside = pierside
         self.Alt = Alt
@@ -353,23 +353,41 @@ class Setting(object):
     version = '0.1'
     logger = logging.getLogger(__name__)
 
-    def __init__(self):
-        self._slewRate = 0
-        self._timeToFlip = 0
-        self._meridianLimitGuide = 0
-        self._meridianLimitSlew = 0
-        self._timeToMeridian = 0
-        self._refractionTemperature = 0
-        self._refractionPressure = 0
-        self._TrackingRate = 0
-        self._TelescopeTempDEC = 0
-        self._statusRefraction = False
-        self._statusUnattendedFlip = False
-        self._statusDualAxisTracking = False
-        self._currentHorizonLimitHigh = 0
-        self._currentHorizonLimitLow = 0
-        self._UTCDataValid = ''
-        self._UTCDataExpirationDate = ''
+    def __init__(self,
+                 slewRate=0,
+                 timeToFlip=0,
+                 meridianLimitGuide=0,
+                 meridianLimitSlew=0,
+                 timeToMeridian=0,
+                 refractionTemperature=0,
+                 refractionPressure=0,
+                 trackingRate=0,
+                 telescopeTempDEC=0,
+                 statusRefraction=False,
+                 statusUnattendedFlip=False,
+                 statusDualAxisTracking=False,
+                 currentHorizonLimitHigh=90,
+                 currentHorizonLimitLow=0,
+                 UTCDataValid=False,
+                 UTCDataExpirationDate=None,
+                 ):
+
+        self.slewRate = slewRate
+        self.timeToFlip = timeToFlip
+        self.meridianLimitGuide = meridianLimitGuide
+        self.meridianLimitSlew = meridianLimitSlew
+        self.timeToMeridian = timeToMeridian
+        self.refractionTemperature = refractionTemperature
+        self.refractionPressure = refractionPressure
+        self.trackingRate = trackingRate
+        self.telescopeTempDEC = telescopeTempDEC
+        self.statusRefraction = statusRefraction
+        self.statusUnattendedFlip = statusUnattendedFlip
+        self.statusDualAxisTracking = statusDualAxisTracking
+        self.currentHorizonLimitHigh = currentHorizonLimitHigh
+        self.currentHorizonLimitLow = currentHorizonLimitLow
+        self.UTCDataValid = UTCDataValid
+        self.UTCDataExpirationDate = UTCDataExpirationDate
 
     @property
     def slewRate(self):
