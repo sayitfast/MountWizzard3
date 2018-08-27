@@ -366,6 +366,22 @@ class Setting(object):
     """
 
     __all__ = ['Setting',
+               'slewRate',
+               'timeToFlip',
+               'timeToMeridian',
+               'meridianLimitGuide',
+               'meridianLimitSlew',
+               'refractionTemperature',
+               'refractionPressure',
+               'trackingRate',
+               'telescopeTempDEC',
+               'statusRefraction',
+               'statusUnattendedFlip',
+               'statusDualAxisTracking',
+               'currentHorizonLimitHigh',
+               'currentHorizonLimitLow',
+               'UTCDataValid',
+               'UTCDataExpirationDate',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
