@@ -527,6 +527,13 @@ class Model(object):
         self._numberStars = value
 
     def addStar(self, value):
+        """
+        Adds a star to the list of stars. Type of name should be class ModelStar.
+
+        :param value: name as type ModelStar
+        :return: nothing
+        """
+
         if isinstance(value, ModelStar):
             self._starList.insert(len(self._starList), value)
         elif len(value) == 4:
@@ -537,6 +544,13 @@ class Model(object):
             self.logger.error('malformed value: {0}'.format(value))
 
     def delStar(self, value):
+        """
+        Deletes a name from the list of stars at position value. The numbering
+        is from 0 to len -1 of list.
+
+        :param value: position as int
+        """
+
         value = int(value)
         if value < 0 or value > len(self._starList) - 1:
             self.logger.error('invalid value: {0}'.format(value))
@@ -576,12 +590,27 @@ class Model(object):
         self._numberNames = value
 
     def addName(self, value):
+        """
+        Adds a name to the list of names. Type of name should be str.
+
+        :param value: name as str
+        :return: nothing
+        """
+
         if isinstance(value, str):
             self._nameList.insert(len(self._nameList), value)
         else:
             self.logger.error('malformed value: {0}'.format(value))
 
     def delName(self, value):
+        """
+        Deletes a name from the list of names at position value. The numbering
+        is from 0 to len -1 of list.
+
+        :param value: position as int
+        :return: nothing
+        """
+
         value = int(value)
         if value < 0 or value > len(self._nameList) - 1:
             self.logger.error('invalid value: {0}'.format(value))
