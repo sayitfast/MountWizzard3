@@ -94,6 +94,20 @@ class TestConfigData(unittest.TestCase):
         self.assertAlmostEqual(modelStar.point.dec.dms()[1], 30, 6)
         self.assertAlmostEqual(modelStar.point.dec.dms()[2], 0.5, 6)
 
+    def test_ModelStarList_create(self):
+        p1 = '12:45:33.01'
+        p2 = '+56*30:00.5'
+        p3 = '1234.5'
+        p4 = '90'
+        modelStar1 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
+        modelStar2 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=2)
+        modelStar3 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=3)
+        modelStar4 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=4)
+
+        model = Model()
+
+
+
 
 if __name__ == '__main__':
     unittest.main()

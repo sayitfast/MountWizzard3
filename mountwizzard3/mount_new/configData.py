@@ -486,15 +486,28 @@ class Model(object):
     version = '0.1'
     logger = logging.getLogger(__name__)
 
-    def __init__(self):
-        self._numberNames = 0
-        self._numberStars = 0
-        self._starList = list()
-        self._nameList = list()
+    def __init__(self,
+                 numberNames=0,
+                 numberStars=0,
+                 nameList=list(),
+                 starList=list(),
+                 ):
+
+        self.numberNames = numberNames
+        self.numberStars = numberStars
+        self.starList = starList
+        self.nameList = nameList
 
     @property
     def starList(self):
         return self._starList
+
+    @starList.setter
+    def starList(self):
+        if isinstance(value, self.starList):
+            self._starList = value
+        else:
+            self._starList = list()
 
     @property
     def numberStars(self):
@@ -527,7 +540,7 @@ class Model(object):
         number of stars compared to the number of stars in the list.
         Otherwise something was changed.
 
-        :return: output of check
+        :return: True if same size
         """
         if self._numberStars == len(self._starList):
             return True
@@ -535,12 +548,19 @@ class Model(object):
             return False
 
     @property
-    def modelList(self):
+    def nameList(self):
         return self._nameList
+
+    @nameList.setter
+    def starList(self):
+        if isinstance(value, self.nameList):
+            self._nameList = value
+        else:
+            self._nameList = list()
 
     @property
     def numberNames(self):
-        return self._numberModelNames
+        return self._numberNames
 
     @numberNames.setter
     def numberNames(self, value):
@@ -565,7 +585,7 @@ class Model(object):
         number of names compared to the number of names in the list.
         Otherwise something was changed.
 
-        :return: output of check
+        :return: True if same size
         """
         if self._numberNames == len(self._nameList):
             return True
