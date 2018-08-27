@@ -78,6 +78,13 @@ class Firmware(object):
     """
 
     __all__ = ['Firmware',
+               'productName',
+               'numberString',
+               'hwVersion',
+               'fwtime',
+               'fwdate',
+               'checkNewer'
+               'number',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
@@ -142,10 +149,17 @@ class Firmware(object):
         self._fwtime = value
 
     def checkNewer(self, number):
+        """
+        Checks if the provided FW number is newer than the one of the mount
+
+        :param number:      fw numberf to test as int
+        :return:            True if newer / False
+        """
+
         return number > self._number
 
     def __str__(self):
-        output = '<Product: {0}>   <Firmware: {1}>   <Hardware: {2}>'
+        output = 'Prod: {0}, FW: {1}, HW: {2}'
         value = output.format(self._productName,
                               self._numberString,
                               self._hwVersion,
