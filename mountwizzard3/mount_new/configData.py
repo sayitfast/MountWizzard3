@@ -469,6 +469,15 @@ class Model(object):
     alignment model used by the mount and the data, which models are stored
     in the mount and provides the abstracted interface to a 10 micron mount.
 
+        >>> settings = Model(
+        >>>                 numberNames=0,
+        >>>                 numberStars=0,
+        >>>                 nameList=[],
+        >>>                 starList=[],
+        >>>                 )
+
+    But mostly the command will be:
+
         >>> settings = Model()
     """
 
@@ -489,8 +498,8 @@ class Model(object):
     def __init__(self,
                  numberNames=0,
                  numberStars=0,
-                 nameList=list(),
-                 starList=list(),
+                 nameList=[],
+                 starList=[],
                  ):
 
         self.numberNames = numberNames
@@ -503,8 +512,8 @@ class Model(object):
         return self._starList
 
     @starList.setter
-    def starList(self):
-        if isinstance(value, self.starList):
+    def starList(self, value):
+        if isinstance(value, list) and len(value) > 0:
             self._starList = value
         else:
             self._starList = list()
@@ -517,9 +526,9 @@ class Model(object):
     def numberStars(self, value):
         self._numberStars = value
 
-    def addStar(self):
+    def addStar(self, value):
         if isinstance(value, ModelStar):
-            self._starList.extend(value)
+            self._starList.insert(len(self._starList), value)
         elif len(value) == 4:
             _point, _err, _number = value
             value = ModelStar(_point, _err, _number)
@@ -529,7 +538,7 @@ class Model(object):
 
     def delStar(self, value):
         value = int(value)
-        if value < 0 or value > len(self._starList):
+        if value < 0 or value > len(self._starList) - 1:
             self.logger.error('invalid value: {0}'.format(value))
             return
         self._starList.pop(value)
@@ -552,8 +561,8 @@ class Model(object):
         return self._nameList
 
     @nameList.setter
-    def nameList(self):
-        if isinstance(value, self.nameList):
+    def nameList(self, value):
+        if isinstance(value, list) and len(value) > 0:
             self._nameList = value
         else:
             self._nameList = list()
@@ -566,15 +575,15 @@ class Model(object):
     def numberNames(self, value):
         self._numberNames = value
 
-    def addName(self):
+    def addName(self, value):
         if isinstance(value, str):
-            self._nameList.extend(value)
+            self._nameList.insert(len(self._nameList), value)
         else:
             self.logger.error('malformed value: {0}'.format(value))
 
     def delName(self, value):
         value = int(value)
-        if value < 0 or value > len(self._nameList):
+        if value < 0 or value > len(self._nameList) - 1:
             self.logger.error('invalid value: {0}'.format(value))
             return
         self._nameList.pop(value)

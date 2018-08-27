@@ -94,7 +94,7 @@ class TestConfigData(unittest.TestCase):
         self.assertAlmostEqual(modelStar.point.dec.dms()[1], 30, 6)
         self.assertAlmostEqual(modelStar.point.dec.dms()[2], 0.5, 6)
 
-    def test_ModelStarList_create(self):
+    def test_StarList_create(self):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
         p3 = '1234.5'
@@ -106,7 +106,38 @@ class TestConfigData(unittest.TestCase):
 
         model = Model()
 
+        model.addStar(modelStar1)
+        model.addStar(modelStar2)
+        model.addStar(modelStar3)
+        model.addStar(modelStar4)
 
+        self.assertEqual(len(model.starList), 4)
+        model.delStar(3)
+        self.assertEqual(len(model.starList), 3)
+        model.delStar(3)
+        self.assertEqual(len(model.starList), 3)
+        model.delStar(-1)
+        self.assertEqual(len(model.starList), 3)
+        model.delStar(1)
+        self.assertEqual(len(model.starList), 2)
+
+    def test_NameList_create(self):
+        model = Model()
+
+        model.addName('the first one')
+        model.addName('the second one')
+        model.addName('the third one')
+        model.addName('the fourth one')
+
+        self.assertEqual(len(model.nameList), 4)
+        model.delName(3)
+        self.assertEqual(len(model.nameList), 3)
+        model.delName(3)
+        self.assertEqual(len(model.nameList), 3)
+        model.delName(-1)
+        self.assertEqual(len(model.nameList), 3)
+        model.delName(1)
+        self.assertEqual(len(model.nameList), 2)
 
 
 if __name__ == '__main__':
