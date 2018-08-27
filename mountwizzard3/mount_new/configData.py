@@ -42,6 +42,12 @@ class Data(object):
     """
 
     __all__ = ['Data',
+               'fw',
+               'setting',
+               'site',
+               'model',
+               'timescale',
+               'expire',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
