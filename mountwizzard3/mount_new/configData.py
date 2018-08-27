@@ -62,6 +62,8 @@ class Data(object):
                                    expire=self.expire,
                                    )
         self.timeScale = load.timescale()
+
+        # instantiating the other necessary data objects / classes
         self.fw = Firmware()
         self.setting = Setting()
         self.site = Site(self.timeScale)
@@ -332,8 +334,6 @@ class Setting(object):
         self._statusDualAxisTracking = False
         self._currentHorizonLimitHigh = 0
         self._currentHorizonLimitLow = 0
-        self._numberModelNames = 0
-        self._numberAlignmentStars = 0
         self._UTCDataValid = ''
         self._UTCDataExpirationDate = ''
 
@@ -473,27 +473,36 @@ class Model(object):
     """
 
     __all__ = ['Model',
+               'starList',
+               'numberStars',
+               'numberNames',
+               'addStar',
+               'delStar',
+               'addName',
+               'delName',
+               'checkStarListOK',
+               'checkNameListO',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self._numberModelNames = 0
-        self._numberAlignmentStars = 0
+        self._numberNames = 0
+        self._numberStars = 0
         self._starList = list()
-        self._modelNameList = list()
+        self._nameList = list()
 
     @property
     def starList(self):
         return self._starList
 
     @property
-    def numberAlignmentStars(self):
-        return self._numberAlignmentStars
+    def numberStars(self):
+        return self._numberStars
 
-    @numberAlignmentStars.setter
-    def numberAlignmentStars(self, value):
-        self._numberAlignmentStars = value
+    @numberStars.setter
+    def numberStars(self, value):
+        self._numberStars = value
 
     def addStar(self):
         if isinstance(value, ModelStar):
@@ -520,37 +529,37 @@ class Model(object):
 
         :return: output of check
         """
-        if self._numberAlignmentStars == len(self._starList):
+        if self._numberStars == len(self._starList):
             return True
         else:
             return False
 
     @property
-    def modelNameList(self):
-        return self._modelNameList
+    def modelList(self):
+        return self._nameList
 
     @property
-    def numberModelNames(self):
+    def numberNames(self):
         return self._numberModelNames
 
-    @numberModelNames.setter
-    def numberModelNames(self, value):
-        self._numberModelNames = value
+    @numberNames.setter
+    def numberNames(self, value):
+        self._numberNames = value
 
     def addName(self):
         if isinstance(value, str):
-            self._modelNameList.extend(value)
+            self._nameList.extend(value)
         else:
             self.logger.error('malformed value: {0}'.format(value))
 
     def delName(self, value):
         value = int(value)
-        if value < 0 or value > len(self._modelNameList):
+        if value < 0 or value > len(self._nameList):
             self.logger.error('invalid value: {0}'.format(value))
             return
-        self._modelNameList.pop(value)
+        self._nameList.pop(value)
 
-    def checkModelNameListOK(self):
+    def checkNameListOK(self):
         """
         Make a check if the actual model name count by polling gets the same
         number of names compared to the number of names in the list.
@@ -558,7 +567,7 @@ class Model(object):
 
         :return: output of check
         """
-        if self._numberModelNames == len(self._starList):
+        if self._numberNames == len(self._nameList):
             return True
         else:
             return False
