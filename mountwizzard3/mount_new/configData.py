@@ -552,7 +552,7 @@ class Model(object):
         return self._nameList
 
     @nameList.setter
-    def starList(self):
+    def nameList(self):
         if isinstance(value, self.nameList):
             self._nameList = value
         else:
