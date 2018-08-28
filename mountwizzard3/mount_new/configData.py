@@ -24,11 +24,11 @@ import skyfield.api
 
 
 # conversion from HA value, which is
-# +dd*mm:ss.s format to decimal value
+# HH:MM:SS.SS format to decimal value
 def stringToDegree(value):
     value = value.split(':')
     if len(value) != 3:
-        return 0
+        return None
     value = [float(x) for x in value]
     value = value[0] + value[1] / 60 + value[2] / 3600
     return value
@@ -38,7 +38,7 @@ def stringToDegree(value):
 # +dd*mm:ss.s format to decimal value
 def stringToDegreeDEC(value):
     if value.count('*') != 1:
-        return 0
+        return None
     value = value.replace('*', ':')
     _sign = value[0]
     if _sign == '-':
@@ -48,7 +48,7 @@ def stringToDegreeDEC(value):
     value = value[1:]
     value = value.split(':')
     if len(value) != 3:
-        return 0
+        return None
     value = [float(x) for x in value]
     value = value[0] + value[1] / 60 + value[2] / 3600
     value = _sign * value
@@ -104,7 +104,7 @@ class Data(object):
         # instantiating the other necessary data objects / classes
         self.fw = Firmware()
         self.setting = Setting()
-        self.site = Site(self.timeScale)
+        self.site = Site(self.ts)
         self.model = Model()
 
 
@@ -215,16 +215,16 @@ class Site(object):
 
         >>> site = Site(
         >>>             ts=ts,
-        >>>             location=None,
-        >>>             timeJD=None,
-        >>>             timeSidereal=None,
-        >>>             raJNow=None,
-        >>>             decJNow=None,
-        >>>             pierside=None,
-        >>>             Alt=None,
-        >>>             Az=None,
-        >>>             status=None,
-        >>>             statusSlew=None,
+        >>>             location=(0, 0, 0),
+        >>>             timeJD=0,
+        >>>             timeSidereal=0,
+        >>>             raJNow=0,
+        >>>             decJNow=0,
+        >>>             pierside='',
+        >>>             Alt=0,
+        >>>             Az=0,
+        >>>             status=False,
+        >>>             statusSlew=0,
         >>>             )
 
     The Site class needs as parameter a ts object from skyfield.api to
@@ -247,17 +247,17 @@ class Site(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 ts,
-                 location,
-                 timeJD,
-                 timeSidereal,
-                 raJNow,
-                 decJNow,
-                 pierside,
-                 Alt,
-                 Az,
-                 status,
-                 statusSlew,
+                 ts=None,
+                 location=[0, 0, 0],
+                 timeJD=0,
+                 timeSidereal=0,
+                 raJNow=0,
+                 decJNow=0,
+                 pierside=0,
+                 Alt=0,
+                 Az=0,
+                 status=False,
+                 statusSlew=0,
                  ):
 
         self.ts = ts
@@ -278,9 +278,28 @@ class Site(object):
 
     @location.setter
     def location(self, value):
+        if isinstance(value, skyfield.api.Topos):
+            self._location = value
+            return
+        if not isinstance(value, list):
+            self.logger.error('malformed value: {0}'.format(value))
+        if len(value) != 3:
+            self.logger.error('malformed value: {0}'.format(value))
+            return
         lat, lon, elev = value
-        lon = skyfield.api.Angle(degrees=stringToDegree(lon))
-        lat = skyfield.api.Angle(degrees=stringToDegree(lat))
+        if all(isinstance(x, str) for x in value):
+            lon = stringToDegree(lon)
+            if not lon:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            lat = stringToDegree(lat)
+            if not lat:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            elev = float(elev)
+        elif all(isinstance(x, (int, float)) for x in value):
+            lon = skyfield.api.Angle(degrees=lon)
+            lat = skyfield.api.Angle(degrees=lat)
         self._location = skyfield.api.Topos(longitude=lon,
                                             latitude=lat,
                                             elevation_m=elev)
@@ -302,10 +321,10 @@ class Site(object):
 
     @timeSidereal.setter
     def timeSidereal(self, value):
-        if isinstance(value, float):
+        if isinstance(value, str):
             self._timeSidereal = value
         else:
-            self._timeSidereal = float(value)
+            self._timeSidereal = str(value)
 
     @property
     def raJNow(self):
@@ -316,7 +335,11 @@ class Site(object):
         if isinstance(value, skyfield.api.Angle):
             self._raJNow = value
         elif isinstance(value, str):
-            self._raJNow = skyfield.api.Angle(degrees=stringToDegree(value))
+            value = stringToDegree(value)
+            if not value:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            self._raJNow = skyfield.api.Angle(degrees=value)
         else:
             self._raJNow = skyfield.api.Angle(degrees=0)
             self.logger.error('malformed value: {0}'.format(value))
@@ -330,7 +353,11 @@ class Site(object):
         if isinstance(value, skyfield.api.Angle):
             self._decJNow = value
         elif isinstance(value, str):
-            self._decJNow = skyfield.api.Angle(degrees=stringToDegree(value))
+            value = stringToDegree(value)
+            if not value:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            self._decJNow = skyfield.api.Angle(degrees=value)
         else:
             self._decJNow = skyfield.api.Angle(degrees=0)
             self.logger.error('malformed value: {0}'.format(value))
@@ -889,7 +916,13 @@ class ModelStar(object):
             _ha, _dec = value
             if isinstance(value[1], str):
                 _ha = stringToDegree(_ha)
+                if not _ha:
+                    self.logger.error('malformed value: {0}'.format(value))
+                    return
                 _dec = stringToDegreeDEC(_dec)
+                if not _dec:
+                    self.logger.error('malformed value: {0}'.format(value))
+                    return
             self._point = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
         else:

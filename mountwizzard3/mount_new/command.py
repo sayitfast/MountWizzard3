@@ -122,7 +122,7 @@ class Command(object):
             return False, message
         # doing observer settings update
         try:
-            elev = float(response[0])
+            elev = response[0]
             # due to compatibility to LX200 protocol east is negative, so we change that
             if response[1] == '-':
                 lon = response[1].replace('-', '+')
@@ -130,7 +130,7 @@ class Command(object):
                 lon = response[1].replace('+', '-')
             lat = response[2]
             # storing it to the skyfield Topos unit
-            self.data.site.location = (lat, lon, elev)
+            self.data.site.location = [lat, lon, elev]
         except Exception as e:
             message = e
             return False, message

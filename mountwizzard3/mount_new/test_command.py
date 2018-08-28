@@ -136,8 +136,7 @@ class TestCommand(unittest.TestCase):
                     '10micron GM1000HPS', '15:56:53', 'Q-TYPE2012']
 
         suc, message = comm._parseSlow(response, 8)
-        self.assertEqual(False, suc)
-        self.assertIn('could not convert string to float', str(message))
+        self.assertEqual(True, suc)
 
     def test_parseSlow_bad6(self):
         comm = Command(data=self.data,
