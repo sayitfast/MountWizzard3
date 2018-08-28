@@ -1,9 +1,14 @@
 import unittest
+import logging
 
 import skyfield.api
 
 from mount_new.command import Command
 from mount_new.configData import Data
+
+logging.basicConfig(level=logging.INFO,
+                    format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S', )
 
 
 class TestCommand(unittest.TestCase):
@@ -155,6 +160,27 @@ class TestCommand(unittest.TestCase):
         response = ['13:15:35.68',
                     '19.44591,+88.0032,W,002.9803,+47.9945,2458352.10403639,5,0']
     """
+
+    # testing parsing Slow
+    def test_parseMed_good(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['15', '0426', '05', '03', '+010.0', '0950.0', '60.2', '+033.0', '101+90*',
+                    '+00*', '8', '34', 'E,2018-08-11']
+        suc, message = comm._parseMed(response, 13)
+        self.assertEqual(True, suc)
+        self.assertEqual('ok', message)
+
+    def test_receiveMed_good(self):
+        print('test')
+        comm = Command(host='192.168.2.15',
+                       port=3492,
+                       data=self.data,
+                       )
+        ok, mes = comm.pollMed()
+        self.assertEqual(True, ok)
+        self.assertEqual('ok', mes)
+        print(comm.data.site.location)
 
 
 if __name__ == '__main__':

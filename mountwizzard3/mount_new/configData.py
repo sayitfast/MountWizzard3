@@ -253,7 +253,7 @@ class Site(object):
                  timeSidereal=0,
                  raJNow=0,
                  decJNow=0,
-                 pierside=0,
+                 pierside='E',
                  Alt=0,
                  Az=0,
                  status=False,
@@ -340,6 +340,10 @@ class Site(object):
                 self.logger.error('malformed value: {0}'.format(value))
                 return
             self._raJNow = skyfield.api.Angle(degrees=value)
+        elif isinstance(value, float):
+            self._raJNow = skyfield.api.Angle(degrees=value)
+        elif isinstance(value, int):
+            self._raJNow = skyfield.api.Angle(degrees=float(value))
         else:
             self._raJNow = skyfield.api.Angle(degrees=0)
             self.logger.error('malformed value: {0}'.format(value))
@@ -358,6 +362,10 @@ class Site(object):
                 self.logger.error('malformed value: {0}'.format(value))
                 return
             self._decJNow = skyfield.api.Angle(degrees=value)
+        elif isinstance(value, float):
+            self._decJNow = skyfield.api.Angle(degrees=value)
+        elif isinstance(value, int):
+            self._decJNow = skyfield.api.Angle(degrees=float(value))
         else:
             self._decJNow = skyfield.api.Angle(degrees=0)
             self.logger.error('malformed value: {0}'.format(value))
@@ -384,6 +392,10 @@ class Site(object):
             self._Alt = value
         elif isinstance(value, str):
             self._Alt = skyfield.api.Angle(degrees=float(value))
+        elif isinstance(value, float):
+            self._Alt = skyfield.api.Angle(degrees=value)
+        elif isinstance(value, int):
+            self._Alt = skyfield.api.Angle(degrees=float(value))
         else:
             self._Alt = skyfield.api.Angle(degrees=0)
             self.logger.error('malformed value: {0}'.format(value))
@@ -397,6 +409,10 @@ class Site(object):
         if isinstance(value, skyfield.api.Angle):
             self._Az = value
         elif isinstance(value, str):
+            self._Az = skyfield.api.Angle(degrees=float(value))
+        elif isinstance(value, float):
+            self._Az = skyfield.api.Angle(degrees=value)
+        elif isinstance(value, int):
             self._Az = skyfield.api.Angle(degrees=float(value))
         else:
             self._Az = skyfield.api.Angle(degrees=0)
