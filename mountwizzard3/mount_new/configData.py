@@ -385,10 +385,7 @@ class Site(object):
 
     @property
     def statusSlew(self):
-        if isinstance(value, float):
-            self._statusSlew = value
-        else:
-            self._statusSlew = float(value)
+        return self._statusSlew
 
     @statusSlew.setter
     def statusSlew(self, value):
@@ -687,7 +684,7 @@ class Model(object):
                'addName',
                'delName',
                'checkStarListOK',
-               'checkNameListO',
+               'checkNameListOK',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
