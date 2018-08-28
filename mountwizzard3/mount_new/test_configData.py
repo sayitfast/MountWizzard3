@@ -12,7 +12,6 @@ from mount_new.configData import Model
 from mount_new.configData import Site
 from mount_new.configData import stringToDegree
 from mount_new.configData import stringToDegreeDEC
-from mount_new.configData import stringToHourHA
 
 
 class TestConfigData(unittest.TestCase):
@@ -21,68 +20,57 @@ class TestConfigData(unittest.TestCase):
         logger = logging.getLogger(__name__)
         pass
 
-    def test_ModelStars_stringToHourHA(self):
-        modelStar = ModelStar()
+    def test_ModelStars_stringToDegree(self):
         parameter = '12:45:33.01'
-        value = stringToHourHA(parameter)
+        value = stringToDegree(parameter)
         self.assertAlmostEqual(value, 12.759169444444444, 6)
 
-    def test_ModelStars_stringToHourHA_bad1(self):
-        modelStar = ModelStar()
+    def test_ModelStars_stringToDegree_bad1(self):
         parameter = '12:45'
-        value = stringToHourHA(parameter)
+        value = stringToDegree(parameter)
         self.assertAlmostEqual(value, 0, 6)
 
-    def test_ModelStars_stringToHourHA_bad2(self):
-        modelStar = ModelStar()
+    def test_ModelStars_stringToDegree_bad2(self):
         parameter = ''
-        value = stringToHourHA(parameter)
+        value = stringToDegree(parameter)
         self.assertAlmostEqual(value, 0, 6)
 
-    def test_ModelStars_stringToHourHA_bad3(self):
-        modelStar = ModelStar()
+    def test_ModelStars_stringToDegree_bad3(self):
         parameter = '12:45:33:01.01'
-        value = stringToHourHA(parameter)
+        value = stringToDegree(parameter)
         self.assertAlmostEqual(value, 0, 6)
 
     def test_ModelStars_stringToDegreeDEC_pos(self):
-        modelStar = ModelStar()
         parameter = '+56*30:00.0'
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 56.5, 6)
 
     def test_ModelStars_stringToDegreeDEC_neg(self):
-        modelStar = ModelStar()
         parameter = '-56*30:00.0'
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, -56.5, 6)
 
     def test_ModelStars_stringToDegreeDEC_without(self):
-        modelStar = ModelStar()
         parameter = ' 56*30:00.0'
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 56.5, 6)
 
     def test_ModelStars_stringToDegreeDEC_bad1(self):
-        modelStar = ModelStar()
         parameter = '++56*30:00.0'
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 56.5, 6)
 
     def test_ModelStars_stringToDegreeDEC_bad2(self):
-        modelStar = ModelStar()
         parameter = '+56*30*00.0'
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 0, 6)
 
     def test_ModelStars_stringToDegreeDEC_bad3(self):
-        modelStar = ModelStar()
         parameter = '+56:30:00.0'
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 0, 6)
 
     def test_ModelStars_stringToDegreeDEC_bad4(self):
-        modelStar = ModelStar()
         parameter = ''
         value = stringToDegreeDEC(parameter)
         self.assertAlmostEqual(value, 0, 6)

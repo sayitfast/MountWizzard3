@@ -23,14 +23,8 @@ import numpy
 import skyfield.api
 
 
-def stringToHourHA(value):
-    value = value.split(':')
-    if len(value) != 3:
-        return 0
-    value = [float(x) for x in value]
-    value = value[0] + value[1] / 60 + value[2] / 3600
-    return value
-
+# conversion from HA value, which is
+# +dd*mm:ss.s format to decimal value
 def stringToDegree(value):
     value = value.split(':')
     if len(value) != 3:
@@ -39,6 +33,9 @@ def stringToDegree(value):
     value = value[0] + value[1] / 60 + value[2] / 3600
     return value
 
+
+# conversion from HA value, which is
+# +dd*mm:ss.s format to decimal value
 def stringToDegreeDEC(value):
     if value.count('*') != 1:
         return 0
@@ -56,6 +53,7 @@ def stringToDegreeDEC(value):
     value = value[0] + value[1] / 60 + value[2] / 3600
     value = _sign * value
     return value
+
 
 class Data(object):
     """
@@ -461,7 +459,10 @@ class Setting(object):
 
     @slewRate.setter
     def slewRate(self, value):
-        self._slewRate = value
+        if isinstance(value, float):
+            self._slewRate = value
+        else:
+            self._slewRate = float(value)
 
     @property
     def timeToFlip(self):
@@ -469,7 +470,10 @@ class Setting(object):
 
     @timeToFlip.setter
     def timeToFlip(self, value):
-        self._timeToFlip = value
+        if isinstance(value, float):
+            self._timeToFlip = value
+        else:
+            self._timeToFlip = float(value)
 
     @property
     def meridianLimitGuide(self):
@@ -477,7 +481,10 @@ class Setting(object):
 
     @meridianLimitGuide.setter
     def meridianLimitGuide(self, value):
-        self._meridianLimitGuide = value
+        if isinstance(value, float):
+            self._meridianLimitGuide = value
+        else:
+            self._meridianLimitGuide = float(value)
 
     @property
     def meridianLimitSlew(self):
@@ -485,7 +492,10 @@ class Setting(object):
 
     @meridianLimitSlew.setter
     def meridianLimitSlew(self, value):
-        self._meridianLimitSlew = value
+        if isinstance(value, float):
+            self._meridianLimitSlew = value
+        else:
+            self._meridianLimitSlew = float(value)
 
     @property
     def timeToMeridian(self):
@@ -498,7 +508,10 @@ class Setting(object):
 
     @refractionTemperature.setter
     def refractionTemperature(self, value):
-        self._refractionTemperature = value
+        if isinstance(value, float):
+            self._refractionTemperature = value
+        else:
+            self._refractionTemperature = float(value)
 
     @property
     def refractionPressure(self):
@@ -506,7 +519,10 @@ class Setting(object):
 
     @refractionPressure.setter
     def refractionPressure(self, value):
-        self._refractionPressure = value
+        if isinstance(value, float):
+            self._refractionPressure = value
+        else:
+            self._refractionPressure = float(value)
 
     @property
     def trackingRate(self):
@@ -514,7 +530,10 @@ class Setting(object):
 
     @trackingRate.setter
     def trackingRate(self, value):
-        self._trackingRate = value
+        if isinstance(value, float):
+            self._telescopeTempDEC = value
+        else:
+            self._telescopeTempDEC = float(value)
 
     @property
     def telescopeTempDEC(self):
@@ -522,7 +541,10 @@ class Setting(object):
 
     @telescopeTempDEC.setter
     def telescopeTempDEC(self, value):
-        self._telescopeTempDEC = value
+        if isinstance(value, float):
+            self._telescopeTempDEC = value
+        else:
+            self._telescopeTempDEC = float(value)
 
     @property
     def statusRefraction(self):
@@ -530,7 +552,10 @@ class Setting(object):
 
     @statusRefraction.setter
     def statusRefraction(self, value):
-        self._statusRefraction = value
+        if isinstance(value, bool):
+            self._refractionPressure = value
+        else:
+            self._refractionPressure = bool(value)
 
     @property
     def statusUnattendedFlip(self):
@@ -538,7 +563,10 @@ class Setting(object):
 
     @statusUnattendedFlip.setter
     def statusUnattendedFlip(self, value):
-        self._statusUnattendedFlip = value
+        if isinstance(value, bool):
+            self._statusUnattendedFlip = value
+        else:
+            self._statusUnattendedFlip = bool(value)
 
     @property
     def statusDualAxisTracking(self):
@@ -546,7 +574,10 @@ class Setting(object):
 
     @statusDualAxisTracking.setter
     def statusDualAxisTracking(self, value):
-        self._statusDualAxisTracking = value
+        if isinstance(value, bool):
+            self._statusDualAxisTracking = value
+        else:
+            self._statusDualAxisTracking = bool(value)
 
     @property
     def currentHorizonLimitHigh(self):
@@ -554,7 +585,10 @@ class Setting(object):
 
     @currentHorizonLimitHigh.setter
     def currentHorizonLimitHigh(self, value):
-        self._currentHorizonLimitHigh = value
+        if isinstance(value, float):
+            self._currentHorizonLimitHigh = value
+        else:
+            self._currentHorizonLimitHigh = float(value)
 
     @property
     def currentHorizonLimitLow(self):
@@ -562,7 +596,10 @@ class Setting(object):
 
     @currentHorizonLimitLow.setter
     def currentHorizonLimitLow(self, value):
-        self._currentHorizonLimitLow = value
+        if isinstance(value, float):
+            self._currentHorizonLimitLow = value
+        else:
+            self._currentHorizonLimitLow = float(value)
 
     @property
     def UTCDataValid(self):
@@ -570,7 +607,10 @@ class Setting(object):
 
     @UTCDataValid.setter
     def UTCDataValid(self, value):
-        self._UTCDataValid = value
+        if isinstance(value, bool):
+            self._UTCDataValid = value
+        else:
+            self._UTCDataValid = bool(value)
 
     @property
     def UTCDataExpirationDate(self):
@@ -578,7 +618,10 @@ class Setting(object):
 
     @UTCDataExpirationDate.setter
     def UTCDataExpirationDate(self, value):
-        self._UTCDataExpirationDate = value
+        if isinstance(value, str):
+            self._UTCDataExpirationDate = value
+        else:
+            self._UTCDataExpirationDate = str(value)
 
 
 class Model(object):
@@ -810,7 +853,7 @@ class ModelStar(object):
         elif isinstance(value, tuple):
             _ha, _dec = value
             if isinstance(value[1], str):
-                _ha = stringToHourHA(_ha)
+                _ha = stringToDegree(_ha)
                 _dec = stringToDegreeDEC(_dec)
             self._point = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
