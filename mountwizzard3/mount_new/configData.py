@@ -78,7 +78,7 @@ class Data(object):
                'setting',
                'site',
                'model',
-               'timescale',
+               'ts',
                'expire',
                ]
     version = '0.1'
@@ -99,7 +99,7 @@ class Data(object):
                                    verbose=self.verbose,
                                    expire=self.expire,
                                    )
-        self.timeScale = load.timescale()
+        self.ts = load.timescale()
 
         # instantiating the other necessary data objects / classes
         self.fw = Firmware()
@@ -214,7 +214,7 @@ class Site(object):
     to a 10 micron mount.
 
         >>> site = Site(
-        >>>             timescale=timescale,
+        >>>             ts=ts,
         >>>             location=None,
         >>>             timeJD=None,
         >>>             timeSidereal=None,
@@ -227,7 +227,7 @@ class Site(object):
         >>>             statusSlew=None,
         >>>             )
 
-    The Site class needs as parameter a timescale object from skyfield.api to
+    The Site class needs as parameter a ts object from skyfield.api to
     be able to make all the necessary calculations about time from and to mount
     """
 
@@ -247,7 +247,7 @@ class Site(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 timeScale,
+                 ts,
                  location,
                  timeJD,
                  timeSidereal,
@@ -260,8 +260,7 @@ class Site(object):
                  statusSlew,
                  ):
 
-        self.timeScale = timeScale
-
+        self.ts = ts
         self.location = location
         self.timeJD = timeJD
         self.timeSidereal = timeSidereal
@@ -292,7 +291,10 @@ class Site(object):
 
     @timeJD.setter
     def timeJD(self, value):
-        self._timeJD = self.timeScale.tt_jd(value)
+        if isinstance(value, float):
+            self._timeJD = self.ts.tt_jd(value)
+        else:
+            self._timeJD = self.ts.tt_jd(float(value))
 
     @property
     def timeSidereal(self):
@@ -300,7 +302,10 @@ class Site(object):
 
     @timeSidereal.setter
     def timeSidereal(self, value):
-        self._timeSidereal = value
+        if isinstance(value, float):
+            self._timeSidereal = value
+        else:
+            self._timeSidereal = float(value)
 
     @property
     def raJNow(self):
@@ -310,8 +315,11 @@ class Site(object):
     def raJNow(self, value):
         if isinstance(value, skyfield.api.Angle):
             self._raJNow = value
+        elif isinstance(value, str):
+            self._raJNow = skyfield.api.Angle(degrees=stringToDegree(value))
         else:
-            pass
+            self._raJNow = skyfield.api.Angle(degrees=0)
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def decJNow(self):
@@ -319,7 +327,13 @@ class Site(object):
 
     @decJNow.setter
     def decJNow(self, value):
-        self._decJNow = value
+        if isinstance(value, skyfield.api.Angle):
+            self._decJNow = value
+        elif isinstance(value, str):
+            self._decJNow = skyfield.api.Angle(degrees=stringToDegree(value))
+        else:
+            self._decJNow = skyfield.api.Angle(degrees=0)
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def pierside(self):
@@ -327,7 +341,11 @@ class Site(object):
 
     @pierside.setter
     def pierside(self, value):
-        self._pierside = value
+        if value in ['E', 'W']:
+            self._pierside = value
+        else:
+            self._pierside = 'E'
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def Alt(self):
@@ -335,7 +353,13 @@ class Site(object):
 
     @Alt.setter
     def Alt(self, value):
-        self._Alt = value
+        if isinstance(value, skyfield.api.Angle):
+            self._Alt = value
+        elif isinstance(value, str):
+            self._Alt = skyfield.api.Angle(degrees=float(value))
+        else:
+            self._Alt = skyfield.api.Angle(degrees=0)
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def Az(self):
@@ -343,7 +367,13 @@ class Site(object):
 
     @Az.setter
     def Az(self, value):
-        self._Az = value
+        if isinstance(value, skyfield.api.Angle):
+            self._Az = value
+        elif isinstance(value, str):
+            self._Az = skyfield.api.Angle(degrees=float(value))
+        else:
+            self._Az = skyfield.api.Angle(degrees=0)
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def status(self):
@@ -355,11 +385,17 @@ class Site(object):
 
     @property
     def statusSlew(self):
-        return self._statusSlew
+        if isinstance(value, float):
+            self._statusSlew = value
+        else:
+            self._statusSlew = float(value)
 
     @statusSlew.setter
     def statusSlew(self, value):
-        self._statusSlew = value
+        if isinstance(value, bool):
+            self._statusSlew = value
+        else:
+            self._statusSlew = bool(value)
 
     def __str__(self):
         output = 'Lat: {0}, Lon: {1}, Elev: {2}'
@@ -659,10 +695,12 @@ class Model(object):
     def __init__(self,
                  numberNames=0,
                  numberStars=0,
-                 nameList=[],
-                 starList=[],
+                 nameList=None,
+                 starList=None,
                  ):
 
+        if nameList is None:
+            nameList = []
         self.numberNames = numberNames
         self.numberStars = numberStars
         self.starList = starList
