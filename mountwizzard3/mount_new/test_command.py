@@ -1,3 +1,22 @@
+############################################################
+# -*- coding: utf-8 -*-
+#
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
+# Python-based Tool for interaction with the 10micron mounts
+# GUI with PyQT5 for python
+# Python  v3.6.5
+#
+# Michael Würtenberger
+# (c) 2016, 2017, 2018
+#
+# Licence APL2.0
+#
+############################################################
 import unittest
 import logging
 
@@ -170,17 +189,6 @@ class TestCommand(unittest.TestCase):
         suc, message = comm._parseMed(response, 13)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
-
-    def test_receiveMed_good(self):
-        print('test')
-        comm = Command(host='192.168.2.15',
-                       port=3492,
-                       data=self.data,
-                       )
-        ok, mes = comm.pollMed()
-        self.assertEqual(True, ok)
-        self.assertEqual('ok', mes)
-        print(comm.data.site.location)
 
 
 if __name__ == '__main__':
