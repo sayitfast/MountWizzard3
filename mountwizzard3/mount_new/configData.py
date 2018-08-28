@@ -23,6 +23,40 @@ import numpy
 import skyfield.api
 
 
+def stringToHourHA(value):
+    value = value.split(':')
+    if len(value) != 3:
+        return 0
+    value = [float(x) for x in value]
+    value = value[0] + value[1] / 60 + value[2] / 3600
+    return value
+
+def stringToDegree(value):
+    value = value.split(':')
+    if len(value) != 3:
+        return 0
+    value = [float(x) for x in value]
+    value = value[0] + value[1] / 60 + value[2] / 3600
+    return value
+
+def stringToDegreeDEC(value):
+    if value.count('*') != 1:
+        return 0
+    value = value.replace('*', ':')
+    _sign = value[0]
+    if _sign == '-':
+        _sign = - 1.0
+    else:
+        _sign = 1.0
+    value = value[1:]
+    value = value.split(':')
+    if len(value) != 3:
+        return 0
+    value = [float(x) for x in value]
+    value = value[0] + value[1] / 60 + value[2] / 3600
+    value = _sign * value
+    return value
+
 class Data(object):
     """
     The class Data inherits all informations and handling of internal states an
@@ -241,16 +275,6 @@ class Site(object):
         self.status = status
         self.statusSlew = statusSlew
 
-    def _stringToDegree(self, value):
-
-        value = value.split(':')
-        if len(value) != 3:
-            self.logger.error('malformed value: {0}'.format(value))
-            return 0
-        value = [float(x) for x in value]
-        value = value[0] + value[1] / 60 + value[2] / 3600
-        return value
-
     @property
     def location(self):
         return self._location
@@ -258,8 +282,8 @@ class Site(object):
     @location.setter
     def location(self, value):
         lat, lon, elev = value
-        lon = skyfield.api.Angle(degrees=self._stringToDegree(lon))
-        lat = skyfield.api.Angle(degrees=self._stringToDegree(lat))
+        lon = skyfield.api.Angle(degrees=stringToDegree(lon))
+        lat = skyfield.api.Angle(degrees=stringToDegree(lat))
         self._location = skyfield.api.Topos(longitude=lon,
                                             latitude=lat,
                                             elevation_m=elev)
@@ -286,7 +310,10 @@ class Site(object):
 
     @raJNow.setter
     def raJNow(self, value):
-        self._raJNow = value
+        if isinstance(value, skyfield.api.Angle):
+            self._raJNow = value
+        else:
+            pass
 
     @property
     def decJNow(self):
@@ -772,35 +799,6 @@ class ModelStar(object):
         self.errorAngle = errorAngle
         self.number = number
 
-    def _stringToHourHA(self, value):
-        value = value.split(':')
-        if len(value) != 3:
-            self.logger.error('malformed value: {0}'.format(value))
-            return 0
-        value = [float(x) for x in value]
-        value = value[0] + value[1] / 60 + value[2] / 3600
-        return value
-
-    def _stringToDegreeDEC(self, value):
-        if value.count('*') != 1:
-            self.logger.error('malformed value: {0}'.format(value))
-            return 0
-        value = value.replace('*', ':')
-        _sign = value[0]
-        if _sign == '-':
-            _sign = - 1.0
-        else:
-            _sign = 1.0
-        value = value[1:]
-        value = value.split(':')
-        if len(value) != 3:
-            self.logger.error('malformed value: {0}'.format(value))
-            return 0
-        value = [float(x) for x in value]
-        value = value[0] + value[1] / 60 + value[2] / 3600
-        value = _sign * value
-        return value
-
     @property
     def point(self):
         return self._point
@@ -812,8 +810,8 @@ class ModelStar(object):
         elif isinstance(value, tuple):
             _ha, _dec = value
             if isinstance(value[1], str):
-                _ha = self._stringToHourHA(_ha)
-                _dec = self._stringToDegreeDEC(_dec)
+                _ha = stringToHourHA(_ha)
+                _dec = stringToDegreeDEC(_dec)
             self._point = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
         else:
