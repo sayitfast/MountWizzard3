@@ -22,6 +22,10 @@ import numpy
 
 import skyfield.api
 
+__all__ = [
+    'stringToDegree',
+    'stringToDegreeDEC',
+]
 
 # conversion from HA value, which is
 # HH:MM:SS.SS format to decimal value

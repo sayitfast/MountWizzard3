@@ -20,15 +20,8 @@
 import unittest
 import logging
 
-
-import skyfield.api
-
-from mount_new.configData import Data
-from mount_new.configData import Firmware
-from mount_new.configData import Setting
 from mount_new.configData import ModelStar
 from mount_new.configData import Model
-from mount_new.configData import Site
 from mount_new.configData import stringToDegree
 from mount_new.configData import stringToDegreeDEC
 
