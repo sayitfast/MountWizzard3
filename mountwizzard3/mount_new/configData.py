@@ -34,7 +34,7 @@ def stringToDegree(value):
     return value
 
 
-# conversion from HA value, which is
+# conversion from value, which is
 # +dd*mm:ss.s format to decimal value
 def stringToDegreeDEC(value):
     if value.count('*') != 1:

@@ -51,17 +51,17 @@ class TestConfigData(unittest.TestCase):
     def test_ModelStars_stringToDegree_bad1(self):
         parameter = '12:45'
         value = stringToDegree(parameter)
-        self.assertAlmostEqual(value, 0, 6)
+        self.assertAlmostEqual(value, None, 6)
 
     def test_ModelStars_stringToDegree_bad2(self):
         parameter = ''
         value = stringToDegree(parameter)
-        self.assertAlmostEqual(value, 0, 6)
+        self.assertAlmostEqual(value, None, 6)
 
     def test_ModelStars_stringToDegree_bad3(self):
         parameter = '12:45:33:01.01'
         value = stringToDegree(parameter)
-        self.assertAlmostEqual(value, 0, 6)
+        self.assertAlmostEqual(value, None, 6)
 
     def test_ModelStars_stringToDegreeDEC_pos(self):
         parameter = '+56*30:00.0'
@@ -86,17 +86,17 @@ class TestConfigData(unittest.TestCase):
     def test_ModelStars_stringToDegreeDEC_bad2(self):
         parameter = '+56*30*00.0'
         value = stringToDegreeDEC(parameter)
-        self.assertAlmostEqual(value, 0, 6)
+        self.assertAlmostEqual(value, None, 6)
 
     def test_ModelStars_stringToDegreeDEC_bad3(self):
         parameter = '+56:30:00.0'
         value = stringToDegreeDEC(parameter)
-        self.assertAlmostEqual(value, 0, 6)
+        self.assertAlmostEqual(value, None, 6)
 
     def test_ModelStars_stringToDegreeDEC_bad4(self):
         parameter = ''
         value = stringToDegreeDEC(parameter)
-        self.assertAlmostEqual(value, 0, 6)
+        self.assertAlmostEqual(value, None, 6)
 
     def test_ModelStar_create(self):
         p1 = '12:45:33.01'
