@@ -20,8 +20,6 @@
 import unittest
 import logging
 
-import skyfield.api
-
 from mount_new.command import Command
 from mount_new.configData import Data
 
