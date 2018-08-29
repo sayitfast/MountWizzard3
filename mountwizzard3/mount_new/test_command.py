@@ -39,15 +39,17 @@ logging.basicConfig(level=logging.INFO,
 class TestCommand(unittest.TestCase):
 
     def setUp(self):
-        pathToTimescaleData = '~/PycharmProjects/Mountwizzard3/config'
+        pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
         self.data = Data(pathToTimescaleData)
 
+    @unittest.skip("only with host available")
     def test_workaroundAlign(self):
         comm = Command(host='192.168.2.15', port=3492)
         ok, mes = comm.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
+    @unittest.skip("only with host available")
     def test_pollSlow(self):
         comm = Command(host='192.168.2.15',
                        port=3492,
@@ -63,6 +65,7 @@ class TestCommand(unittest.TestCase):
         self.assertEqual('Mar 19 2018', comm.data.fw.fwdate)
         self.assertEqual('15:56:53', comm.data.fw.fwtime)
 
+    @unittest.skip("only with host available")
     def test_pollMed(self):
         comm = Command(host='192.168.2.15',
                        port=3492,
@@ -72,6 +75,7 @@ class TestCommand(unittest.TestCase):
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
+    @unittest.skip("only with host available")
     def test_pollFast(self):
         comm = Command(host='192.168.2.15',
                        port=3492,
@@ -178,21 +182,23 @@ class TestCommand(unittest.TestCase):
         self.assertEqual(False, suc)
         self.assertIn('could not convert string to float', str(message))
 
-        """
-
-        response = ['15', '0426', '05', '03', '+010.0', '0950.0', '60.2', '+033.0', '101+90*',
-                    '+00*', '8', '34', 'E,2018-08-11']
-        response = ['13:15:35.68',
-                    '19.44591,+88.0032,W,002.9803,+47.9945,2458352.10403639,5,0']
-    """
-
-    # testing parsing Slow
+    # testing parsing med
     def test_parseMed_good(self):
         comm = Command(data=self.data,
                        )
         response = ['15', '0426', '05', '03', '+010.0', '0950.0', '60.2', '+033.0', '101+90*',
                     '+00*', '8', '34', 'E,2018-08-11']
         suc, message = comm._parseMed(response, 13)
+        self.assertEqual(True, suc)
+        self.assertEqual('ok', message)
+
+    # testing parsing med
+    def test_parseFast_good(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['13:15:35.68',
+                    '19.44591,+88.0032,W,002.9803,+47.9945,2458352.10403639,5,0']
+        suc, message = comm._parseFast(response, 2)
         self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
