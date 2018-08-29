@@ -23,7 +23,13 @@ import logging
 from mount_new.connection import Connection
 
 logging.basicConfig(level=logging.INFO,
-                    format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
+                    format='[%(asctime)s.%(msecs)03d]'
+                           + '[%(levelname)7s]'
+                           + '[%(filename)22s]'
+                           + '[%(lineno)5s]'
+                           + '[%(funcName)20s]'
+                           + '[%(threadName)10s]'
+                           + '>>> %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S', )
 
 
