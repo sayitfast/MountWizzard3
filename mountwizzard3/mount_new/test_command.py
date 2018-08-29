@@ -195,26 +195,33 @@ class TestCommand(unittest.TestCase):
                        )
         response = ['15', '0426', '05', '03', '+010.0', '0EEE.0', '60.2', '+033.0', '101+90*',
                     '+00*', '8', '34', 'E,2018-08-11']
-        suc, message = comm._parseMed(response, 13)
-        self.assertEqual(False, suc)
-        self.assertEqual('ok', message)
+
+        with self. assertRaises(ValueError) as context:
+            suc, message = comm._parseMed(response, 13)
+            self.assertIn('could not convert string to float', context.exception)
+            self.assertEqual(False, suc)
+            self.assertEqual('ok', message)
 
     def test_parseMed_bad2(self):
         comm = Command(data=self.data,
                        )
         response = ['15', '0426', '05', '03', '+010.0', '0950.0', '60.2', '+033.0', '+90*',
                     '+00*', '8', '34', 'E,2018-08-11']
-        suc, message = comm._parseMed(response, 13)
-        self.assertEqual(False, suc)
-        self.assertEqual('ok', message)
+
+        with self. assertRaises(ValueError) as context:
+            suc, message = comm._parseMed(response, 13)
+            self.assertIn('could not convert string to float', context.exception)
+            self.assertEqual(False, suc)
+            self.assertEqual('ok', message)
 
     def test_parseMed_bad3(self):
         comm = Command(data=self.data,
                        )
         response = ['15', '0426', '05', '03', '+010.0', '0950.0', '60.2', '+033.0', '101+90*',
                     '+00', '8', '34', 'E,2018-08-11']
+
         suc, message = comm._parseMed(response, 13)
-        self.assertEqual(False, suc)
+        self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     def test_parseMed_bad4(self):
@@ -222,8 +229,10 @@ class TestCommand(unittest.TestCase):
                        )
         response = ['15', '0426', '05', '03', '+010.0', '0950.0', '60.2', '+033.0', '101+90*',
                     '+00*', '8', '34', ',2018-08-11']
+
         suc, message = comm._parseMed(response, 13)
-        self.assertEqual(False, suc)
+
+        self.assertEqual(True, suc)
         self.assertEqual('ok', message)
 
     # testing parsing fast
