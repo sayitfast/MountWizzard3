@@ -196,7 +196,6 @@ class TestCommand(unittest.TestCase):
         response = ['15', '0426', '05', '03', '+010.0', '0EEE.0', '60.2', '+033.0', '101+90*',
                     '+00*', '8', '34', 'E,2018-08-11']
         suc, message = comm._parseMed(response, 13)
-        self.assertRaises(ValueError)
         self.assertEqual(False, suc)
         self.assertEqual('ok', message)
 

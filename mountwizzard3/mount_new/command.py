@@ -18,9 +18,9 @@
 #
 ############################################################
 import logging
+import re
 
 from .connection import Connection
-from .configData import Data
 
 
 class Command(object):
@@ -187,26 +187,25 @@ class Command(object):
             message = 'wrong number of chunks'
             return False, message
 
-        self.data.setting.slewRate = int(response[0])
-        self.data.setting.timeToFlip = int(response[1])
-        self.data.setting.meridianLimitGuide = int(response[2])
-        self.data.setting.meridianLimitSlew = int(response[3])
-        self.data.setting.refractionTemperature = float(response[4])
-        self.data.setting.refractionPressure = float(response[5])
-        self.data.setting.TrackingRate = float(response[6])
-        self.data.setting.TelescopeTempDEC = float(response[7])
+        self.data.setting.slewRate = response[0]
+        self.data.setting.timeToFlip = response[1]
+        self.data.setting.meridianLimitGuide = response[2]
+        self.data.setting.meridianLimitSlew = response[3]
+        self.data.setting.refractionTemperature = response[4]
+        self.data.setting.refractionPressure = response[5]
+        self.data.setting.TrackingRate = response[6]
+        self.data.setting.TelescopeTempDEC = response[7]
         self.data.setting.statusRefraction = (response[8][0] == '')
         self.data.setting.statusUnattendedFlip = (response[8][1] == '')
         self.data.setting.statusDualAxisTracking = (response[8][2] == '')
-        self.data.setting.currentHorizonLimitHigh = float(response[8][3:6])
-        self.data.setting.currentHorizonLimitLow = float(response[9][0:3])
+        self.data.setting.currentHorizonLimitHigh = response[8][3:6]
+        self.data.setting.currentHorizonLimitLow = response[9][0:3]
         if self.data.fw.checkNewer(21500):
             valid, expirationDate = response[12].split(',')
             self.data.setting.UTCDataValid = (valid == 'V')
             self.data.setting.UTCDataExpirationDate = expirationDate
-
-        self.data.model.numberModelNames = int(response[10])
-        self.data.model.numberAlignmentStars = int(response[11])
+        self.data.model.numberModelNames = response[10]
+        self.data.model.numberAlignmentStars = response[11]
 
         return True, message
 
@@ -254,13 +253,13 @@ class Command(object):
 
         self.data.site.timeSidereal = response[0]
         responseSplit = response[1].split(',')
-        self.data.site.raJNow = float(responseSplit[0])
-        self.data.site.decJNow = float(responseSplit[1])
+        self.data.site.raJNow = responseSplit[0]
+        self.data.site.decJNow = responseSplit[1]
         self.data.site.pierside = responseSplit[2]
-        self.data.site.apparentAz = float(responseSplit[3])
-        self.data.site.apparentAlt = float(responseSplit[4])
-        self.data.site.timeJD = float(responseSplit[5])
-        self.data.site.status = int(responseSplit[6])
+        self.data.site.apparentAz = responseSplit[3]
+        self.data.site.apparentAlt = responseSplit[4]
+        self.data.site.timeJD = responseSplit[5]
+        self.data.site.status = responseSplit[6]
         self.data.site.statusSlew = (responseSplit[7] == '1')
 
         return True, message
