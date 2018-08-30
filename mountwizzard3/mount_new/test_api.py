@@ -54,6 +54,14 @@ class TestAPI(unittest.TestCase):
                       pathToTS=self.pathToTS,
                       )
 
+    def test_mount_class_poll_slow(self):
+        host = '015-GM1000HPS.fritz.box'
+        mount = Mount(host=host,
+                      pathToTS=self.pathToTS,
+                      )
+        mount.command.pollSlow()
+        print(mount.data.fw)
+
 
 if __name__ == '__main__':
     unittest.main()

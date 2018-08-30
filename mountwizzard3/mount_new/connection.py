@@ -74,7 +74,7 @@ class Connection(object):
                  host=None,
                  ):
 
-        self.host = self._host = host
+        self.host =  host
 
     @property
     def host(self):

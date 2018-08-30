@@ -275,7 +275,7 @@ class Site(object):
 
     def __init__(self,
                  ts=None,
-                 location=[0, 0, 0],
+                 location=None,
                  timeJD=0,
                  timeSidereal=0,
                  raJNow=0,
