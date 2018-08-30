@@ -123,19 +123,19 @@ if __name__ == '__main__':
                   pathToTS=pathToTS,
                   )
     timeStart = time.time()
-    for i in range(0, 10):
+    for i in range(0, 100):
         mount.command.pollSlow()
     timeStop = time.time()
-    print(timeStop - timeStart)
+    print((timeStop - timeStart) / 100)
     timeStart = time.time()
-    for i in range(0, 10):
+    for i in range(0, 100):
         mount.command.pollMed()
     timeStop = time.time()
-    print(timeStop - timeStart)
+    print((timeStop - timeStart) / 100)
     timeStart = time.time()
-    for i in range(0, 10):
+    for i in range(0, 100):
         mount.command.pollFast()
     timeStop = time.time()
-    print(timeStop - timeStart)
-    print(mount.data.site)
-    print(mount.data.fw)
+    print((timeStop - timeStart) / 100)
+    # print(mount.data.site)
+    # print(mount.data.fw)
