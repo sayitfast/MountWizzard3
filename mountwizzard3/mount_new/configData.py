@@ -287,6 +287,7 @@ class Site(object):
             return
         if not isinstance(value, list):
             self.logger.error('malformed value: {0}'.format(value))
+            return
         if len(value) != 3:
             self.logger.error('malformed value: {0}'.format(value))
             return
@@ -304,6 +305,9 @@ class Site(object):
         elif all(isinstance(x, (int, float)) for x in value):
             lon = skyfield.api.Angle(degrees=lon)
             lat = skyfield.api.Angle(degrees=lat)
+        else:
+            self.logger.error('malformed value: {0}'.format(value))
+        return
         self._location = skyfield.api.Topos(longitude=lon,
                                             latitude=lat,
                                             elevation_m=elev)
