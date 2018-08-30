@@ -55,14 +55,8 @@ class Command(object):
                  data=None
                  ):
 
-        self.host = host
         self.data = data
-        self.connection = Connection(self.host,
-                                     )
-
-    def host(self, value):
-        self.host = value
-        self.connection.host = value
+        self.connection = Connection(host)
 
     @staticmethod
     def _parseWorkaroundAlign(response, numberOfChunks):

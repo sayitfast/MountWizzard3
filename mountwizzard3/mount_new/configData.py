@@ -29,6 +29,7 @@ __all__ = [
     'stringToDegreeDEC',
 ]
 
+
 # conversion from HA value, which is
 # HH:MM:SS.SS format to decimal value
 def stringToDegree(value):

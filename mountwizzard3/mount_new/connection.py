@@ -68,7 +68,7 @@ class Connection(object):
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
     def __init__(self,
-                 host=None,
+                 host=(None, None),
                  ):
 
         self.host = host
@@ -79,6 +79,16 @@ class Connection(object):
 
     @host.setter
     def host(self, value):
+        # checking format
+        if not value:
+            self.logger.error('wrong host value: {0}'.format(value))
+            return
+        if not isinstance(value, tuple):
+            self.logger.error('wrong host value: {0}'.format(value))
+            return
+        if None in value:
+            self.logger.error('wrong host value: {0}'.format(value))
+            return
         self._host = value
 
     def _analyseCommand(self, commandString):
