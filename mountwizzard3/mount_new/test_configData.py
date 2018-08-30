@@ -189,8 +189,8 @@ class TestConfigData(unittest.TestCase):
         data = Data()
 
     def test_data_with_ts(self):
-        pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
-        data = Data(pathToTimescaleData=pathToTimescaleData)
+        pathToTS = '~/PycharmProjects/MountWizzard3/config'
+        data = Data(pathToTS=pathToTS)
 
 
 if __name__ == '__main__':

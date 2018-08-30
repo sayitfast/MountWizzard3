@@ -69,7 +69,7 @@ class Data(object):
     to a 10 micron mount.
 
         >>> fw = Data(
-        >>>           pathToTimescaleData=pathToTimescaleData,
+        >>>           pathToTS=pathToTS,
         >>>           verbose=False,
         >>>           expire=True,
         >>>           )
@@ -92,12 +92,12 @@ class Data(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 pathToTimescaleData=None,
+                 pathToTS=None,
                  verbose=False,
                  expire=True,
                  ):
 
-        self.pathToTimescaleData = pathToTimescaleData
+        self.pathToTS = pathToTS
         self.verbose = verbose
         self.expire = expire
         self.ts = None
@@ -123,9 +123,9 @@ class Data(object):
 
     def loadTimescale(self):
         # generate timescale data
-        if self.pathToTimescaleData:
+        if self.pathToTS:
             # normally there should be a path given
-            load = skyfield.api.Loader(self.pathToTimescaleData,
+            load = skyfield.api.Loader(self.pathToTS,
                                        verbose=self.verbose,
                                        expire=self.expire,
                                        )
