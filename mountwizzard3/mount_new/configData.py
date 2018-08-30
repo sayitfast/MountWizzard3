@@ -307,7 +307,7 @@ class Site(object):
             lat = skyfield.api.Angle(degrees=lat)
         else:
             self.logger.error('malformed value: {0}'.format(value))
-        return
+            return
         self._location = skyfield.api.Topos(longitude=lon,
                                             latitude=lat,
                                             elevation_m=elev)
