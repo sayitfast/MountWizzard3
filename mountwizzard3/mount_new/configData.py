@@ -100,19 +100,39 @@ class Data(object):
         self.pathToTimescaleData = pathToTimescaleData
         self.verbose = verbose
         self.expire = expire
+        self.ts = None
 
-        # generate timescale data
-        load = skyfield.api.Loader(self.pathToTimescaleData,
-                                   verbose=self.verbose,
-                                   expire=self.expire,
-                                   )
-        self.ts = load.timescale()
+        self.loadTimescale()
 
         # instantiating the other necessary data objects / classes
         self.fw = Firmware()
         self.setting = Setting()
         self.site = Site(self.ts)
         self.model = Model()
+
+    @property
+    def expire(self):
+        return self._expire
+
+    @expire.setter
+    def expire(self, value):
+        if isinstance(value, bool):
+            self._expire = value
+        else:
+            self.logger.error('wrong type value: {0}'.format(value))
+
+    def loadTimescale(self):
+        # generate timescale data
+        if self.pathToTimescaleData:
+            # normally there should be a path given
+            load = skyfield.api.Loader(self.pathToTimescaleData,
+                                       verbose=self.verbose,
+                                       expire=self.expire,
+                                       )
+            self.ts = load.timescale()
+        else:
+            self.ts = skyfield.api.load.timescale()
+            self.logger.info('no path for timescale given, using default')
 
 
 class Firmware(object):

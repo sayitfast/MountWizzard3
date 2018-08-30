@@ -24,6 +24,7 @@ import logging
 # local imports
 from mount_new.configData import ModelStar
 from mount_new.configData import Model
+from mount_new.configData import Data
 from mount_new.configData import stringToDegree
 from mount_new.configData import stringToDegreeDEC
 
@@ -160,6 +161,7 @@ class TestConfigData(unittest.TestCase):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
         model = Model()
+
         for i in range(0, 10):
             model.addStar(ModelStar(point=(p1, p2),
                                     errorRMS=str(i*i),
@@ -167,20 +169,28 @@ class TestConfigData(unittest.TestCase):
                                     number=str(i)))
 
         self.assertEqual(len(model.starList), 10)
-        for star in model.starList:
-            print(star)
+        for i, star in enumerate(model.starList):
+            self.assertEqual(i,
+                             star.number)
+            self.assertEqual(i*i,
+                             star.errorRMS)
 
     def test_NameList_iteration(self):
-
         model = Model()
 
         for i in range(0, 10):
             model.addName('this is the {0}.th name'.format(i))
-
         self.assertEqual(len(model.nameList), 10)
+        for i, name in enumerate(model.nameList):
+            self.assertEqual('this is the {0}.th name'.format(i),
+                             name)
 
-        for name in model.nameList:
-            print(name)
+    def test_data_without_ts(self):
+        data = Data()
+
+    def test_data_with_ts(self):
+        pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
+        data = Data(pathToTimescaleData=pathToTimescaleData)
 
 
 if __name__ == '__main__':
