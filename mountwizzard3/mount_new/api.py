@@ -22,8 +22,8 @@ import logging
 import PyQt5.QtCore
 # external packages
 # local imports
-from .command import Command
-from .configData import Data
+from mount_new.command import Command
+from mount_new.configData import Data
 
 
 class WorkerSignals(PyQt5.QtCore.QObject):
@@ -77,23 +77,18 @@ class Mount(object):
     """
 
     def __init__(self,
-                 host=('mount.fritz.box',3492),
+                 host=None,
                  ):
 
-        self.host = host
         # defining the data space for the mount
         self.data = Data()
         # defining the command interface to the mount
-        self.command = Command(host=self.host,
+        self.command = Command(host=host,
                                data=self.data,
                                )
         self.threadpool = PyQt5.QtCore.QThreadPool()
 
-    @property
-    def host(self):
-        return self._host
 
-    @host.setter
-    def host(self, value):
-        self._host = value
-        self.command.host = value
+if __name__ == "__main__":
+
+    mount = Mount('192.168.2.15')
