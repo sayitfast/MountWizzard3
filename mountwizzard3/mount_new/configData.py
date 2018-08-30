@@ -305,6 +305,8 @@ class Site(object):
 
     @location.setter
     def location(self, value):
+        if not value:
+            return
         if isinstance(value, skyfield.api.Topos):
             self._location = value
             return

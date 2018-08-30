@@ -102,3 +102,24 @@ class Mount(object):
                                )
         self.threadpool = PyQt5.QtCore.QThreadPool()
 
+
+if __name__ == '__main__':
+    import logging
+
+    logging.basicConfig(level=logging.INFO,
+                        format='[%(asctime)s.%(msecs)03d]'
+                               + '[%(levelname)7s]'
+                               + '[%(filename)22s]'
+                               + '[%(lineno)5s]'
+                               + '[%(funcName)20s]'
+                               + '[%(threadName)10s]'
+                               + '>>> %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S', )
+
+    pathToTS = '~/PycharmProjects/MountWizzard3/config'
+    host = '015-GM1000HPS.fritz.box'
+    mount = Mount(host=host,
+                  pathToTS=pathToTS,
+                  )
+    mount.command.pollSlow()
+    print(mount.data.fw)
