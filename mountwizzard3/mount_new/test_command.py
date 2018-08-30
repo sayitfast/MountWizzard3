@@ -42,17 +42,16 @@ class TestCommand(unittest.TestCase):
         pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
         self.data = Data(pathToTimescaleData)
 
-    @unittest.skip("only with host available")
+    # @unittest.skip("only with host available")
     def test_workaroundAlign(self):
-        comm = Command(host='192.168.2.15', port=3492)
+        comm = Command(host=('192.168.2.15', 3492))
         ok, mes = comm.workaroundAlign()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
-    @unittest.skip("only with host available")
+    # @unittest.skip("only with host available")
     def test_pollSlow(self):
-        comm = Command(host='192.168.2.15',
-                       port=3492,
+        comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         ok, mes = comm.pollSlow()
@@ -65,20 +64,18 @@ class TestCommand(unittest.TestCase):
         self.assertEqual('Mar 19 2018', comm.data.fw.fwdate)
         self.assertEqual('15:56:53', comm.data.fw.fwtime)
 
-    @unittest.skip("only with host available")
+    # @unittest.skip("only with host available")
     def test_pollMed(self):
-        comm = Command(host='192.168.2.15',
-                       port=3492,
+        comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         ok, mes = comm.pollMed()
         self.assertEqual(True, ok)
         self.assertEqual('ok', mes)
 
-    @unittest.skip("only with host available")
+    # @unittest.skip("only with host available")
     def test_pollFast(self):
-        comm = Command(host='192.168.2.15',
-                       port=3492,
+        comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         ok, mes = comm.pollFast()
