@@ -77,17 +77,14 @@ class Mount(object):
     """
 
     def __init__(self,
-                 host='mount.fritz.box',
-                 port=3492,
+                 host=('mount.fritz.box',3492),
                  ):
 
         self.host = host
-        self.port = port
         # defining the data space for the mount
         self.data = Data()
         # defining the command interface to the mount
         self.command = Command(host=self.host,
-                               port=self.port,
                                data=self.data,
                                )
         self.threadpool = PyQt5.QtCore.QThreadPool()
@@ -100,12 +97,3 @@ class Mount(object):
     def host(self, value):
         self._host = value
         self.command.host = value
-
-    @property
-    def port(self):
-        return self._port
-
-    @port.setter
-    def port(self, value):
-        self._port = value
-        self.command.port = value
