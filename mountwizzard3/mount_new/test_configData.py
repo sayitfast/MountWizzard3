@@ -162,9 +162,9 @@ class TestConfigData(unittest.TestCase):
         model = Model()
         for i in range(0, 10):
             model.addStar(ModelStar(point=(p1, p2),
-                                    errorRMS=i*i,
-                                    errorAngle=i*i,
-                                    number=i))
+                                    errorRMS=str(i*i),
+                                    errorAngle=str(i*i),
+                                    number=str(i)))
 
         self.assertEqual(len(model.starList), 10)
         for star in model.starList:
