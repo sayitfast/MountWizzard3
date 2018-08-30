@@ -66,6 +66,15 @@ class Worker(PyQt5.QtCore.QRunnable):
 
 
 class Mount(object):
+    """
+    The Mount class is the main interface for interacting with the mount computer.
+    The user could:
+        setup / change the interface to the mount
+        start / stop cyclic tasks to poll data from mount
+        send and get data from mount
+        has signals for interfacing to external GUI's for
+            data updates, events, messages
+    """
 
     def __init__(self):
         # defining the data space for the mount
