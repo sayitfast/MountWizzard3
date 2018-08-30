@@ -105,6 +105,7 @@ class Mount(object):
 
 if __name__ == '__main__':
     import logging
+    import time
 
     logging.basicConfig(level=logging.INFO,
                         format='[%(asctime)s.%(msecs)03d]'
@@ -121,5 +122,20 @@ if __name__ == '__main__':
     mount = Mount(host=host,
                   pathToTS=pathToTS,
                   )
-    mount.command.pollSlow()
+    timeStart = time.time()
+    for i in range(0, 10):
+        mount.command.pollSlow()
+    timeStop = time.time()
+    print(timeStop - timeStart)
+    timeStart = time.time()
+    for i in range(0, 10):
+        mount.command.pollMed()
+    timeStop = time.time()
+    print(timeStop - timeStart)
+    timeStart = time.time()
+    for i in range(0, 10):
+        mount.command.pollFast()
+    timeStop = time.time()
+    print(timeStop - timeStart)
+    print(mount.data.site)
     print(mount.data.fw)

@@ -368,10 +368,7 @@ class Site(object):
         if isinstance(value, skyfield.api.Angle):
             self._raJNow = value
         elif isinstance(value, str):
-            value = stringToDegree(value)
-            if not value:
-                self.logger.error('malformed value: {0}'.format(value))
-                return
+            value = float(value)
             self._raJNow = skyfield.api.Angle(degrees=value)
         elif isinstance(value, float):
             self._raJNow = skyfield.api.Angle(degrees=value)
@@ -390,10 +387,7 @@ class Site(object):
         if isinstance(value, skyfield.api.Angle):
             self._decJNow = value
         elif isinstance(value, str):
-            value = stringToDegree(value)
-            if not value:
-                self.logger.error('malformed value: {0}'.format(value))
-                return
+            value = float(value)
             self._decJNow = skyfield.api.Angle(degrees=value)
         elif isinstance(value, float):
             self._decJNow = skyfield.api.Angle(degrees=value)
