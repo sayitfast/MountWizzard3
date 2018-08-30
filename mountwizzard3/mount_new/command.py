@@ -64,6 +64,22 @@ class Command(object):
                                      self.port,
                                      )
 
+    @property
+    def host(self):
+        return self._host
+
+    @host.setter
+    def host(self, value):
+        self._host = value
+
+    @property
+    def port(self):
+        return self._port
+
+    @port.setter
+    def port(self, value):
+        self._port = value
+
     @staticmethod
     def _parseWorkaroundAlign(response, numberOfChunks):
         """
