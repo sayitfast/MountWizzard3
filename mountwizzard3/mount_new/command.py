@@ -71,6 +71,7 @@ class Command(object):
     @host.setter
     def host(self, value):
         self._host = value
+        self.connection.host = value
 
     @property
     def port(self):
@@ -79,6 +80,7 @@ class Command(object):
     @port.setter
     def port(self, value):
         self._port = value
+        self.connection.port = value
 
     @staticmethod
     def _parseWorkaroundAlign(response, numberOfChunks):
