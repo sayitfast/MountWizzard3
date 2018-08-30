@@ -55,6 +55,8 @@ class Connection(object):
     # I don't want so wait to long for a response. In average I see values
     # shorter than 0.5 sec, so 2 seconds should be good
     SOCKET_TIMEOUT = 2
+    # 10 microns have 3492 as default port
+    DEFAULT_PORT = 3492
 
     # Command list for commands which don't reply anything
     COMMAND_A = [':AP', ':AL', ':hP', ':PO', ':RT0', ':RT1', ':RT2', ':RT9', ':STOP', ':U2',
@@ -68,7 +70,7 @@ class Connection(object):
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
     def __init__(self,
-                 host=(None, None),
+                 host=None,
                  ):
 
         self.host = host
@@ -83,13 +85,13 @@ class Connection(object):
         if not value:
             self.logger.error('wrong host value: {0}'.format(value))
             return
-        if not isinstance(value, tuple):
+        if not isinstance(value, (tuple, string)):
             self.logger.error('wrong host value: {0}'.format(value))
             return
-        if None in value:
-            self.logger.error('wrong host value: {0}'.format(value))
-            return
-        self._host = value
+        if isinstance(value, str):
+            self._host = (value, self.DEFAULT_PORT)
+        else:
+            self._host = value
 
     def _analyseCommand(self, commandString):
         """
@@ -142,11 +144,11 @@ class Connection(object):
         # test if we have valid parameters
         response = ''
         message = 'ok'
-        if not self.host:
+        if not self._host:
             message = 'no host defined'
             self.logger.warning('{0}'.format(message))
             return False, message, response, numberOfChunks
-        if not isinstance(self.host, tuple):
+        if not isinstance(self._host, tuple):
             message = 'host entry malformed'
             self.logger.warning('{0}'.format(message))
             return False, message, response, numberOfChunks
