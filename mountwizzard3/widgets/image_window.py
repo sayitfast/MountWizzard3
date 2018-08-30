@@ -47,6 +47,8 @@ class Worker(PyQt5.QtCore.QRunnable):
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
+        # the worker signal must not be a class variable, but instance otherwise
+        # we get trouble when having multiple threads running
         self.signals = WorkerSignals()
 
     @PyQt5.QtCore.pyqtSlot()
@@ -55,7 +57,6 @@ class Worker(PyQt5.QtCore.QRunnable):
             result = self.fn(*self.args, **self.kwargs)
         except Exception as e:
             self.signals.error.emit(e)
-            print(e)
         else:
             self.signals.result.emit(result)
         finally:
