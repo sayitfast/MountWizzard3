@@ -41,7 +41,7 @@ class TestConnection(unittest.TestCase):
         pass
 
     def test_no_host(self):
-        mount = Connection(port=3492)
+        mount = Connection(host=())
         commandSet = ':U2#:Gev#:'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
@@ -49,11 +49,11 @@ class TestConnection(unittest.TestCase):
         self.assertEqual('', response)
 
     def test_no_port(self):
-        mount = Connection(host='192.168.2.250')
+        mount = Connection(host=('192.168.2.15'))
         commandSet = ':U2#:Gev#:'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
-        self.assertIn('no port defined', mes)
+        self.assertIn('host entry malformed', mes)
         self.assertEqual('', response)
 
     def test_no_host_no_port(self):
@@ -65,15 +65,16 @@ class TestConnection(unittest.TestCase):
         self.assertEqual('', response)
 
     def test_no_host_up(self):
-        mount = Connection(host='192.168.2.250', port=3492)
+        mount = Connection(host=('192.168.2.15', 3492))
         commandSet = ':U2#:Gev#:'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
         self.assertIn('socket error', mes)
         self.assertEqual('', response)
 
+    @unittest.skip("only with host available")
     def test_known(self):
-        mount = Connection(host='192.168.2.15', port=3492)
+        mount = Connection(host=('192.168.2.15', 3492))
         commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(True, ok)
@@ -81,7 +82,7 @@ class TestConnection(unittest.TestCase):
         self.assertEqual('10micron GM1000HPS', response[5])
 
     def test_unknown(self):
-        mount = Connection(host='192.168.2.15', port=3492)
+        mount = Connection(host=('192.168.2.15', 3492))
         commandSet = ':U2#:NotKnown#'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)

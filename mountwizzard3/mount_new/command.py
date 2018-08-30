@@ -36,8 +36,7 @@ class Command(object):
     firmware and site parameters are handled.
 
         >>> command = Command(
-        >>>                   host='mount.fritz.box',
-        >>>                   port=3492,
+        >>>                   host=('mount.fritz.box', 3492),
         >>>                   data=data,
         >>>                   )
     """
@@ -52,35 +51,18 @@ class Command(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 host=None,
-                 port=None,
+                 host=(None, None),
                  data=None
                  ):
 
         self.host = host
-        self.port = port
         self.data = data
         self.connection = Connection(self.host,
-                                     self.port,
                                      )
 
-    @property
-    def host(self):
-        return self._host
-
-    @host.setter
     def host(self, value):
-        self._host = value
+        self.host = value
         self.connection.host = value
-
-    @property
-    def port(self):
-        return self._port
-
-    @port.setter
-    def port(self, value):
-        self._port = value
-        self.connection.port = value
 
     @staticmethod
     def _parseWorkaroundAlign(response, numberOfChunks):

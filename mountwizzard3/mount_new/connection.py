@@ -43,8 +43,7 @@ class Connection(object):
     with the mount.
 
         >>> command = Connection(
-        >>>                   host='mount.fritz.box',
-        >>>                   port=3492,
+        >>>                   host=('mount.fritz.box', 3492),
         >>>                   )
 
     """
@@ -70,11 +69,9 @@ class Connection(object):
 
     def __init__(self,
                  host=None,
-                 port=None,
                  ):
 
         self.host = host
-        self.port = port
 
     @property
     def host(self):
@@ -83,14 +80,6 @@ class Connection(object):
     @host.setter
     def host(self, value):
         self._host = value
-
-    @property
-    def port(self):
-        return self._port
-
-    @port.setter
-    def port(self, value):
-        self._port = value
 
     def _analyseCommand(self, commandString):
         """
@@ -138,7 +127,7 @@ class Connection(object):
         self.logger.debug('com: {0}, resp: {1}, chunks: {2}'.format(commandString,
                                                                     noResponse,
                                                                     numberOfChunks))
-        self.logger.info('host: {0}, port: {1}'.format(self.host, self.port))
+        self.logger.info('host: {0}'.format(self.host))
 
         # test if we have valid parameters
         response = ''
@@ -147,8 +136,8 @@ class Connection(object):
             message = 'no host defined'
             self.logger.warning('{0}'.format(message))
             return False, message, response, numberOfChunks
-        if not self.port:
-            message = 'no port defined'
+        if not isinstance(self.host, tuple):
+            message = 'host entry malformed'
             self.logger.warning('{0}'.format(message))
             return False, message, response, numberOfChunks
 
@@ -156,7 +145,7 @@ class Connection(object):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.settimeout(self.SOCKET_TIMEOUT)
         try:
-            client.connect((self.host, self.port))
+            client.connect(self.host)
         except socket.timeout:
             message = 'socket error timeout connect'
             client.close()
