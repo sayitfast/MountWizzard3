@@ -68,9 +68,13 @@ class Worker(PyQt5.QtCore.QRunnable):
 class Mount(object):
 
     def __init__(self):
-        self.command = Command()
+        # defining the data space for the mount
         self.data = Data()
+        # defining the command interface to the mount
+        self.command = Command(host='mount.fritz.box',
+                               port=3492,
+                               data=self.data,
+                               )
         self.threadpool = PyQt5.QtCore.QThreadPool()
-
 
 
