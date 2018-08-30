@@ -76,7 +76,13 @@ class Mount(object):
             data updates, events, messages
     """
 
-    def __init__(self):
+    def __init__(self,
+                 host=host,
+                 port=port,
+                 ):
+
+        self.host = host
+        self.port = port
         # defining the data space for the mount
         self.data = Data()
         # defining the command interface to the mount
@@ -86,4 +92,20 @@ class Mount(object):
                                )
         self.threadpool = PyQt5.QtCore.QThreadPool()
 
+    @property
+    def host(self):
+        return self._host
 
+    @host.setter
+    def host(self, value):
+        self._host = value
+        self.command.host = value
+
+    @property
+    def port(self):
+        return self._port
+
+    @port.setter
+    def port(self, value):
+        self._port = value
+        self.command.port = value
