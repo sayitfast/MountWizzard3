@@ -17,9 +17,11 @@
 # Licence APL2.0
 #
 ############################################################
+# standard libraries
 import unittest
 import logging
-
+# external packages
+# local imports
 from mount_new.connection import Connection
 
 logging.basicConfig(level=logging.INFO,

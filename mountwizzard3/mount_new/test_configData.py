@@ -17,9 +17,11 @@
 # Licence APL2.0
 #
 ############################################################
+# standard libraries
 import unittest
 import logging
-
+# external packages
+# local imports
 from mount_new.configData import ModelStar
 from mount_new.configData import Model
 from mount_new.configData import stringToDegree
