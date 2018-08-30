@@ -40,18 +40,18 @@ logging.basicConfig(level=logging.INFO,
 class TestAPI(unittest.TestCase):
 
     def setUp(self):
-        self.pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
+        self.pathToTS = '~/PycharmProjects/MountWizzard3/config'
 
     def test_mount_class_instance_host_ip(self):
         host = '192.168.2.15'
         mount = Mount(host=host,
-                      pathToTimescaleData=self.pathToTimescaleData,
+                      pathToTS=self.pathToTS,
                       )
 
     def test_mount_class_instance_host_name(self):
         host = '015-GM1000HPS.fritz.box'
         mount = Mount(host=host,
-                      pathToTimescaleData=self.pathToTimescaleData,
+                      pathToTS=self.pathToTS,
                       )
 
 

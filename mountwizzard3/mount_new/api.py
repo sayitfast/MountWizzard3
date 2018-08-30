@@ -91,11 +91,11 @@ class Mount(object):
 
     def __init__(self,
                  host=None,
-                 pathToTimescaleData=None
+                 pathToTS=None
                  ):
 
         # defining the data space for the mount
-        self.data = Data(pathToTimescaleData=pathToTimescaleData)
+        self.data = Data(pathToTS=pathToTS)
         # defining the command interface to the mount
         self.command = Command(host=host,
                                data=self.data,
