@@ -17,8 +17,11 @@
 # Licence APL2.0
 #
 ############################################################
+# standard libraries
 import socket
 import logging
+# external packages
+# local imports
 
 
 class Connection(object):

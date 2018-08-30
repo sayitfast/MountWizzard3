@@ -17,10 +17,12 @@
 # Licence APL2.0
 #
 ############################################################
+# standard libraries
 import logging
+# external packages
 import numpy
-
 import skyfield.api
+# local imports
 
 __all__ = [
     'stringToDegree',

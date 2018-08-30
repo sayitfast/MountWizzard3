@@ -17,9 +17,10 @@
 # Licence APL2.0
 #
 ############################################################
+# standard libraries
 import logging
-import re
-
+# external packages
+# local imports
 from .connection import Connection
 
 
