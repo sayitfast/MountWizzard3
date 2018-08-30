@@ -48,7 +48,7 @@ class Command(object):
                'pollMed',
                'pollFast',
                ]
-    version = '0.2'
+    version = '0.1'
     logger = logging.getLogger(__name__)
 
     def __init__(self,
