@@ -48,8 +48,9 @@ class Connection(object):
 
     """
 
-    __all__ = ['Connection', 'communicate']
-    version = '0.2'
+    __all__ = ['Connection',
+               'communicate']
+    version = '0.1'
     logger = logging.getLogger(__name__)
 
     # I don't want so wait to long for a response. In average I see values

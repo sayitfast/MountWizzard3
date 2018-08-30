@@ -32,6 +32,9 @@ class WorkerSignals(PyQt5.QtCore.QObject):
     class to get signals for error, finished and result to be transferred to the caller back
     """
 
+    __all__ = ['WorkerSignals']
+    version = '0.1'
+
     finished = PyQt5.QtCore.pyqtSignal()
     error = PyQt5.QtCore.pyqtSignal(object)
     result = PyQt5.QtCore.pyqtSignal(object)
@@ -42,6 +45,11 @@ class Worker(PyQt5.QtCore.QRunnable):
     The Worker class offers a generic interface to allow any function to be executed as a thread
     in an threadpool
     """
+
+    __all__ = ['Worker',
+               'run']
+    version = '0.1'
+    logger = logging.getLogger(__name__)
 
     def __init__(self, fn, *args, **kwargs):
         super(Worker, self).__init__()
@@ -76,6 +84,11 @@ class Mount(object):
             data updates, events, messages
     """
 
+    __all__ = ['Mount',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
+
     def __init__(self,
                  host=None,
                  ):
@@ -88,7 +101,3 @@ class Mount(object):
                                )
         self.threadpool = PyQt5.QtCore.QThreadPool()
 
-
-if __name__ == "__main__":
-
-    mount = Mount('192.168.2.15')
