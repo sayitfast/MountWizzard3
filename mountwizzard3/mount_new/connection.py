@@ -73,7 +73,7 @@ class Connection(object):
                  host=None,
                  ):
 
-        self.host = host
+        self.host = self._host = host
 
     @property
     def host(self):
@@ -85,7 +85,7 @@ class Connection(object):
         if not value:
             self.logger.error('wrong host value: {0}'.format(value))
             return
-        if not isinstance(value, (tuple, string)):
+        if not isinstance(value, (tuple, str)):
             self.logger.error('wrong host value: {0}'.format(value))
             return
         if isinstance(value, str):

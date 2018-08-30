@@ -65,14 +65,14 @@ class TestConnection(unittest.TestCase):
         self.assertEqual('', response)
 
     def test_no_host_up(self):
-        mount = Connection(host=('192.168.2.15', 3492))
+        mount = Connection(host=('192.168.2.239', 3492))
         commandSet = ':U2#:Gev#:'
         ok, mes, response, chunks = mount.communicate(commandSet)
         self.assertEqual(False, ok)
         self.assertIn('socket error', mes)
         self.assertEqual('', response)
 
-    @unittest.skip("only with host available")
+    # @unittest.skip("only with host available")
     def test_known(self):
         mount = Connection(host=('192.168.2.15', 3492))
         commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
