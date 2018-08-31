@@ -78,6 +78,14 @@ class TestCommand(unittest.TestCase):
         ok = comm.pollFast()
         self.assertEqual(True, ok)
 
+    # @unittest.skip("only with host available")
+    def test_pollModelNames(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        ok = comm.pollModelNames()
+        self.assertEqual(True, ok)
+
     # testing parsing against valid and invalid data
     def test_parseWorkaroundAlign_good(self):
         comm = Command()

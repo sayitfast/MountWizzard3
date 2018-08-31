@@ -731,6 +731,8 @@ class Model(object):
 
     @numberStars.setter
     def numberStars(self, value):
+        if isinstance(value, str):
+            value = int(value)
         self._numberStars = value
 
     def addStar(self, value):
@@ -794,6 +796,8 @@ class Model(object):
 
     @numberNames.setter
     def numberNames(self, value):
+        if isinstance(value, str):
+            value = int(value)
         self._numberNames = value
 
     def addName(self, value):
