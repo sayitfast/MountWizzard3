@@ -745,12 +745,14 @@ class Model(object):
 
         if isinstance(value, ModelStar):
             self._starList.insert(len(self._starList), value)
-        elif len(value) == 4:
-            _point, _err, _number = value
-            value = ModelStar(_point, _err, _number)
-            self._starList.extend(value)
-        else:
+        if not isinstance(value, (list, str)):
             self.logger.error('malformed value: {0}'.format(value))
+        if isinstance(value, str):
+            value = value.split(',')
+        if len(value) == 4:
+            _ha, _dec, _err, _number = value
+            value = ModelStar((_ha, _dec), _err, _number)
+            self._starList.insert(len(self._starList), value)
 
     def delStar(self, value):
         """
@@ -925,6 +927,8 @@ class ModelStar(object):
 
     @number.setter
     def number(self, value):
+        if not value:
+            return
         self._number = int(value)
 
     @property
@@ -933,6 +937,8 @@ class ModelStar(object):
 
     @errorRMS.setter
     def errorRMS(self, value):
+        if not value:
+            return
         self._errorRMS = float(value)
 
     @property
