@@ -279,7 +279,8 @@ class Command(object):
 
     def _parseNumberNames(self, response, numberOfChunks):
         """
-        Parsing the model names number.
+        Parsing the model star number. The command <:modelcnt#> returns:
+            - the string "nnn#", where nnn is the number of models available
 
         :param response:        data load from mount
                numberOfChunks:  amount of parts
@@ -327,9 +328,19 @@ class Command(object):
 
     def _parseModelStars(self, response, numberOfChunks):
         """
-        Parsing the model names cluster. The command <:modelnamN#> returns:
-            - the string "#" if N is not valid
-            - the name of model N, terminated by the character "#"
+        Parsing the model names cluster. The command <:getalpN#> returns:
+            - the string "E#" if N is out of range
+            - otherwise a string formatted as follows
+                "HH:MM:SS.SS,+dd*mm:ss.s,eeee.e,ppp#"
+        where
+        -   HH:MM:SS.SS is the hour angle of the alignment star in hours, minutes, seconds
+            and hundredths of second (from 0h to 23h59m59.99s),
+        -   +dd*mm:ss.s is the declination of the alignment star in degrees, arcminutes,
+            arcseconds and tenths of arcsecond, eeee.e is the error between the star and
+            the alignment model in arcseconds,
+        -   ppp is the polar angle of the measured star with respect to the modeled star
+            in the equatorial system in degrees from 0 to 359 (0 towards the north pole,
+            90 towards east)
 
         :param response:        data load from mount
                numberOfChunks:  amount of parts
@@ -349,7 +360,8 @@ class Command(object):
 
     def _parseNumberStars(self, response, numberOfChunks):
         """
-        Parsing the model names number.
+        Parsing the model star number. The command <:getalst#> returns:
+            - the number of alignment stars terminated by '#'
 
         :param response:        data load from mount
                numberOfChunks:  amount of parts
@@ -375,7 +387,7 @@ class Command(object):
         # first get the number of names. the command should return <nnn#>
 
         # alternatively we know already the number, and skip the gathering
-        commandString = ':modelcnt#'
+        commandString = ':getalst#'
         suc, response, chunks = self.connection.communicate(commandString)
         if not suc:
             return False
@@ -386,7 +398,7 @@ class Command(object):
         commandString = ''
 
         for i in range(1, self.data.model.numberStars + 1):
-            commandString += (':modelnam{0:d}#'.format(i))
+            commandString += (':getalp{0:d}#'.format(i))
 
         suc, response, chunks = self.connection.communicate(commandString)
         if not suc:
