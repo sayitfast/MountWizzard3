@@ -66,10 +66,9 @@ class Command(object):
         :param response:        data load from mount
                numberOfChunks:  amount of parts
         :return: success:       True if ok, False if not
-                 message:       text message what happened
         """
 
-        if len(response) != 2 or len(response) != numberOfChunks:
+        if len(response) != numberOfChunks:
             self.logger.error('workaround command failed')
             return False
         if response[0] != 'V' or response[1] != 'E':
@@ -83,7 +82,6 @@ class Command(object):
         to be able to access the model before having interaction with the handcontroller
 
         :return: success:   True if ok, False if not
-                 message:   text message what happened
         """
 
         commandString = ':newalig#:endalig#'
@@ -103,10 +101,9 @@ class Command(object):
         :param response:        data load from mount
                numberOfChunks:  amount of parts
         :return: success:       True if ok, False if not
-                 message:       text message what happened
         """
 
-        if len(response) != 8 or len(response) != numberOfChunks:
+        if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
         # doing observer settings update
@@ -146,7 +143,6 @@ class Command(object):
         a set of commands to get the data back to be able to process and store it.
 
         :return: success:   True if ok, False if not
-                 message:   text message what happened
         """
 
         commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
@@ -165,10 +161,9 @@ class Command(object):
         :param response:        data load from mount
                numberOfChunks:  amount of parts
         :return: success:       True if ok, False if not
-                 message:       text message what happened
         """
 
-        if len(response) != 13 or len(response) != numberOfChunks:
+        if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
 
@@ -200,7 +195,6 @@ class Command(object):
         a set of commands to get the data back to be able to process and store it.
 
         :return: success:   True if ok, False if not
-                 message:   text message what happened
         """
 
         cs1 = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:GTMP1#:GREF#:Guaf#'
@@ -225,10 +219,9 @@ class Command(object):
         :param response:        data load from mount
                numberOfChunks:  amount of parts
         :return: success:       True if ok, False if not
-                 message:       text message what happened
         """
 
-        if len(response) != 2 or len(response) != numberOfChunks:
+        if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
 
@@ -251,7 +244,6 @@ class Command(object):
         a set of commands to get the data back to be able to process and store it.
 
         :return: success:   True if ok, False if not
-                 message:   text message what happened
         """
 
         commandString = ':U2#:GS#:Ginfo#:'
@@ -259,6 +251,77 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseFast(response, chunks)
+        if not suc:
+            return False
+        return True
+
+    def _parseModelNames(self, response, numberOfChunks):
+        """
+        Parsing the model names cluster. The command <:modelnamN#> returns:
+            - the string "#" if N is not valid
+            - the name of model N, terminated by the character "#"
+
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+        """
+
+        if len(response) != numberOfChunks:
+            self.logger.error('wrong number of chunks')
+            return False
+
+        for name in response:
+            if not name:
+                continue
+            self.data.model.addName(name)
+
+        return True
+
+    def _parseNumberNames(self, response, numberOfChunks):
+        """
+        Parsing the model names number.
+
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+        """
+
+        if len(response) != numberOfChunks:
+            self.logger.error('wrong number of chunks')
+            return False
+
+        self.data.model.numberNames = response.strip('#')
+        return True
+
+    def pollModelNames(self):
+        """
+        Sending the polling ModelNames command. It collects for all the known names
+        the string. The number of names have to be collected first, than it gathers
+        all name at once.
+
+        :return: success:   True if ok, False if not
+        """
+
+        # first get the number of names. the command should return <nnn#>
+
+        # alternatively we know already the number, and skip the gathering
+        commandString = ':modelcnt#'
+        suc, response, chunks = self.connection.communicate(commandString)
+        if not suc:
+            return False
+        suc = self._parseNumberNames(response, chunks)
+        if not suc:
+            return False
+
+        # now the real gathering of names
+        commandString = ''
+        for i in range(1, self.data.model.numberNames + 1):
+            commandString += (':modelnam{0:d}#'.format(i))
+
+        suc, response, chunks = self.connection.communicate(commandString)
+        if not suc:
+            return False
+        suc = self._parseModelNames(response, chunks)
         if not suc:
             return False
         return True

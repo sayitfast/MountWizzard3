@@ -131,7 +131,6 @@ class Connection(object):
 
         :param commandString:
         :return: success:           True or False for full transfer
-                 message:           resulting text message what happened
                  response:          the data load
                  numberOfChunks:    number of responses delimited with #
         """
@@ -221,7 +220,7 @@ class Connection(object):
             self.logger.error('{0}, response: {1}'.format(message, response))
             return False, response, numberOfChunks
         else:
-            response = response.split('#')[:-1]
+            response = response.rstrip('#').split('#')
             self.logger.info('{0}, response: {1}'.format(message, response))
             return True, response, numberOfChunks
         finally:
