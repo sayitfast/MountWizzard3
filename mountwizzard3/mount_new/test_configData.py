@@ -185,6 +185,7 @@ class TestConfigData(unittest.TestCase):
             self.assertEqual('this is the {0}.th name'.format(i),
                              name)
 
+    @unittest.skip("only in special test case")
     def test_data_without_ts(self):
         data = Data()
 
