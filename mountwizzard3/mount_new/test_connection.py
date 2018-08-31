@@ -41,13 +41,6 @@ class TestConnection(unittest.TestCase):
         pass
 
     def test_no_host(self):
-        mount = Connection(host=())
-        commandSet = ':U2#:Gev#:'
-        ok, response, chunks = mount.communicate(commandSet)
-        self.assertEqual(False, ok)
-        self.assertEqual('', response)
-
-    def test_no_port(self):
         mount = Connection(host=('192.168.2.15'))
         commandSet = ':U2#:Gev#:'
         ok, response, chunks = mount.communicate(commandSet)

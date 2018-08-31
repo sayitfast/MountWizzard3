@@ -71,10 +71,10 @@ class Connection(object):
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
     def __init__(self,
-                 host='127.0.0.1',
+                 host=None,
                  ):
 
-        self._host = host
+        self.host = host
 
     @property
     def host(self):
@@ -84,6 +84,7 @@ class Connection(object):
     def host(self, value):
         # checking format
         if not value:
+            self._host = None
             self.logger.error('wrong host value: {0}'.format(value))
             return
         if not isinstance(value, (tuple, str)):
