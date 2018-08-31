@@ -219,7 +219,7 @@ class Firmware(object):
         """
         Checks if the provided FW number is newer than the one of the mount
 
-        :param number:      fw numberf to test as int
+        :param number:      fw number to test as int
         :return:            True if newer / False
         """
 
@@ -243,15 +243,6 @@ class Site(object):
         >>> site = Site(
         >>>             ts=ts,
         >>>             location=(0, 0, 0),
-        >>>             timeJD=0,
-        >>>             timeSidereal=0,
-        >>>             raJNow=0,
-        >>>             decJNow=0,
-        >>>             pierside='',
-        >>>             Alt=0,
-        >>>             Az=0,
-        >>>             status=False,
-        >>>             statusSlew=0,
         >>>             )
 
     The Site class needs as parameter a ts object from skyfield.api to
@@ -276,28 +267,19 @@ class Site(object):
     def __init__(self,
                  ts=None,
                  location=None,
-                 timeJD=0,
-                 timeSidereal=0,
-                 raJNow=0,
-                 decJNow=0,
-                 pierside='E',
-                 Alt=0,
-                 Az=0,
-                 status=False,
-                 statusSlew=0,
                  ):
 
         self.ts = ts
         self._location = location
-        self._timeJD = timeJD
-        self._timeSidereal = timeSidereal
-        self._raJNow = raJNow
-        self._decJNow = decJNow
-        self._pierside = pierside
-        self._Alt = Alt
-        self._Az = Az
-        self._status = status
-        self._statusSlew = statusSlew
+        self._timeJD = None
+        self._timeSidereal = None
+        self._raJNow = None
+        self._decJNow = None
+        self._pierside = None
+        self._Alt = None
+        self._Az = None
+        self._status = None
+        self._statusSlew = None
 
     @property
     def location(self):
@@ -480,21 +462,6 @@ class Setting(object):
     to a 10 micron mount.
 
         >>> settings = Settings(
-        >>>                     slewRate=0,
-        >>>                     timeToFlip=0,
-        >>>                     meridianLimitGuide=0,
-        >>>                     meridianLimitSlew=0,
-        >>>                     refractionTemperature=0,
-        >>>                     refractionPressure=0,
-        >>>                     trackingRate=0,
-        >>>                     telescopeTempDEC=0,
-        >>>                     statusRefraction=False,
-        >>>                     statusUnattendedFlip=False,
-        >>>                     statusDualAxisTracking=False,
-        >>>                     currentHorizonLimitHigh=90,
-        >>>                     currentHorizonLimitLow=0,
-        >>>                     UTCDataValid=False,
-        >>>                     UTCDataExpirationDate=None,
         >>>                     )
 
     """
@@ -521,39 +488,24 @@ class Setting(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 slewRate=0,
-                 timeToFlip=0,
-                 meridianLimitGuide=0,
-                 meridianLimitSlew=0,
-                 refractionTemperature=0,
-                 refractionPressure=0,
-                 trackingRate=0,
-                 telescopeTempDEC=0,
-                 statusRefraction=False,
-                 statusUnattendedFlip=False,
-                 statusDualAxisTracking=False,
-                 currentHorizonLimitHigh=90,
-                 currentHorizonLimitLow=0,
-                 UTCDataValid=False,
-                 UTCDataExpirationDate=None,
                  ):
 
-        self._slewRate = slewRate
-        self._timeToFlip = timeToFlip
-        self._meridianLimitGuide = meridianLimitGuide
-        self._meridianLimitSlew = meridianLimitSlew
-        self._refractionTemperature = refractionTemperature
-        self._refractionPressure = refractionPressure
-        self._trackingRate = trackingRate
-        self._telescopeTempDEC = telescopeTempDEC
-        self._statusRefraction = statusRefraction
-        self._statusUnattendedFlip = statusUnattendedFlip
-        self._statusDualAxisTracking = statusDualAxisTracking
-        self._currentHorizonLimitHigh = currentHorizonLimitHigh
-        self._currentHorizonLimitLow = currentHorizonLimitLow
-        self._UTCDataValid = UTCDataValid
-        self._UTCDataExpirationDate = UTCDataExpirationDate
-        self._timeToMeridian = 0
+        self._slewRate = None
+        self._timeToFlip = None
+        self._meridianLimitGuide = None
+        self._meridianLimitSlew = None
+        self._refractionTemperature = None
+        self._refractionPressure = None
+        self._trackingRate = None
+        self._telescopeTempDEC = None
+        self._statusRefraction = None
+        self._statusUnattendedFlip = None
+        self._statusDualAxisTracking = None
+        self._currentHorizonLimitHigh = None
+        self._currentHorizonLimitLow = None
+        self._UTCDataValid = None
+        self._UTCDataExpirationDate = None
+        self._timeToMeridian = None
 
     @property
     def slewRate(self):
@@ -733,10 +685,6 @@ class Model(object):
     in the mount and provides the abstracted interface to a 10 micron mount.
 
         >>> settings = Model(
-        >>>                 numberNames=0,
-        >>>                 numberStars=0,
-        >>>                 nameList=[],
-        >>>                 starList=[],
         >>>                 )
 
     But mostly the command will be:
@@ -759,18 +707,12 @@ class Model(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 numberNames=0,
-                 numberStars=0,
-                 nameList=None,
-                 starList=None,
                  ):
 
-        if nameList is None:
-            nameList = []
-        self._numberNames = numberNames
-        self._numberStars = numberStars
-        self._starList = starList
-        self._nameList = nameList
+        self._numberNames = 0
+        self._numberStars = 0
+        self._starList = list()
+        self._nameList = list()
 
     @property
     def starList(self):
@@ -936,15 +878,15 @@ class ModelStar(object):
 
     def __init__(self,
                  point=None,
-                 errorRMS=0,
-                 errorAngle=0,
-                 number=0
+                 errorRMS=None,
+                 errorAngle=None,
+                 number=None,
                  ):
 
-        self._point = point
-        self._errorRMS = errorRMS
-        self._errorAngle = errorAngle
-        self._number = number
+        self.point = point
+        self.errorRMS = errorRMS
+        self.errorAngle = errorAngle
+        self.number = number
 
     @property
     def point(self):
