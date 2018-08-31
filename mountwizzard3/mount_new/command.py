@@ -58,8 +58,7 @@ class Command(object):
         self.data = data
         self.connection = Connection(host)
 
-    @staticmethod
-    def _parseWorkaroundAlign(response, numberOfChunks):
+    def _parseWorkaroundAlign(self, response, numberOfChunks):
         """
         Parsing the workaround command set defined by Filippo Riccio from 10micron
         to be able to access the model before having interaction with the handcontroller
@@ -70,14 +69,13 @@ class Command(object):
                  message:       text message what happened
         """
 
-        message = 'ok'
         if len(response) != 2 or len(response) != numberOfChunks:
-            message = 'workaround command failed'
-            return False, message
+            self.logger.error('workaround command failed')
+            return False
         if response[0] != 'V' or response[1] != 'E':
-            message = 'workaround command failed'
-            return False, message
-        return True, message
+            self.logger.error('workaround command failed')
+            return False
+        return True
 
     def workaroundAlign(self):
         """
@@ -88,18 +86,15 @@ class Command(object):
                  message:   text message what happened
         """
 
-        message = 'ok'
         commandString = ':newalig#:endalig#'
-        suc, mes, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = self.connection.communicate(commandString)
         if not suc:
-            message = mes
-            return False, message
-        suc, mes = self._parseWorkaroundAlign(response, chunks)
+            return False
+        suc = self._parseWorkaroundAlign(response, chunks)
         if suc:
-            return True, message
+            return True
         else:
-            message = mes
-            return False, message
+            return False
 
     def _parseSlow(self, response, numberOfChunks):
         """
@@ -111,10 +106,9 @@ class Command(object):
                  message:       text message what happened
         """
 
-        message = 'ok'
         if len(response) != 8 or len(response) != numberOfChunks:
-            message = 'wrong number of chunks'
-            return False, message
+            self.logger.error('wrong number of chunks')
+            return False
         # doing observer settings update
         try:
             elev = response[0]
@@ -127,8 +121,8 @@ class Command(object):
             # storing it to the skyfield Topos unit
             self.data.site.location = [lat, lon, elev]
         except Exception as e:
-            message = e
-            return False, message
+            self.logger.error('{0}'.format(e))
+            return False
         finally:
             pass
 
@@ -140,11 +134,11 @@ class Command(object):
             self.data.fw.fwtime = response[6]
             self.data.fw.hwVersion = response[7]
         except Exception as e:
-            message = e
-            return False, message
+            self.logger.error('{0}'.format(e))
+            return False
         finally:
             pass
-        return True, message
+        return True
 
     def pollSlow(self):
         """
@@ -155,17 +149,14 @@ class Command(object):
                  message:   text message what happened
         """
 
-        message = 'ok'
         commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        suc, mes, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = self.connection.communicate(commandString)
         if not suc:
-            message = mes
-            return False, message
-        suc, mes = self._parseSlow(response, chunks)
+            return False
+        suc = self._parseSlow(response, chunks)
         if not suc:
-            message = mes
-            return False, message
-        return True, message
+            return False
+        return True
 
     def _parseMed(self, response, numberOfChunks):
         """
@@ -177,10 +168,9 @@ class Command(object):
                  message:       text message what happened
         """
 
-        message = 'ok'
         if len(response) != 13 or len(response) != numberOfChunks:
-            message = 'wrong number of chunks'
-            return False, message
+            self.logger.error('wrong number of chunks')
+            return False
 
         self.data.setting.slewRate = response[0]
         self.data.setting.timeToFlip = response[1]
@@ -202,7 +192,7 @@ class Command(object):
         self.data.model.numberModelNames = response[10]
         self.data.model.numberAlignmentStars = response[11]
 
-        return True, message
+        return True
 
     def pollMed(self):
         """
@@ -213,7 +203,6 @@ class Command(object):
                  message:   text message what happened
         """
 
-        message = 'ok'
         cs1 = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:GTMP1#:GREF#:Guaf#'
         cs2 = ':Gdat#:Gh#:Go#:modelcnt#:getalst#'
         cs3 = ':GDUTV#'
@@ -221,15 +210,13 @@ class Command(object):
             commandString = ''.join((cs1, cs2, cs3))
         else:
             commandString = ''.join((cs1, cs2))
-        suc, mes, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = self.connection.communicate(commandString)
         if not suc:
-            message = mes
-            return False, message
-        suc, mes = self._parseMed(response, chunks)
+            return False
+        suc = self._parseMed(response, chunks)
         if not suc:
-            message = mes
-            return False, message
-        return True, message
+            return False
+        return True
 
     def _parseFast(self, response, numberOfChunks):
         """
@@ -241,10 +228,9 @@ class Command(object):
                  message:       text message what happened
         """
 
-        message = 'ok'
         if len(response) != 2 or len(response) != numberOfChunks:
-            message = 'wrong number of chunks'
-            return False, message
+            self.logger.error('wrong number of chunks')
+            return False
 
         self.data.site.timeSidereal = response[0]
         responseSplit = response[1].split(',')
@@ -257,7 +243,7 @@ class Command(object):
         self.data.site.status = responseSplit[6]
         self.data.site.statusSlew = (responseSplit[7] == '1')
 
-        return True, message
+        return True
 
     def pollFast(self):
         """
@@ -268,14 +254,11 @@ class Command(object):
                  message:   text message what happened
         """
 
-        message = 'ok'
         commandString = ':U2#:GS#:Ginfo#:'
-        suc, mes, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = self.connection.communicate(commandString)
         if not suc:
-            message = mes
-            return False, message
-        suc, mes = self._parseFast(response, chunks)
+            return False
+        suc = self._parseFast(response, chunks)
         if not suc:
-            message = mes
-            return False, message
-        return True, message
+            return False
+        return True

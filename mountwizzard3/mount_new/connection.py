@@ -144,15 +144,14 @@ class Connection(object):
 
         # test if we have valid parameters
         response = ''
-        message = 'ok'
         if not self._host:
             message = 'no host defined'
             self.logger.warning('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         if not isinstance(self._host, tuple):
             message = 'host entry malformed'
             self.logger.warning('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
 
         # build client
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -163,17 +162,17 @@ class Connection(object):
             message = 'socket error timeout connect'
             client.close()
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         except socket.error:
             message = 'socket error general connect'
             client.close()
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         except Exception as e:
             message = e
             client.close()
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
 
         # send data
         try:
@@ -182,17 +181,17 @@ class Connection(object):
             message = 'socket error timeout send'
             client.close()
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         except socket.error:
             message = 'socket error general send'
             client.close()
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         except Exception as e:
             message = e
             client.close()
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
 
         # receive data
         try:
@@ -209,20 +208,20 @@ class Connection(object):
             message = 'socket error timeout response'
             response = ''
             self.logger.error('{0}'.format(message))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         except socket.error:
             message = 'socket error general response'
             response = ''
             self.logger.error('{0}, response: {1}'.format(message, response))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         except Exception as e:
             message = e
             response = ''
             self.logger.error('{0}, response: {1}'.format(message, response))
-            return False, message, response, numberOfChunks
+            return False, response, numberOfChunks
         else:
             response = response.split('#')[:-1]
             self.logger.info('{0}, response: {1}'.format(message, response))
-            return True, message, response, numberOfChunks
+            return True, response, numberOfChunks
         finally:
             client.close()
