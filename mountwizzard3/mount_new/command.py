@@ -351,10 +351,10 @@ class Command(object):
             self.logger.error('wrong number of chunks')
             return False
 
-        for name in response:
-            if not name:
+        for star in response:
+            if not star:
                 continue
-            self.data.model.addName(name)
+            self.data.model.addStar(star)
 
         return True
 
