@@ -85,7 +85,14 @@ class TestCommand(unittest.TestCase):
                        )
         ok = comm.pollModelNames()
         self.assertEqual(True, ok)
-        print(comm.data.model.nameList)
+
+    # @unittest.skip("only with host available")
+    def test_pollModelStars(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        ok = comm.pollModelStars()
+        self.assertEqual(True, ok)
 
     # testing parsing against valid and invalid data
     def test_parseWorkaroundAlign_good(self):
@@ -232,13 +239,92 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseFast(response, 2)
         self.assertEqual(True, suc)
 
-    # testing parsing fast
-    def test_parseNumberNameName_good(self):
+    # testing names fast
+    def test_parseNumberName_good(self):
         comm = Command(data=self.data,
                        )
         response = ['5']
         suc = comm._parseNumberNames(response, 1)
         self.assertEqual(True, suc)
+
+    def test_parseNumberName_bad1(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['df']
+        suc = comm._parseNumberNames(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberName_bad2(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['']
+        suc = comm._parseNumberNames(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberName_bad3(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['5a']
+        suc = comm._parseNumberNames(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberName_bad4(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['5', '4']
+        suc = comm._parseNumberNames(response, 1)
+        self.assertEqual(False, suc)
+
+    def test_parseNumberName_bad5(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['5', 'g']
+        suc = comm._parseNumberNames(response, 1)
+        self.assertEqual(False, suc)
+
+    # testing stars fast
+    def test_parseNumberStars_good(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['5']
+        suc = comm._parseNumberStars(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberStars_bad1(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['sd']
+        suc = comm._parseNumberStars(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberStars_bad2(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['']
+        suc = comm._parseNumberStars(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberStars_bad3(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['4t']
+        suc = comm._parseNumberStars(response, 1)
+        self.assertEqual(True, suc)
+
+    def test_parseNumberStars_bad4(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['4', '5']
+        suc = comm._parseNumberStars(response, 1)
+        self.assertEqual(False, suc)
+
+    def test_parseNumberStars_bad5(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['4', 'r']
+        suc = comm._parseNumberStars(response, 1)
+        self.assertEqual(False, suc)
+
 
 
 if __name__ == '__main__':

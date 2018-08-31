@@ -731,9 +731,10 @@ class Model(object):
 
     @numberStars.setter
     def numberStars(self, value):
-        if isinstance(value, str):
-            value = int(value)
-        self._numberStars = value
+        try:
+            self._numberStars = int(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
 
     def addStar(self, value):
         """
@@ -798,9 +799,10 @@ class Model(object):
 
     @numberNames.setter
     def numberNames(self, value):
-        if isinstance(value, str):
-            value = int(value)
-        self._numberNames = value
+        try:
+            self._numberNames = int(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
 
     def addName(self, value):
         """
@@ -929,7 +931,10 @@ class ModelStar(object):
     def number(self, value):
         if not value:
             return
-        self._number = int(value)
+        try:
+            self._number = int(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def errorRMS(self):
