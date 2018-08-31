@@ -221,7 +221,7 @@ class Connection(object):
             return False, response, numberOfChunks
         else:
             response = response.rstrip('#').split('#')
-            self.logger.info('{0}'.format(response))
+            self.logger.debug('{0}'.format(response))
             return True, response, numberOfChunks
         finally:
             client.close()
