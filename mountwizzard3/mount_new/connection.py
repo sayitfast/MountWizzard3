@@ -140,7 +140,7 @@ class Connection(object):
         self.logger.debug('com: {0}, resp: {1}, chunks: {2}'.format(commandString,
                                                                     noResponse,
                                                                     numberOfChunks))
-        self.logger.info('host: {0}'.format(self.host))
+        self.logger.debug('host: {0}'.format(self.host))
 
         # test if we have valid parameters
         response = ''
