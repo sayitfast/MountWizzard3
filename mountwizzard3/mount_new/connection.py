@@ -71,10 +71,10 @@ class Connection(object):
                  ':SRTMP', ':Slmt', ':Slms', ':St', ':Sw', ':Sz', ':Sdat', ':Gdat']
 
     def __init__(self,
-                 host=None,
+                 host='127.0.0.1',
                  ):
 
-        self.host =  host
+        self._host = host
 
     @property
     def host(self):

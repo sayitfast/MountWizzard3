@@ -97,7 +97,7 @@ class Data(object):
                  expire=True,
                  ):
 
-        self.expire = expire
+        self._expire = expire
         self.pathToTS = pathToTS
         self.verbose = verbose
         self.ts = None
@@ -288,16 +288,16 @@ class Site(object):
                  ):
 
         self.ts = ts
-        self.location = location
-        self.timeJD = timeJD
-        self.timeSidereal = timeSidereal
-        self.raJNow = raJNow
-        self.decJNow = decJNow
-        self.pierside = pierside
-        self.Alt = Alt
-        self.Az = Az
-        self.status = status
-        self.statusSlew = statusSlew
+        self._location = location
+        self._timeJD = timeJD
+        self._timeSidereal = timeSidereal
+        self._raJNow = raJNow
+        self._decJNow = decJNow
+        self._pierside = pierside
+        self._Alt = Alt
+        self._Az = Az
+        self._status = status
+        self._statusSlew = statusSlew
 
     @property
     def location(self):
@@ -538,22 +538,21 @@ class Setting(object):
                  UTCDataExpirationDate=None,
                  ):
 
-        self.slewRate = slewRate
-        self.timeToFlip = timeToFlip
-        self.meridianLimitGuide = meridianLimitGuide
-        self.meridianLimitSlew = meridianLimitSlew
-        self.refractionTemperature = refractionTemperature
-        self.refractionPressure = refractionPressure
-        self.trackingRate = trackingRate
-        self.telescopeTempDEC = telescopeTempDEC
-        self.statusRefraction = statusRefraction
-        self.statusUnattendedFlip = statusUnattendedFlip
-        self.statusDualAxisTracking = statusDualAxisTracking
-        self.currentHorizonLimitHigh = currentHorizonLimitHigh
-        self.currentHorizonLimitLow = currentHorizonLimitLow
-        self.UTCDataValid = UTCDataValid
-        self.UTCDataExpirationDate = UTCDataExpirationDate
-
+        self._slewRate = slewRate
+        self._timeToFlip = timeToFlip
+        self._meridianLimitGuide = meridianLimitGuide
+        self._meridianLimitSlew = meridianLimitSlew
+        self._refractionTemperature = refractionTemperature
+        self._refractionPressure = refractionPressure
+        self._trackingRate = trackingRate
+        self._telescopeTempDEC = telescopeTempDEC
+        self._statusRefraction = statusRefraction
+        self._statusUnattendedFlip = statusUnattendedFlip
+        self._statusDualAxisTracking = statusDualAxisTracking
+        self._currentHorizonLimitHigh = currentHorizonLimitHigh
+        self._currentHorizonLimitLow = currentHorizonLimitLow
+        self._UTCDataValid = UTCDataValid
+        self._UTCDataExpirationDate = UTCDataExpirationDate
         self._timeToMeridian = 0
 
     @property
@@ -768,10 +767,10 @@ class Model(object):
 
         if nameList is None:
             nameList = []
-        self.numberNames = numberNames
-        self.numberStars = numberStars
-        self.starList = starList
-        self.nameList = nameList
+        self._numberNames = numberNames
+        self._numberStars = numberStars
+        self._starList = starList
+        self._nameList = nameList
 
     @property
     def starList(self):
@@ -942,10 +941,10 @@ class ModelStar(object):
                  number=0
                  ):
 
-        self.point = point
-        self.errorRMS = errorRMS
-        self.errorAngle = errorAngle
-        self.number = number
+        self._point = point
+        self._errorRMS = errorRMS
+        self._errorAngle = errorAngle
+        self._number = number
 
     @property
     def point(self):
