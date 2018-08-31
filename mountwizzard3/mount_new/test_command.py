@@ -223,6 +223,14 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseFast(response, 2)
         self.assertEqual(True, suc)
 
+    # testing parsing fast
+    def test_parseNumberNameName_good(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['5']
+        suc = comm._parseNumberNames(response, 1)
+        self.assertEqual(True, suc)
+
 
 if __name__ == '__main__':
     unittest.main()

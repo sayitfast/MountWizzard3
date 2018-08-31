@@ -290,7 +290,7 @@ class Command(object):
             self.logger.error('wrong number of chunks')
             return False
 
-        self.data.model.numberNames = response.strip('#')
+        self.data.model.numberNames = response[0]
         return True
 
     def pollModelNames(self):
