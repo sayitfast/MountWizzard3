@@ -97,9 +97,9 @@ class Data(object):
                  expire=True,
                  ):
 
+        self.expire = expire
         self.pathToTS = pathToTS
         self.verbose = verbose
-        self.expire = expire
         self.ts = None
 
         self.loadTimescale()
@@ -936,7 +936,7 @@ class ModelStar(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 point=(0, 0),
+                 point=None,
                  errorRMS=0,
                  errorAngle=0,
                  number=0
@@ -960,7 +960,7 @@ class ModelStar(object):
             self._point = skyfield.api.Star(ra_hours=0,
                                             dec_degrees=0)
         _ha, _dec = value
-        if isinstance(value[1], str):
+        if all(isinstance(x, str) for x in value):
             _ha = stringToDegree(_ha)
             if not _ha:
                 self.logger.error('malformed value: {0}'.format(value))
@@ -969,8 +969,10 @@ class ModelStar(object):
             if not _dec:
                 self.logger.error('malformed value: {0}'.format(value))
                 return
-        self._point = skyfield.api.Star(ra_hours=_ha,
-                                        dec_degrees=_dec)
+            self._point = skyfield.api.Star(ra_hours=_ha,
+                                            dec_degrees=_dec)
+        else:
+            print('problem')
 
     @property
     def number(self):
