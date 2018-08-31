@@ -85,6 +85,7 @@ class TestCommand(unittest.TestCase):
                        )
         ok = comm.pollModelNames()
         self.assertEqual(True, ok)
+        print(comm.data.model.nameList)
 
     # testing parsing against valid and invalid data
     def test_parseWorkaroundAlign_good(self):

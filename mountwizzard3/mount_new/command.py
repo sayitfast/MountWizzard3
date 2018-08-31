@@ -312,7 +312,6 @@ class Command(object):
         suc = self._parseNumberNames(response, chunks)
         if not suc:
             return False
-
         # now the real gathering of names
         commandString = ''
         for i in range(1, self.data.model.numberNames + 1):
@@ -322,6 +321,77 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseModelNames(response, chunks)
+        if not suc:
+            return False
+        return True
+
+    def _parseModelStars(self, response, numberOfChunks):
+        """
+        Parsing the model names cluster. The command <:modelnamN#> returns:
+            - the string "#" if N is not valid
+            - the name of model N, terminated by the character "#"
+
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+        """
+
+        if len(response) != numberOfChunks:
+            self.logger.error('wrong number of chunks')
+            return False
+
+        for name in response:
+            if not name:
+                continue
+            self.data.model.addName(name)
+
+        return True
+
+    def _parseNumberStars(self, response, numberOfChunks):
+        """
+        Parsing the model names number.
+
+        :param response:        data load from mount
+               numberOfChunks:  amount of parts
+        :return: success:       True if ok, False if not
+        """
+
+        if len(response) != numberOfChunks:
+            self.logger.error('wrong number of chunks')
+            return False
+
+        self.data.model.numberNames = response[0]
+        return True
+
+    def pollModelStars(self):
+        """
+        Sending the polling ModelNames command. It collects for all the known names
+        the string. The number of names have to be collected first, than it gathers
+        all name at once.
+
+        :return: success:   True if ok, False if not
+        """
+
+        # first get the number of names. the command should return <nnn#>
+
+        # alternatively we know already the number, and skip the gathering
+        commandString = ':modelcnt#'
+        suc, response, chunks = self.connection.communicate(commandString)
+        if not suc:
+            return False
+        suc = self._parseNumberStars(response, chunks)
+        if not suc:
+            return False
+        # now the real gathering of names
+        commandString = ''
+
+        for i in range(1, self.data.model.numberStars + 1):
+            commandString += (':modelnam{0:d}#'.format(i))
+
+        suc, response, chunks = self.connection.communicate(commandString)
+        if not suc:
+            return False
+        suc = self._parseModelStars(response, chunks)
         if not suc:
             return False
         return True

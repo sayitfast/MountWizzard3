@@ -122,20 +122,27 @@ if __name__ == '__main__':
     mount = Mount(host=host,
                   pathToTS=pathToTS,
                   )
+    """
     timeStart = time.time()
-    for i in range(0, 100):
+    for i in range(0, 10):
         mount.command.pollSlow()
     timeStop = time.time()
-    print((timeStop - timeStart) / 100)
+    print((timeStop - timeStart) / 10)
     timeStart = time.time()
-    for i in range(0, 100):
+    for i in range(0, 10):
         mount.command.pollMed()
     timeStop = time.time()
-    print((timeStop - timeStart) / 100)
+    print((timeStop - timeStart) / 10)
     timeStart = time.time()
-    for i in range(0, 100):
+    for i in range(0, 10):
         mount.command.pollFast()
     timeStop = time.time()
-    print((timeStop - timeStart) / 100)
+    print((timeStop - timeStart) / 10)
+    """
+    timeStart = time.time()
+    for i in range(0, 10):
+        mount.command.pollModelNames()
+    timeStop = time.time()
+    print((timeStop - timeStart) / 10)
     # print(mount.data.site)
     # print(mount.data.fw)
