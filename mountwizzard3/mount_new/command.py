@@ -492,3 +492,24 @@ class Command(object):
 
     def unpark(self):
         pass
+
+    def stop(self):
+        pass
+
+    def flip(self):
+        pass
+
+    def clearModel(self):
+        pass
+
+    def deletePoint(self):
+        pass
+
+    def storeModel(self):
+        pass
+
+    def loadModel(self):
+        pass
+
+    def deleteModel(self):
+        pass
