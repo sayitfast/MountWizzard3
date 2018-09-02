@@ -21,6 +21,7 @@
 import unittest
 import logging
 # external packages
+import skyfield.api
 # local imports
 from mount_new.command import Command
 from mount_new.configData import Data
@@ -42,6 +43,7 @@ class TestCommand(unittest.TestCase):
         pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
         self.data = Data(pathToTimescaleData)
 
+    """
     # @unittest.skip("only with host available")
     def test_workaroundAlign(self):
         comm = Command(host=('192.168.2.15', 3492))
@@ -324,8 +326,14 @@ class TestCommand(unittest.TestCase):
         response = ['4', 'r']
         suc = comm._parseNumberStars(response, 1)
         self.assertEqual(False, suc)
+    """
+    def test_slewAltAz(self):
+        alt = skyfield.api.Angle(degrees=31.251234)
+        az = skyfield.api.Angle(degrees=55.77777)
 
+        comm = Command()
 
+        suc = comm.slewAltAz(alt, az)
 
 if __name__ == '__main__':
     unittest.main()

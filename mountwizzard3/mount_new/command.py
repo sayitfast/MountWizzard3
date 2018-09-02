@@ -20,6 +20,7 @@
 # standard libraries
 import logging
 # external packages
+import skyfield.api
 # local imports
 from .connection import Connection
 
@@ -436,8 +437,74 @@ class Command(object):
             return False
         return True
 
-    def slewAltAz(self):
-        pass
+    def slewAltAz(self, alt, az):
+        """
+        Slew AltAz unpark the mount sets the targets for alt and az and then
+        issue the slew command.
+
+        the unpark command is:
+            :PO#
+        and returns nothing
+
+        setting alt target is the following:
+            :SzDDD*MM# or :SzDDD*MM:SS# or :SzDDD*MM:SS.S#, we use the last one
+            :SzDDD*MM:SS.S#
+        setting az target is the following:
+            :SasDD*MM# or :SasDD*MM:SS# or :SasDD*MM:SS.S#, we use the last one
+            :SasDD*MM:SS.S#
+
+        the slew command moves the mount and keeps tracking at the end of the move.
+        in the command protocol it is written, that the targets should be ra / dec,
+        but it works for targets defined with alt / az commands
+
+        the command is:
+            :MS#
+        and returns:
+            0 no error
+                if the target is below the lower limit: the string
+            “1Object Below Horizon #”
+                if the target is above the high limit: the string
+            “2Object Below Higher #”
+                if the slew cannot be performed due to another cause: the string
+            “3Cannot Perform Slew #”
+                if the mount is parked: the string
+            “4Mount Parked #”
+                if the mount is restricted to one side of the meridian and the object
+                is on the other side: the string
+            “5Object on the other side #”
+
+        but we don't parse the results as it has sometimes end markers, sometimes not.
+
+        :param alt:     altitude in type Angle
+        :param az:      azimuth in type Angle
+        :return:        success
+        """
+
+        if not isinstance(alt, skyfield.api.Angle):
+            return False
+        if not isinstance(az, skyfield.api.Angle):
+            return False
+        if alt.signed_dms()[0] < 0:
+            return False
+
+        conn = Connection(self.host)
+
+        # conversion, as we only have positive alt, we set the '+' as standard.
+        _altFormat = ':Sa+{0:02.0f}*{1:02.0f}:{2:04.1f}#'
+        _azFormat = ':Sz{0:03.0f}*{1:02.0f}:{2:04.1f}#'
+        _setAlt = _altFormat.format(*alt.dms())
+        _setAz = _azFormat.format(*az.dms())
+        _slew = ':MS#'
+        _unpark = ':PO#'
+
+        commandString = ''.join((_unpark, _setAlt, _setAz, _slew))
+        print(commandString)
+        suc, response, chunks = conn.communicate(commandString)
+
+        if not suc:
+            return False
+        else:
+            return True
 
     def slewRaDec(self):
         pass
