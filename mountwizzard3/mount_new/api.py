@@ -146,6 +146,7 @@ if __name__ == '__main__':
     """
     timeStart = time.time()
     for i in range(0, 10):
+        print(i)
         mount.command.pollModelStars()
     timeStop = time.time()
     print((timeStop - timeStart) / 10)

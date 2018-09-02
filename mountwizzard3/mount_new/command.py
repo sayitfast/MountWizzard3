@@ -75,10 +75,12 @@ class Command(object):
         if not isinstance(value, (tuple, str)):
             self.logger.error('wrong host value: {0}'.format(value))
             return
+        # now we got the right format
         if isinstance(value, str):
-            self._host = (value, self.DEFAULT_PORT)
+            __host = (value, self.DEFAULT_PORT)
         else:
-            self._host = value
+            __host = value
+        self._host = __host
 
     def _parseWorkaroundAlign(self, response, numberOfChunks):
         """
