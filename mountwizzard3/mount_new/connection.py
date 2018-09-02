@@ -56,8 +56,6 @@ class Connection(object):
     # I don't want so wait to long for a response. In average I see values
     # shorter than 0.5 sec, so 2 seconds should be good
     SOCKET_TIMEOUT = 2
-    # 10 microns have 3492 as default port
-    DEFAULT_PORT = 3492
 
     # Command list for commands which don't reply anything
     COMMAND_A = [':AP', ':AL', ':hP', ':PO', ':RT0', ':RT1', ':RT2', ':RT9', ':STOP', ':U2',
@@ -75,25 +73,6 @@ class Connection(object):
                  ):
 
         self.host = host
-
-    @property
-    def host(self):
-        return self._host
-
-    @host.setter
-    def host(self, value):
-        # checking format
-        if not value:
-            self._host = None
-            self.logger.error('wrong host value: {0}'.format(value))
-            return
-        if not isinstance(value, (tuple, str)):
-            self.logger.error('wrong host value: {0}'.format(value))
-            return
-        if isinstance(value, str):
-            self._host = (value, self.DEFAULT_PORT)
-        else:
-            self._host = value
 
     def _analyseCommand(self, commandString):
         """
@@ -144,11 +123,11 @@ class Connection(object):
 
         # test if we have valid parameters
         response = ''
-        if not self._host:
+        if not self.host:
             message = 'no host defined'
             self.logger.warning('{0}'.format(message))
             return False, response, numberOfChunks
-        if not isinstance(self._host, tuple):
+        if not isinstance(self.host, tuple):
             message = 'host entry malformed'
             self.logger.warning('{0}'.format(message))
             return False, response, numberOfChunks

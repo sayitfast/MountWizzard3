@@ -50,13 +50,35 @@ class Command(object):
     version = '0.1'
     logger = logging.getLogger(__name__)
 
+    # 10 microns have 3492 as default port
+    DEFAULT_PORT = 3492
+
     def __init__(self,
                  host=(None, None),
                  data=None
                  ):
 
+        self.host = host
         self.data = data
-        self.connection = Connection(host)
+
+    @property
+    def host(self):
+        return self._host
+
+    @host.setter
+    def host(self, value):
+        # checking format
+        if not value:
+            self._host = None
+            self.logger.error('wrong host value: {0}'.format(value))
+            return
+        if not isinstance(value, (tuple, str)):
+            self.logger.error('wrong host value: {0}'.format(value))
+            return
+        if isinstance(value, str):
+            self._host = (value, self.DEFAULT_PORT)
+        else:
+            self._host = value
 
     def _parseWorkaroundAlign(self, response, numberOfChunks):
         """
@@ -84,8 +106,9 @@ class Command(object):
         :return: success:   True if ok, False if not
         """
 
+        conn = Connection(self.host)
         commandString = ':newalig#:endalig#'
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseWorkaroundAlign(response, chunks)
@@ -145,8 +168,9 @@ class Command(object):
         :return: success:   True if ok, False if not
         """
 
+        conn = Connection(self.host)
         commandString = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseSlow(response, chunks)
@@ -197,6 +221,7 @@ class Command(object):
         :return: success:   True if ok, False if not
         """
 
+        conn = Connection(self.host)
         cs1 = ':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#:GT#:GTMP1#:GREF#:Guaf#'
         cs2 = ':Gdat#:Gh#:Go#:modelcnt#:getalst#'
         cs3 = ':GDUTV#'
@@ -204,7 +229,7 @@ class Command(object):
             commandString = ''.join((cs1, cs2, cs3))
         else:
             commandString = ''.join((cs1, cs2))
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseMed(response, chunks)
@@ -246,8 +271,9 @@ class Command(object):
         :return: success:   True if ok, False if not
         """
 
+        conn = Connection(self.host)
         commandString = ':U2#:GS#:Ginfo#:'
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseFast(response, chunks)
@@ -303,11 +329,10 @@ class Command(object):
         :return: success:   True if ok, False if not
         """
 
-        # first get the number of names. the command should return <nnn#>
-
+        conn = Connection(self.host)
         # alternatively we know already the number, and skip the gathering
         commandString = ':modelcnt#'
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseNumberNames(response, chunks)
@@ -318,7 +343,7 @@ class Command(object):
         for i in range(1, self.data.model.numberNames + 1):
             commandString += (':modelnam{0:d}#'.format(i))
 
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseModelNames(response, chunks)
@@ -383,12 +408,11 @@ class Command(object):
 
         :return: success:   True if ok, False if not
         """
-
-        # first get the number of names. the command should return <nnn#>
+        conn = Connection(self.host)
 
         # alternatively we know already the number, and skip the gathering
         commandString = ':getalst#'
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseNumberStars(response, chunks)
@@ -400,7 +424,7 @@ class Command(object):
         for i in range(1, self.data.model.numberStars + 1):
             commandString += (':getalp{0:d}#'.format(i))
 
-        suc, response, chunks = self.connection.communicate(commandString)
+        suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
         suc = self._parseModelStars(response, chunks)
