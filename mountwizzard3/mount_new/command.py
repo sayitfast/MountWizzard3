@@ -435,3 +435,60 @@ class Command(object):
         if not suc:
             return False
         return True
+
+    def slewAltAz(self):
+        pass
+
+    def slewRaDec(self):
+        pass
+
+    def boot(self):
+        pass
+
+    def shutdown(self):
+        pass
+
+    def setSite(self):
+        pass
+
+    def setSlewRate(self):
+        pass
+
+    def setRefractionTemperature(self):
+        pass
+
+    def setRefractionPressure(self):
+        pass
+
+    def setRefraction(self):
+        pass
+
+    def setUnattendedFlip(self):
+        pass
+
+    def setDualAxisTracking(self):
+        pass
+
+    def setMeridianLimitHigh(self):
+        pass
+
+    def setMeridianLimitLow(self):
+        pass
+
+    def setHorizonLimitHigh(self):
+        pass
+
+    def setHorizonLimitLow(self):
+        pass
+
+    def setTrackingRate(self):
+        pass
+
+    def setTracking(self):
+        pass
+
+    def park(self):
+        pass
+
+    def unpark(self):
+        pass
