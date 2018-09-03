@@ -117,10 +117,7 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseWorkaroundAlign(response, chunks)
-        if suc:
-            return True
-        else:
-            return False
+        return suc
 
     def _parseSlow(self, response, numberOfChunks):
         """
@@ -193,7 +190,6 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-
         self.data.setting.slewRate = response[0]
         self.data.setting.timeToFlip = response[1]
         self.data.setting.meridianLimitGuide = response[2]
@@ -213,7 +209,6 @@ class Command(object):
             self.data.setting.UTCDataExpirationDate = expirationDate
         self.data.model.numberModelNames = response[10]
         self.data.model.numberAlignmentStars = response[11]
-
         return True
 
     def pollMed(self):
@@ -250,7 +245,6 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-
         self.data.site.timeSidereal = response[0]
         responseSplit = response[1].split(',')
         self.data.site.raJNow = responseSplit[0]
@@ -261,7 +255,6 @@ class Command(object):
         self.data.site.timeJD = responseSplit[5]
         self.data.site.status = responseSplit[6]
         self.data.site.statusSlew = (responseSplit[7] == '1')
-
         return True
 
     def pollFast(self):
@@ -294,12 +287,10 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-
         for name in response:
             if not name:
                 continue
             self.data.model.addName(name)
-
         return True
 
     def _parseNumberNames(self, response, numberOfChunks):
@@ -315,7 +306,6 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-
         self.data.model.numberNames = response[0]
         return True
 
@@ -341,7 +331,6 @@ class Command(object):
         commandString = ''
         for i in range(1, self.data.model.numberNames + 1):
             commandString += (':modelnam{0:d}#'.format(i))
-
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
@@ -372,12 +361,10 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-
         for star in response:
             if not star:
                 continue
             self.data.model.addStar(star)
-
         return True
 
     def _parseNumberStars(self, response, numberOfChunks):
@@ -393,7 +380,6 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-
         self.data.model.numberStars = response[0]
         return True
 
@@ -405,8 +391,8 @@ class Command(object):
 
         :return: success:   True if ok, False if not
         """
-        conn = Connection(self.host)
 
+        conn = Connection(self.host)
         # alternatively we know already the number, and skip the gathering
         commandString = ':getalst#'
         suc, response, chunks = conn.communicate(commandString)
@@ -417,10 +403,8 @@ class Command(object):
             return False
         # now the real gathering of names
         commandString = ''
-
         for i in range(1, self.data.model.numberStars + 1):
             commandString += (':getalp{0:d}#'.format(i))
-
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
@@ -476,9 +460,7 @@ class Command(object):
             return False
         if alt.signed_dms()[0] < 0:
             return False
-
         conn = Connection(self.host)
-
         # conversion, as we only have positive alt, we set the '+' as standard.
         _altFormat = ':Sa+{0:02.0f}*{1:02.0f}:{2:04.1f}#'
         _azFormat = ':Sz{0:03.0f}*{1:02.0f}:{2:04.1f}#'
@@ -486,7 +468,6 @@ class Command(object):
         _setAz = _azFormat.format(*az.dms())
         _slew = ':MS#'
         _unpark = ':PO#'
-
         commandString = ''.join((_unpark, _setAlt, _setAz, _slew))
         print(commandString)
         suc, response, chunks = conn.communicate(commandString)
