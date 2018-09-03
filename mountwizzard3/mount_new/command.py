@@ -56,6 +56,10 @@ class Command(object):
     # 10 microns have 3492 as default port
     DEFAULT_PORT = 3492
 
+    # standard commands
+    SLEW = ':MS#'
+    UNPARK = ':PO#'
+
     def __init__(self,
                  host=(None, None),
                  data=None
@@ -466,12 +470,23 @@ class Command(object):
                                     sign='+' if alt.degrees > 0 else '-')
         _azFormat = ':Sz{0:03.0f}*{1:02.0f}:{2:04.1f}#'
         _setAz = _azFormat.format(*az.dms())
-        _slew = ':MS#'
-        _unpark = ':PO#'
-        commandString = ''.join((_unpark, _setAlt, _setAz, _slew))
-        print('Alt / Az', commandString)
+        commandString = ''.join((_setAlt, _setAz))
+        # set coordinates
         suc, response, chunks = conn.communicate(commandString)
-        return suc
+        if not suc:
+            return False
+        if '#' in response:
+            self.logger.error('coordinates could not be set, {0}'.format(response))
+            return False
+        # start slewing
+        commandString = ''.join((self.UNPARK, self.SLEW))
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if '#' in response:
+            self.logger.error('slew could not be done, {0}'.format(response))
+            return False
+        return True
 
     def slewRaDec(self, ra, dec):
         """
@@ -529,12 +544,23 @@ class Command(object):
         _decFormat = ':Sd{sign}{0:03.0f}*{1:02.0f}:{2:04.1f}#'
         _setDec = _decFormat.format(*dec.signed_dms()[1:4],
                                     sign='+' if dec.degrees > 0 else '-')
-        _slew = ':MS#'
-        _unpark = ':PO#'
-        commandString = ''.join((_unpark, _setRa, _setDec, _slew))
-        print('Ra / Dec', commandString)
+        commandString = ''.join((_setRa, _setDec))
+        # set coordinates
         suc, response, chunks = conn.communicate(commandString)
-        return suc
+        if not suc:
+            return False
+        if '#' in response:
+            self.logger.error('coordinates could not be set, {0}'.format(response))
+            return False
+        # start slewing
+        commandString = ''.join((self.UNPARK, self.SLEW))
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if '#' in response:
+            self.logger.error('slew could not be done, {0}'.format(response))
+            return False
+        return True
 
     def boot(self):
         pass
