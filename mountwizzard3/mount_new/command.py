@@ -141,6 +141,7 @@ class Command(object):
         try:
             elev = response[0]
             # due to compatibility to LX200 protocol east is negative, so we change that
+            # in class we would like to keep the correct sign for east is positive
             if response[1] == '-':
                 lon = response[1].replace('-', '+')
             else:

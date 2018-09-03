@@ -40,7 +40,6 @@ class TestConnection(unittest.TestCase):
     def setUp(self):
         pass
 
-    """
     def test_no_host(self):
         mount = Connection(host='192.168.2.15')
         commandSet = ':U2#:Gev#:'
@@ -107,12 +106,14 @@ class TestConnection(unittest.TestCase):
         number, response = mount._analyseCommand(':FLIP#:GTMP1#')
         self.assertEqual(False, response)
         self.assertEqual(1, number)
-    """
+
     def test_response_slew_altaz(self):
         conn = Connection()
         commandString = ':Sa+31*15:04.4#:Sz055*46:40.0#:MS#'
         chunksToReceive, noResponse = conn._analyseCommand(commandString)
-        print(chunksToReceive, noResponse)
+        self.assertEqual(False, noResponse)
+        self.assertEqual(0, chunksToReceive)
+
 
 
 if __name__ == '__main__':
