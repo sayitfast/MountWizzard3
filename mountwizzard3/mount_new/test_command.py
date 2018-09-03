@@ -326,17 +326,32 @@ class TestCommand(unittest.TestCase):
         response = ['4', 'r']
         suc = comm._parseNumberStars(response, 1)
         self.assertEqual(False, suc)
+
     """
-    def test_slewAltAz(self):
+    def test_slewAltAz_pos(self):
         alt = skyfield.api.Angle(degrees=31.251234)
         az = skyfield.api.Angle(degrees=55.77777)
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewAltAz(alt, az)
 
-    def test_slewRaDec(self):
+    def test_slewAltAz_neg(self):
+        alt = skyfield.api.Angle(degrees=-31.251234)
+        az = skyfield.api.Angle(degrees=55.77777)
+
+        comm = Command(host=('192.168.2.15', 3492))
+        suc = comm.slewAltAz(alt, az)
+
+    def test_slewRaDec_pos(self):
         ra = skyfield.api.Angle(degrees=31.251234)
         dec = skyfield.api.Angle(degrees=55.77777)
+
+        comm = Command(host=('192.168.2.15', 3492))
+        suc = comm.slewRaDec(ra, dec)
+
+    def test_slewRaDec_neg(self):
+        ra = skyfield.api.Angle(degrees=31.251234)
+        dec = skyfield.api.Angle(degrees=-55.77777)
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)

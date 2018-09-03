@@ -459,18 +459,17 @@ class Command(object):
             return False
         if not isinstance(az, skyfield.api.Angle):
             return False
-        if alt.signed_dms()[0] < 0:
-            return False
         conn = Connection(self.host)
         # conversion, as we only have positive alt, we set the '+' as standard.
-        _altFormat = ':Sa+{0:02.0f}*{1:02.0f}:{2:04.1f}#'
+        _altFormat = ':Sa{sign}{0:02.0f}*{1:02.0f}:{2:04.1f}#'
+        _setAlt = _altFormat.format(*alt.signed_dms()[1:4],
+                                    sign='+' if alt.degrees > 0 else '-')
         _azFormat = ':Sz{0:03.0f}*{1:02.0f}:{2:04.1f}#'
-        _setAlt = _altFormat.format(*alt.dms())
         _setAz = _azFormat.format(*az.dms())
         _slew = ':MS#'
         _unpark = ':PO#'
         commandString = ''.join((_unpark, _setAlt, _setAz, _slew))
-        print(commandString)
+        print('Alt / Az', commandString)
         suc, response, chunks = conn.communicate(commandString)
         return suc
 
@@ -525,18 +524,15 @@ class Command(object):
             return False
         conn = Connection(self.host)
         # conversion, we have to find out the sign
-        if dec.signed_dms()[0] > 0:
-            _sign = '+'
-        else:
-            _sign = '-'
         _raFormat = ':Sr{0:02.0f}:{1:02.0f}:{2:05.2f}#'
-        _decFormat = ':Sd' + _sign + '{0:03.0f}*{1:02.0f}:{2:04.1f}#'
         _setRa = _raFormat.format(*ra.dms())
-        _setDec = _decFormat.format(*dec.dms())
+        _decFormat = ':Sd{sign}{0:03.0f}*{1:02.0f}:{2:04.1f}#'
+        _setDec = _decFormat.format(*dec.signed_dms()[1:4],
+                                    sign='+' if dec.degrees > 0 else '-')
         _slew = ':MS#'
         _unpark = ':PO#'
         commandString = ''.join((_unpark, _setRa, _setDec, _slew))
-        print(commandString)
+        print('Ra / Dec', commandString)
         suc, response, chunks = conn.communicate(commandString)
         return suc
 
