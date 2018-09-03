@@ -179,9 +179,7 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseSlow(response, chunks)
-        if not suc:
-            return False
-        return True
+        return suc
 
     def _parseMed(self, response, numberOfChunks):
         """
@@ -238,9 +236,7 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseMed(response, chunks)
-        if not suc:
-            return False
-        return True
+        return suc
 
     def _parseFast(self, response, numberOfChunks):
         """
@@ -282,9 +278,7 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseFast(response, chunks)
-        if not suc:
-            return False
-        return True
+        return suc
 
     def _parseModelNames(self, response, numberOfChunks):
         """
@@ -352,9 +346,7 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseModelNames(response, chunks)
-        if not suc:
-            return False
-        return True
+        return suc
 
     def _parseModelStars(self, response, numberOfChunks):
         """
@@ -433,9 +425,7 @@ class Command(object):
         if not suc:
             return False
         suc = self._parseModelStars(response, chunks)
-        if not suc:
-            return False
-        return True
+        return suc
 
     def slewAltAz(self, alt, az):
         """
@@ -500,11 +490,7 @@ class Command(object):
         commandString = ''.join((_unpark, _setAlt, _setAz, _slew))
         print(commandString)
         suc, response, chunks = conn.communicate(commandString)
-
-        if not suc:
-            return False
-        else:
-            return True
+        return suc
 
     def slewRaDec(self):
         pass
