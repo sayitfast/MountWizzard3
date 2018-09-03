@@ -423,6 +423,7 @@ class Command(object):
         setting alt target is the following:
             :SzDDD*MM# or :SzDDD*MM:SS# or :SzDDD*MM:SS.S#, we use the last one
             :SzDDD*MM:SS.S#
+
         setting az target is the following:
             :SasDD*MM# or :SasDD*MM:SS# or :SasDD*MM:SS.S#, we use the last one
             :SasDD*MM:SS.S#
@@ -473,8 +474,71 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         return suc
 
-    def slewRaDec(self):
-        pass
+    def slewRaDec(self, ra, dec):
+        """
+        Slew RaDec unpark the mount sets the targets for ra and dec and then
+        issue the slew command.
+
+        the unpark command is:
+            :PO#
+        and returns nothing
+
+        setting ra target is the following:
+            :SrHH:MM.T# or :SrHH:MM:SS# or :SrHH:MM:SS.S# or :SrHH:MM:SS.SS#
+                , we use the last one
+            :SrHH:MM:SS.SS#
+
+        setting dec target is the following:
+            :SdsDD*MM# or :SdsDD*MM:SS# or :Sd sDD*MM:SS.S#, we use the last one
+            :SdsDD*MM:SS.S#
+
+        the slew command moves the mount and keeps tracking at the end of the move.
+        in the command protocol it is written, that the targets should be ra / dec,
+        but it works for targets defined with alt / az commands
+
+        the command is:
+            :MS#
+        and returns:
+            0 no error
+                if the target is below the lower limit: the string
+            “1Object Below Horizon #”
+                if the target is above the high limit: the string
+            “2Object Below Higher #”
+                if the slew cannot be performed due to another cause: the string
+            “3Cannot Perform Slew #”
+                if the mount is parked: the string
+            “4Mount Parked #”
+                if the mount is restricted to one side of the meridian and the object
+                is on the other side: the string
+            “5Object on the other side #”
+
+        but we don't parse the results as it has sometimes end markers, sometimes not.
+
+        :param ra:     right ascension in type Angle
+        :param dec:    declination in type Angle
+        :return:       success
+        """
+
+        if not isinstance(ra, skyfield.api.Angle):
+            return False
+        if not isinstance(dec, skyfield.api.Angle):
+            return False
+        conn = Connection(self.host)
+        # conversion, we have to find out the sign
+        if dec.signed_dms()[0] > 0:
+            _sign = '+'
+        else:
+            _sign = '-'
+        _raFormat = ':Sa+{0:02.0f}*{1:02.0f}:{2:04.1f}#'
+        _decFormat = ':Sz{0:03.0f}*{1:02.0f}:{2:04.1f}#'
+        _setRa = _altFormat.format(*alt.dms())
+        _setDec = _azFormat.format(*az.dms())
+        _slew = ':MS#'
+        _unpark = ':PO#'
+        commandString = ''.join((_unpark, _setRa, _setDec, _slew))
+        print(commandString)
+        suc, response, chunks = conn.communicate(commandString)
+        return suc
 
     def boot(self):
         pass
