@@ -49,6 +49,8 @@ class Command(object):
                'pollFast',
                'pollModelNames',
                'pollModelStars',
+               'slewAltAz',
+               'slewRaDec',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
