@@ -331,9 +331,16 @@ class TestCommand(unittest.TestCase):
         alt = skyfield.api.Angle(degrees=31.251234)
         az = skyfield.api.Angle(degrees=55.77777)
 
-        comm = Command()
-
+        comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewAltAz(alt, az)
+
+    def test_slewRaDec(self):
+        ra = skyfield.api.Angle(degrees=31.251234)
+        dec = skyfield.api.Angle(degrees=55.77777)
+
+        comm = Command(host=('192.168.2.15', 3492))
+        suc = comm.slewRaDec(ra, dec)
+
 
 if __name__ == '__main__':
     unittest.main()

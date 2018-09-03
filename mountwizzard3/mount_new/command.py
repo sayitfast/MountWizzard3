@@ -529,10 +529,10 @@ class Command(object):
             _sign = '+'
         else:
             _sign = '-'
-        _raFormat = ':Sa+{0:02.0f}*{1:02.0f}:{2:04.1f}#'
-        _decFormat = ':Sz{0:03.0f}*{1:02.0f}:{2:04.1f}#'
-        _setRa = _altFormat.format(*alt.dms())
-        _setDec = _azFormat.format(*az.dms())
+        _raFormat = ':Sr{0:02.0f}:{1:02.0f}:{2:05.2f}#'
+        _decFormat = ':Sd' + _sign + '{0:03.0f}*{1:02.0f}:{2:04.1f}#'
+        _setRa = _raFormat.format(*ra.dms())
+        _setDec = _decFormat.format(*dec.dms())
         _slew = ':MS#'
         _unpark = ':PO#'
         commandString = ''.join((_unpark, _setRa, _setDec, _slew))

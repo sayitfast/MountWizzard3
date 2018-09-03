@@ -148,9 +148,8 @@ class Connection(object):
             self.logger.error('{0}'.format(message))
             return False, response, numberOfChunks
         except Exception as e:
-            message = e
             client.close()
-            self.logger.error('{0}'.format(message))
+            self.logger.error('{0}'.format(e))
             return False, response, numberOfChunks
 
         # send data
@@ -167,9 +166,8 @@ class Connection(object):
             self.logger.error('{0}'.format(message))
             return False, response, numberOfChunks
         except Exception as e:
-            message = e
             client.close()
-            self.logger.error('{0}'.format(message))
+            self.logger.error('{0}'.format(e))
             return False, response, numberOfChunks
 
         # receive data
@@ -194,9 +192,8 @@ class Connection(object):
             self.logger.error('{0}, response: {1}'.format(message, response))
             return False, response, numberOfChunks
         except Exception as e:
-            message = e
             response = ''
-            self.logger.error('{0}, response: {1}'.format(message, response))
+            self.logger.error('{0}, response: {1}'.format(e, response))
             return False, response, numberOfChunks
         else:
             response = response.rstrip('#').split('#')
