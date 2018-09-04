@@ -735,7 +735,7 @@ class Command(object):
         """
         setMeridianLimitSlew sends the command for setting flip limit to the mount.
 
-        :param value:   float for degrees
+        :param value:   float / int for degrees
         :return:        success
         """
 
@@ -753,7 +753,27 @@ class Command(object):
         pass
 
     def setHorizonLimitLow(self, value):
-        pass
+        """
+        setHorizonLimitLow sends the command for setting the limit to the mount. the limit
+        has to be between -5 and +45 degrees
+
+        :param value:   float / int for degrees
+        :return:        success
+        """
+
+        if value < -5:
+            value = -5
+        if value > 45:
+            value = 45
+        conn = Connection(self.host)
+        value = int(value)
+        commandString = ':So{0:+02d}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def startTracking(self):
         """
