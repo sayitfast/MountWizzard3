@@ -626,7 +626,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -641,9 +643,12 @@ class Command(object):
         conn = Connection(self.host)
         commandString = ':SRTMP{0:+6.1f}#'.format(value)
         suc, response, chunks = conn.communicate(commandString)
+        print(value, response)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -660,7 +665,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -677,7 +684,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -709,7 +718,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -727,7 +738,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -745,12 +758,31 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
     def setHorizonLimitHigh(self, value):
-        pass
+        """
+        setHorizonLimitHigh sends the command for setting the limit to the mount.
+
+        :param value:   float / int for degrees
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        value = int(value)
+        commandString = ':Sh+{0:02d}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
+            return False
+        return True
 
     def setHorizonLimitLow(self, value):
         """
@@ -761,17 +793,15 @@ class Command(object):
         :return:        success
         """
 
-        if value < -5:
-            value = -5
-        if value > 45:
-            value = 45
         conn = Connection(self.host)
         value = int(value)
         commandString = ':So{0:+02d}#'.format(value)
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -868,7 +898,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(':PO#')
         if not suc:
             return False
-        if response == '0':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 
@@ -896,7 +928,9 @@ class Command(object):
         suc, response, chunks = conn.communicate(':flip#')
         if not suc:
             return False
-        if response != '1':
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
             return False
         return True
 

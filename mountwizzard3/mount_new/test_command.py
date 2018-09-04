@@ -378,34 +378,229 @@ class TestCommand(unittest.TestCase):
                        )
         suc = comm.startTracking()
         self.assertEqual(True, suc)
-    """
+
     def test_stopTracking(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         suc = comm.stopTracking()
         self.assertEqual(True, suc)
-    """
 
-    def test_setSlewRate(self):
+    def test_setSlewRate1(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         suc = comm.setSlewRate(1)
         # function always returns false
-        self.assertEqual(False, suc)
+        self.assertEqual(True, suc)
+
+    def test_setSlewRate2(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
         suc = comm.setSlewRate(2)
         # function always returns false
-        self.assertEqual(False, suc)
-        suc = comm.setSlewRate(5)
+        self.assertEqual(True, suc)
+
+    def test_setSlewRate10(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setSlewRate(10)
         # function always returns false
-        self.assertEqual(False, suc)
+        self.assertEqual(True, suc)
+
+    def test_setSlewRate15(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
         suc = comm.setSlewRate(15)
         # function always returns false
-        self.assertEqual(False, suc)
-        suc = comm.setSlewRate(25)
+        self.assertEqual(True, suc)
+
+    def test_setSlewRate20(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setSlewRate(20)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitLow_m10(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(-10)
         # function always returns false
         self.assertEqual(False, suc)
+
+    def test_setHorizonLimitLow11(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(11)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitLow34(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(34)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitLow50(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(50)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setHorizonLimitHigh_m30(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(-30)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_m15(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(-15)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_m5(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(-5)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_45(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(45)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_90(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(90)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_91(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(91)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setRefractionTemp_m50(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionTemp(-50)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionTemp_m25(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionTemp(-25)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionTemp_0(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionTemp(-0)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionTemp_50(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionTemp(50)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionTemp_100(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionTemp(75)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setRefractionTemp_100(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionTemp(100)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setRefractionPress_800(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionPress(800)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionPress_900(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionPress(900)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionPress_1000(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionPress(1000)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionPress_500(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionPress(500)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionPress_200(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionPress(200)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionPress_1400(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefractionPress(1400)
+        # function always returns false
+        self.assertEqual(True, suc)
 
 
 
