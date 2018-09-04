@@ -464,7 +464,7 @@ class Setting(object):
                'slewRate',
                'timeToFlip',
                'timeToMeridian',
-               'meridianLimitGuide',
+               'meridianLimitTrack',
                'meridianLimitSlew',
                'refractionTemperature',
                'refractionPressure',
@@ -486,7 +486,7 @@ class Setting(object):
 
         self._slewRate = 0
         self._timeToFlip = 0
-        self._meridianLimitGuide = 0
+        self._meridianLimitTrack = 0
         self._meridianLimitSlew = 0
         self._refractionTemperature = 0
         self._refractionPressure = 0
@@ -524,15 +524,15 @@ class Setting(object):
             self._timeToFlip = float(value)
 
     @property
-    def meridianLimitGuide(self):
-        return self._meridianLimitGuide
+    def meridianLimitTrack(self):
+        return self._meridianLimitTrack
 
-    @meridianLimitGuide.setter
-    def meridianLimitGuide(self, value):
+    @meridianLimitTrack.setter
+    def meridianLimitTrack(self, value):
         if isinstance(value, float):
-            self._meridianLimitGuide = value
+            self._meridianLimitTrack = value
         else:
-            self._meridianLimitGuide = float(value)
+            self._meridianLimitTrack = float(value)
 
     @property
     def meridianLimitSlew(self):

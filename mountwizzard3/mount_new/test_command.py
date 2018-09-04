@@ -426,86 +426,6 @@ class TestCommand(unittest.TestCase):
         # function always returns false
         self.assertEqual(True, suc)
 
-    def test_setHorizonLimitLow_m10(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitLow(-10)
-        # function always returns false
-        self.assertEqual(False, suc)
-
-    def test_setHorizonLimitLow11(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitLow(11)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitLow34(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitLow(34)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitLow50(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitLow(50)
-        # function always returns false
-        self.assertEqual(False, suc)
-
-    def test_setHorizonLimitHigh_m30(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitHigh(-30)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitHigh_m15(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitHigh(-15)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitHigh_m5(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitHigh(-5)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitHigh_45(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitHigh(45)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitHigh_90(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitHigh(90)
-        # function always returns false
-        self.assertEqual(True, suc)
-
-    def test_setHorizonLimitHigh_91(self):
-        comm = Command(host=('192.168.2.15', 3492),
-                       data=self.data,
-                       )
-        suc = comm.setHorizonLimitHigh(91)
-        # function always returns false
-        self.assertEqual(False, suc)
-
     def test_setRefractionTemp_m50(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
@@ -649,6 +569,145 @@ class TestCommand(unittest.TestCase):
         suc = comm.setDualAxisTracking(False)
         # function always returns false
         self.assertEqual(True, suc)
+
+    def test_setMeridianLimitGuide_m10(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitGuide(-10)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setMeridianLimitGuide_10(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitGuide(10)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setMeridianLimitGuide_30(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitGuide(30)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setMeridianLimitGuide_50(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitGuide(50)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setMeridianLimitTrack_10(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitTrack(10)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setMeridianLimitTrack_30(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitTrack(30)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setMeridianLimitTrack_50(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setMeridianLimitTrack(50)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+
+
+    def test_setHorizonLimitLow_m10(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(-10)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setHorizonLimitLow11(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(11)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitLow34(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(34)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitLow50(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitLow(50)
+        # function always returns false
+        self.assertEqual(False, suc)
+
+    def test_setHorizonLimitHigh_m30(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(-30)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_m15(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(-15)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_m5(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(-5)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_45(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(45)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_90(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(90)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setHorizonLimitHigh_91(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setHorizonLimitHigh(91)
+        # function always returns false
+        self.assertEqual(False, suc)
+
 
 
 if __name__ == '__main__':

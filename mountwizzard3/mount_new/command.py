@@ -195,7 +195,7 @@ class Command(object):
             return False
         self.data.setting.slewRate = response[0]
         self.data.setting.timeToFlip = response[1]
-        self.data.setting.meridianLimitGuide = response[2]
+        self.data.setting.meridianLimitTrack = response[2]
         self.data.setting.meridianLimitSlew = response[3]
         self.data.setting.refractionTemperature = response[4]
         self.data.setting.refractionPressure = response[5]
@@ -700,7 +700,6 @@ class Command(object):
         conn = Connection(self.host)
         commandString = ':Suaf{0:1d}#'.format(1 if status else 0)
         suc, response, chunks = conn.communicate(commandString)
-        print(status, response)
         if not suc:
             return False
         return True
@@ -724,9 +723,9 @@ class Command(object):
             return False
         return True
 
-    def setMeridianLimitGuide(self, value):
+    def setMeridianLimitTrack(self, value):
         """
-        setMeridianLimitGuide sends the command for setting flip limit to the mount.
+        setMeridianLimitTrack sends the command for setting flip limit to the mount.
 
         :param value:   float for degrees
         :return:        success
