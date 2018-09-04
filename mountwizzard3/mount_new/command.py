@@ -58,10 +58,6 @@ class Command(object):
     # 10 microns have 3492 as default port
     DEFAULT_PORT = 3492
 
-    # standard commands
-    SLEW = ':MS#'
-    UNPARK = ':PO#'
-
     def __init__(self,
                  host=(None, None),
                  data=None
@@ -508,7 +504,7 @@ class Command(object):
             self.logger.error('coordinates could not be set, {0}'.format(response))
             return False
         # start slewing
-        commandString = ''.join((self.UNPARK, self.SLEW))
+        commandString = ''.join((':PO#', ':MS#'))
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
@@ -582,7 +578,7 @@ class Command(object):
             self.logger.error('coordinates could not be set, {0}'.format(response))
             return False
         # start slewing
-        commandString = ''.join((self.UNPARK, self.SLEW))
+        commandString = ''.join((':PO#', ':MS#'))
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
@@ -595,7 +591,20 @@ class Command(object):
         pass
 
     def shutdown(self):
-        pass
+        """
+        shutdown send the shutdown command to the mount. if succeeded it takes about 20
+        seconds before you could switch off the power supply. please check red LED at mount
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':shutdown#')
+        if not suc:
+            return False
+        if response == 0:
+            return False
+        return True
 
     def setSite(self):
         pass
@@ -637,19 +646,76 @@ class Command(object):
         pass
 
     def park(self):
-        pass
+        """
+        park sends the park command to the mount. the command returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':hP#')
+        if not suc:
+            return False
+        return True
 
     def unpark(self):
-        pass
+        """
+        unpark sends the unpark command to the mount.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':PO#')
+        if not suc:
+            return False
+        if response == 0:
+            return False
+        return True
 
     def stop(self):
-        pass
+        """
+        stop sends the stop command to the mount. the command returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':STOP#')
+        if not suc:
+            return False
+        return True
 
     def flip(self):
-        pass
+        """
+        flip sends the flip command to the mount.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':flip#')
+        if not suc:
+            return False
+        if response != 1:
+            return False
+        return True
 
     def clearModel(self):
-        pass
+        """
+        clear model sends the clear command to the mount and deletes the current alignment
+        model and alignment stars
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':delalig#')
+        if not suc:
+            return False
+        if response.count('#') == 0:
+            return False
+        return True
 
     def deletePoint(self):
         pass
