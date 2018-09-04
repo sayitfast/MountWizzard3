@@ -353,8 +353,8 @@ class Site(object):
         if isinstance(value, str):
             try:
                 value = float(value)
-            except ValueError:
-                self.logger.error('malformed value: {0}'.format(value))
+            except Exception as e:
+                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
                 return
         self._raJNow = skyfield.api.Angle(degrees=value)
 
@@ -370,8 +370,8 @@ class Site(object):
         if isinstance(value, str):
             try:
                 value = float(value)
-            except ValueError:
-                self.logger.error('malformed value: {0}'.format(value))
+            except Exception as e:
+                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
                 return
         self._decJNow = skyfield.api.Angle(degrees=value)
 
@@ -399,8 +399,8 @@ class Site(object):
         if isinstance(value, str):
             try:
                 value = float(value)
-            except ValueError:
-                self.logger.error('malformed value: {0}'.format(value))
+            except Exception as e:
+                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
                 return
         self._Alt = skyfield.api.Angle(degrees=value)
 
@@ -416,8 +416,8 @@ class Site(object):
         if isinstance(value, str):
             try:
                 value = float(value)
-            except ValueError:
-                self.logger.error('malformed value: {0}'.format(value))
+            except Exception as e:
+                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
                 return
         self._Az = skyfield.api.Angle(degrees=value)
 
@@ -728,8 +728,8 @@ class Model(object):
             return
         try:
             self._altitudeError = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def azimuthError(self):
@@ -742,8 +742,8 @@ class Model(object):
             return
         try:
             self._azimuthError = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def polarError(self):
@@ -756,8 +756,8 @@ class Model(object):
             return
         try:
             self._polarError = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def positionAngle(self):
@@ -774,8 +774,8 @@ class Model(object):
         if isinstance(value, str):
             try:
                 value = float(value)
-            except ValueError:
-                self.logger.error('malformed value: {0}'.format(value))
+            except Exception as e:
+                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
                 return
         self._positionAngle = skyfield.api.Angle(degrees=value)
 
@@ -790,8 +790,8 @@ class Model(object):
             return
         try:
             self._orthoError = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def altitudeTurns(self):
@@ -804,8 +804,8 @@ class Model(object):
             return
         try:
             self._altitudeTurns = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def azimuthTurns(self):
@@ -818,8 +818,8 @@ class Model(object):
             return
         try:
             self._azimuthTurns = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def terms(self):
@@ -836,8 +836,8 @@ class Model(object):
             return
         try:
             self._terms = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def errorRMS(self):
@@ -853,8 +853,8 @@ class Model(object):
             return
         try:
             self._errorRMS = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def starList(self):
@@ -875,8 +875,8 @@ class Model(object):
     def numberStars(self, value):
         try:
             self._numberStars = int(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     def addStar(self, value):
         """
@@ -945,8 +945,8 @@ class Model(object):
     def numberNames(self, value):
         try:
             self._numberNames = int(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     def addName(self, value):
         """
@@ -1078,8 +1078,8 @@ class ModelStar(object):
             return
         try:
             self._number = int(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def errorRMS(self):
@@ -1103,8 +1103,8 @@ class ModelStar(object):
         if isinstance(value, str):
             try:
                 value = float(value)
-            except ValueError:
-                self.logger.error('malformed value: {0}'.format(value))
+            except Exception as e:
+                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
                 return
         self._errorAngle = skyfield.api.Angle(degrees=value)
 

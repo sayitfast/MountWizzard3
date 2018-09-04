@@ -193,6 +193,36 @@ class TestConfigData(unittest.TestCase):
         pathToTS = '~/PycharmProjects/MountWizzard3/config'
         data = Data(pathToTS=pathToTS)
 
+    def test_errorRMS_HPS(self):
+        model = Model()
+        model.errorRMS = '36.8'
+        self.assertAlmostEqual(model.errorRMS, 36.8)
+
+    def test_errorRMS_HPS_empty(self):
+        model = Model()
+        model.errorRMS = 'E'
+        self.assertAlmostEqual(model.errorRMS, 0)
+
+    def test_errorRMS_HPS_float(self):
+        model = Model()
+        model.errorRMS = 36.8
+        self.assertAlmostEqual(model.errorRMS, 36.8)
+
+    def test_errorRMS_HPS_int(self):
+        model = Model()
+        model.errorRMS = 36
+        self.assertAlmostEqual(model.errorRMS, 36.0)
+
+    def test_errorRMS_HPS_tupel(self):
+        model = Model()
+        model.errorRMS = (36.8, 1.0)
+        self.assertAlmostEqual(model.errorRMS, 0)
+
+    def test_errorRMS_QCI(self):
+        model = Model()
+        model.errorRMS = ''
+        self.assertAlmostEqual(model.errorRMS, 0)
+
 
 if __name__ == '__main__':
     unittest.main()
