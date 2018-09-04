@@ -503,7 +503,7 @@ class Command(object):
         if '0' in response:
             self.logger.error('coordinates could not be set, {0}'.format(response))
             return False
-        # start slewing
+        # start slewing with first unpark and then slew command
         commandString = ''.join((':PO#', ':MS#'))
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
@@ -577,7 +577,7 @@ class Command(object):
         if '0' in response:
             self.logger.error('coordinates could not be set, {0}'.format(response))
             return False
-        # start slewing
+        # start slewing with first unpark and slew command
         commandString = ''.join((':PO#', ':MS#'))
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
@@ -606,44 +606,67 @@ class Command(object):
             return False
         return True
 
-    def setSite(self):
+    def setSiteCoordinates(self, value):
         pass
 
-    def setSlewRate(self):
+    def setSlewRate(self, value):
         pass
 
-    def setRefractionTemperature(self):
+    def setRefractionTemp(self, value):
         pass
 
-    def setRefractionPressure(self):
+    def setRefractionPress(self, value):
         pass
 
-    def setRefraction(self):
+    def setRefraction(self, status):
         pass
 
-    def setUnattendedFlip(self):
+    def setUnattendedFlip(self, status):
         pass
 
-    def setDualAxisTracking(self):
+    def setDualAxisTracking(self, status):
         pass
 
-    def setMeridianLimitHigh(self):
+    def setMeridianLimitHigh(self, value):
         pass
 
-    def setMeridianLimitLow(self):
+    def setMeridianLimitLow(self, value):
         pass
 
-    def setHorizonLimitHigh(self):
+    def setHorizonLimitHigh(self, value):
         pass
 
-    def setHorizonLimitLow(self):
+    def setHorizonLimitLow(self, value):
         pass
 
-    def setTrackingRate(self):
+    def setTrackingRate(self, value):
         pass
 
-    def setTracking(self):
-        pass
+    def startTracking(self):
+        """
+        startTracking sends the start command to the mount. the command returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':AP#')
+        if not suc:
+            return False
+        return True
+
+    def stopTracking(self):
+        """
+        stopTracking sends the start command to the mount. the command returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':AL#')
+        if not suc:
+            return False
+        return True
 
     def park(self):
         """
@@ -720,11 +743,11 @@ class Command(object):
     def deletePoint(self):
         pass
 
-    def storeModel(self):
+    def storeModelToName(self):
         pass
 
-    def loadModel(self):
+    def loadModelFromName(self):
         pass
 
-    def deleteModel(self):
+    def deleteModelAsName(self):
         pass
