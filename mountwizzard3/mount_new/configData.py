@@ -484,22 +484,22 @@ class Setting(object):
     def __init__(self,
                  ):
 
-        self._slewRate = None
-        self._timeToFlip = None
-        self._meridianLimitGuide = None
-        self._meridianLimitSlew = None
-        self._refractionTemperature = None
-        self._refractionPressure = None
-        self._trackingRate = None
-        self._telescopeTempDEC = None
-        self._statusRefraction = None
-        self._statusUnattendedFlip = None
-        self._statusDualAxisTracking = None
-        self._currentHorizonLimitHigh = None
-        self._currentHorizonLimitLow = None
-        self._UTCDataValid = None
-        self._UTCDataExpirationDate = None
-        self._timeToMeridian = None
+        self._slewRate = 0
+        self._timeToFlip = 0
+        self._meridianLimitGuide = 0
+        self._meridianLimitSlew = 0
+        self._refractionTemperature = 0
+        self._refractionPressure = 0
+        self._trackingRate = 0
+        self._telescopeTempDEC = 0
+        self._statusRefraction = False
+        self._statusUnattendedFlip = False
+        self._statusDualAxisTracking = False
+        self._currentHorizonLimitHigh = 0
+        self._currentHorizonLimitLow = 0
+        self._UTCDataValid = False
+        self._UTCDataExpirationDate = ''
+        self._timeToMeridian = 0
 
     @property
     def slewRate(self):
