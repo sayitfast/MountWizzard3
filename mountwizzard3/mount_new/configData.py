@@ -774,10 +774,17 @@ class Model(object):
         if value == 'E':
             self.logger.error('position angle not available')
             return
-        try:
-            self._positionAngle = float(value)
-        except ValueError:
-            self.logger.error('malformed value: {0}'.format(value))
+        if isinstance(value, skyfield.api.Angle):
+            self._positionAngle = value
+            return
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+        self._positionAngle = skyfield.api.Angle(degrees=value)
+
 
     @property
     def orthoError(self):
