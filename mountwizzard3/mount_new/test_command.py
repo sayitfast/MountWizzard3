@@ -288,43 +288,52 @@ class TestCommand(unittest.TestCase):
         comm = Command(data=self.data,
                        )
         response = ['5']
-        suc = comm._parseNumberStars(response, 1)
+        suc = comm._parseNumberStars(response, 1, False)
         self.assertEqual(True, suc)
 
     def test_parseNumberStars_bad1(self):
         comm = Command(data=self.data,
                        )
         response = ['sd']
-        suc = comm._parseNumberStars(response, 1)
+        suc = comm._parseNumberStars(response, 1, False)
         self.assertEqual(True, suc)
 
     def test_parseNumberStars_bad2(self):
         comm = Command(data=self.data,
                        )
         response = ['']
-        suc = comm._parseNumberStars(response, 1)
+        suc = comm._parseNumberStars(response, 1, False)
         self.assertEqual(True, suc)
 
     def test_parseNumberStars_bad3(self):
         comm = Command(data=self.data,
                        )
         response = ['4t']
-        suc = comm._parseNumberStars(response, 1)
+        suc = comm._parseNumberStars(response, 1, False)
         self.assertEqual(True, suc)
 
     def test_parseNumberStars_bad4(self):
         comm = Command(data=self.data,
                        )
         response = ['4', '5']
-        suc = comm._parseNumberStars(response, 1)
+        suc = comm._parseNumberStars(response, 1, False)
         self.assertEqual(False, suc)
 
     def test_parseNumberStars_bad5(self):
         comm = Command(data=self.data,
                        )
         response = ['4', 'r']
-        suc = comm._parseNumberStars(response, 1)
+        suc = comm._parseNumberStars(response, 1, False)
         self.assertEqual(False, suc)
+
+    def test_parseNumberStars_getain(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['4', 'E']
+        suc = comm._parseNumberStars(response, 1, True)
+        self.assertEqual(False, suc)
+
+
 
     def test_slewAltAz_pos(self):
         alt = skyfield.api.Angle(degrees=31.251234)
@@ -353,7 +362,6 @@ class TestCommand(unittest.TestCase):
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)
-
 
 if __name__ == '__main__':
     unittest.main()
