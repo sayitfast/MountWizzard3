@@ -503,7 +503,7 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if '#' in response:
+        if '0' in response:
             self.logger.error('coordinates could not be set, {0}'.format(response))
             return False
         # start slewing
@@ -577,7 +577,7 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        if '#' in response:
+        if '0' in response:
             self.logger.error('coordinates could not be set, {0}'.format(response))
             return False
         # start slewing
