@@ -906,8 +906,11 @@ class Model(object):
 
         :param value: position as int
         """
-
-        value = int(value)
+        try:
+            value = int(value)
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
+            return
         if value < 0 or value > len(self._starList) - 1:
             self.logger.error('invalid value: {0}'.format(value))
             return
@@ -970,7 +973,11 @@ class Model(object):
         :return: nothing
         """
 
-        value = int(value)
+        try:
+            value = int(value)
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
+            return
         if value < 0 or value > len(self._nameList) - 1:
             self.logger.error('invalid value: {0}'.format(value))
             return
@@ -1074,8 +1081,6 @@ class ModelStar(object):
 
     @number.setter
     def number(self, value):
-        if not value:
-            return
         try:
             self._number = int(value)
         except Exception as e:
@@ -1087,9 +1092,10 @@ class ModelStar(object):
 
     @errorRMS.setter
     def errorRMS(self, value):
-        if not value:
-            return
-        self._errorRMS = float(value)
+        try:
+            self._errorRMS = int(value)
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
     @property
     def errorAngle(self):
