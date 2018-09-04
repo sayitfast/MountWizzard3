@@ -333,8 +333,6 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseNumberStars(response, 1, True)
         self.assertEqual(False, suc)
 
-
-
     def test_slewAltAz_pos(self):
         alt = skyfield.api.Angle(degrees=31.251234)
         az = skyfield.api.Angle(degrees=55.77777)
