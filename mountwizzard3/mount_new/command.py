@@ -409,7 +409,7 @@ class Command(object):
         self.data.model.azimuthTurns = responseSplit[6]
         self.data.model.terms = responseSplit[7]
         self.data.model.errorRMS = responseSplit[8]
-    return True
+        return True
 
     def pollModelStars(self):
         """

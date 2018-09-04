@@ -713,6 +713,29 @@ class Model(object):
         self._numberStars = 0
         self._starList = list()
         self._nameList = list()
+        self._altitudeError = 0
+        self._azimuthError = 0
+        self._polarError = 0
+        self._positionAngle = 0
+        self._orthoError = 0
+        self._altitudeTurns = 0
+        self._azimuthTurns = 0
+        self._terms = 0
+        self._errorRMS = 0
+
+    @property
+    def altitudeError(self):
+        return self._starList
+
+    @altitudeError.setter
+    def altitudeError(self, value):
+        if value == 'E':
+            self.logger.error('altitude error not available')
+            return
+        if isinstance(value, str):
+            self._altitudeError = float(value)
+        else:
+            self._altitudeError = value
 
     @property
     def starList(self):
