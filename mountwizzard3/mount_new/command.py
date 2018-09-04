@@ -368,10 +368,11 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-        for star in response:
+        for number, star in enumerate(response):
             if not star:
                 continue
-            self.data.model.addStar(star)
+            # mount counts stars from 1 beginning
+            self.data.model.addStar(number + 1, star)
         return True
 
     def _parseNumberStars(self, response, numberOfChunks, canGetain):
@@ -395,7 +396,7 @@ class Command(object):
         # else we have to process the second chunk as well
         responseSplit = response[1].split(',')
         if len(responseSplit) == 1:
-            self.logger.error('getain command not succeded')
+            self.logger.error('getain command not succeed')
             return False
         if len(responseSplit) != 9:
             self.logger.error('wrong number of chunks in getain')

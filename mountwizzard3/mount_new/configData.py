@@ -878,12 +878,13 @@ class Model(object):
         except Exception as e:
             self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
-    def addStar(self, value):
+    def addStar(self, number, value):
         """
         Adds a star to the list of stars. Type of name should be class ModelStar.
 
-        :param value: name as type ModelStar
-        :return: nothing
+        :param      number: index number of star in database
+                    value:  name as type ModelStar
+        :return:    nothing
         """
 
         if isinstance(value, ModelStar):
@@ -895,8 +896,11 @@ class Model(object):
         if isinstance(value, str):
             value = value.split(',')
         if len(value) == 4:
-            _ha, _dec, _err, _number = value
-            value = ModelStar((_ha, _dec), _err, _number)
+            _ha, _dec, _err, _angle = value
+            value = ModelStar(point=(_ha, _dec),
+                              errorRMS=_err,
+                              errorAngle=_angle,
+                              number=number)
             self._starList.insert(len(self._starList), value)
 
     def delStar(self, value):
@@ -1093,7 +1097,7 @@ class ModelStar(object):
     @errorRMS.setter
     def errorRMS(self, value):
         try:
-            self._errorRMS = int(value)
+            self._errorRMS = float(value)
         except Exception as e:
             self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
@@ -1106,12 +1110,11 @@ class ModelStar(object):
         if isinstance(value, skyfield.api.Angle):
             self._errorAngle = value
             return
-        if isinstance(value, str):
-            try:
-                value = float(value)
-            except Exception as e:
-                self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
-                return
+        try:
+            value = float(value)
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
+            return
         self._errorAngle = skyfield.api.Angle(degrees=value)
 
     @property

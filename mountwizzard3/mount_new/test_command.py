@@ -95,6 +95,15 @@ class TestCommand(unittest.TestCase):
         ok = comm.pollModelStars()
         self.assertEqual(True, ok)
 
+    # @unittest.skip("only with host available")
+    def test_pollModelStars_with_getain(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        comm.data.fw.numberString = '2.15.01'
+        ok = comm.pollModelStars()
+        self.assertEqual(True, ok)
+
     # testing parsing against valid and invalid data
     def test_parseWorkaround_good(self):
         comm = Command()
@@ -333,6 +342,7 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseNumberStars(response, 1, True)
         self.assertEqual(False, suc)
 
+    """
     def test_slewAltAz_pos(self):
         alt = skyfield.api.Angle(degrees=31.251234)
         az = skyfield.api.Angle(degrees=55.77777)
@@ -360,6 +370,7 @@ class TestCommand(unittest.TestCase):
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)
+    """
 
 
 if __name__ == '__main__':
