@@ -680,7 +680,7 @@ class Setting(object):
 
 class Model(object):
     """
-    The class Model inherits all informations and handling of the actual
+    The class Model inherits all information and handling of the actual
     alignment model used by the mount and the data, which models are stored
     in the mount and provides the abstracted interface to a 10 micron mount.
 
@@ -732,10 +732,122 @@ class Model(object):
         if value == 'E':
             self.logger.error('altitude error not available')
             return
-        if isinstance(value, str):
+        try:
             self._altitudeError = float(value)
-        else:
-            self._altitudeError = value
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def azimuthError(self):
+        return self._starList
+
+    @azimuthError.setter
+    def azimuthError(self, value):
+        if value == 'E':
+            self.logger.error('azimuth error not available')
+            return
+        try:
+            self._azimuthError = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def polarError(self):
+        return self._polarError
+
+    @polarError.setter
+    def polarError(self, value):
+        if value == 'E':
+            self.logger.error('polar error not available')
+            return
+        try:
+            self._polarError = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def positionAngle(self):
+        return self._positionAngle
+
+    @positionAngle.setter
+    def positionAngle(self, value):
+        if value == 'E':
+            self.logger.error('position angle not available')
+            return
+        try:
+            self._positionAngle = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def orthoError(self):
+        return self._orthoError
+
+    @orthoError.setter
+    def orthoError(self, value):
+        if value == 'E':
+            self.logger.error('polar error not available')
+            return
+        try:
+            self._orthoError = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def altitudeTurns(self):
+        return self._altitudeTurns
+
+    @altitudeTurns.setter
+    def altitudeTurns(self, value):
+        if value == 'E':
+            self.logger.error('altitude turns not available')
+            return
+        try:
+            self._altitudeTurns = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def azimuthTurns(self):
+        return self._azimuthTurns
+
+    @azimuthTurns.setter
+    def azimuthTurns(self, value):
+        if value == 'E':
+            self.logger.error('polar error not available')
+            return
+        try:
+            self._azimuthTurns = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def terms(self):
+        return self._terms
+
+    @terms.setter
+    def terms(self, value):
+        if value == 'E':
+            self.logger.error('polar error not available')
+            return
+        try:
+            self._terms = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def errorRMS(self):
+        return self._errorRMS
+
+    @errorRMS.setter
+    def errorRMS(self, value):
+        if value == 'E':
+            self.logger.error('polar error not available')
+            return
+        try:
+            self._errorRMS = float(value)
+        except ValueError:
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def starList(self):
