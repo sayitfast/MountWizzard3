@@ -349,16 +349,14 @@ class Site(object):
     def raJNow(self, value):
         if isinstance(value, skyfield.api.Angle):
             self._raJNow = value
-        elif isinstance(value, str):
-            value = float(value)
-            self._raJNow = skyfield.api.Angle(degrees=value)
-        elif isinstance(value, float):
-            self._raJNow = skyfield.api.Angle(degrees=value)
-        elif isinstance(value, int):
-            self._raJNow = skyfield.api.Angle(degrees=float(value))
-        else:
-            self._raJNow = skyfield.api.Angle(degrees=0)
-            self.logger.error('malformed value: {0}'.format(value))
+            return
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+        self._raJNow = skyfield.api.Angle(degrees=value)
 
     @property
     def decJNow(self):
@@ -368,16 +366,14 @@ class Site(object):
     def decJNow(self, value):
         if isinstance(value, skyfield.api.Angle):
             self._decJNow = value
-        elif isinstance(value, str):
-            value = float(value)
-            self._decJNow = skyfield.api.Angle(degrees=value)
-        elif isinstance(value, float):
-            self._decJNow = skyfield.api.Angle(degrees=value)
-        elif isinstance(value, int):
-            self._decJNow = skyfield.api.Angle(degrees=float(value))
-        else:
-            self._decJNow = skyfield.api.Angle(degrees=0)
-            self.logger.error('malformed value: {0}'.format(value))
+            return
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+        self._decJNow = skyfield.api.Angle(degrees=value)
 
     @property
     def pierside(self):
@@ -399,15 +395,14 @@ class Site(object):
     def Alt(self, value):
         if isinstance(value, skyfield.api.Angle):
             self._Alt = value
-        elif isinstance(value, str):
-            self._Alt = skyfield.api.Angle(degrees=float(value))
-        elif isinstance(value, float):
-            self._Alt = skyfield.api.Angle(degrees=value)
-        elif isinstance(value, int):
-            self._Alt = skyfield.api.Angle(degrees=float(value))
-        else:
-            self._Alt = skyfield.api.Angle(degrees=0)
-            self.logger.error('malformed value: {0}'.format(value))
+            return
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+        self._Alt = skyfield.api.Angle(degrees=value)
 
     @property
     def Az(self):
@@ -417,15 +412,14 @@ class Site(object):
     def Az(self, value):
         if isinstance(value, skyfield.api.Angle):
             self._Az = value
-        elif isinstance(value, str):
-            self._Az = skyfield.api.Angle(degrees=float(value))
-        elif isinstance(value, float):
-            self._Az = skyfield.api.Angle(degrees=value)
-        elif isinstance(value, int):
-            self._Az = skyfield.api.Angle(degrees=float(value))
-        else:
-            self._Az = skyfield.api.Angle(degrees=0)
-            self.logger.error('malformed value: {0}'.format(value))
+            return
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+        self._Az = skyfield.api.Angle(degrees=value)
 
     @property
     def status(self):
@@ -785,7 +779,6 @@ class Model(object):
                 return
         self._positionAngle = skyfield.api.Angle(degrees=value)
 
-
     @property
     def orthoError(self):
         return self._orthoError
@@ -1046,7 +1039,8 @@ class ModelStar(object):
     def point(self, value):
         if isinstance(value, skyfield.api.Star):
             self._point = value
-        elif not isinstance(value, tuple):
+            return
+        if not isinstance(value, tuple):
             self.logger.error('malformed value: {0}'.format(value))
             self._point = skyfield.api.Star(ra_hours=0,
                                             dec_degrees=0)
@@ -1096,12 +1090,14 @@ class ModelStar(object):
     def errorAngle(self, value):
         if isinstance(value, skyfield.api.Angle):
             self._errorAngle = value
-        elif isinstance(value, str):
-            value = float(value)
-            self._errorAngle = skyfield.api.Angle(degrees=value)
-        else:
-            self.logger.error('malformed value: {0}'.format(value))
-            self._errorAngle = skyfield.api.Angle(degrees=0)
+            return
+        if isinstance(value, str):
+            try:
+                value = float(value)
+            except ValueError:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+        self._errorAngle = skyfield.api.Angle(degrees=value)
 
     @property
     def errorRA(self):
