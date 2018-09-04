@@ -371,6 +371,17 @@ class TestCommand(unittest.TestCase):
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)
     """
+    def test_startTracking(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        comm.startTracking()
+
+    def test_stopTracking(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        comm.stopTracking()
 
 
 if __name__ == '__main__':
