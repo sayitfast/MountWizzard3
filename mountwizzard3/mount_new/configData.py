@@ -881,8 +881,10 @@ class Model(object):
 
         if isinstance(value, ModelStar):
             self._starList.insert(len(self._starList), value)
+            return
         if not isinstance(value, (list, str)):
             self.logger.error('malformed value: {0}'.format(value))
+            return
         if isinstance(value, str):
             value = value.split(',')
         if len(value) == 4:
