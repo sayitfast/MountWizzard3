@@ -374,13 +374,14 @@ class Command(object):
             self.data.model.addStar(star)
         return True
 
-    def _parseNumberStars(self, response, numberOfChunks):
+    def _parseNumberStars(self, response, numberOfChunks, canGetain):
         """
         Parsing the model star number. The command <:getalst#> returns:
             - the number of alignment stars terminated by '#'
 
         :param response:        data load from mount
                numberOfChunks:  amount of parts
+               canGetain:       is this mount command supported?
         :return: success:       True if ok, False if not
         """
 
@@ -388,7 +389,27 @@ class Command(object):
             self.logger.error('wrong number of chunks')
             return False
         self.data.model.numberStars = response[0]
-        return True
+        # if command present, we are set
+        if not canGetain:
+            return True
+        # else we have to process the second chunk as well
+        responseSplit = response[1].split(',')
+        if len(responseSplit) == 1:
+            self.logger.error('getain command not succeded')
+            return False
+        if len(responseSplit) != 9:
+            self.logger.error('wrong number of chunks in getain')
+            return False
+        self.data.model.altitudeError = responseSplit[0]
+        self.data.model.azimuthError = responseSplit[1]
+        self.data.model.polarError = responseSplit[2]
+        self.data.model.positionAngle = responseSplit[3]
+        self.data.model.orthoError = responseSplit[4]
+        self.data.model.altitudeTurns = responseSplit[5]
+        self.data.model.azimuthTurns = responseSplit[6]
+        self.data.model.terms = responseSplit[7]
+        self.data.model.errorRMS = responseSplit[8]
+    return True
 
     def pollModelStars(self):
         """
@@ -400,12 +421,16 @@ class Command(object):
         """
 
         conn = Connection(self.host)
-        # alternatively we know already the number, and skip the gathering
-        commandString = ':getalst#'
+        # getting numbers and data first
+        _canGetain = self.data.fw.checkNewer(21500)
+        if _canGetain:
+            commandString = ':getalst#:getain#'
+        else:
+            commandString = ':getalst#'
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        suc = self._parseNumberStars(response, chunks)
+        suc = self._parseNumberStars(response, chunks, _canGetain)
         if not suc:
             return False
         # now the real gathering of names
