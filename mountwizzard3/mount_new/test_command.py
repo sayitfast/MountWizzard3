@@ -20,6 +20,7 @@
 # standard libraries
 import unittest
 import logging
+import time
 # external packages
 import skyfield.api
 # local imports
@@ -375,13 +376,37 @@ class TestCommand(unittest.TestCase):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        comm.startTracking()
-
+        suc = comm.startTracking()
+        self.assertEqual(True, suc)
+    """
     def test_stopTracking(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        comm.stopTracking()
+        suc = comm.stopTracking()
+        self.assertEqual(True, suc)
+    """
+
+    def test_setSlewRate(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setSlewRate(1)
+        # function always returns false
+        self.assertEqual(False, suc)
+        suc = comm.setSlewRate(2)
+        # function always returns false
+        self.assertEqual(False, suc)
+        suc = comm.setSlewRate(5)
+        # function always returns false
+        self.assertEqual(False, suc)
+        suc = comm.setSlewRate(15)
+        # function always returns false
+        self.assertEqual(False, suc)
+        suc = comm.setSlewRate(25)
+        # function always returns false
+        self.assertEqual(False, suc)
+
 
 
 if __name__ == '__main__':

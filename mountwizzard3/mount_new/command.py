@@ -610,16 +610,76 @@ class Command(object):
         pass
 
     def setSlewRate(self, value):
-        pass
+        """
+        setSlewRate sends the command for setting the max slew rate to the mount.
+
+        :param value:   float for max slew rate in degrees per second
+        :return:        success
+        """
+
+        if value < 2:
+            value = 2
+        elif value > 15:
+            value = 15
+        conn = Connection(self.host)
+        commandString = ':Sw{0:02.0f}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def setRefractionTemp(self, value):
-        pass
+        """
+        setRefractionTemp sends the command for setting the temperature to the mount.
+
+        :param value:   float for temperature correction in Celsius
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        commandString = ':SRTMP{0:+6.1f}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def setRefractionPress(self, value):
-        pass
+        """
+        setRefractionPress sends the command for setting the pressure to the mount.
+
+        :param value:   float for pressure correction
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        commandString = ':SRPRS{0:6.1f}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def setRefraction(self, status):
-        pass
+        """
+        setRefraction sends the command to the mount.
+
+        :param status:  bool for enable or disable refraction correction
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        commandString = ':SREF{0:1d}#'.format(1 if status else 0)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def setUnattendedFlip(self, status):
         """
@@ -665,18 +725,16 @@ class Command(object):
     def setHorizonLimitLow(self, value):
         pass
 
-    def setTrackingRate(self, value):
-        pass
-
     def startTracking(self):
         """
         startTracking sends the start command to the mount. the command returns nothing.
+        it is necessary to make that direct to unpark first, than start tracking
 
         :return:    success
         """
 
         conn = Connection(self.host)
-        suc, response, chunks = conn.communicate(':AP#')
+        suc, response, chunks = conn.communicate(':PO#:AP#')
         if not suc:
             return False
         return True
@@ -689,7 +747,7 @@ class Command(object):
         """
 
         conn = Connection(self.host)
-        suc, response, chunks = conn.communicate(':AL#')
+        suc, response, chunks = conn.communicate(':RT9#')
         if not suc:
             return False
         return True
