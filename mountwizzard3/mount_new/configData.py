@@ -786,7 +786,7 @@ class Model(object):
     @orthoError.setter
     def orthoError(self, value):
         if value == 'E':
-            self.logger.error('polar error not available')
+            self.logger.error('ortho error not available')
             return
         try:
             self._orthoError = float(value)
@@ -814,7 +814,7 @@ class Model(object):
     @azimuthTurns.setter
     def azimuthTurns(self, value):
         if value == 'E':
-            self.logger.error('polar error not available')
+            self.logger.error('azimuth turns not available')
             return
         try:
             self._azimuthTurns = float(value)
@@ -828,7 +828,11 @@ class Model(object):
     @terms.setter
     def terms(self, value):
         if value == 'E':
-            self.logger.error('polar error not available')
+            self.logger.error('terms not available')
+            return
+        # qci mount don't deliver this value
+        if value == '':
+            self.logger.error('QCI mount does not provide terms')
             return
         try:
             self._terms = float(value)
@@ -842,7 +846,10 @@ class Model(object):
     @errorRMS.setter
     def errorRMS(self, value):
         if value == 'E':
-            self.logger.error('polar error not available')
+            self.logger.error('QCI mount does not provide RMS')
+            return
+        if value == '':
+            self.logger.error('error RMS not available')
             return
         try:
             self._errorRMS = float(value)
