@@ -91,7 +91,7 @@ class Command(object):
             __host = value
         self._host = __host
 
-    def _parseWorkaroundAlign(self, response, numberOfChunks):
+    def _parseWorkaround(self, response, numberOfChunks):
         """
         Parsing the workaround command set defined by Filippo Riccio from 10micron
         to be able to access the model before having interaction with the handcontroller
@@ -122,7 +122,7 @@ class Command(object):
         suc, response, chunks = conn.communicate(commandString)
         if not suc:
             return False
-        suc = self._parseWorkaroundAlign(response, chunks)
+        suc = self._parseWorkaround(response, chunks)
         return suc
 
     def _parseSlow(self, response, numberOfChunks):

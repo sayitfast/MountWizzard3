@@ -96,29 +96,29 @@ class TestCommand(unittest.TestCase):
         self.assertEqual(True, ok)
 
     # testing parsing against valid and invalid data
-    def test_parseWorkaroundAlign_good(self):
+    def test_parseWorkaround_good(self):
         comm = Command()
-        suc = comm._parseWorkaroundAlign(['V', 'E'], 2)
+        suc = comm._parseWorkaround(['V', 'E'], 2)
         self.assertEqual(True, suc)
 
-    def test_parseWorkaroundAlign_bad1(self):
+    def test_parseWorkaround_bad1(self):
         comm = Command()
-        suc = comm._parseWorkaroundAlign(['E', 'V'], 2)
+        suc = comm._parseWorkaround(['E', 'V'], 2)
         self.assertEqual(False, suc)
 
-    def test_parseWorkaroundAlign_bad2(self):
+    def test_parseWorkaround_bad2(self):
         comm = Command()
-        suc = comm._parseWorkaroundAlign(['V'], 2)
+        suc = comm._parseWorkaround(['V'], 2)
         self.assertEqual(False, suc)
 
-    def test_parseWorkaroundAlign_bad3(self):
+    def test_parseWorkaround_bad3(self):
         comm = Command()
-        suc = comm._parseWorkaroundAlign(['E'], 2)
+        suc = comm._parseWorkaround(['E'], 2)
         self.assertEqual(False, suc)
 
-    def test_parseWorkaroundAlign_bad4(self):
+    def test_parseWorkaround_bad4(self):
         comm = Command()
-        suc = comm._parseWorkaroundAlign([], 2)
+        suc = comm._parseWorkaround([], 2)
         self.assertEqual(False, suc)
 
     # testing parsing Slow
@@ -362,6 +362,7 @@ class TestCommand(unittest.TestCase):
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)
+
 
 if __name__ == '__main__':
     unittest.main()
