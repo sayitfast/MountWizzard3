@@ -643,7 +643,6 @@ class Command(object):
         conn = Connection(self.host)
         commandString = ':SRTMP{0:+6.1f}#'.format(value)
         suc, response, chunks = conn.communicate(commandString)
-        print(value, response)
         if not suc:
             return False
         if len(response) != 1:
@@ -701,6 +700,7 @@ class Command(object):
         conn = Connection(self.host)
         commandString = ':Suaf{0:1d}#'.format(1 if status else 0)
         suc, response, chunks = conn.communicate(commandString)
+        print(status, response)
         if not suc:
             return False
         return True

@@ -60,7 +60,7 @@ class Connection(object):
     # Command list for commands which don't reply anything
     COMMAND_A = [':AP', ':AL', ':hP', ':PO', ':RT0', ':RT1', ':RT2', ':RT9', ':STOP', ':U2',
                  ':hS', ':hF', ':hP', ':KA', ':Me', ':Mn', ':Ms', ':Mw', ':EW', ':NS', ':Q',
-                 'Suaf', ':TSOLAR', ':TQ']
+                 ':Suaf', ':TSOLAR', ':TQ']
 
     # Command list for commands which have a response, but have no end mark
     # mostly these commands response value of '0' or '1'

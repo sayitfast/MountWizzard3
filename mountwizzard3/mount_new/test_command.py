@@ -602,6 +602,53 @@ class TestCommand(unittest.TestCase):
         # function always returns false
         self.assertEqual(True, suc)
 
+    def test_setRefractionOn(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefraction(True)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setRefractionOff(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setRefraction(False)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setUnattendedFlipOn(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setUnattendedFlip(True)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setUnattendedFlipOff(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setUnattendedFlip(False)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setDualAxisTrackingOn(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setDualAxisTracking(True)
+        # function always returns false
+        self.assertEqual(True, suc)
+
+    def test_setDualAxisTrackingOff(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.setDualAxisTracking(False)
+        # function always returns false
+        self.assertEqual(True, suc)
 
 
 if __name__ == '__main__':
