@@ -713,11 +713,41 @@ class Command(object):
             return False
         return True
 
-    def setMeridianLimitHigh(self, value):
-        pass
+    def setMeridianLimitGuide(self, value):
+        """
+        setMeridianLimitGuide sends the command for setting flip limit to the mount.
 
-    def setMeridianLimitLow(self, value):
-        pass
+        :param value:   float for degrees
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        value = int(value)
+        commandString = ':Slmt{0:02d}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
+
+    def setMeridianLimitSlew(self, value):
+        """
+        setMeridianLimitSlew sends the command for setting flip limit to the mount.
+
+        :param value:   float for degrees
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        value = int(value)
+        commandString = ':Slms{0:02d}#'.format(value)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def setHorizonLimitHigh(self, value):
         pass
