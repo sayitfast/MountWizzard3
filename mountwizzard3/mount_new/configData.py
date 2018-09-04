@@ -1066,7 +1066,7 @@ class ModelStar(object):
             self._point = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
         else:
-            print('problem')
+            self.logger.error('malformed value: {0}'.format(value))
 
     @property
     def number(self):
