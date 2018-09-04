@@ -391,7 +391,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setSlewRate(1)
-        # function always returns false
+        # function always returns True
         self.assertEqual(True, suc)
 
     def test_setSlewRate2(self):
@@ -399,7 +399,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setSlewRate(2)
-        # function always returns false
+        # function always returns True
         self.assertEqual(True, suc)
 
     def test_setSlewRate10(self):
@@ -407,7 +407,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setSlewRate(10)
-        # function always returns false
+        # function always returns True
         self.assertEqual(True, suc)
 
     def test_setSlewRate15(self):
@@ -415,7 +415,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setSlewRate(15)
-        # function always returns false
+        # function always returns True
         self.assertEqual(True, suc)
 
     def test_setSlewRate20(self):
@@ -423,7 +423,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setSlewRate(20)
-        # function always returns false
+        # function always returns True
         self.assertEqual(True, suc)
 
     def test_setRefractionTemp_m50(self):
@@ -431,7 +431,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(-50)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionTemp_m25(self):
@@ -439,7 +438,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(-25)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionTemp_0(self):
@@ -447,7 +445,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(-0)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionTemp_50(self):
@@ -455,7 +452,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(50)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionTemp_100(self):
@@ -463,7 +459,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(75)
-        # function always returns false
         self.assertEqual(False, suc)
 
     def test_setRefractionTemp_100(self):
@@ -471,7 +466,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(100)
-        # function always returns false
         self.assertEqual(False, suc)
 
     def test_setRefractionPress_800(self):
@@ -479,7 +473,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(800)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionPress_900(self):
@@ -487,7 +480,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(900)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionPress_1000(self):
@@ -495,7 +487,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(1000)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionPress_500(self):
@@ -503,7 +494,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(500)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionPress_200(self):
@@ -511,7 +501,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(200)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionPress_1400(self):
@@ -519,7 +508,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(1400)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionOn(self):
@@ -527,7 +515,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefraction(True)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setRefractionOff(self):
@@ -535,7 +522,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefraction(False)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setUnattendedFlipOn(self):
@@ -543,7 +529,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setUnattendedFlip(True)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setUnattendedFlipOff(self):
@@ -551,7 +536,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setUnattendedFlip(False)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setDualAxisTrackingOn(self):
@@ -559,7 +543,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setDualAxisTracking(True)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setDualAxisTrackingOff(self):
@@ -567,39 +550,34 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setDualAxisTracking(False)
-        # function always returns false
         self.assertEqual(True, suc)
 
-    def test_setMeridianLimitGuide_m10(self):
+    def test_setMeridianLimitSlew_m10(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        suc = comm.setMeridianLimitGuide(-10)
-        # function always returns false
+        suc = comm.setMeridianLimitSlew(-10)
         self.assertEqual(False, suc)
 
-    def test_setMeridianLimitGuide_10(self):
+    def test_setMeridianLimitSlew_10(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        suc = comm.setMeridianLimitGuide(10)
-        # function always returns false
+        suc = comm.setMeridianLimitSlew(10)
         self.assertEqual(True, suc)
 
-    def test_setMeridianLimitGuide_30(self):
+    def test_setMeridianLimitSlew_30(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        suc = comm.setMeridianLimitGuide(30)
-        # function always returns false
+        suc = comm.setMeridianLimitSlew(30)
         self.assertEqual(True, suc)
 
-    def test_setMeridianLimitGuide_50(self):
+    def test_setMeridianLimitSlew_50(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        suc = comm.setMeridianLimitGuide(50)
-        # function always returns false
+        suc = comm.setMeridianLimitSlew(50)
         self.assertEqual(False, suc)
 
     def test_setMeridianLimitTrack_10(self):
@@ -607,33 +585,31 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setMeridianLimitTrack(10)
-        # function always returns false
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     def test_setMeridianLimitTrack_30(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         suc = comm.setMeridianLimitTrack(30)
-        # function always returns false
         self.assertEqual(True, suc)
 
-    def test_setMeridianLimitTrack_50(self):
+    def test_setMeridianLimitCombinedOK(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
-        suc = comm.setMeridianLimitTrack(50)
-        # function always returns false
+        suc = comm.setMeridianLimitSlew(10)
+        self.assertEqual(True, suc)
+        suc = comm.setMeridianLimitTrack(15)
+        self.assertEqual(True, suc)
+        suc = comm.setMeridianLimitTrack(5)
         self.assertEqual(False, suc)
-
-
 
     def test_setHorizonLimitLow_m10(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
         suc = comm.setHorizonLimitLow(-10)
-        # function always returns false
         self.assertEqual(False, suc)
 
     def test_setHorizonLimitLow11(self):
@@ -641,7 +617,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitLow(11)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitLow34(self):
@@ -649,7 +624,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitLow(34)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitLow50(self):
@@ -657,7 +631,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitLow(50)
-        # function always returns false
         self.assertEqual(False, suc)
 
     def test_setHorizonLimitHigh_m30(self):
@@ -665,7 +638,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(-30)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitHigh_m15(self):
@@ -673,7 +645,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(-15)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitHigh_m5(self):
@@ -681,7 +652,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(-5)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitHigh_45(self):
@@ -689,7 +659,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(45)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitHigh_90(self):
@@ -697,7 +666,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(90)
-        # function always returns false
         self.assertEqual(True, suc)
 
     def test_setHorizonLimitHigh_91(self):
@@ -705,7 +673,6 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(91)
-        # function always returns false
         self.assertEqual(False, suc)
 
 
