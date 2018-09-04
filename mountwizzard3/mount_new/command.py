@@ -640,7 +640,7 @@ class Command(object):
         """
         setDualAxisTracking sends the  command to the mount.
 
-        :param status:  bool for enable or disable unattended flip
+        :param status:  bool for enable or disable dual tracking
         :return:        success
         """
 
@@ -690,6 +690,48 @@ class Command(object):
 
         conn = Connection(self.host)
         suc, response, chunks = conn.communicate(':AL#')
+        if not suc:
+            return False
+        return True
+
+    def setLunarTracking(self):
+        """
+        setLunar sends the command for lunar tracking speed to the mount. the command
+        returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':RT0#')
+        if not suc:
+            return False
+        return True
+
+    def setSiderealTracking(self):
+        """
+        setLunar sends the command for sidereal tracking speed to the mount. the command
+        returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':RT1#')
+        if not suc:
+            return False
+        return True
+
+    def setSolarTracking(self):
+        """
+        setLunar sends the command for solar tracking speed to the mount. the command
+        returns nothing.
+
+        :return:    success
+        """
+
+        conn = Connection(self.host)
+        suc, response, chunks = conn.communicate(':RT2#')
         if not suc:
             return False
         return True
