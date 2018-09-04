@@ -622,10 +622,36 @@ class Command(object):
         pass
 
     def setUnattendedFlip(self, status):
-        pass
+        """
+        setUnattendedFlip sends the  command to the mount. the command returns nothing.
+
+        :param status:  bool for enable or disable unattended flip
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        commandString = ':Suaf{0:1d}#'.format(1 if status else 0)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        return True
 
     def setDualAxisTracking(self, status):
-        pass
+        """
+        setDualAxisTracking sends the  command to the mount.
+
+        :param status:  bool for enable or disable unattended flip
+        :return:        success
+        """
+
+        conn = Connection(self.host)
+        commandString = ':Sdat{0:1d}#'.format(1 if status else 0)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if response != '1':
+            return False
+        return True
 
     def setMeridianLimitHigh(self, value):
         pass
@@ -692,7 +718,7 @@ class Command(object):
         suc, response, chunks = conn.communicate(':PO#')
         if not suc:
             return False
-        if response == 0:
+        if response == '0':
             return False
         return True
 
@@ -720,7 +746,7 @@ class Command(object):
         suc, response, chunks = conn.communicate(':flip#')
         if not suc:
             return False
-        if response != 1:
+        if response != '1':
             return False
         return True
 
