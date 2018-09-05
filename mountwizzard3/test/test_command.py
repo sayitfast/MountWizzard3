@@ -750,7 +750,7 @@ class TestCommand(unittest.TestCase):
         suc = comm.setHorizonLimitHigh(91)
         self.assertEqual(False, suc)
 
-    #@unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_storeName(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
@@ -758,7 +758,7 @@ class TestCommand(unittest.TestCase):
         suc = comm.storeName('Test_Store')
         self.assertEqual(True, suc)
 
-    #@unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_loadName(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
@@ -768,7 +768,7 @@ class TestCommand(unittest.TestCase):
         suc = comm.loadName('Test_Load')
         self.assertEqual(True, suc)
 
-    #@unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_deleteName(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
