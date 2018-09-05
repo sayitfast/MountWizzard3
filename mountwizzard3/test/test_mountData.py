@@ -32,8 +32,7 @@ from test import configTest
 class TestConfigData(unittest.TestCase):
 
     TS = False
-    CONNECTED = False
-    SLEW = False
+    CONNECTED = True
 
     def setUp(self):
         pass
@@ -207,7 +206,7 @@ class TestConfigData(unittest.TestCase):
         model.errorRMS = 36
         self.assertAlmostEqual(model.errorRMS, 36.0)
 
-    def test_errorRMS_HPS_tupel(self):
+    def test_errorRMS_HPS_tuple(self):
         model = Model()
         model.errorRMS = (36.8, 1.0)
         self.assertAlmostEqual(model.errorRMS, 0)

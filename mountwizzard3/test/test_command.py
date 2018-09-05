@@ -28,7 +28,7 @@ from test import configTest
 
 
 class TestCommand(unittest.TestCase):
-    CONNECTED = False
+    CONNECTED = True
     SLEW = False
 
     def setUp(self):
