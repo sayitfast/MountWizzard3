@@ -737,12 +737,17 @@ class Command(object):
 
     def setMeridianLimitTrack(self, value):
         """
-        setMeridianLimitTrack sends the command for setting flip limit to the mount.
+        setMeridianLimitTrack sends the command for setting flip limit to the mount. the limit is set from
+        -20 to 20 degrees
 
         :param value:   float for degrees
         :return:        success
         """
 
+        if value < -20:
+            return False
+        elif value > 20:
+            return False
         conn = Connection(self.host)
         value = int(value)
         commandString = ':Slmt{0:02d}#'.format(value)
@@ -757,12 +762,17 @@ class Command(object):
 
     def setMeridianLimitSlew(self, value):
         """
-        setMeridianLimitSlew sends the command for setting flip limit to the mount.
+        setMeridianLimitSlew sends the command for setting flip limit to the mount. the limit is set
+        to -20 to 20 degrees
 
         :param value:   float / int for degrees
         :return:        success
         """
 
+        if value < -20:
+            return False
+        elif value > 20:
+            return False
         conn = Connection(self.host)
         value = int(value)
         commandString = ':Slms{0:02d}#'.format(value)
@@ -777,12 +787,17 @@ class Command(object):
 
     def setHorizonLimitHigh(self, value):
         """
-        setHorizonLimitHigh sends the command for setting the limit to the mount.
+        setHorizonLimitHigh sends the command for setting the limit to the mount. the limit is set
+        from 0 to 90 degrees
 
         :param value:   float / int for degrees
         :return:        success
         """
 
+        if value < 0:
+            return False
+        elif value > 90:
+            return False
         conn = Connection(self.host)
         value = int(value)
         commandString = ':Sh+{0:02d}#'.format(value)
@@ -804,6 +819,10 @@ class Command(object):
         :return:        success
         """
 
+        if value < -5:
+            return False
+        elif value > 45:
+            return False
         conn = Connection(self.host)
         value = int(value)
         commandString = ':So{0:+02d}#'.format(value)
