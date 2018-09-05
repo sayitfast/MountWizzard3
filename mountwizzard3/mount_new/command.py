@@ -620,9 +620,9 @@ class Command(object):
         """
 
         if value < 2:
-            value = 2
+            return False
         elif value > 15:
-            value = 15
+            return False
         conn = Connection(self.host)
         commandString = ':Sw{0:02.0f}#'.format(value)
         suc, response, chunks = conn.communicate(commandString)
@@ -636,12 +636,17 @@ class Command(object):
 
     def setRefractionTemp(self, value):
         """
-        setRefractionTemp sends the command for setting the temperature to the mount.
+        setRefractionTemp sends the command for setting the temperature to the mount. the limit is set to
+        -40 to +75, but there is not real documented limit.
 
         :param value:   float for temperature correction in Celsius
         :return:        success
         """
 
+        if value < -40:
+            return False
+        elif value > 75:
+            return False
         conn = Connection(self.host)
         commandString = ':SRTMP{0:+6.1f}#'.format(value)
         suc, response, chunks = conn.communicate(commandString)
@@ -655,12 +660,17 @@ class Command(object):
 
     def setRefractionPress(self, value):
         """
-        setRefractionPress sends the command for setting the pressure to the mount.
+        setRefractionPress sends the command for setting the pressure to the mount. the limit is set
+        from 800 to 1200 hPa. no limit give from the mount
 
         :param value:   float for pressure correction
         :return:        success
         """
 
+        if value < 800:
+            return False
+        elif value > 1200:
+            return False
         conn = Connection(self.host)
         commandString = ':SRPRS{0:6.1f}#'.format(value)
         suc, response, chunks = conn.communicate(commandString)
