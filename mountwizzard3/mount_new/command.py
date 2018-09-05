@@ -364,11 +364,13 @@ class Command(object):
         if len(response) != numberOfChunks:
             self.logger.error('wrong number of chunks')
             return False
-        for number, star in enumerate(response):
-            if not star:
+        for number, starData in enumerate(response):
+            if not starData:
                 continue
-            # mount counts stars from 1 beginning
-            self.data.model.addStar(number + 1, star)
+            # mount counts stars from 1 beginning and adding the number (which is not provided by the response,
+            # but counted in the mount computer for reference reasons
+            modelStar = starData.insert(len(starData), number + 1)
+            self.data.model.addStar(modelStar)
         return True
 
     def _parseNumberStars(self, response, numberOfChunks, canGetain):

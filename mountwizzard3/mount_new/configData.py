@@ -878,7 +878,7 @@ class Model(object):
         except Exception as e:
             self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
 
-    def addStar(self, number, value):
+    def addStar(self, value):
         """
         Adds a star to the list of stars. Type of name should be class ModelStar.
 
@@ -895,12 +895,12 @@ class Model(object):
             return
         if isinstance(value, str):
             value = value.split(',')
-        if len(value) == 4:
-            _ha, _dec, _err, _angle = value
+        if len(value) == 5:
+            _ha, _dec, _err, _angle, _number = value
             value = ModelStar(point=(_ha, _dec),
                               errorRMS=_err,
                               errorAngle=_angle,
-                              number=number)
+                              number=_number)
             self._starList.insert(len(self._starList), value)
 
     def delStar(self, value):
