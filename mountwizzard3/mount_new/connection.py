@@ -126,11 +126,11 @@ class Connection(object):
         response = ''
         if not self.host:
             message = 'no host defined'
-            self.logger.warning('{0}'.format(message))
+            self.logger.error('{0}'.format(message))
             return False, response, numberOfChunks
         if not isinstance(self.host, tuple):
             message = 'host entry malformed'
-            self.logger.warning('{0}'.format(message))
+            self.logger.error('{0}'.format(message))
             return False, response, numberOfChunks
 
         # build client
