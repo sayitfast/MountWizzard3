@@ -19,32 +19,33 @@
 ############################################################
 # standard libraries
 import unittest
-import logging
 # external packages
 # local imports
-from mount_new.command import Command
-from mount_new.configData import Data
 from mount_new.api import Mount
-from mount_new import logConfigTest
+from test import configTest
 
 
 class TestAPI(unittest.TestCase):
+    CONNECTED = False
 
     def setUp(self):
         self.pathToTS = '~/PycharmProjects/MountWizzard3/config'
 
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_mount_class_instance_host_ip(self):
         host = '192.168.2.15'
         mount = Mount(host=host,
                       pathToTS=self.pathToTS,
                       )
 
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_mount_class_instance_host_name(self):
         host = '015-GM1000HPS.fritz.box'
         mount = Mount(host=host,
                       pathToTS=self.pathToTS,
                       )
 
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_mount_class_poll_slow(self):
         host = '015-GM1000HPS.fritz.box'
         mount = Mount(host=host,

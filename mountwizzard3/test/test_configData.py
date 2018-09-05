@@ -19,7 +19,6 @@
 ############################################################
 # standard libraries
 import unittest
-import logging
 # external packages
 # local imports
 from mount_new.configData import ModelStar
@@ -27,12 +26,14 @@ from mount_new.configData import Model
 from mount_new.configData import Data
 from mount_new.configData import stringToDegree
 from mount_new.configData import stringToDegreeDEC
-from mount_new import logConfigTest
+from test import configTest
 
 
 class TestConfigData(unittest.TestCase):
 
     TS = False
+    CONNECTED = False
+    SLEW = False
 
     def setUp(self):
         pass
