@@ -23,7 +23,7 @@ import PyQt5.QtCore
 # external packages
 # local imports
 from mount_new.command import Command
-from mount_new.data import Data
+from mount_new.mountData import Data
 
 
 class WorkerSignals(PyQt5.QtCore.QObject):

@@ -23,7 +23,7 @@ import unittest
 import skyfield.api
 # local imports
 from mount_new.command import Command
-from mount_new.data import Data
+from mount_new.mountData import Data
 from test import configTest
 
 

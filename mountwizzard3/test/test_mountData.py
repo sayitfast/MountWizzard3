@@ -21,11 +21,11 @@
 import unittest
 # external packages
 # local imports
-from mount_new.data import ModelStar
-from mount_new.data import Model
-from mount_new.data import Data
-from mount_new.data import stringToDegree
-from mount_new.data import stringToDegreeDEC
+from mount_new.mountData import ModelStar
+from mount_new.mountData import Model
+from mount_new.mountData import Data
+from mount_new.mountData import stringToDegree
+from mount_new.mountData import stringToDegreeDEC
 from test import configTest
 
 
