@@ -980,8 +980,27 @@ class Command(object):
             return False
         return True
 
-    def deletePoint(self):
-        pass
+    def deletePoint(self, number):
+        """
+        deletePoint deletes the point with number from the actual alignment model. the
+        model will be recalculated by the mount computer afterwards. number has to be an
+        existing point in the database. the counting is from 1 to N.
+
+        :param      number: number of point in int / float
+        :return:    success
+        """
+
+        number = int(number)
+        conn = Connection(self.host)
+        commandString = ':delalst{0:d}#'.format(number)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
+            return False
+        return True
 
     def storeName(self, name):
         """

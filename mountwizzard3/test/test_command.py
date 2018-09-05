@@ -778,6 +778,27 @@ class TestCommand(unittest.TestCase):
         suc = comm.deleteName('Test_Delete')
         self.assertEqual(True, suc)
 
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    def test_deletePoint(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+
+        suc = comm.storeName('Test')
+        self.assertEqual(True, suc)
+
+        suc = comm.deletePoint(0)
+        self.assertEqual(False, suc)
+        suc = comm.deletePoint(99)
+        self.assertEqual(False, suc)
+        suc = comm.deletePoint(102)
+        self.assertEqual(False, suc)
+        suc = comm.deletePoint(1)
+        self.assertEqual(True, suc)
+
+        suc = comm.loadName('Test')
+        self.assertEqual(True, suc)
+
 
 if __name__ == '__main__':
     unittest.main()
