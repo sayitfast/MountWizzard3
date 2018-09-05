@@ -1135,16 +1135,34 @@ class Command(object):
         if not isinstance(1, int):
             return
 
+        # formatting:
+        # conversion, we have to find out the sign
+        _raFormat = '{0:02.0f}:{1:02.0f}:{2:04.1f}'
+        _decFormat = '{sign}{0:02.0f}*{1:02.0f}:{2:03.0f}'
+
         # writing new model
         commandString = ':newalig#'
+        # getting star info in
         for star in buildModel:
-            _ra =
-            _dec =
-            _pierside =
-            _raSolve =
-            _decSolve =
-            _sidereal =
-            _command = ':newalpt{0},{1},{2},{3},{4},{5}#'.format
+            _ra = _raFormat.format(*build.mount.ra.dms())
+            _dec = _decFormat.format(*build.mount.dec.signed_dms()[1:4],
+                                     sign='+' if build.mount.dec.degrees > 0 else '-')
+            _pierside = build.pierside
+            _raSolve = _raFormat.format(*build.solve.ra.dms())
+            _decSolve = _decFormat.format(*build.solve.signed_dms()[1:4],
+                                          sign='+' if build.solve.dec.degrees > 0 else '-')
+            _sidereal = build.sidereal
+            _comFormat = ':newalpt{0},{1},{2},{3},{4},{5}#'
+            _value = _comFormat.format(_ra,
+                                       _dec,
+                                       _pierside,
+                                       _raSolve,
+                                       _decSolve,
+                                       _sidereal,
+                                       )
+            commandString = commandString.join(_value)
+        # closing command
         commandString = commandString.join(':endalig#')
 
+        print(commandString)
         return True
