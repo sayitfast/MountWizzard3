@@ -23,7 +23,7 @@ import logging
 # external packages
 # local imports
 from mount_new.connection import Connection
-from mount_new import testLog
+from mount_new import logConfigTest
 
 
 class TestConnection(unittest.TestCase):

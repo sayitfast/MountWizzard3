@@ -22,12 +22,15 @@ import logging
 # external packages
 # local imports
 
+handler = logging.FileHandler('unittest.log')
+
 logging.basicConfig(level=logging.INFO,
+                    handlers=[handler],
                     format='[%(asctime)s.%(msecs)03d]'
                            + '[%(levelname)7s]'
-                           + '[%(filename)22s]'
+                           + '[%(filename)15s]'
                            + '[%(lineno)5s]'
-                           + '[%(funcName)20s]'
+                           + '[%(funcName)15s]'
                            + '[%(threadName)10s]'
                            + '>>> %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S', )

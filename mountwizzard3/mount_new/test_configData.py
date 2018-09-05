@@ -27,7 +27,7 @@ from mount_new.configData import Model
 from mount_new.configData import Data
 from mount_new.configData import stringToDegree
 from mount_new.configData import stringToDegreeDEC
-from mount_new import testLog
+from mount_new import logConfigTest
 
 
 class TestConfigData(unittest.TestCase):

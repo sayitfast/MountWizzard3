@@ -25,7 +25,7 @@ import logging
 from mount_new.command import Command
 from mount_new.configData import Data
 from mount_new.api import Mount
-from mount_new import testLog
+from mount_new import logConfigTest
 
 
 class TestAPI(unittest.TestCase):

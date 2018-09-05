@@ -25,7 +25,7 @@ import skyfield.api
 # local imports
 from mount_new.command import Command
 from mount_new.configData import Data
-from mount_new import testLog
+from mount_new import logConfigTest
 
 
 class TestCommand(unittest.TestCase):
