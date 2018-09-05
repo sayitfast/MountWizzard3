@@ -31,8 +31,8 @@ from test import configTest
 
 class TestConfigData(unittest.TestCase):
 
-    TS = False
-    CONNECTED = True
+    TS = configTest.TS
+    CONNECTED = configTest.CONNECTED
 
     def setUp(self):
         pass

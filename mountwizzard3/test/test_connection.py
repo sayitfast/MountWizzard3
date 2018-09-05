@@ -27,7 +27,7 @@ from test import configTest
 
 class TestConnection(unittest.TestCase):
 
-    CONNECTED = True
+    CONNECTED = configTest.CONNECTED
 
     def setUp(self):
         pass

@@ -28,8 +28,8 @@ from test import configTest
 
 
 class TestCommand(unittest.TestCase):
-    CONNECTED = True
-    SLEW = False
+    CONNECTED = configTest.CONNECTED
+    SLEW = configTest.SLEW
 
     def setUp(self):
         pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
