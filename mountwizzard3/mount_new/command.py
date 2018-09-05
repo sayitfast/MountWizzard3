@@ -78,6 +78,7 @@ class Command(object):
                'storeName',
                'loadName',
                'deleteName',
+               'programModel',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
@@ -1100,4 +1101,50 @@ class Command(object):
             return False
         if response[0] != '1':
             return False
+        return True
+
+    def programModel(self, build):
+        """
+        programModel builds a new alignment model in the mount computer by transferring
+        the necessary data to the mount. the command is:
+
+            :newalptMRA,MDEC,MSIDE,PRA,PDEC,SIDTIME#
+
+        where the parameters are
+            MRA     – the mount-reported right ascension, expressed as HH:MM:SS.S
+            MDEC    – the mount-reported declination, expressed as sDD:MM:SS
+            MSIDE   – the mount-reported pier side (the letter 'E' or 'W'), as reported
+                        by the :pS# command)
+            PRA     – the plate-solved right ascension (i.e. the right ascension the
+                        telescope was effectively pointing to), expressed as HH:MM:SS.S
+            PDEC    – the plate-solved declination (i.e. the declination the telescope
+                        was effectively pointing to), expressed as sDD:MM:SS
+            SIDTIME – the local sidereal time at the time of the measurement of the
+                        point, expressed as HH:MM:SS.S
+            Returns:
+                the string "nnn#" if the point is valid, where nnn is the current number
+                    of points in the alignment specification (including this one)
+                the string "E#" if the point is not valid
+
+        :param      build: list of build data
+        :return:    success
+        """
+
+        if not self.data.fw.checkNewer(20815):
+            return
+        if not isinstance(1, int):
+            return
+
+        # writing new model
+        commandString = ':newalig#'
+        for star in buildModel:
+            _ra =
+            _dec =
+            _pierside =
+            _raSolve =
+            _decSolve =
+            _sidereal =
+            _command = ':newalpt{0},{1},{2},{3},{4},{5}#'.format
+        commandString = commandString.join(':endalig#')
+
         return True
