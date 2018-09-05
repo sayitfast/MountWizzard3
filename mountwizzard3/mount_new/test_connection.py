@@ -37,9 +37,12 @@ logging.basicConfig(level=logging.INFO,
 
 class TestConnection(unittest.TestCase):
 
+    CONNECTED = False
+
     def setUp(self):
         pass
 
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_no_host(self):
         mount = Connection(host='192.168.2.15')
         commandSet = ':U2#:Gev#:'
@@ -54,6 +57,7 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(False, ok)
         self.assertEqual('', response)
 
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_no_host_up(self):
         mount = Connection(host=('192.168.2.239', 3492))
         commandSet = ':U2#:Gev#:'
@@ -61,7 +65,7 @@ class TestConnection(unittest.TestCase):
         self.assertEqual(False, ok)
         self.assertEqual('', response)
 
-    # @unittest.skip("only with host available")
+    @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_known(self):
         mount = Connection(host=('192.168.2.15', 3492))
         commandSet = ':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#'
@@ -113,7 +117,6 @@ class TestConnection(unittest.TestCase):
         chunksToReceive, noResponse = conn._analyseCommand(commandString)
         self.assertEqual(False, noResponse)
         self.assertEqual(0, chunksToReceive)
-
 
 
 if __name__ == '__main__':
