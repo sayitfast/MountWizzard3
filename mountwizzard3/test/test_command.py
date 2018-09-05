@@ -428,7 +428,7 @@ class TestCommand(unittest.TestCase):
                        )
         suc = comm.setSlewRate(1)
         # function always returns True
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setSlewRate2(self):
@@ -464,7 +464,7 @@ class TestCommand(unittest.TestCase):
                        )
         suc = comm.setSlewRate(20)
         # function always returns True
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setRefractionTemp_m50(self):
@@ -472,7 +472,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(-50)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setRefractionTemp_m25(self):
@@ -504,7 +504,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionTemp(75)
-        self.assertEqual(False, suc)
+        self.assertEqual(True, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setRefractionTemp_100(self):
@@ -552,7 +552,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(200)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setRefractionPress_1400(self):
@@ -560,7 +560,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setRefractionPress(1400)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setRefractionOn(self):
@@ -632,7 +632,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setMeridianLimitSlew(30)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setMeridianLimitSlew_50(self):
@@ -648,7 +648,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setMeridianLimitTrack(10)
-        self.assertEqual(False, suc)
+        self.assertEqual(True, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setMeridianLimitTrack_30(self):
@@ -656,7 +656,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setMeridianLimitTrack(30)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setMeridianLimitCombinedOK(self):
@@ -708,7 +708,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(-30)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setHorizonLimitHigh_m15(self):
@@ -716,7 +716,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(-15)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setHorizonLimitHigh_m5(self):
@@ -724,7 +724,7 @@ class TestCommand(unittest.TestCase):
                        data=self.data,
                        )
         suc = comm.setHorizonLimitHigh(-5)
-        self.assertEqual(True, suc)
+        self.assertEqual(False, suc)
 
     @unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
     def test_setHorizonLimitHigh_45(self):

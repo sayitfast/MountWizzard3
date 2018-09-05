@@ -664,8 +664,8 @@ class Command(object):
 
     def setRefractionTemp(self, value):
         """
-        setRefractionTemp sends the command for setting the temperature to the mount. the limit is set to
-        -40 to +75, but there is not real documented limit.
+        setRefractionTemp sends the command for setting the temperature to the mount. the
+        limit is set to -40 to +75, but there is not real documented limit.
 
         :param value:   float for temperature correction in Celsius
         :return:        success
@@ -688,16 +688,17 @@ class Command(object):
 
     def setRefractionPress(self, value):
         """
-        setRefractionPress sends the command for setting the pressure to the mount. the limit is set
-        from 800 to 1200 hPa. no limit give from the mount
+        setRefractionPress sends the command for setting the pressure to the mount. the
+        limit is set from 500 to 1300 hPa. no limit give from the mount. limits here are
+        relevant over 5000m height
 
         :param value:   float for pressure correction
         :return:        success
         """
 
-        if value < 800:
+        if value < 500:
             return False
-        elif value > 1200:
+        elif value > 1300:
             return False
         conn = Connection(self.host)
         commandString = ':SRPRS{0:6.1f}#'.format(value)
