@@ -52,7 +52,6 @@ class TestAPI(unittest.TestCase):
                       pathToTS=self.pathToTS,
                       )
         mount.command.pollSlow()
-        print(mount.data.fw)
 
 
 if __name__ == '__main__':
