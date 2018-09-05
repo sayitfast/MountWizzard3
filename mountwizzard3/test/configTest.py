@@ -30,7 +30,7 @@ logging.basicConfig(level=logging.INFO,
                            + '[%(levelname)7s]'
                            + '[%(filename)15s]'
                            + '[%(lineno)5s]'
-                           + '[%(funcName)15s]'
+                           + '[%(funcName)20s]'
                            + '[%(threadName)10s]'
                            + '>>> %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S', )
