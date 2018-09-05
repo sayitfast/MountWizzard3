@@ -43,6 +43,7 @@ class TestCommand(unittest.TestCase):
         pathToTimescaleData = '~/PycharmProjects/MountWizzard3/config'
         self.data = Data(pathToTimescaleData)
 
+    """
     # @unittest.skip("only with host available")
     def test_workaroundAlign(self):
         comm = Command(host=('192.168.2.15', 3492))
@@ -341,14 +342,26 @@ class TestCommand(unittest.TestCase):
         response = ['4', 'E']
         suc = comm._parseNumberStars(response, 1, True)
         self.assertEqual(False, suc)
-
+    """
     def test_parseModelStars_good(self):
         comm = Command(data=self.data,
                        )
-        response = ['']
-        suc = comm._parseModelStars(response, 4)
-        self.assertEqual(False, suc)
-
+        response = [
+            '21:52:58.95,+08*56:10.1,   5.7,201',
+            '21:06:10.79,+45*20:52.8,  12.1,329',
+            '23:13:58.02,+38*48:18.8,  31.0,162',
+            '17:43:41.26,+59*15:30.7,   8.4,005',
+            '20:36:01.52,+62*39:32.4,  19.5,138',
+            '03:43:11.04,+19*06:30.3,  22.6,199',
+            '05:03:10.81,+38*14:22.2,  20.1,340',
+            '04:12:55.39,+49*14:00.2,  17.1,119',
+            '06:57:55.11,+61*40:26.8,   9.8,038',
+            '22:32:24.00,+28*00:23.6,  42.1,347',
+            '13:09:03.49,+66*24:40.5,  13.9,177',
+        ]
+        suc = comm._parseModelStars(response, 11)
+        self.assertEqual(True, suc)
+    """
     def test_parseModelStars_bad1(self):
         comm = Command(data=self.data,
                        )
@@ -690,6 +703,7 @@ class TestCommand(unittest.TestCase):
                        )
         suc = comm.setHorizonLimitHigh(91)
         self.assertEqual(False, suc)
+    """
 
 
 if __name__ == '__main__':

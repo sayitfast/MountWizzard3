@@ -369,7 +369,7 @@ class Command(object):
                 continue
             # mount counts stars from 1 beginning and adding the number (which is not provided by the response,
             # but counted in the mount computer for reference reasons
-            modelStar = starData.insert(len(starData), number + 1)
+            modelStar = '{0:s}, {1}'.format(starData, number + 1)
             self.data.model.addStar(modelStar)
         return True
 
