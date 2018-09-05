@@ -41,6 +41,8 @@ logging.basicConfig(level=logging.INFO,
 
 class TestConfigData(unittest.TestCase):
 
+    TS = False
+
     def setUp(self):
         pass
 
@@ -185,7 +187,7 @@ class TestConfigData(unittest.TestCase):
             self.assertEqual('this is the {0}.th name'.format(i),
                              name)
 
-    @unittest.skip("only in special test case")
+    @unittest.skipIf(not TS, 'mount should be connected for this test')
     def test_data_without_ts(self):
         data = Data()
 
