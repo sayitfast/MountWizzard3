@@ -20,7 +20,6 @@
 # standard libraries
 import unittest
 import logging
-import time
 # external packages
 import skyfield.api
 # local imports
@@ -357,13 +356,13 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseModelStars(response, 4)
         self.assertEqual(False, suc)
 
-    """
     def test_slewAltAz_pos(self):
         alt = skyfield.api.Angle(degrees=31.251234)
         az = skyfield.api.Angle(degrees=55.77777)
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewAltAz(alt, az)
+        self.assertEqual(True, suc)
 
     def test_slewAltAz_neg(self):
         alt = skyfield.api.Angle(degrees=-31.251234)
@@ -371,6 +370,7 @@ class TestCommand(unittest.TestCase):
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewAltAz(alt, az)
+        self.assertEqual(True, suc)
 
     def test_slewRaDec_pos(self):
         ra = skyfield.api.Angle(degrees=31.251234)
@@ -378,6 +378,7 @@ class TestCommand(unittest.TestCase):
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)
+        self.assertEqual(True, suc)
 
     def test_slewRaDec_neg(self):
         ra = skyfield.api.Angle(degrees=31.251234)
@@ -385,7 +386,8 @@ class TestCommand(unittest.TestCase):
 
         comm = Command(host=('192.168.2.15', 3492))
         suc = comm.slewRaDec(ra, dec)
-    """
+        self.assertEqual(True, suc)
+
     def test_startTracking(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
@@ -468,7 +470,7 @@ class TestCommand(unittest.TestCase):
         suc = comm.setRefractionTemp(50)
         self.assertEqual(True, suc)
 
-    def test_setRefractionTemp_100(self):
+    def test_setRefractionTemp_75(self):
         comm = Command(host=('192.168.2.15', 3492),
                        data=self.data,
                        )
@@ -688,7 +690,6 @@ class TestCommand(unittest.TestCase):
                        )
         suc = comm.setHorizonLimitHigh(91)
         self.assertEqual(False, suc)
-
 
 
 if __name__ == '__main__':
