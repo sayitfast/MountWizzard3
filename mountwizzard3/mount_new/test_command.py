@@ -343,6 +343,20 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseNumberStars(response, 1, True)
         self.assertEqual(False, suc)
 
+    def test_parseModelStars_good(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['']
+        suc = comm._parseModelStars(response, 4)
+        self.assertEqual(False, suc)
+
+    def test_parseModelStars_bad1(self):
+        comm = Command(data=self.data,
+                       )
+        response = ['']
+        suc = comm._parseModelStars(response, 4)
+        self.assertEqual(False, suc)
+
     """
     def test_slewAltAz_pos(self):
         alt = skyfield.api.Angle(degrees=31.251234)
