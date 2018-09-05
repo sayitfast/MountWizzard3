@@ -352,6 +352,7 @@ class TestCommand(unittest.TestCase):
         ]
         suc = comm._parseModelStars(response, 11)
         self.assertEqual(True, suc)
+        self.assertEqual(len(comm.data.model.starList), 11)
 
     def test_parseModelStars_bad1(self):
         comm = Command(data=self.data,
@@ -366,6 +367,7 @@ class TestCommand(unittest.TestCase):
         ]
         suc = comm._parseModelStars(response, 4)
         self.assertEqual(False, suc)
+        self.assertEqual(len(comm.data.model.starList), 0)
 
     @unittest.skipIf(not SLEW, 'mount should movable for this test')
     def test_slewAltAz_pos(self):
@@ -747,6 +749,34 @@ class TestCommand(unittest.TestCase):
                        )
         suc = comm.setHorizonLimitHigh(91)
         self.assertEqual(False, suc)
+
+    #@unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    def test_storeName(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.storeName('Test_Store')
+        self.assertEqual(True, suc)
+
+    #@unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    def test_loadName(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.storeName('Test_Load')
+        self.assertEqual(True, suc)
+        suc = comm.loadName('Test_Load')
+        self.assertEqual(True, suc)
+
+    #@unittest.skipIf(not CONNECTED, 'mount should be connected for this test')
+    def test_deleteName(self):
+        comm = Command(host=('192.168.2.15', 3492),
+                       data=self.data,
+                       )
+        suc = comm.storeName('Test_Delete')
+        self.assertEqual(True, suc)
+        suc = comm.deleteName('Test_Delete')
+        self.assertEqual(True, suc)
 
 
 if __name__ == '__main__':

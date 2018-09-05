@@ -983,11 +983,75 @@ class Command(object):
     def deletePoint(self):
         pass
 
-    def storeModelToName(self):
-        pass
+    def storeName(self, name):
+        """
+        storeName saves the actual alignment model to the database of the mount computer
+        under the given name. the name is context sensitive and does contain maximum 15
+        characters.
 
-    def loadModelFromName(self):
-        pass
+        :param      name: name of model as string
+        :return:    success
+        """
 
-    def deleteModelAsName(self):
-        pass
+        if len(name) > 15:
+            return
+        conn = Connection(self.host)
+
+        # as the mount does raise an error, if the name already exists, we delete it
+        # anyway before saving to a name
+        commandString = ':modeldel0{0}#:modelsv0{1}#'.format(name, name)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if len(response) != 2:
+            return False
+        if response[0] != '1':
+            self.logger.info('model >{0}< overwritten'.format(name))
+        if response[1] != '1':
+            return False
+        return True
+
+    def loadName(self, name):
+        """
+        loadName loads from the database of the mount computer the model under the given
+        name as the actual alignment model . the name is context sensitive and does contain
+        maximum 15 characters.
+
+        :param      name: name of model as string
+        :return:    success
+        """
+
+        if len(name) > 15:
+            return
+        conn = Connection(self.host)
+        commandString = ':modelld0{0}#'.format(name)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
+            return False
+        return True
+
+    def deleteName(self, name):
+        """
+        deleteName deletes the model from the database of the mount computer under the
+        given name. the name is context sensitive and does contain maximum 15 characters.
+
+        :param      name: name of model as string
+        :return:    success
+        """
+
+        if len(name) > 15:
+            return
+        conn = Connection(self.host)
+        commandString = ':modeldel0{0}#'.format(name)
+        suc, response, chunks = conn.communicate(commandString)
+        if not suc:
+            return False
+        if len(response) != 1:
+            return False
+        if response[0] != '1':
+            return False
+        return True
