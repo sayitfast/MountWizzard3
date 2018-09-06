@@ -31,6 +31,7 @@ class TestConnection(unittest.TestCase):
 
     def setUp(self):
         pass
+
     #
     #
     # testing the connection against host presence
