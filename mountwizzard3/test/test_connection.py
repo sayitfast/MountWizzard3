@@ -97,45 +97,66 @@ class TestConnection(unittest.TestCase):
 
     def test_responses_typeA_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':AP#:AL#')
+        command = ':AP#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(True, noResponse)
         self.assertEqual(0, chunksToReceive)
 
     def test_responses_typeB_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':FLIP#:')
+        command = ':FLIP#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(False, noResponse)
         self.assertEqual(0, chunksToReceive)
 
     def test_responses_typeC_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':GTMP1#')
+        command = ':GTMP1#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(False, noResponse)
         self.assertEqual(1, chunksToReceive)
 
     def test_responses_typeAB_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':AP#:AL#:FLIP#')
+        command = ':AP#:FLIP#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(False, noResponse)
         self.assertEqual(0, chunksToReceive)
 
     def test_responses_typeAC_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':AP#:AL#:GTMP1#')
+        command = ':AP#:GTMP1#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(False, noResponse)
         self.assertEqual(1, chunksToReceive)
 
     def test_responses_typeBC_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':FLIP#:GTMP1#')
+        command = ':FLIP#:GTMP1#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(False, noResponse)
         self.assertEqual(1, chunksToReceive)
 
     def test_responses_typeABC_analyseCommand(self):
         mount = Connection()
-        chunksToReceive, noResponse = mount._analyseCommand(':AP#:AL#:FLIP#:GTMP1#')
+        command = ':AP#:FLIP#:GTMP1#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
         self.assertEqual(False, noResponse)
         self.assertEqual(1, chunksToReceive)
+
+    def test_responses_typeABCABC_analyseCommand(self):
+        mount = Connection()
+        command = ':AP#:FLIP#:GTMP1#:AP#:FLIP#:GTMP1#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
+        self.assertEqual(False, noResponse)
+        self.assertEqual(2, chunksToReceive)
+
+    def test_responses_typeABBCCABC_analyseCommand(self):
+        mount = Connection()
+        command = ':AP#:FLIP#:FLIP#:GTMP1#:GTMP1#:AP#:FLIP#:GTMP1#'
+        chunksToReceive, noResponse = mount._analyseCommand(command)
+        self.assertEqual(False, noResponse)
+        self.assertEqual(3, chunksToReceive)
 
 
 if __name__ == '__main__':
