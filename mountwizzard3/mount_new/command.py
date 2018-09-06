@@ -395,8 +395,9 @@ class Command(object):
         for number, starData in enumerate(response):
             if not starData:
                 continue
-            # mount counts stars from 1 beginning and adding the number (which is not provided by the response,
-            # but counted in the mount computer for reference reasons
+            # mount counts stars from 1 beginning and adding the number (which is not
+            # provided by the response, but counted in the mount computer
+            # for reference reasons
             modelStar = '{0:s}, {1}'.format(starData, number + 1)
             self.data.model.addStar(modelStar)
         return True
@@ -766,8 +767,8 @@ class Command(object):
 
     def setMeridianLimitTrack(self, value):
         """
-        setMeridianLimitTrack sends the command for setting flip limit to the mount. the limit is set from
-        -20 to 20 degrees
+        setMeridianLimitTrack sends the command for setting flip limit to the mount.
+        the limit is set from -20 to 20 degrees
 
         :param value:   float for degrees
         :return:        success
@@ -791,8 +792,8 @@ class Command(object):
 
     def setMeridianLimitSlew(self, value):
         """
-        setMeridianLimitSlew sends the command for setting flip limit to the mount. the limit is set
-        to -20 to 20 degrees
+        setMeridianLimitSlew sends the command for setting flip limit to the mount.
+        the limit is set to -20 to 20 degrees
 
         :param value:   float / int for degrees
         :return:        success
@@ -816,8 +817,8 @@ class Command(object):
 
     def setHorizonLimitHigh(self, value):
         """
-        setHorizonLimitHigh sends the command for setting the limit to the mount. the limit is set
-        from 0 to 90 degrees
+        setHorizonLimitHigh sends the command for setting the limit to the mount.
+        the limit is set from 0 to 90 degrees
 
         :param value:   float / int for degrees
         :return:        success
