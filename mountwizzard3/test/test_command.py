@@ -314,7 +314,8 @@ class TestCommand(unittest.TestCase):
     def test_mock_setHorizonLimitHigh_structural(self):
         comm = Command()
 
-        def patch_communicate(cls, *args, **kwargs):
+        @staticmethod
+        def patch_communicate(commandString):
             self._chunks = 0
             return self._suc, self._response, self._chunks
 
