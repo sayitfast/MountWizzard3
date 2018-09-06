@@ -896,7 +896,7 @@ class Model(object):
             value = value.split(',')
         if len(value) == 5:
             _ha, _dec, _err, _angle, _number = value
-            value = ModelStar(point=(_ha, _dec),
+            value = ModelStar(coord=(_ha, _dec),
                               errorRMS=_err,
                               errorAngle=_angle,
                               number=_number)
