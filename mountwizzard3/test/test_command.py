@@ -23,6 +23,7 @@ import unittest
 import skyfield.api
 # local imports
 from mount_new.command import Command
+from mount_new.connection import Connection
 from mount_new.mountData import Data
 from test import configTest
 
@@ -308,6 +309,21 @@ class TestCommand(unittest.TestCase):
         suc = comm._parseModelStars(response, 4)
         self.assertEqual(False, suc)
         self.assertEqual(len(comm.data.model.starList), 0)
+
+    def test_mock_setHorizonLimitHigh(self):
+        import mock
+
+        comm = Command()
+
+        def patch_communicate(cls, *args, **kwargs):
+            _suc = True
+            _response = ['1']
+            _chunks = 1
+            return _suc, _response, _chunks
+
+        with mock.patch.object(Connection, 'communicate', new=patch_communicate):
+            suc = comm.setHorizonLimitHigh(35)
+            self.assertEqual(True, suc)
 
 
 if __name__ == '__main__':
