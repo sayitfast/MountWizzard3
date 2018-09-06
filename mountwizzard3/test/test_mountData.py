@@ -117,24 +117,11 @@ class TestConfigData(unittest.TestCase):
 
     #
     #
-    # testing the class ModelStar and it's attribute setters
+    # testing the class Model and it's attribute setters
     #
     #
 
-    def test_ModelStar_create(self):
-        p1 = '12:45:33.01'
-        p2 = '+56*30:00.5'
-        p3 = '1234.5'
-        p4 = '90'
-        modelStar = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
-        self.assertAlmostEqual(modelStar.point.ra.hms()[0], 12, 6)
-        self.assertAlmostEqual(modelStar.point.ra.hms()[1], 45, 6)
-        self.assertAlmostEqual(modelStar.point.ra.hms()[2], 33.01, 6)
-        self.assertAlmostEqual(modelStar.point.dec.dms()[0], 56, 6)
-        self.assertAlmostEqual(modelStar.point.dec.dms()[1], 30, 6)
-        self.assertAlmostEqual(modelStar.point.dec.dms()[2], 0.5, 6)
-
-    def test_StarList_create(self):
+    def test_add_del_Star(self):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
         p3 = '1234.5'
@@ -146,11 +133,14 @@ class TestConfigData(unittest.TestCase):
 
         model = Model()
 
+        self.assertEqual(len(model.starList), 0)
         model.addStar(modelStar1)
+        self.assertEqual(len(model.starList), 1)
         model.addStar(modelStar2)
+        self.assertEqual(len(model.starList), 2)
         model.addStar(modelStar3)
+        self.assertEqual(len(model.starList), 3)
         model.addStar(modelStar4)
-
         self.assertEqual(len(model.starList), 4)
         model.delStar(3)
         self.assertEqual(len(model.starList), 3)
@@ -160,24 +150,6 @@ class TestConfigData(unittest.TestCase):
         self.assertEqual(len(model.starList), 3)
         model.delStar(1)
         self.assertEqual(len(model.starList), 2)
-
-    def test_NameList_create(self):
-        model = Model()
-
-        model.addName('the first one')
-        model.addName('the second one')
-        model.addName('the third one')
-        model.addName('the fourth one')
-
-        self.assertEqual(len(model.nameList), 4)
-        model.delName(3)
-        self.assertEqual(len(model.nameList), 3)
-        model.delName(3)
-        self.assertEqual(len(model.nameList), 3)
-        model.delName(-1)
-        self.assertEqual(len(model.nameList), 3)
-        model.delName(1)
-        self.assertEqual(len(model.nameList), 2)
 
     def test_StarList_iteration(self):
         p1 = '12:45:33.01'
@@ -197,6 +169,27 @@ class TestConfigData(unittest.TestCase):
             self.assertEqual(i*i,
                              star.errorRMS)
 
+    def test_add_del_Name(self):
+        model = Model()
+
+        self.assertEqual(len(model.nameList), 0)
+        model.addName('the first one')
+        self.assertEqual(len(model.nameList), 1)
+        model.addName('the second one')
+        self.assertEqual(len(model.nameList), 2)
+        model.addName('the third one')
+        self.assertEqual(len(model.nameList), 3)
+        model.addName('the fourth one')
+        self.assertEqual(len(model.nameList), 4)
+        model.delName(3)
+        self.assertEqual(len(model.nameList), 3)
+        model.delName(3)
+        self.assertEqual(len(model.nameList), 3)
+        model.delName(-1)
+        self.assertEqual(len(model.nameList), 3)
+        model.delName(1)
+        self.assertEqual(len(model.nameList), 2)
+
     def test_NameList_iteration(self):
         model = Model()
 
@@ -206,6 +199,12 @@ class TestConfigData(unittest.TestCase):
         for i, name in enumerate(model.nameList):
             self.assertEqual('this is the {0}.th name'.format(i),
                              name)
+
+    #
+    #
+    # testing the specific QCI behaviour in Model class attributes
+    #
+    #
 
     def test_errorRMS_HPS(self):
         model = Model()
@@ -236,6 +235,26 @@ class TestConfigData(unittest.TestCase):
         model = Model()
         model.errorRMS = ''
         self.assertAlmostEqual(model.errorRMS, 0)
+
+    #
+    #
+    # testing the class ModelStar and it's attribute setters
+    #
+    #
+
+    def test_ModelStar_create(self):
+        p1 = '12:45:33.01'
+        p2 = '+56*30:00.5'
+        p3 = '1234.5'
+        p4 = '90'
+        modelStar = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
+        self.assertAlmostEqual(modelStar.point.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(modelStar.point.ra.hms()[1], 45, 6)
+        self.assertAlmostEqual(modelStar.point.ra.hms()[2], 33.01, 6)
+        self.assertAlmostEqual(modelStar.point.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(modelStar.point.dec.dms()[1], 30, 6)
+        self.assertAlmostEqual(modelStar.point.dec.dms()[2], 0.5, 6)
+
 
 
 if __name__ == '__main__':
