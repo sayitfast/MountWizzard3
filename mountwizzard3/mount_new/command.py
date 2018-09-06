@@ -73,12 +73,12 @@ class Command(object):
                'unpark',
                'stop',
                'flip',
-               'clearModel',
+               'clearAlign',
                'deletePoint',
                'storeName',
                'loadName',
                'deleteName',
-               'programModel',
+               'programAlign',
                ]
     version = '0.1'
     logger = logging.getLogger(__name__)
@@ -994,7 +994,7 @@ class Command(object):
             return False
         return True
 
-    def clearModel(self):
+    def clearAlign(self):
         """
         clear model sends the clear command to the mount and deletes the current alignment
         model and alignment stars
@@ -1105,9 +1105,9 @@ class Command(object):
             return False
         return True
 
-    def programModel(self, build):
+    def programAlign(self, build):
         """
-        programModel builds a new alignment model in the mount computer by transferring
+        programAlign builds a new alignment model in the mount computer by transferring
         the necessary data to the mount. the command is:
 
             :newalptMRA,MDEC,MSIDE,PRA,PDEC,SIDTIME#
