@@ -172,11 +172,11 @@ class Connection(object):
             self.logger.error('{0}'.format(e))
             return False, response, numberOfChunks
 
+        if noResponse:
+            return True, response, numberOfChunks
         # receive data
         try:
             while True:
-                if noResponse:
-                    break
                 chunk = client.recv(4096).decode().strip()
                 if not chunk:
                     break
