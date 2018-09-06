@@ -882,8 +882,7 @@ class Model(object):
         """
         Adds a star to the list of stars. Type of name should be class ModelStar.
 
-        :param      number: index number of star in database
-                    value:  name as type ModelStar
+        :param      value:  name as type ModelStar
         :return:    nothing
         """
 
