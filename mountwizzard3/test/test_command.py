@@ -19,6 +19,7 @@
 ############################################################
 # standard libraries
 import unittest
+import mock
 # external packages
 import skyfield.api
 # local imports
@@ -310,20 +311,54 @@ class TestCommand(unittest.TestCase):
         self.assertEqual(False, suc)
         self.assertEqual(len(comm.data.model.starList), 0)
 
-    def test_mock_setHorizonLimitHigh(self):
-        import mock
-
+    def test_mock_setHorizonLimitHigh_structural(self):
         comm = Command()
 
         def patch_communicate(cls, *args, **kwargs):
-            _suc = True
-            _response = ['1']
-            _chunks = 1
-            return _suc, _response, _chunks
+            self._chunks = 0
+            return self._suc, self._response, self._chunks
 
         with mock.patch.object(Connection, 'communicate', new=patch_communicate):
+            self._suc = True
+            self._response = ['1']
             suc = comm.setHorizonLimitHigh(35)
             self.assertEqual(True, suc)
+
+            self._suc = False
+            self._response = ['1']
+            suc = comm.setHorizonLimitHigh(35)
+            self.assertEqual(False, suc)
+
+            self._suc = True
+            self._response = ['0']
+            suc = comm.setHorizonLimitHigh(35)
+            self.assertEqual(False, suc)
+
+            self._suc = False
+            self._response = ['0']
+            suc = comm.setHorizonLimitHigh(35)
+            self.assertEqual(False, suc)
+
+    def test_mock_setHorizonLimitHigh_values(self):
+        comm = Command()
+
+        def patch_communicate(cls, *args, **kwargs):
+            self._chunks = 0
+            return self._suc, self._response, self._chunks
+
+        with mock.patch.object(Connection, 'communicate', new=patch_communicate):
+            self._suc = True
+            self._response = ['1']
+            suc = comm.setHorizonLimitHigh(-5)
+            self.assertEqual(False, suc)
+            suc = comm.setHorizonLimitHigh(0)
+            self.assertEqual(True, suc)
+            suc = comm.setHorizonLimitHigh(1)
+            self.assertEqual(True, suc)
+            suc = comm.setHorizonLimitHigh(90)
+            self.assertEqual(True, suc)
+            suc = comm.setHorizonLimitHigh(91)
+            self.assertEqual(False, suc)
 
 
 if __name__ == '__main__':
