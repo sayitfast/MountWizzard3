@@ -43,13 +43,14 @@ class Connection(object):
     with the mount.
 
         >>> command = Connection(
-        >>>                   host=('mount.fritz.box', 3492),
+        >>>                   host=('127.0.0.1', 3492),
         >>>                   )
 
     """
 
     __all__ = ['Connection',
-               'communicate']
+               'communicate',
+               ]
     version = '0.1'
     logger = logging.getLogger(__name__)
 
