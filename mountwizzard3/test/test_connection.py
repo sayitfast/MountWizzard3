@@ -52,11 +52,6 @@ class TestConnection(unittest.TestCase):
         self.assertEqual('', response)
 
     def test_no_host_up(self):
-        # according to RFC5737 we use the address ranges from
-        # 192.0.2.0 - 192.0.2.255
-        # 198.51.100.0 - 198.51.100.255
-        # 203.0.113.0 - 203.0.113.255
-        # for testing
         mount = Connection(host=('127.0.2.1', 3492))
         commandSet = ''
         ok, response, chunks = mount.communicate(commandSet)
