@@ -1008,7 +1008,7 @@ class ModelStar(object):
     The coordinates are in JNow topocentric
 
         >>> settings = ModelStar(
-        >>>                     point=None,
+        >>>                     coord=None,
         >>>                     errorRMS=0,
         >>>                     errorAngle=0,
         >>>                     number=0,
@@ -1028,7 +1028,7 @@ class ModelStar(object):
     """
 
     __all__ = ['ModelStar',
-               'point',
+               'coord',
                'errorRMS',
                'errorAngle',
                'errorRA',
@@ -1039,29 +1039,29 @@ class ModelStar(object):
     logger = logging.getLogger(__name__)
 
     def __init__(self,
-                 point=None,
+                 coord=None,
                  errorRMS=None,
                  errorAngle=None,
                  number=None,
                  ):
 
-        self.point = point
+        self.coord = coord
         self.errorRMS = errorRMS
         self.errorAngle = errorAngle
         self.number = number
 
     @property
-    def point(self):
-        return self._point
+    def coord(self):
+        return self._coord
 
-    @point.setter
-    def point(self, value):
+    @coord.setter
+    def coord(self, value):
         if isinstance(value, skyfield.api.Star):
-            self._point = value
+            self._coord = value
             return
         if not isinstance(value, tuple):
             self.logger.error('malformed value: {0}'.format(value))
-            self._point = skyfield.api.Star(ra_hours=0,
+            self._coord = skyfield.api.Star(ra_hours=0,
                                             dec_degrees=0)
         _ha, _dec = value
         if all(isinstance(x, str) for x in value):
@@ -1073,7 +1073,7 @@ class ModelStar(object):
             if not _dec:
                 self.logger.error('malformed value: {0}'.format(value))
                 return
-            self._point = skyfield.api.Star(ra_hours=_ha,
+            self._coord = skyfield.api.Star(ra_hours=_ha,
                                             dec_degrees=_dec)
         else:
             self.logger.error('malformed value: {0}'.format(value))
@@ -1127,8 +1127,8 @@ class ModelStar(object):
     def __str__(self):
         output = 'Star {0:2d}: HA: {1}, DEC: {2}, Error: {3}'
         value = output.format(self._number,
-                              self._point.ra.hms,
-                              self._point.dec.dms,
+                              self._coord.ra.hms,
+                              self._coord.dec.dms,
                               self.errorRMS,
                               )
         return value

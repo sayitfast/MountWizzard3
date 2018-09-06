@@ -126,10 +126,10 @@ class TestConfigData(unittest.TestCase):
         p2 = '+56*30:00.5'
         p3 = '1234.5'
         p4 = '90'
-        modelStar1 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
-        modelStar2 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=2)
-        modelStar3 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=3)
-        modelStar4 = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=4)
+        modelStar1 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
+        modelStar2 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=2)
+        modelStar3 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=3)
+        modelStar4 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=4)
 
         model = Model()
 
@@ -157,7 +157,7 @@ class TestConfigData(unittest.TestCase):
         model = Model()
 
         for i in range(0, 10):
-            model.addStar(ModelStar(point=(p1, p2),
+            model.addStar(ModelStar(coord=(p1, p2),
                                     errorRMS=str(i*i),
                                     errorAngle=str(i*i),
                                     number=str(i)))
@@ -247,14 +247,13 @@ class TestConfigData(unittest.TestCase):
         p2 = '+56*30:00.5'
         p3 = '1234.5'
         p4 = '90'
-        modelStar = ModelStar(point=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
-        self.assertAlmostEqual(modelStar.point.ra.hms()[0], 12, 6)
-        self.assertAlmostEqual(modelStar.point.ra.hms()[1], 45, 6)
-        self.assertAlmostEqual(modelStar.point.ra.hms()[2], 33.01, 6)
-        self.assertAlmostEqual(modelStar.point.dec.dms()[0], 56, 6)
-        self.assertAlmostEqual(modelStar.point.dec.dms()[1], 30, 6)
-        self.assertAlmostEqual(modelStar.point.dec.dms()[2], 0.5, 6)
-
+        modelStar = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
+        self.assertAlmostEqual(modelStar.coord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(modelStar.coord.ra.hms()[1], 45, 6)
+        self.assertAlmostEqual(modelStar.coord.ra.hms()[2], 33.01, 6)
+        self.assertAlmostEqual(modelStar.coord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(modelStar.coord.dec.dms()[1], 30, 6)
+        self.assertAlmostEqual(modelStar.coord.dec.dms()[2], 0.5, 6)
 
 
 if __name__ == '__main__':
