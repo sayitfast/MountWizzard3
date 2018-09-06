@@ -27,6 +27,7 @@ from mount_new.mountData import Model
 from mount_new.mountData import Data
 from mount_new.mountData import stringToDegree
 from mount_new.mountData import stringToDegreeDEC
+from mount_new.mountData import ProgSet
 from test import configTest
 
 
@@ -266,6 +267,56 @@ class TestConfigData(unittest.TestCase):
         self.assertAlmostEqual(modelStar.coord.dec.dms()[0], 56, 6)
         self.assertAlmostEqual(modelStar.coord.dec.dms()[1], 33, 6)
         self.assertAlmostEqual(modelStar.coord.dec.dms()[2], 0, 6)
+
+    #
+    #
+    # testing the conversion functions
+    #
+    #
+
+    def test_ProgSet_create1(self):
+        p1 = '12:45:33.01'
+        p2 = '+56*30:00.5'
+        progSet = ProgSet(mCoord=(p1, p2),
+                          pierside='W',
+                          sCoord=(p1, p2),
+                          sidereal=p1,
+                          )
+        self.assertAlmostEqual(progSet.mCoord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(progSet.mCoord.ra.hms()[1], 45, 6)
+        self.assertAlmostEqual(progSet.mCoord.ra.hms()[2], 33.01, 6)
+        self.assertAlmostEqual(progSet.mCoord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(progSet.mCoord.dec.dms()[1], 30, 6)
+        self.assertAlmostEqual(progSet.mCoord.dec.dms()[2], 0.5, 6)
+
+        self.assertAlmostEqual(progSet.sCoord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(progSet.sCoord.ra.hms()[1], 45, 6)
+        self.assertAlmostEqual(progSet.sCoord.ra.hms()[2], 33.01, 6)
+        self.assertAlmostEqual(progSet.sCoord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(progSet.sCoord.dec.dms()[1], 30, 6)
+        self.assertAlmostEqual(progSet.sCoord.dec.dms()[2], 0.5, 6)
+
+    def test_ProgSet_create2(self):
+        p1 = '12:45:33.01'
+        star = skyfield.api.Star(ra_hours=12.55, dec_degrees=56.55)
+        progSet = ProgSet(mCoord=star,
+                          pierside='W',
+                          sCoord=star,
+                          sidereal=p1,
+                          )
+        self.assertAlmostEqual(progSet.mCoord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(progSet.mCoord.ra.hms()[1], 33, 6)
+        self.assertAlmostEqual(progSet.mCoord.ra.hms()[2], 0, 6)
+        self.assertAlmostEqual(progSet.mCoord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(progSet.mCoord.dec.dms()[1], 33, 6)
+        self.assertAlmostEqual(progSet.mCoord.dec.dms()[2], 0, 6)
+
+        self.assertAlmostEqual(progSet.sCoord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(progSet.sCoord.ra.hms()[1], 33, 6)
+        self.assertAlmostEqual(progSet.sCoord.ra.hms()[2], 0, 6)
+        self.assertAlmostEqual(progSet.sCoord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(progSet.sCoord.dec.dms()[1], 33, 6)
+        self.assertAlmostEqual(progSet.sCoord.dec.dms()[2], 0, 6)
 
 
 if __name__ == '__main__':

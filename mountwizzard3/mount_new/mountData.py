@@ -1132,3 +1132,118 @@ class ModelStar(object):
                               self.errorRMS,
                               )
         return value
+
+
+class ProgSet(object):
+    """
+    The class ProgData inherits all information and handling of the coordinates of
+    a pointing direction of the nominal mount coordinates and the plate solved
+    coordinates, which were derived from a taken image at the scope
+    the coordinates both are in JNow topocentric
+
+        >>> settings = ProgSet(
+        >>>                     )
+
+    coordinates could be from type skyfield.api.Star or just a tuple of (ha, dec) where
+    the format should be float or the 10micron string format.
+
+    """
+
+    __all__ = ['ProgSet',
+               'mCoord',
+               'pierside',
+               'sCoord',
+               'sidereal',
+               ]
+    version = '0.1'
+    logger = logging.getLogger(__name__)
+
+    def __init__(self,
+                 mCoord=None,
+                 pierside=None,
+                 sCoord=None,
+                 sidereal=None,
+                 ):
+
+        self.mCoord = mCoord
+        self.pierside = pierside
+        self.sCoord = sCoord
+        self.sidereal = sidereal
+
+    @property
+    def mCoord(self):
+        return self._mCoord
+
+    @mCoord.setter
+    def mCoord(self, value):
+        if isinstance(value, skyfield.api.Star):
+            self._mCoord = value
+            return
+        if not isinstance(value, tuple):
+            self.logger.error('malformed value: {0}'.format(value))
+            self._mCoord = skyfield.api.Star(ra_hours=0,
+                                                 dec_degrees=0)
+        _ha, _dec = value
+        if all(isinstance(x, str) for x in value):
+            _ha = stringToDegree(_ha)
+            if not _ha:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            _dec = stringToDegreeDEC(_dec)
+            if not _dec:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            self._mCoord = skyfield.api.Star(ra_hours=_ha,
+                                                 dec_degrees=_dec)
+        else:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def pierside(self):
+        return self._pierside
+
+    @pierside.setter
+    def pierside(self, value):
+        try:
+            self._pierside = int(value)
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
+
+    @property
+    def sCoord(self):
+        return self._sCoord
+
+    @sCoord.setter
+    def sCoord(self, value):
+        if isinstance(value, skyfield.api.Star):
+            self._sCoord = value
+            return
+        if not isinstance(value, tuple):
+            self.logger.error('malformed value: {0}'.format(value))
+            self._sCoord = skyfield.api.Star(ra_hours=0,
+                                                 dec_degrees=0)
+        _ha, _dec = value
+        if all(isinstance(x, str) for x in value):
+            _ha = stringToDegree(_ha)
+            if not _ha:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            _dec = stringToDegreeDEC(_dec)
+            if not _dec:
+                self.logger.error('malformed value: {0}'.format(value))
+                return
+            self._sCoord = skyfield.api.Star(ra_hours=_ha,
+                                                 dec_degrees=_dec)
+        else:
+            self.logger.error('malformed value: {0}'.format(value))
+
+    @property
+    def sidereal(self):
+        return self._sidereal
+
+    @sidereal.setter
+    def sidereal(self, value):
+        try:
+            self._sidereal = float(value)
+        except Exception as e:
+            self.logger.error('error: {0}, malformed value: {1}'.format(e, value))
