@@ -108,7 +108,7 @@ class Data(object):
         self.fw = Firmware()
         self.setting = Setting()
         self.site = Site(self.ts)
-        self.model = Model()
+        self.model = AlignModel()
 
     @property
     def expire(self):
@@ -672,21 +672,21 @@ class Setting(object):
             self._UTCDataExpirationDate = str(value)
 
 
-class Model(object):
+class AlignModel(object):
     """
     The class Model inherits all information and handling of the actual
     alignment model used by the mount and the data, which models are stored
     in the mount and provides the abstracted interface to a 10 micron mount.
 
-        >>> settings = Model(
+        >>> settings = AlignModel(
         >>>                 )
 
     But mostly the command will be:
 
-        >>> settings = Model()
+        >>> settings = AlignModel()
     """
 
-    __all__ = ['Model',
+    __all__ = ['AlignModel',
                'starList',
                'numberStars',
                'numberNames',
@@ -880,13 +880,13 @@ class Model(object):
 
     def addStar(self, value):
         """
-        Adds a star to the list of stars. Type of name should be class ModelStar.
+        Adds a star to the list of stars. Type of name should be class AlignStar.
 
-        :param      value:  name as type ModelStar
+        :param      value:  name as type AlignStar
         :return:    nothing
         """
 
-        if isinstance(value, ModelStar):
+        if isinstance(value, AlignStar):
             self._starList.insert(len(self._starList), value)
             return
         if not isinstance(value, (list, str)):
@@ -896,7 +896,7 @@ class Model(object):
             value = value.split(',')
         if len(value) == 5:
             _ha, _dec, _err, _angle, _number = value
-            value = ModelStar(coord=(_ha, _dec),
+            value = AlignStar(coord=(_ha, _dec),
                               errorRMS=_err,
                               errorAngle=_angle,
                               number=_number)
@@ -1000,14 +1000,14 @@ class Model(object):
             return False
 
 
-class ModelStar(object):
+class AlignStar(object):
     """
-    The class ModelStar inherits all informations and handling of one star in
+    The class AlignStar inherits all informations and handling of one star in
     the alignment model used by the mount and the data in the mount and provides the
     abstracted interface to a 10 micron mount.
     The coordinates are in JNow topocentric
 
-        >>> settings = ModelStar(
+        >>> settings = AlignStar(
         >>>                     coord=None,
         >>>                     errorRMS=0,
         >>>                     errorAngle=0,
@@ -1027,7 +1027,7 @@ class ModelStar(object):
     (0 towards the north pole, 90 towards east).
     """
 
-    __all__ = ['ModelStar',
+    __all__ = ['AlignStar',
                'coord',
                'errorRMS',
                'errorAngle',
@@ -1182,7 +1182,7 @@ class ProgSet(object):
         if not isinstance(value, tuple):
             self.logger.error('malformed value: {0}'.format(value))
             self._mCoord = skyfield.api.Star(ra_hours=0,
-                                                 dec_degrees=0)
+                                             dec_degrees=0)
         _ha, _dec = value
         if all(isinstance(x, str) for x in value):
             _ha = stringToDegree(_ha)
@@ -1194,7 +1194,7 @@ class ProgSet(object):
                 self.logger.error('malformed value: {0}'.format(value))
                 return
             self._mCoord = skyfield.api.Star(ra_hours=_ha,
-                                                 dec_degrees=_dec)
+                                             dec_degrees=_dec)
         else:
             self.logger.error('malformed value: {0}'.format(value))
 
@@ -1221,7 +1221,7 @@ class ProgSet(object):
         if not isinstance(value, tuple):
             self.logger.error('malformed value: {0}'.format(value))
             self._sCoord = skyfield.api.Star(ra_hours=0,
-                                                 dec_degrees=0)
+                                             dec_degrees=0)
         _ha, _dec = value
         if all(isinstance(x, str) for x in value):
             _ha = stringToDegree(_ha)
@@ -1233,7 +1233,7 @@ class ProgSet(object):
                 self.logger.error('malformed value: {0}'.format(value))
                 return
             self._sCoord = skyfield.api.Star(ra_hours=_ha,
-                                                 dec_degrees=_dec)
+                                             dec_degrees=_dec)
         else:
             self.logger.error('malformed value: {0}'.format(value))
 

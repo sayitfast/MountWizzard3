@@ -22,8 +22,8 @@ import unittest
 # external packages
 import skyfield.api
 # local imports
-from mount_new.mountData import ModelStar
-from mount_new.mountData import Model
+from mount_new.mountData import AlignStar
+from mount_new.mountData import AlignModel
 from mount_new.mountData import Data
 from mount_new.mountData import stringToDegree
 from mount_new.mountData import stringToDegreeDEC
@@ -127,12 +127,12 @@ class TestConfigData(unittest.TestCase):
         p2 = '+56*30:00.5'
         p3 = '1234.5'
         p4 = '90'
-        modelStar1 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
-        modelStar2 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=2)
-        modelStar3 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=3)
-        modelStar4 = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=4)
+        modelStar1 = AlignStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
+        modelStar2 = AlignStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=2)
+        modelStar3 = AlignStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=3)
+        modelStar4 = AlignStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=4)
 
-        model = Model()
+        model = AlignModel()
 
         self.assertEqual(len(model.starList), 0)
         model.addStar(modelStar1)
@@ -155,10 +155,10 @@ class TestConfigData(unittest.TestCase):
     def test_StarList_iteration(self):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
-        model = Model()
+        model = AlignModel()
 
         for i in range(0, 10):
-            model.addStar(ModelStar(coord=(p1, p2),
+            model.addStar(AlignStar(coord=(p1, p2),
                                     errorRMS=str(i*i),
                                     errorAngle=str(i*i),
                                     number=str(i)))
@@ -171,7 +171,7 @@ class TestConfigData(unittest.TestCase):
                              star.errorRMS)
 
     def test_add_del_Name(self):
-        model = Model()
+        model = AlignModel()
 
         self.assertEqual(len(model.nameList), 0)
         model.addName('the first one')
@@ -192,7 +192,7 @@ class TestConfigData(unittest.TestCase):
         self.assertEqual(len(model.nameList), 2)
 
     def test_NameList_iteration(self):
-        model = Model()
+        model = AlignModel()
 
         for i in range(0, 10):
             model.addName('this is the {0}.th name'.format(i))
@@ -208,65 +208,65 @@ class TestConfigData(unittest.TestCase):
     #
 
     def test_errorRMS_HPS(self):
-        model = Model()
+        model = AlignModel()
         model.errorRMS = '36.8'
         self.assertAlmostEqual(model.errorRMS, 36.8)
 
     def test_errorRMS_HPS_empty(self):
-        model = Model()
+        model = AlignModel()
         model.errorRMS = 'E'
         self.assertAlmostEqual(model.errorRMS, 0)
 
     def test_errorRMS_HPS_float(self):
-        model = Model()
+        model = AlignModel()
         model.errorRMS = 36.8
         self.assertAlmostEqual(model.errorRMS, 36.8)
 
     def test_errorRMS_HPS_int(self):
-        model = Model()
+        model = AlignModel()
         model.errorRMS = 36
         self.assertAlmostEqual(model.errorRMS, 36.0)
 
     def test_errorRMS_HPS_tuple(self):
-        model = Model()
+        model = AlignModel()
         model.errorRMS = (36.8, 1.0)
         self.assertAlmostEqual(model.errorRMS, 0)
 
     def test_errorRMS_QCI(self):
-        model = Model()
+        model = AlignModel()
         model.errorRMS = ''
         self.assertAlmostEqual(model.errorRMS, 0)
 
     #
     #
-    # testing the class ModelStar and it's attribute setters
+    # testing the class AlignStar and it's attribute setters
     #
     #
 
-    def test_ModelStar_create1(self):
+    def test_AlignStar_create1(self):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
         p3 = '1234.5'
         p4 = '90'
-        modelStar = ModelStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
-        self.assertAlmostEqual(modelStar.coord.ra.hms()[0], 12, 6)
-        self.assertAlmostEqual(modelStar.coord.ra.hms()[1], 45, 6)
-        self.assertAlmostEqual(modelStar.coord.ra.hms()[2], 33.01, 6)
-        self.assertAlmostEqual(modelStar.coord.dec.dms()[0], 56, 6)
-        self.assertAlmostEqual(modelStar.coord.dec.dms()[1], 30, 6)
-        self.assertAlmostEqual(modelStar.coord.dec.dms()[2], 0.5, 6)
+        alignStar = AlignStar(coord=(p1, p2), errorRMS=p3, errorAngle=p4, number=1)
+        self.assertAlmostEqual(alignStar.coord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(alignStar.coord.ra.hms()[1], 45, 6)
+        self.assertAlmostEqual(alignStar.coord.ra.hms()[2], 33.01, 6)
+        self.assertAlmostEqual(alignStar.coord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(alignStar.coord.dec.dms()[1], 30, 6)
+        self.assertAlmostEqual(alignStar.coord.dec.dms()[2], 0.5, 6)
 
-    def test_ModelStar_create2(self):
+    def test_AlignStar_create2(self):
         star = skyfield.api.Star(ra_hours=12.55, dec_degrees=56.55)
         p3 = '1234.5'
         p4 = '90'
-        modelStar = ModelStar(coord=star, errorRMS=p3, errorAngle=p4, number=1)
-        self.assertAlmostEqual(modelStar.coord.ra.hms()[0], 12, 6)
-        self.assertAlmostEqual(modelStar.coord.ra.hms()[1], 33, 6)
-        self.assertAlmostEqual(modelStar.coord.ra.hms()[2], 0, 6)
-        self.assertAlmostEqual(modelStar.coord.dec.dms()[0], 56, 6)
-        self.assertAlmostEqual(modelStar.coord.dec.dms()[1], 33, 6)
-        self.assertAlmostEqual(modelStar.coord.dec.dms()[2], 0, 6)
+        alignStar = AlignStar(coord=star, errorRMS=p3, errorAngle=p4, number=1)
+        self.assertAlmostEqual(alignStar.coord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(alignStar.coord.ra.hms()[1], 33, 6)
+        self.assertAlmostEqual(alignStar.coord.ra.hms()[2], 0, 6)
+        self.assertAlmostEqual(alignStar.coord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(alignStar.coord.dec.dms()[1], 33, 6)
+        self.assertAlmostEqual(alignStar.coord.dec.dms()[2], 0, 6)
 
     #
     #
