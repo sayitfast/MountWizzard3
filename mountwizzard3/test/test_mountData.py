@@ -20,7 +20,7 @@
 # standard libraries
 import unittest
 # external packages
-import skyfield.timelib
+import skyfield.api
 # local imports
 from mount_new.mountData import ModelStar
 from mount_new.mountData import Model
@@ -108,12 +108,12 @@ class TestConfigData(unittest.TestCase):
     @unittest.skipIf(not TS, 'mount should be connected for this test')
     def test_data_without_ts(self):
         data = Data()
-        self.assertEqual(isinstance(data.ts, skyfield.timelib.Timescale), True)
+        self.assertEqual(isinstance(data.ts, skyfield.api.Timescale), True)
 
     def test_data_with_ts(self):
         pathToTS = '~/PycharmProjects/MountWizzard3/config'
         data = Data(pathToTS=pathToTS)
-        self.assertEqual(isinstance(data.ts, skyfield.timelib.Timescale), True)
+        self.assertEqual(isinstance(data.ts, skyfield.api.Timescale), True)
 
     #
     #
@@ -242,7 +242,7 @@ class TestConfigData(unittest.TestCase):
     #
     #
 
-    def test_ModelStar_create(self):
+    def test_ModelStar_create1(self):
         p1 = '12:45:33.01'
         p2 = '+56*30:00.5'
         p3 = '1234.5'
@@ -254,6 +254,18 @@ class TestConfigData(unittest.TestCase):
         self.assertAlmostEqual(modelStar.coord.dec.dms()[0], 56, 6)
         self.assertAlmostEqual(modelStar.coord.dec.dms()[1], 30, 6)
         self.assertAlmostEqual(modelStar.coord.dec.dms()[2], 0.5, 6)
+
+    def test_ModelStar_create2(self):
+        star = skyfield.api.Star(ra_hours=12.55, dec_degrees=56.55)
+        p3 = '1234.5'
+        p4 = '90'
+        modelStar = ModelStar(coord=star, errorRMS=p3, errorAngle=p4, number=1)
+        self.assertAlmostEqual(modelStar.coord.ra.hms()[0], 12, 6)
+        self.assertAlmostEqual(modelStar.coord.ra.hms()[1], 33, 6)
+        self.assertAlmostEqual(modelStar.coord.ra.hms()[2], 0, 6)
+        self.assertAlmostEqual(modelStar.coord.dec.dms()[0], 56, 6)
+        self.assertAlmostEqual(modelStar.coord.dec.dms()[1], 33, 6)
+        self.assertAlmostEqual(modelStar.coord.dec.dms()[2], 0, 6)
 
 
 if __name__ == '__main__':
