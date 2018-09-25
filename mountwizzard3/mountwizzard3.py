@@ -1312,7 +1312,7 @@ class SplashScreen(PyQt5.QtCore.QObject):
         self.update()
 
     def setValue(self, val):
-        for i in numpy.arange(self._cval, val, self._maxv / 1000.0):
+        for i in numpy.arange(self._cval, val, self._maxv / 10.0):
             self._cval = i
             self.update()
 
