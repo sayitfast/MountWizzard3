@@ -84,8 +84,6 @@ class MountGetModelNames(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def destruct(self):
-        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.disconnectFromHost()
         self.cycleTimer.stop()
         self.signalDestruct.disconnect(self.destruct)
         self.socket.hostFound.disconnect(self.handleHostFound)
