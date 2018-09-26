@@ -483,6 +483,8 @@ class ModelingBuild:
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
+        # limit number of point to 99:
+        results = results[:99]
         # turn list of dicts to dict of lists
         if len(results) > 0:
             changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
