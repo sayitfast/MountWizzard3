@@ -218,6 +218,8 @@ class Astrometry(PyQt5.QtCore.QObject):
             dataPresentForSolving = False
         if 'PIXSCALE' in fitsHeader:
             imageParams['ScaleHint'] = fitsHeader['PIXSCALE']
+        elif 'SCALE' in fitsHeader:
+            imageParams['ScaleHint'] = fitsHeader['SCALE']
         else:
             self.logger.info('FITS data PIXSCALE for start solving is missing try to recalculate')
             # now trying to recalculate this value
