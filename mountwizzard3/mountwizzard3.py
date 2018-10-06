@@ -764,9 +764,9 @@ class MountWizzardApp(widget.MwWidget):
             if not os.path.isdir(os.getcwd() + '/config'):
                 os.makedirs(os.getcwd() + '/config')
             with open('config/config.cfg', 'w') as outfile:
-                json.dump(self.config, outfile)
+                json.dump(self.config, outfile, sort_keys=True, indent=4)
             with open(filepath, 'w') as outfile:
-                json.dump(self.config, outfile)
+                json.dump(self.config, outfile, sort_keys=True, indent=4)
             self.messageQueue.put('Configuration saved.\n')
         except Exception as e:
             self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
