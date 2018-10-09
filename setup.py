@@ -34,7 +34,7 @@ setup(
         'wakeonlan>=1.0.0',
         'requests==2.18.4',
         'astropy==3.0.3',
-        'numpy==1.14.0',
+        'numpy==1.15.2',
         'requests_toolbelt==0.8.0'
     ]
     + (['pypiwin32==220'] if "Windows" == platform.system() else [])
