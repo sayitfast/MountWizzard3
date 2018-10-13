@@ -51,7 +51,6 @@ class Imaging(PyQt5.QtCore.QObject):
     imageSaved = PyQt5.QtCore.pyqtSignal()
 
     # where to place the images
-    IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CYCLE = 200
     CYCLE_STATUS = 1000
 
@@ -67,6 +66,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexData = PyQt5.QtCore.QMutex()
         self.statusTimer = None
         self.cycleTimer = None
+        self.IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
 
         # class data
         self.data = dict()
@@ -224,6 +224,8 @@ class Imaging(PyQt5.QtCore.QObject):
         else:
             imageParams['Speed'] = 'Normal'
         # setting mount conditions for the taken image
+        if 'RaJ2000' not in self.app.workerMountDispatcher.data:
+            return
         imageParams['LocalSiderealTime'] = copy.copy(self.app.workerMountDispatcher.data['LocalSiderealTime'])
         imageParams['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
         imageParams['RaJ2000'] = copy.copy(self.app.workerMountDispatcher.data['RaJ2000'])
