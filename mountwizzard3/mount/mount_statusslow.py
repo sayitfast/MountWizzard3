@@ -23,6 +23,7 @@ import time
 from queue import Queue
 from astrometry import transform
 from mount import align_stars
+import numpy as np
 
 
 class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
@@ -82,7 +83,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.dataTimer = PyQt5.QtCore.QTimer(self)
         self.dataTimer.setSingleShot(False)
         self.dataTimer.timeout.connect(self.getStatusSlow)
-        time.sleep(1)
         self.dataTimer.start(self.CYCLE_STATUS_SLOW)
         self.signalDestruct.connect(self.destruct, type=PyQt5.QtCore.Qt.BlockingQueuedConnection)
         self.cycleTimer = PyQt5.QtCore.QTimer(self)
@@ -167,6 +167,8 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def getStatusSlow(self):
+        self.updateAlignmentStarPositions()
+        self.app.workerMountDispatcher.signalAlignmentStars.emit()
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.app.sharedMountDataLock.lockForRead()
             if self.data['FW'] < 21500:
@@ -174,19 +176,18 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
             self.app.sharedMountDataLock.unlock()
-        self.updateAlignmentStarPositions()
-        self.app.workerMountDispatcher.signalAlignmentStars.emit()
 
     def updateAlignmentStarPositions(self):
         # update topo data for alignment stars
         self.app.sharedMountDataLock.lockForWrite()
-        self.data['starsTopo'] = list()
+        if len(self.data['starsTopo']) == 0:
+            self.data['starsTopo'] = np.empty((len(self.alignmentStars.stars), 0)).tolist()
         self.app.sharedMountDataLock.unlock()
-        for name in self.alignmentStars.stars:
+        for i, name in enumerate(self.alignmentStars.stars):
             self.app.sharedMountDataLock.lockForWrite()
             ra = self.transform.degStringToDecimal(self.alignmentStars.stars[name][0], ' ')
             dec = self.transform.degStringToDecimal(self.alignmentStars.stars[name][1], ' ')
-            self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
+            self.data['starsTopo'][i] = self.transform.transformERFA(ra, dec, 1)
             self.app.sharedMountDataLock.unlock()
 
     @PyQt5.QtCore.pyqtSlot()
