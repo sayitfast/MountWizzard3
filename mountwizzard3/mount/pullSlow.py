@@ -23,6 +23,7 @@ import time
 from queue import Queue
 from astrometry import transform
 from mount import alignStars
+import numpy as np
 
 
 class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
@@ -231,13 +232,14 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     def updateAlignmentStarPositions(self):
         # update topo data for alignment stars
         self.app.sharedMountDataLock.lockForWrite()
-        self.data['starsTopo'] = list()
+        if len(self.data['starsTopo']) == 0:
+            self.data['starsTopo'] = np.empty((len(self.alignmentStars.stars), 0)).tolist()
         self.app.sharedMountDataLock.unlock()
-        for name in self.alignmentStars.stars:
+        for i, name in enumerate(self.alignmentStars.stars):
             self.app.sharedMountDataLock.lockForWrite()
             ra = self.transform.degStringToDecimal(self.alignmentStars.stars[name][0], ' ')
             dec = self.transform.degStringToDecimal(self.alignmentStars.stars[name][1], ' ')
-            self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
+            self.data['starsTopo'][i] = self.transform.transformERFA(ra, dec, 1)
             self.app.sharedMountDataLock.unlock()
 
     def startCommand(self):
