@@ -2,6 +2,7 @@
 #
 # to remember: import astropy.tests from __init__.py was removed manually
 #
+from PyInstaller.compat import modname_tkinter
 block_cipher = None
 DISTPATH = '../dist'
 WORKPATH = '../build'
@@ -33,7 +34,8 @@ a = Analysis(['mountwizzard3/mountwizzard3.py'],
               ],
              hookspath=[],
              runtime_hooks=[],
-             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'astropy'],
+             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter',
+                       'astropy', modname_tkinter],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
@@ -49,7 +51,7 @@ exe = EXE(pyz,
           name='mountwizzard3',
           debug=True,
           strip=True,
-          upx=True,
+          upx=False,
           console=True,
           # onefile=True,
           onefile=True,

@@ -51,7 +51,6 @@ class Imaging(PyQt5.QtCore.QObject):
     imageSaved = PyQt5.QtCore.pyqtSignal()
 
     # where to place the images
-    IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CYCLE = 200
     CYCLE_STATUS = 1000
 
@@ -67,6 +66,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexData = PyQt5.QtCore.QMutex()
         self.statusTimer = None
         self.cycleTimer = None
+        self.IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
 
         # class data
         self.data = dict()
