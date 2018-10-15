@@ -32,7 +32,7 @@ a = Analysis(['mountwizzard3\\mountwizzard3.py'],
              #('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\io', '.\\astropy\\io'),
              #('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\wcs', '.\\astropy\\wcs'),
              ],
-             hiddenimports=['numpy.lib.recfunctions','xml.dom', 'shelve', 'PyQt5.sip'],    # shelve is for astropy
+             hiddenimports=['numpy.lib.recfunctions','xml.dom', 'shelve'],    # shelve is for astropy
              hookspath=[],
              runtime_hooks=[],
              excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'astropy'],

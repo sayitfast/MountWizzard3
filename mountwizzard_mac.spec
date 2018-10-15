@@ -30,7 +30,6 @@ a = Analysis(['mountwizzard3/mountwizzard3.py'],
              'numpy.lib.recfunctions',
              'xml.dom',
              'shelve',          # shelve is for astropy
-             'PyQt5.sip',       # not bundled for pyqt5 >5.11 anymore
               ],
              hookspath=[],
              runtime_hooks=[],
