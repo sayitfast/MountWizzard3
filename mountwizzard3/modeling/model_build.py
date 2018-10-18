@@ -267,7 +267,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                 while not self.imageDataDownloaded and not self.main.cancel:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
-                if 'RaJ2000Solved' in modelingData:
+                if modelingData.get('Solved', False):
                     ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
                     modelingData['RaJNowSolved'] = ra_sol_Jnow
                     modelingData['DecJNowSolved'] = dec_sol_Jnow
