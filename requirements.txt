@@ -2,9 +2,9 @@ pyqt5- pyqt5comtypes==1.1.1
 pywinauto==0.6.4
 pypiwin32==220
 PyQt5>=5.11.2
-matplotlib==2.2.2
+matplotlib==3.0.1
 wakeonlan==1.0.0
-numpy>=1.14.0
-requests==2.18.4
+numpy>=1.15.3
+requests==2.20.0
 astropy==3.0.3
 requests_toolbelt==0.8.0
