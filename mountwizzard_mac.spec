@@ -2,7 +2,12 @@
 #
 # to remember: import astropy.tests from __init__.py was removed manually
 #
-from PyInstaller.compat import modname_tkinter
+import sys
+# sys.modules['FixTk'] = None
+import astropy
+
+astropy_path, = astropy.__path__
+
 block_cipher = None
 DISTPATH = '../dist'
 WORKPATH = '../build'
@@ -12,19 +17,20 @@ a = Analysis(['mountwizzard3/mountwizzard3.py'],
              pathex=['/Users/mw/PycharmProjects/MountWizzard3/mountwizzard3'],
              binaries=[],
              datas=[
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/fits', './astropy/io/fits'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/__init__.py', './astropy/io'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/_erfa', './astropy/_erfa'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/utils', './astropy/utils'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/logger.py', './astropy'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/config', './astropy/config'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/units', './astropy/units'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/constants', './astropy/constants'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/visualization', './astropy/visualization'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/stats', './astropy/stats'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/extern', './astropy/extern'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/__init__.py', './astropy'),
-             ('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/astropy.cfg', './astropy'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/fits', './astropy/io/fits'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/io/__init__.py', './astropy/io'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/_erfa', './astropy/_erfa'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/utils', './astropy/utils'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/logger.py', './astropy'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/config', './astropy/config'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/units', './astropy/units'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/constants', './astropy/constants'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/visualization', './astropy/visualization'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/stats', './astropy/stats'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/extern', './astropy/extern'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/__init__.py', './astropy'),
+             #('/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/astropy/astropy.cfg', './astropy'),
+             (astropy_path, 'astropy'),
              ],
              hiddenimports=[
              'numpy.lib.recfunctions',
@@ -33,8 +39,7 @@ a = Analysis(['mountwizzard3/mountwizzard3.py'],
               ],
              hookspath=[],
              runtime_hooks=[],
-             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter',
-                       'astropy', modname_tkinter],
+             excludes=['astropy'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
@@ -52,7 +57,6 @@ exe = EXE(pyz,
           strip=True,
           upx=False,
           console=True,
-          # onefile=True,
           onefile=True,
           icon='./mountwizzard3/icons/mw.icns',
           # exclude_binaries=True,

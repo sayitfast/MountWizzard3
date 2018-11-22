@@ -29,12 +29,12 @@ setup(
     ],
     python_requires='~=3.6.3',
     install_requires=[
-        'PyQt5==5.11.2',
-        'matplotlib==2.2.2',
+        'PyQt5==5.11.3',
+        'matplotlib==3.0.1',
         'wakeonlan>=1.0.0',
-        'requests==2.18.4',
+        'requests==2.20.0',
         'astropy==3.0.3',
-        'numpy==1.15.2',
+        'numpy==1.15.3',
         'requests_toolbelt==0.8.0'
     ]
     + (['pypiwin32==220'] if "Windows" == platform.system() else [])
