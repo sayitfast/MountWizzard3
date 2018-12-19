@@ -387,7 +387,7 @@ class HemisphereWindow(widget.MwWidget):
                         self.app.mountCommandQueue.put(':PO#')
                         self.app.mountCommandQueue.put(RA)
                         self.app.mountCommandQueue.put(DEC)
-                        self.app.mountCommandQueue.put(':MS#')
+                        self.app.mountCommandQueue.put(':MSap#')
                     # todo: open automatically the image window and start continuously taking pictures
 
         # first do the model points
