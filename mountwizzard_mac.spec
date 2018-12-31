@@ -71,7 +71,6 @@ a.binaries = [x for x in a.binaries if not x[0].startswith('astropy/cosmology')]
 a.binaries = [x for x in a.binaries if not x[0].startswith('astropy/samp')]
 a.binaries = [x for x in a.binaries if not x[0].startswith('astropy/modeling')]
 a.binaries = [x for x in a.binaries if not x[0].startswith('astropy/table')]
-a.binaries = [x for x in a.binaries if not x[0].startswith('astropy/stats')]
 a.binaries = [x for x in a.binaries if not x[0].startswith('astropy/vo')]
 
 # same to datas
@@ -88,7 +87,6 @@ a.datas = [x for x in a.datas if not x[0].startswith('astropy/cosmology')]
 a.datas = [x for x in a.datas if not x[0].startswith('astropy/samp')]
 a.datas = [x for x in a.datas if not x[0].startswith('astropy/modeling')]
 a.datas = [x for x in a.datas if not x[0].startswith('astropy/table')]
-a.datas = [x for x in a.datas if not x[0].startswith('astropy/stats')]
 a.datas = [x for x in a.datas if not x[0].startswith('astropy/vo')]
 
 
