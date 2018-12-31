@@ -27,14 +27,15 @@ setup(
         'mountwizzard3.remote',
         'mountwizzard3.widgets'
     ],
-    python_requires='~=3.6.3',
+    python_requires='~=3.6.7',
     install_requires=[
-        'PyQt5==5.11.2',
-        'matplotlib==2.2.2',
-        'wakeonlan>=1.0.0',
-        'requests==2.18.4',
-        'astropy==3.0.3',
-        'numpy==1.15.2',
+        'PyQt5==5.11.3',
+        'matplotlib==3.0.2',
+        'wakeonlan==1.1.6',
+        'requests==2.21.0',
+        'requests-toolbelt==0.8.0'
+        'astropy==3.1',
+        'numpy==1.15.4',
         'requests_toolbelt==0.8.0'
     ]
     + (['pypiwin32==220'] if "Windows" == platform.system() else [])

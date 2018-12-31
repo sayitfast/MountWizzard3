@@ -1,10 +1,16 @@
-pyqt5- pyqt5comtypes==1.1.1
+astropy==3.1
+comtypes==1.1.1
+matplotlib==3.0.2
+numpy==1.15.4
 pywinauto==0.6.4
 pypiwin32==220
-PyQt5>=5.11.2
-matplotlib==3.0.1
-wakeonlan==1.0.0
-numpy>=1.15.3
-requests==2.20.0
-astropy==3.0.3
+PyQt5==5.11.3
+PyQt5-sip==4.19.13
+requests==2.21.0
 requests_toolbelt==0.8.0
+wakeonlan==1.1.6
+pytest==4.0.2
+pytest-qt==3.2.2
+coverage==4.5.2
+flake8==3.6.0
+pyinstaller==3.4
