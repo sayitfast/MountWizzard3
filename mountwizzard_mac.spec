@@ -120,8 +120,8 @@ exe = EXE(pyz,
 #
 
 sys.path.append(importDir)
-from mw4.mainApp import MountWizzard4
-BUILD_NO = MountWizzard4.version
+from mountwizzard3.build.build import BUILD
+BUILD_NO = BUILD.BUILD_NO_FILE
 
 buildFile = distDir + '/MountWizzard3.app'
 buildFileNumber = distDir + '/mountwizzard3-' + BUILD_NO + '.app'
@@ -133,7 +133,7 @@ if os.path.isfile(buildFile):
     print('removed existing app bundle')
 
 app = BUNDLE(exe,
-             name='MountWizzard4.app',
+             name='MountWizzard3.app',
              version=4,
              icon='./mountwizzard3/icons/mw.icns',
              bundle_identifier=None)
