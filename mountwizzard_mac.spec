@@ -133,7 +133,7 @@ if os.path.isfile(buildFile):
     print('removed existing app bundle')
 
 app = BUNDLE(exe,
-             name='MountWizzard4.app',
+             name='MountWizzard3.app',
              version=4,
              icon='./mountwizzard3/icons/mw.icns',
              bundle_identifier=None)
