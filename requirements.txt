@@ -1,9 +1,6 @@
 astropy==3.1
-comtypes==1.1.1
 matplotlib==3.0.2
 numpy==1.15.4
-pywinauto==0.6.4
-pypiwin32==220
 PyQt5==5.11.3
 PyQt5-sip==4.19.13
 requests==2.21.0
