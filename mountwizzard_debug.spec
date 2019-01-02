@@ -33,11 +33,11 @@ WORKPATH = '../build'
 astropy_path, = astropy.__path__
 
 block_cipher = None
-pythonPath = '/Users/mw/PycharmProjects/MountWizzard3/venv/lib/Python3.6'
+pythonPath = '/Users/astro/Envs/mw3/Lib'
 sitePack = pythonPath + '/site-packages'
-distDir = '/Users/mw/PycharmProjects/MountWizzard3/dist'
-packageDir = '/Users/mw/PycharmProjects/MountWizzard3/mountwizzard3'
-importDir = '/Users/mw/PycharmProjects/MountWizzard3'
+distDir = '/Users/astro/PycharmProjects/MountWizzard3/dist'
+packageDir = '/Users/astro/PycharmProjects/MountWizzard3/mountwizzard3'
+importDir = '/Users/astro/PycharmProjects/MountWizzard3'
 
 a = Analysis(['mountwizzard3/mountwizzard3.py'],
     pathex=[packageDir],
@@ -100,14 +100,12 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='mountwizzard3',
+          name='MountWizzard3',
           debug=True,
-          strip=True,
+          strip=False,
           upx=False,
-          console=False,
-          onefile=True,
-          icon='./mountwizzard3/icons/mw.icns',
-          # exclude_binaries=True,
+          console=True,
+          icon='./mountwizzard3/icons/mw.ico',
           )
 
 #
@@ -119,19 +117,15 @@ sys.path.append(importDir)
 from mountwizzard3.build.build import BUILD
 BUILD_NO = BUILD.BUILD_NO_FILE
 
-buildFile = distDir + '/MountWizzard3.app'
-buildFileNumber = distDir + '/mountwizzard3-' + BUILD_NO + '.app'
+buildFile = distDir + '/MountWizzard3.exe'
+buildFileNumber = distDir + '/mountwizzard' + BUILD_NO + '-console.exe'
 
 print(BUILD_NO)
 
-if os.path.isfile(buildFile):
-    os.remove(buildFile)
-    print('removed existing app bundle')
-
 app = BUNDLE(exe,
-             name='MountWizzard3.app',
-             version=4,
-             icon='./mountwizzard3/icons/mw.icns',
+             name='MountWizzard3.exe',
+             version=3,
+             icon='./mountwizzard3/icons/mw.ico',
              bundle_identifier=None)
 
 #
