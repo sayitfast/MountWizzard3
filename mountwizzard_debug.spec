@@ -20,7 +20,6 @@
 # standard libraries
 import os
 import sys
-import shutil
 # external packages
 import astropy
 # local import
@@ -91,16 +90,16 @@ a.datas = [x for x in a.datas if not x[0].startswith('astropy/vo')]
 
 
 pyz = PYZ(a.pure,
-        a.zipped_data,
-        cipher=block_cipher,
-        )
+          a.zipped_data,
+          cipher=block_cipher,
+          )
 
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='MountWizzard3',
+          name='MountWizzard3debug',
           debug=True,
           strip=False,
           upx=False,
@@ -117,13 +116,13 @@ sys.path.append(importDir)
 from mountwizzard3.build.build import BUILD
 BUILD_NO = BUILD.BUILD_NO_FILE
 
-buildFile = distDir + '/MountWizzard3.exe'
-buildFileNumber = distDir + '/mountwizzard' + BUILD_NO + '-console.exe'
+buildFile = distDir + '/MountWizzard3debug.exe'
+buildFileNumber = distDir + '/mountwizzard3debug-' + BUILD_NO + '.exe'
 
 print(BUILD_NO)
 
 app = BUNDLE(exe,
-             name='MountWizzard3.exe',
+             name='MountWizzard3debug.exe',
              version=3,
              icon='./mountwizzard3/icons/mw.ico',
              bundle_identifier=None)
@@ -133,8 +132,8 @@ app = BUNDLE(exe,
 # if file present, we have to delete it
 #
 
-if os.path.isdir(buildFileNumber):
-    shutil.rmtree(buildFileNumber)
+if os.path.isfile(buildFileNumber):
+    os.remove(buildFileNumber)
     print('removed existing app bundle with version number')
 
 os.rename(buildFile, buildFileNumber)
