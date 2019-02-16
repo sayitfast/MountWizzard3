@@ -20,7 +20,6 @@
 # standard libraries
 import os
 import sys
-import shutil
 # external packages
 import astropy
 # local import
@@ -33,11 +32,11 @@ WORKPATH = '../build'
 astropy_path, = astropy.__path__
 
 block_cipher = None
-pythonPath = '/Users/mw/PycharmProjects/MountWizzard3/venv/lib/Python3.6'
+pythonPath = '/Users/astro/Envs/mw3/Lib'
 sitePack = pythonPath + '/site-packages'
-distDir = '/Users/mw/PycharmProjects/MountWizzard3/dist'
-packageDir = '/Users/mw/PycharmProjects/MountWizzard3/mountwizzard3'
-importDir = '/Users/mw/PycharmProjects/MountWizzard3'
+distDir = '/Users/astro/PycharmProjects/MountWizzard3/dist'
+packageDir = '/Users/astro/PycharmProjects/MountWizzard3/mountwizzard3'
+importDir = '/Users/astro/PycharmProjects/MountWizzard3'
 
 a = Analysis(['mountwizzard3/mountwizzard3.py'],
     pathex=[packageDir],
@@ -91,23 +90,21 @@ a.datas = [x for x in a.datas if not x[0].startswith('astropy/vo')]
 
 
 pyz = PYZ(a.pure,
-        a.zipped_data,
-        cipher=block_cipher,
-        )
+          a.zipped_data,
+          cipher=block_cipher,
+          )
 
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='mountwizzard3',
+          name='MountWizzard3debug',
           debug=True,
-          strip=True,
+          strip=False,
           upx=False,
-          console=False,
-          onefile=True,
-          icon='./mountwizzard3/icons/mw.icns',
-          # exclude_binaries=True,
+          console=True,
+          icon='./mountwizzard3/icons/mw.ico',
           )
 
 #
@@ -119,19 +116,15 @@ sys.path.append(importDir)
 from mountwizzard3.build.build import BUILD
 BUILD_NO = BUILD.BUILD_NO_FILE
 
-buildFile = distDir + '/MountWizzard3.app'
-buildFileNumber = distDir + '/mountwizzard3-' + BUILD_NO + '.app'
+buildFile = distDir + '/MountWizzard3debug.exe'
+buildFileNumber = distDir + '/mountwizzard3debug-' + BUILD_NO + '.exe'
 
 print(BUILD_NO)
 
-if os.path.isfile(buildFile):
-    os.remove(buildFile)
-    print('removed existing app bundle')
-
 app = BUNDLE(exe,
-             name='MountWizzard3.app',
-             version=4,
-             icon='./mountwizzard3/icons/mw.icns',
+             name='MountWizzard3debug.exe',
+             version=3,
+             icon='./mountwizzard3/icons/mw.ico',
              bundle_identifier=None)
 
 #
@@ -139,8 +132,8 @@ app = BUNDLE(exe,
 # if file present, we have to delete it
 #
 
-if os.path.isdir(buildFileNumber):
-    shutil.rmtree(buildFileNumber)
+if os.path.isfile(buildFileNumber):
+    os.remove(buildFileNumber)
     print('removed existing app bundle with version number')
 
 os.rename(buildFile, buildFileNumber)
