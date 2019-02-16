@@ -41,16 +41,16 @@ importDir = '/Users/astro/PycharmProjects/MountWizzard3'
 a = Analysis(['mountwizzard3/mountwizzard3.py'],
     pathex=[packageDir],
     binaries=[
-        ],
+             ],
     datas=[(astropy_path, 'astropy'),
-        ],
+           ],
     hiddenimports=['shelve',
-        ],
+                   ],
     hookspath=[],
     runtime_hooks=[],
     excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter',
               'astropy',
-        ],
+              ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
@@ -90,50 +90,25 @@ a.datas = [x for x in a.datas if not x[0].startswith('astropy/vo')]
 
 
 pyz = PYZ(a.pure,
-        a.zipped_data,
-        cipher=block_cipher,
-        )
+          a.zipped_data,
+          cipher=block_cipher,
+          )
 
 exe = EXE(pyz,
           a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
-          name='MountWizzard3',
+          [],
+          exclude_binaries=True,
+          name='mountwizzard',
           debug=False,
+          bootloader_ignore_signals=False,
           strip=False,
-          upx=False,
-          console=False,
-          icon='./mountwizzard3/icons/mw.ico',
-          )
+          upx=True,
+          console=True)
 
-#
-# we have to prepare the build as there is an error when overwriting it
-# if file present, we have to delete python3 --version
-#
-
-sys.path.append(importDir)
-from mountwizzard3.build.build import BUILD
-BUILD_NO = BUILD.BUILD_NO_FILE
-
-buildFile = distDir + '/MountWizzard3.exe'
-buildFileNumber = distDir + '/mountwizzard3-' + BUILD_NO + '.exe'
-
-print(BUILD_NO)
-
-app = BUNDLE(exe,
-             name='MountWizzard3.exe',
-             version=3,
-             icon='./mountwizzard3/icons/mw.ico',
-             bundle_identifier=None)
-
-#
-# we have to prepare the build as there is an error when overwriting it
-# if file present, we have to delete it
-#
-
-if os.path.isfile(buildFileNumber):
-    os.remove(buildFileNumber)
-    print('removed existing app bundle with version number')
-
-os.rename(buildFile, buildFileNumber)
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=True,
+               name='mountwizzard')
