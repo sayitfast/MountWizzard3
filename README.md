@@ -6,9 +6,9 @@ UniHedron SQR, OpenWeather and some more ASCOM parts (Windows only). For plate s
 local astrometry.net installation from Jussi (https://github.com/Jusas/astrometry-api-lite). It works great and
 you have a blind solver as well on board.
 
-(C) Michael Würtenberger 2018
+(C) Michael Würtenberger 2018/2019
 
-#### Version release: 3.0 ReleaseCandidate 1
+#### Version release: 3.0
 
 [Link to the extended documentation and handbook of MountWizzard3](./docu/home.md)
 
