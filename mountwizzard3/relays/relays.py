@@ -341,6 +341,14 @@ class Relays(PyQt5.QtCore.QObject):
 
     def geturl(self, url):
         result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
+        text = result.text
+        reason = result.reason
+        status = result.status_code
+        url = result.url
+        code = result.apparent_encoding
+        t = result.elapsed
+
+        self.logger.debug(f'GetUrl: {url}, {reason}, {status}, {code}, {t}, {text}')
         return result
 
     def runRelay(self, relayNumber):
