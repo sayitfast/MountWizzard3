@@ -400,18 +400,14 @@ class Relays(PyQt5.QtCore.QObject):
             if i == 0:
                 continue
             if stat:
-                byteStat = byteStat | 1 << (i-1)
-        byteOn = byteStat | 1 << (relayNumber - 1)
-        byteOff = byteStat
+                byteStat = byteStat | 1 << (i - 1)
+        position = 1 << (relayNumber - 1)
+        byteOn = byteStat | position
+        byteOff = byteOn & ~position
         try:
-            '''
-            self.geturl('http://' + self.relayIP + '/FF0{0:1d}01'.format(relayNumber))
-            time.sleep(1)
-            self.geturl('http://' + self.relayIP + '/FF0{0:1d}00'.format(relayNumber))
-            '''
-            self.geturl('http://' + self.relayIP + '/FFE0{0:2X}'.format(byteOn))
-            time.sleep(1)
-            self.geturl('http://' + self.relayIP + '/FFE0{0:2X}'.format(byteOff))
+            self.geturl(f'http://{self.relayIP}/FFE0{byteOn:02X}')
+            time.sleep(0.5)
+            self.geturl(f'http://{self.relayIP}/FFE0{byteOff:02X}')
         except Exception as e:
             self.logger.error('Relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
