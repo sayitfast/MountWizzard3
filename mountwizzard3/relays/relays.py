@@ -341,7 +341,7 @@ class Relays(PyQt5.QtCore.QObject):
 
     def geturl(self, url):
         result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
-        text = result.text
+        text = result.text.replace('\r\n', ', ')
         reason = result.reason
         status = result.status_code
         url = result.url
@@ -395,10 +395,23 @@ class Relays(PyQt5.QtCore.QObject):
                     self.pulse(relayNumber)
 
     def pulse(self, relayNumber):
+        byteStat = 0b00000000
+        for i, stat in enumerate(self.stat):
+            if i == 0:
+                continue
+            if stat:
+                byteStat = byteStat | 1 << (i-1)
+        byteOn = byteStat | 1 << (relayNumber - 1)
+        byteOff = byteStat
         try:
+            '''
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}01'.format(relayNumber))
             time.sleep(1)
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}00'.format(relayNumber))
+            '''
+            self.geturl('http://' + self.relayIP + '/FFE0{0:2X}'.format(byteOn))
+            time.sleep(1)
+            self.geturl('http://' + self.relayIP + '/FFE0{0:2X}'.format(byteOff))
         except Exception as e:
             self.logger.error('Relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
