@@ -297,6 +297,8 @@ class HemisphereWindow(widget.MwWidget):
         self.setOperationModus()
 
     def plotImagedPoint(self, az, alt):
+        if self.pointsPlotCross is None:
+            return
         self.pointsPlotCross.set_data(numpy.append(az, self.pointsPlotCross.get_xdata()), numpy.append(alt, self.pointsPlotCross.get_ydata()))
         self.drawCanvas()
 
