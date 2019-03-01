@@ -383,6 +383,7 @@ class ModelingBuild:
         time.sleep(4)
 
     def slewMountDome(self, modelingData):
+        self.logger.debug(modelingData)
         altitude = modelingData['Altitude']
         azimuth = modelingData['Azimuth']
         self.mountSlewFinished = False
