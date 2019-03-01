@@ -400,7 +400,7 @@ class ModelingBuild:
         # if there is a dome connected, we have to start slewing it, too
         if modelingData['DomeIsConnected']:
             self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
-            while not self.domeSlewFinished and not self.mountSlewFinished:
+            while not self.domeSlewFinished or not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
