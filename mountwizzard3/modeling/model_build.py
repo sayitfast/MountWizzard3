@@ -370,10 +370,12 @@ class ModelingBuild:
         self.solveReady = True
 
     def setMountSlewFinished(self):
+        self.logger.debug('signal slew mount finished')
         self.mountSlewFinished = True
 
     def setDomeSlewFinished(self):
         self.domeSlewFinished = True
+        self.logger.debug('signal slew mount finished')
 
     def clearAlignmentModel(self):
         # clearing the older results, because they are invalid afterwards
@@ -397,20 +399,24 @@ class ModelingBuild:
         self.app.mountCommandQueue.put(':Sz{0:03d}*{1:02d}#'.format(int(azimuth), int((azimuth - int(azimuth)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':Sa+{0:02d}*{1:02d}#'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':MS#')
+        self.logger.debug('start slewing mount')
         # if there is a dome connected, we have to start slewing it, too
         if modelingData['DomeIsConnected']:
             self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
+            self.logger.debug('start slewing dome')
             while not self.domeSlewFinished or not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
                 time.sleep(0.2)
+            self.logger.debug('slews finished, move on')
         else:
             while not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
                 time.sleep(0.2)
+            self.logger.debug('slews finished, move on')
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
         self.app.imageWindow.signalSetManualEnable.emit(False)

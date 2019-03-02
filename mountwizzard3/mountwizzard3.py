@@ -1441,6 +1441,11 @@ if __name__ == "__main__":
                         format='[%(asctime)s.%(msecs)03d][%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
+    logging.getLogger('requests').setLevel(logging.ERROR)
+    # urllib3 is used by requests, so we have to add this as well
+    logging.getLogger('urllib3').setLevel(logging.ERROR)
+    logging.getLogger('matplotlib').setLevel(logging.ERROR)
+
     splash.showMessage('Checking work directories')
     splash.setValue(30)
 
