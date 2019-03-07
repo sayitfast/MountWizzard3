@@ -117,10 +117,13 @@ class AscomDome:
             pass
 
     def getData(self):
-        if 'Connected' not in self.data:
+        if not self.ascom:
             return
-        if not self.data['Connected']:
-            self.logger.debug('dome disconnected')
+        try:
+            if not self.ascom.connected:
+                return
+        except Exception as e:
+            self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.driverName, e))
             return
         self.app.sharedDomeDataLock.lockForWrite()
         try:
