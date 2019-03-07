@@ -130,6 +130,7 @@ class AscomDome:
                               self.ascom.Slewing)
             if self.data['Slewing'] and not self.ascom.Slewing:
                 self.main.signalSlewFinished.emit()
+                self.logger.debug('sending slew finished')
                 self.app.audioCommandQueue.put('DomeSlew')
             self.data['Slewing'] = self.ascom.Slewing
         except Exception as e:
