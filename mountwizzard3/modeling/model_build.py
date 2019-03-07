@@ -375,7 +375,7 @@ class ModelingBuild:
 
     def setDomeSlewFinished(self):
         self.domeSlewFinished = True
-        self.logger.debug('signal slew mount finished')
+        self.logger.debug('signal slew dome finished')
 
     def clearAlignmentModel(self):
         # clearing the older results, because they are invalid afterwards

@@ -296,6 +296,7 @@ class Imaging(PyQt5.QtCore.QObject):
             pass
         # now imaging process is finished and told to everybody
         self.imageSaved.emit()
+        self.logger.debug('image saved')
         self.data['Imaging'] = False
         # show it
         self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])

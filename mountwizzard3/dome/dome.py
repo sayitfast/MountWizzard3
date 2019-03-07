@@ -170,7 +170,7 @@ class Dome(PyQt5.QtCore.QObject):
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'red')
         elif self.domeHandler.application['Status'] == 'OK':
             self.app.sharedDomeDataLock.lockForRead()
-            if self.data['Connected'] == 'Off':
+            if not self.data['Connected']:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')

@@ -117,9 +117,9 @@ class AscomDome:
             pass
 
     def getData(self):
-        if not self.ascom:
+        if 'Connected' not in self.data:
             return
-        if not self.ascom.connected:
+        if not self.data['Connected']:
             return
         self.app.sharedDomeDataLock.lockForWrite()
         try:
@@ -137,12 +137,6 @@ class AscomDome:
             self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
-        #try:
-        #    self.data['Altitude'] = self.ascom.Altitude
-        #except Exception as e:
-        #    self.logger.error('Problem getting data, error: {0}'.format(e))
-        #finally:
-        #    pass
         self.app.sharedDomeDataLock.unlock()
 
     def setupDriver(self):
