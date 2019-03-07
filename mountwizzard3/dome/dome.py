@@ -192,6 +192,6 @@ class Dome(PyQt5.QtCore.QObject):
         # signaling
         self.app.sharedDomeDataLock.lockForRead()
         if 'Azimuth' in self.data:
-            self.logger.debug('sending: ', self.data['Azimuth'])
+            self.logger.debug('sending: ' + str(self.data['Azimuth']))
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         self.app.sharedDomeDataLock.unlock()

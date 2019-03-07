@@ -124,10 +124,10 @@ class AscomDome:
             return
         self.app.sharedDomeDataLock.lockForWrite()
         try:
-            self.logger.debug('old status: ',
-                              self.data['slewing'],
-                              'new status: ',
-                              self.ascom.Slewing)
+            self.logger.debug('old status: ' +
+                              str(self.data['slewing']) +
+                              'new status: ' +
+                              str(self.ascom.Slewing))
             if self.data['Slewing'] and not self.ascom.Slewing:
                 self.main.signalSlewFinished.emit()
                 self.logger.debug('sending slew finished')
