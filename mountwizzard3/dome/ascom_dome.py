@@ -120,9 +120,14 @@ class AscomDome:
         if 'Connected' not in self.data:
             return
         if not self.data['Connected']:
+            self.logger.debug('dome disconnected')
             return
         self.app.sharedDomeDataLock.lockForWrite()
         try:
+            self.logger.debug('old status: ',
+                              self.data['slewing'],
+                              'new status: ',
+                              self.ascom.Slewing)
             if self.data['Slewing'] and not self.ascom.Slewing:
                 self.main.signalSlewFinished.emit()
                 self.app.audioCommandQueue.put('DomeSlew')
