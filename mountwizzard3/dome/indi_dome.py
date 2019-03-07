@@ -82,7 +82,10 @@ class INDIDome:
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
                 self.app.sharedDomeDataLock.lockForWrite()
-                self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
+                if 'DOME_ABSOLUTE_POSITION' in self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']:
+                    self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
+                else:
+                    self.data['Azimuth'] = 0.0
                 if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['DOME_MOTION']['state'] == 'Busy':
                     self.data['Slewing'] = True
                 else:
