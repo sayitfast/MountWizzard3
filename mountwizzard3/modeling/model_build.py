@@ -691,7 +691,8 @@ class ModelingBuild:
             else:
                 self.app.messageQueue.put('\tSolving error\n')
         if not self.app.ui.checkKeepImages.isChecked():
-            shutil.rmtree(imageParams['BaseDirImages'], ignore_errors=True)
+            if 'BaseDirImages' in imageParams:
+                shutil.rmtree(imageParams['BaseDirImages'], ignore_errors=True)
         self.app.messageQueue.put('#BWSync Mount Model finished !\n')
 
     def runFlexure(self):
