@@ -327,13 +327,22 @@ class INDIClient(PyQt5.QtCore.QObject):
                             try:
                                 if self.imagePath != '':
                                     if message.getElt(0).attr['format'] == '.fits':
-                                        imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
-                                        imageHDU.writeto(self.imagePath, overwrite=True)
+                                        HDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                                        imageHDU = HDU[0]
+                                        pyfits.writeto(self.imagePath, imageHDU.data, imageHDU.header, overwrite=True)
                                         self.logger.debug('Image BLOB is in raw fits format')
-                                    else:
-                                        imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
-                                        imageHDU.writeto(self.imagePath, overwrite=True)
+                                    elif message.getElt(0).attr['format'] == '.fits.fz':
+                                        HDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                                        imageHDU = HDU[1]
+                                        pyfits.writeto(self.imagePath, imageHDU.data, imageHDU.header, overwrite=True)
+                                        self.logger.debug('Image BLOB is in fpack compressed fits format')
+                                    elif message.getElt(0).attr['format'] == '.fits.z':
+                                        HDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
+                                        imageHDU = HDU[0]
+                                        pyfits.writeto(self.imagePath, imageHDU.data, imageHDU.header, overwrite=True)
                                         self.logger.debug('Image BLOB is compressed fits format')
+                                    else:
+                                        self.logger.debug('Image BLOB is not supported')
                                     self.receivedImage.emit(True)
                                 else:
                                     # here are some functions to listen to image transfer on ethernet
