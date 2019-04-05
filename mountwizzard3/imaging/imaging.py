@@ -204,8 +204,8 @@ class Imaging(PyQt5.QtCore.QObject):
         imageParams['Iso'] = int(self.app.ui.isoSetting.value())
         if self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            imageParams['SizeX'] = int(self.data['CCD_INFO']['CCD_MAX_X']) * scaleSubframe
-            imageParams['SizeY'] = int(self.data['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe
+            imageParams['SizeX'] = int(self.data['CCD_INFO']['CCD_MAX_X'] * scaleSubframe)
+            imageParams['SizeY'] = int(self.data['CCD_INFO']['CCD_MAX_Y'] * scaleSubframe)
             imageParams['OffX'] = int((float(self.data['CCD_INFO']['CCD_MAX_X']) - imageParams['SizeX']) / 2)
             imageParams['OffY'] = int((float(self.data['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
             imageParams['CanSubframe'] = True
