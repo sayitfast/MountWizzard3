@@ -88,6 +88,10 @@ class AscomDome:
             self.ascom.SlewToAzimuth(float(azimuth))
         except Exception as e:
             self.logger.error('Problem slewing azimuth, error: {0}'.format(e))
+        else:
+            self.app.sharedDomeDataLock.lockForWrite()
+            self.data['Slewing'] = True
+            self.app.sharedDomeDataLock.unlock()
         finally:
             pass
 
