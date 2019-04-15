@@ -132,7 +132,11 @@ app = BUNDLE(exe,
              name='MountWizzard3.app',
              version=4,
              icon='./mountwizzard3/icons/mw.icns',
-             bundle_identifier=None)
+             bundle_identifier=None,
+             info_plist={
+                 'CFBundleSignature': '????'
+             },
+             )
 
 #
 # we have to prepare the build as there is an error when overwriting it
