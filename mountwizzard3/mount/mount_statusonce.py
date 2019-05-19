@@ -219,8 +219,10 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                     fw = self.data['FirmwareNumber'].split('.')
                     if len(fw) == 3:
                         self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
+                    elif len(fw) == 2:
+                        self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100)
                     else:
-                        self.data['FW'] = 0
+                        self.data['FW'] = 1
                 if len(valueList[5]) > 0:
                     self.data['FirmwareProductName'] = valueList[5]
                 if len(valueList[6]) > 0:

@@ -96,9 +96,8 @@ class Dome(PyQt5.QtCore.QObject):
     def chooserDome(self):
         self.mutexChooser.lock()
         self.stop()
-        self.app.sharedDomeDataLock.lockForWrite()
         self.data['Connected'] = False
-        self.app.sharedDomeDataLock.unlock()
+
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.domeHandler = self.none
             self.logger.info('Actual dome is None')
@@ -169,29 +168,24 @@ class Dome(PyQt5.QtCore.QObject):
         elif self.domeHandler.application['Status'] == 'ERROR':
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'red')
         elif self.domeHandler.application['Status'] == 'OK':
-            self.app.sharedDomeDataLock.lockForRead()
             if not self.data['Connected']:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')
-            self.app.sharedDomeDataLock.unlock()
+
 
     @PyQt5.QtCore.pyqtSlot()
     def getDataFromDevice(self):
-        self.app.sharedDomeDataLock.lockForRead()
+
         connected = self.data['Connected']
-        self.app.sharedDomeDataLock.unlock()
         if connected:
             self.domeHandler.getData()
         else:
-            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Slewing'] = False
             self.data['Azimuth'] = 0.0
             self.data['Altitude'] = 0.0
-            self.app.sharedDomeDataLock.unlock()
         # signaling
-        self.app.sharedDomeDataLock.lockForRead()
         if 'Azimuth' in self.data:
             self.logger.debug('sending: ' + str(self.data['Azimuth']))
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
-        self.app.sharedDomeDataLock.unlock()
+

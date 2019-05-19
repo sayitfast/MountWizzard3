@@ -48,9 +48,7 @@ class AscomDome:
                 self.ascom.connected = True
                 self.logger.info('Driver chosen:{0}'.format(self.driverName))
                 self.application['Status'] = 'OK'
-                self.app.sharedDomeDataLock.lockForWrite()
                 self.data['Connected'] = True
-                self.app.sharedDomeDataLock.unlock()
                 self.logger.info('ASCOM dome started')
             except Exception as e:
                 self.application['Status'] = 'ERROR'
@@ -59,9 +57,7 @@ class AscomDome:
                 pass
         elif self.driverName == '':
             # no connection made
-            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Connected'] = False
-            self.app.sharedDomeDataLock.unlock()
             self.application['Status'] = 'ERROR'
             self.logger.info('ASCOM Dome could not be started')
 
@@ -72,9 +68,7 @@ class AscomDome:
         except Exception as e:
             self.logger.error('Could not stop driver: {0} and close it, error: {1}'.format(self.driverName, e))
         finally:
-            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Connected'] = False
-            self.app.sharedDomeDataLock.unlock()
             self.ascom = None
             self.logger.info('ASCOM Dome stopped')
             pythoncom.CoUninitialize()
@@ -89,9 +83,7 @@ class AscomDome:
         except Exception as e:
             self.logger.error('Problem slewing azimuth, error: {0}'.format(e))
         else:
-            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Slewing'] = True
-            self.app.sharedDomeDataLock.unlock()
         finally:
             pass
 
@@ -99,23 +91,15 @@ class AscomDome:
         try:
             if self.ascom:
                 if self.ascom.connected:
-                    self.app.sharedDomeDataLock.lockForWrite()
                     self.data['Connected'] = True
-                    self.app.sharedDomeDataLock.unlock()
                 else:
-                    self.app.sharedDomeDataLock.lockForWrite()
                     self.data['Connected'] = False
-                    self.app.sharedDomeDataLock.unlock()
                 self.application['Status'] = 'OK'
             else:
-                self.app.sharedDomeDataLock.lockForWrite()
                 self.data['Connected'] = False
-                self.app.sharedDomeDataLock.unlock()
         except Exception as e:
             self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.driverName, e))
-            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Connected'] = False
-            self.app.sharedDomeDataLock.unlock()
             self.application['Status'] = 'ERROR'
         finally:
             pass
@@ -129,7 +113,7 @@ class AscomDome:
         except Exception as e:
             self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.driverName, e))
             return
-        self.app.sharedDomeDataLock.lockForWrite()
+
         try:
             slewing = self.ascom.Slewing
             if self.data['Slewing'] and not slewing:
@@ -147,7 +131,6 @@ class AscomDome:
             self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
-        self.app.sharedDomeDataLock.unlock()
 
     def setupDriver(self):
         try:
