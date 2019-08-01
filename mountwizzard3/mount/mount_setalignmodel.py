@@ -172,6 +172,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
                                                                  self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
                                                                  self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
         command += ':endalig#'
+        self.logger.debug('model data: ' + command)
         self.sendCommandQueue.put(command)
 
     @PyQt5.QtCore.pyqtSlot()
@@ -193,6 +194,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
             self.messageString = ''
         # now we got all information about the model write run
         valueList = messageToProcess.strip('#').split('#')
+        self.logger.debug('alignment data: ' + messageToProcess)
         # quick check:
         if len(valueList) != self.numberAlignmentPoints + 1:
             # error happened
