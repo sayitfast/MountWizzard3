@@ -186,6 +186,4 @@ class Dome(PyQt5.QtCore.QObject):
             self.data['Altitude'] = 0.0
         # signaling
         if 'Azimuth' in self.data:
-            self.logger.debug('sending: ' + str(self.data['Azimuth']))
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
-
